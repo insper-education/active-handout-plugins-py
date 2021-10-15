@@ -49,7 +49,9 @@ class FindExercises(BasePlugin):
                     break
 
             tp = 'QUIZ'
-            if 'short' in ex['class'] or 'long' in ex['class']:
+            if 'css-exercise' in ex['class']:
+                tp = 'CSS'
+            elif 'short' in ex['class'] or 'long' in ex['class']:
                 tp = 'TEXT'
 
             ex['id'] = slug = page_slug + slug
