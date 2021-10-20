@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 from collections import namedtuple
 
-from ..exercise import CODE_TYPE, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, find_code_exercises, find_exercises_in_handout
+from ..exercise import CODE_TYPE, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, add_vscode_button, find_code_exercises, find_exercises_in_handout, get_title
 from .html_utils import admonition, admonition_title, div, el, form, p, task_list, text_question
 
 
@@ -91,3 +91,45 @@ def test_find_exercises_in_handout():
         assert_exercise(exercise, slug, page_url, tp, 'intro', HANDOUT_GROUP)
         assert html_question.attrs['id'] == slug
 
+
+def test_get_title():
+    assert get_title('''# Title here
+
+    Some text here
+''') == 'Title here'
+    assert get_title('''
+# This is a title
+
+    Some text here
+''') == 'This is a title'
+    assert get_title('''
+    # This is a comment in a code block
+
+    Some text here
+''') == None
+    assert get_title('''
+    Just some text
+
+    Some additional text here
+''') == None
+
+
+def test_add_vscode_button():
+    original_md = '''
+# Exercise title
+
+Exercise statement
+in multiple lines
+'''
+    meta_file = MockFile('handouts/recursion/exercises/fibonacci/meta.yml')
+    base_url = 'http://localhost:8000/goat-cheese/'
+    output_md = add_vscode_button(original_md, meta_file, base_url)
+    assert output_md == '''
+# Exercise title
+
+Exercise statement
+in multiple lines
+
+
+[Resolver exercício :material-microsoft-visual-studio-code:](vscode://insper.devlife/?exercise_addr=http%3A%2F%2Flocalhost%3A8000%2Fgoat-cheese%2Fhandouts%2Frecursion%2Fexercises%2Ffibonacci%2Fmeta.yml){ .md-button .md-button--primary }
+'''

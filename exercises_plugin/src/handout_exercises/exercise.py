@@ -1,6 +1,9 @@
 from bs4 import BeautifulSoup
 from pymdownx.slugs import slugify
 import requests
+from pathlib import Path
+from urllib.parse import quote_plus
+import yaml
 
 
 HANDOUT_GROUP = 'handout'
@@ -86,3 +89,41 @@ def post_exercises(exercises, token, report_url):
         except Exception:
             print("Couldn't post exercise", exercise)
 
+
+def get_meta_for(page_file, files):
+    if not page_file.src_path.endswith('index.md'):
+        return None
+
+    meta_filename = str(Path(page_file.src_path).parent / 'meta.yml')
+    for file in files:
+        if file.src_path == meta_filename:
+            return file
+    return None
+
+
+def get_title(markdown):
+    for line in markdown.split('\n'):
+        if line.startswith('# '):
+            return line[1:].strip()
+    return None
+
+
+def add_vscode_button(markdown, meta_file, base_url):
+    ext_url = 'vscode://insper.devlife/'
+    exercise_addr = quote_plus(f'{base_url}{meta_file.url}')
+    full_url = f'{ext_url}?exercise_addr={exercise_addr}'
+
+    button_text = 'Resolver exercício'
+    icon = ':material-microsoft-visual-studio-code:'
+    extra_classes = '{ .md-button .md-button--primary }'
+    vscode_button = f'[{button_text} {icon}]({full_url}){extra_classes}'
+
+    return f'{markdown}\n\n{vscode_button}\n'
+
+
+def override_yaml(abs_dest_path, overrides):
+    with open(abs_dest_path) as f:
+        data = yaml.safe_load(f)
+    data.update(overrides)
+    with open(abs_dest_path, 'w') as f:
+        yaml.safe_dump(data, f, encoding='utf-8', allow_unicode=True)
