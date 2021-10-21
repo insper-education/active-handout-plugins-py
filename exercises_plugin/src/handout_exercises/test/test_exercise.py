@@ -1,13 +1,15 @@
 from bs4 import BeautifulSoup
-from collections import namedtuple
 
-from ..exercise import CODE_TYPE, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, add_vscode_button, find_code_exercises, find_exercises_in_handout, get_title
+from ..exercise import CODE_TYPE, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, Exercise, add_vscode_button, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
 from .html_utils import admonition, admonition_title, div, el, form, p, task_list, text_question
 
+
+BASE_URL = 'http://localhost:8000/goat-cheese/'
 
 class MockFile:
     def __init__(self, url):
         self.src_path = url
+        self.abs_src_path = url
         self.url = url
 
 
@@ -114,6 +116,24 @@ def test_get_title():
 ''') == None
 
 
+def test_is_exercise_list():
+    for prev_lines in range(3):
+        for after_lines in range(3):
+            for init_spaces in range(4):
+                for mid_spaces in range(4):
+                    for end_spaces in range(4):
+                        markdown = (
+                            prev_lines * '\n' +
+                            init_spaces * ' ' +
+                            '!!!' +
+                            mid_spaces * ' ' +
+                            'exercise-list' +
+                            end_spaces * ' ' +
+                            after_lines * '\n'
+                        )
+                        assert is_exercise_list(markdown) == True
+    assert is_exercise_list('!!! not-exercise-list') == False
+
 def test_add_vscode_button():
     original_md = '''
 # Exercise title
@@ -122,8 +142,7 @@ Exercise statement
 in multiple lines
 '''
     meta_file = MockFile('handouts/recursion/exercises/fibonacci/meta.yml')
-    base_url = 'http://localhost:8000/goat-cheese/'
-    output_md = add_vscode_button(original_md, meta_file, base_url)
+    output_md = add_vscode_button(original_md, meta_file, BASE_URL)
     assert output_md == '''
 # Exercise title
 
@@ -133,3 +152,106 @@ in multiple lines
 
 [Resolver exercício :material-microsoft-visual-studio-code:](vscode://insper.devlife/?exercise_addr=http%3A%2F%2Flocalhost%3A8000%2Fgoat-cheese%2Fhandouts%2Frecursion%2Fexercises%2Ffibonacci%2Fmeta.yml){ .md-button .md-button--primary }
 '''
+
+
+def add_exercise_to_path(url, slug, topic, group, meta, code_exercises_by_path):
+    exercise = Exercise(slug, url, CODE_TYPE, topic, group)
+    exercise.meta_file = MockFile(url)
+    exercise.meta = meta
+    code_exercises_by_path[url] = exercise
+    return exercise
+
+
+def make_meta(title, difficulty, weight, slug):
+    return {
+        'title': title,
+        'difficulty': difficulty,
+        'weight': weight,
+        'slug': slug,
+        'offering': 1,
+        'testFile': 'test_solution.py',
+        'studentFile': 'solution.py',
+
+    }
+
+
+def test_sorted_exercise_list():
+    code_exercises_by_path = {}
+    add_exercise_to_path(
+        'handouts/recursion/exercises/fibonacci',
+        'recursion-fibonacci',
+        'recursion',
+        HANDOUT_GROUP,
+        make_meta('Fibonacci', 2, 2, 'recursion-fibonacci'),
+        code_exercises_by_path
+    )
+    add_exercise_to_path(
+        'handouts/recursion/exercises/sum',
+        'recursion-sum',
+        'recursion',
+        HANDOUT_GROUP,
+        make_meta('Sum', 2, 1, 'recursion-sum'),
+        code_exercises_by_path
+    )
+    add_exercise_to_path(
+        'handouts/recursion/exercises/hanoi',
+        'recursion-hanoi',
+        'recursion',
+        HANDOUT_GROUP,
+        make_meta('Hanoi', 4, 2, 'recursion-hanoi'),
+        code_exercises_by_path
+    )
+    add_exercise_to_path(
+        'handouts/recursion/exercises/max_diff',
+        'recursion-max_diff',
+        'recursion',
+        HANDOUT_GROUP,
+        make_meta('Maximum difference', 4, 3, 'max_diff'),
+        code_exercises_by_path
+    )
+    add_exercise_to_path(
+        'handouts/memoization/exercises/fibonacci',
+        'memoization-fibonacci',
+        'memoization',
+        HANDOUT_GROUP,
+        make_meta('Fibonacci', 2, 1, 'memoization-fibonacci'),
+        code_exercises_by_path
+    )
+    output = sorted_exercise_list(
+        'handouts/recursion/exercises/index.md',
+        code_exercises_by_path
+    )
+    expected = [
+        code_exercises_by_path[f'handouts/recursion/exercises/{slug}']
+        for slug in ['fibonacci', 'sum', 'max_diff', 'hanoi']
+    ]
+    assert expected == output
+
+
+def test_replace_exercise_list():
+    code_exercises_by_path = {}
+    exercises = [
+        add_exercise_to_path(
+            'handouts/recursion/exercises/fibonacci',
+            'recursion-fibonacci',
+            'recursion',
+            HANDOUT_GROUP,
+            make_meta('Fibonacci', 2, 2, 'recursion-fibonacci'),
+            code_exercises_by_path
+        ),
+        add_exercise_to_path(
+            'handouts/recursion/exercises/sum',
+            'recursion-sum',
+            'recursion',
+            HANDOUT_GROUP,
+            make_meta('Sum', 3, 1, 'recursion-sum'),
+            code_exercises_by_path
+        )
+    ]
+
+    expected = f'''
+- [[Nível 2] Fibonacci]({BASE_URL}handouts/recursion/exercises/fibonacci)
+- [[Nível 3] Sum]({BASE_URL}handouts/recursion/exercises/sum)
+'''.strip()
+    assert expected in replace_exercise_list('!!! exercise-list', exercises, BASE_URL)
+    assert expected in replace_exercise_list('# Title\n\n!!! exercise-list\n\n', exercises, BASE_URL)

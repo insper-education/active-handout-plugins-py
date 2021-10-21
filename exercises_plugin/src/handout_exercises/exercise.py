@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from pymdownx.slugs import slugify
 import requests
+import re
 from pathlib import Path
 from urllib.parse import quote_plus
 import yaml
@@ -11,6 +12,7 @@ CODE_TYPE = 'CODE'
 QUIZ_TYPE = 'QUIZ'
 TEXT_TYPE = 'TEXT'
 
+EXERCISE_LIST_REGEX = r'^\s*!!!\s*exercise-list\s*'
 
 class Exercise:
     def __init__(self, slug, url, tp, topic, group):
@@ -33,6 +35,25 @@ class Exercise:
         }
 
 
+class CodeExercise(Exercise):
+    def __init__(self, meta_file, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.meta_file = meta_file
+        try:
+            with open(self.meta_file.abs_src_path) as f:
+                self.meta = yaml.safe_load(f)
+            self._init_title()
+        except FileNotFoundError:
+            self.meta = None
+
+    def _init_title(self):
+        try:
+            with open(Path(self.meta_file.abs_src_path).parent / 'index.md') as f:
+                self.meta['title'] = get_title(f.read())
+        except FileNotFoundError:
+            return
+
+
 def extract_topic(url):
     split_url = url.split('/')
     if len(split_url) < 2:
@@ -47,9 +68,9 @@ def find_code_exercises(files):
         if f.src_path.endswith('meta.yml'):
             slug_url = f.url[:-len('meta.yml')]
             slug_url = slug_url.replace('/', ' ').strip()
-            exercise_url = '/'.join(f.url.split('/')[:-1])
+            exercise_url = str(Path(f.url).parent)
             topic = extract_topic(f.url)
-            exercises.append(Exercise(slugify()(slug_url, '-'), exercise_url, CODE_TYPE, topic, HANDOUT_GROUP))
+            exercises.append(CodeExercise(f, slugify()(slug_url, '-'), exercise_url, CODE_TYPE, topic, HANDOUT_GROUP))
 
     return exercises
 
@@ -101,11 +122,25 @@ def get_meta_for(page_file, files):
     return None
 
 
+def has_title(markdown):
+    for line in markdown.split('\n'):
+        if line.startswith('# '):
+            return True
+    return False
+
+
 def get_title(markdown):
     for line in markdown.split('\n'):
         if line.startswith('# '):
             return line[1:].strip()
     return None
+
+
+def is_exercise_list(markdown):
+    for line in markdown.split('\n'):
+        if re.search(EXERCISE_LIST_REGEX, line):
+            return True
+    return False
 
 
 def add_vscode_button(markdown, meta_file, base_url):
@@ -127,3 +162,27 @@ def override_yaml(abs_dest_path, overrides):
     data.update(overrides)
     with open(abs_dest_path, 'w') as f:
         yaml.safe_dump(data, f, encoding='utf-8', allow_unicode=True)
+
+
+def sorted_exercise_list(src_path, code_exercises_by_path):
+    base_path = str(Path(src_path).parent)
+    exercises = []
+
+    for path, exercise in code_exercises_by_path.items():
+        if base_path in path:
+            exercises.append(exercise)
+
+    return sorted(exercises, key=lambda e: (e.meta['difficulty'], -e.meta['weight']))
+
+
+def replace_exercise_list(markdown, exercises, base_url):
+    exercises_md = '\n'.join(
+        [
+            f'- [[Nível {e.meta["difficulty"]}] {e.meta["title"]}]({base_url}{Path(e.url)})'
+            for e in exercises
+        ]
+    )
+    return '\n'.join(
+        re.sub(EXERCISE_LIST_REGEX, exercises_md, line)
+        for line in markdown.split('\n')
+    )
