@@ -5,6 +5,9 @@ import re
 from pathlib import Path
 from urllib.parse import quote_plus
 import yaml
+import subprocess
+
+from . import github
 
 
 HANDOUT_GROUP = 'handout'
@@ -13,6 +16,8 @@ QUIZ_TYPE = 'QUIZ'
 TEXT_TYPE = 'TEXT'
 
 EXERCISE_LIST_REGEX = r'^\s*!!!\s*exercise-list\s*'
+GIT_SHORTLOG_REGEX = r'\d+\s*(.*)<(.*)>'
+
 
 class Exercise:
     def __init__(self, slug, url, tp, topic, group):
@@ -43,6 +48,7 @@ class CodeExercise(Exercise):
             with open(self.meta_file.abs_src_path) as f:
                 self.meta = yaml.safe_load(f)
             self._init_title()
+            self._get_authors()
         except FileNotFoundError:
             self.meta = None
 
@@ -52,6 +58,15 @@ class CodeExercise(Exercise):
                 self.meta['title'] = get_title(f.read())
         except FileNotFoundError:
             return
+
+    def _get_authors(self):
+        current_folder = Path(self.meta_file.abs_src_path).parent
+        result = subprocess.run(
+            ['git', 'shortlog', '-e', '-s', '--', f'{current_folder}'], capture_output=True)
+        self.authors = []
+        for name, email in re.findall(GIT_SHORTLOG_REGEX, str(result.stdout, 'utf8')):
+            self.authors.append((name.strip(), email.strip()))
+        self.authors.sort(key=lambda t: t[0])
 
 
 def extract_topic(url):
@@ -70,7 +85,8 @@ def find_code_exercises(files):
             slug_url = slug_url.replace('/', ' ').strip()
             exercise_url = str(Path(f.url).parent)
             topic = extract_topic(f.url)
-            exercises.append(CodeExercise(f, slugify()(slug_url, '-'), exercise_url, CODE_TYPE, topic, HANDOUT_GROUP))
+            exercises.append(CodeExercise(f, slugify()(
+                slug_url, '-'), exercise_url, CODE_TYPE, topic, HANDOUT_GROUP))
 
     return exercises
 
@@ -154,6 +170,23 @@ def add_vscode_button(markdown, meta_file, base_url):
     vscode_button = f'[{button_text} {icon}]({full_url}){extra_classes}'
 
     return f'{markdown}\n\n{vscode_button}\n'
+
+
+def add_authors(markdown, exercise, project_root):
+
+    author_list = ''
+    for name, email in exercise.authors:
+        author = github.retrieve_author(name, email, project_root)
+        author_list += f'![]({author.picture}){{: .contributor-picture }} [{author.name}](https://github.com/{author.username})\n\n'
+
+    return f'''{markdown}
+-----------------------
+
+Contribuíram para este exercício:
+
+{author_list}
+
+'''
 
 
 def override_yaml(abs_dest_path, overrides):

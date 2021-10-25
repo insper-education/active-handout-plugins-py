@@ -1,11 +1,13 @@
+from pathlib import Path
 from mkdocs.plugins import BasePlugin
 import mkdocs.config.config_options
 import os
 
-from .exercise import get_title, add_vscode_button, find_code_exercises, find_exercises_in_handout, is_exercise_list, get_meta_for, post_exercises, replace_exercise_list, sorted_exercise_list, override_yaml
+from .exercise import add_authors, get_title, add_vscode_button, find_code_exercises, find_exercises_in_handout, is_exercise_list, get_meta_for, post_exercises, replace_exercise_list, sorted_exercise_list, override_yaml
 
 
 token = os.environ.get('REPORT_TOKEN', '')
+
 
 class FindExercises(BasePlugin):
     config_scheme = (
@@ -36,7 +38,9 @@ class FindExercises(BasePlugin):
             self.yaml_overrides[meta_file.abs_dest_path] = {
                 'title': get_title(markdown)
             }
-            return add_vscode_button(markdown, meta_file, config['site_url'])
+            new_markdown = add_vscode_button(markdown, meta_file, config['site_url'])
+            project_root = Path(config['config_file_path']).parent
+            return add_authors(new_markdown, self.code_exercises_by_path[meta_file.abs_src_path], project_root)
 
         return markdown
 
