@@ -20,11 +20,11 @@ GIT_SHORTLOG_REGEX = r'\d+\s*(.*)<(.*)>'
 
 
 class Exercise:
-    def __init__(self, slug, url, tp, topic, group):
+    def __init__(self, slug, url, tp, group):
         self.slug = slug
         self.url = url
         self.tp = tp
-        self.topic = topic
+        self.topic = extract_topic(url)
         self.group = group
 
     def __str__(self):
@@ -47,6 +47,7 @@ class CodeExercise(Exercise):
         try:
             with open(self.meta_file.abs_src_path) as f:
                 self.meta = yaml.safe_load(f)
+                self.meta['topic'] = self.topic
             self._init_title()
             self._get_authors()
         except FileNotFoundError:
@@ -68,6 +69,10 @@ class CodeExercise(Exercise):
             self.authors.append((name.strip(), email.strip()))
         self.authors.sort(key=lambda t: t[0])
 
+    def save_meta(self):
+        with open(self.meta_file.abs_dest_path, 'w') as f:
+            yaml.safe_dump(self.meta, f, encoding='utf-8', allow_unicode=True)
+
 
 def extract_topic(url):
     split_url = url.split('/')
@@ -84,9 +89,8 @@ def find_code_exercises(files):
             slug_url = f.url[:-len('meta.yml')]
             slug_url = slug_url.replace('/', ' ').strip()
             exercise_url = str(Path(f.url).parent)
-            topic = extract_topic(f.url)
             exercises.append(CodeExercise(f, slugify()(
-                slug_url, '-'), exercise_url, CODE_TYPE, topic, HANDOUT_GROUP))
+                slug_url, '-'), exercise_url, CODE_TYPE, HANDOUT_GROUP))
 
     return exercises
 
@@ -110,8 +114,7 @@ def find_exercises_in_handout(html, page_url):
             tp = TEXT_TYPE
 
         ex['id'] = slug = page_slug + slug
-        topic = extract_topic(page_url)
-        exercises.append(Exercise(slug, page_url, tp, topic, HANDOUT_GROUP))
+        exercises.append(Exercise(slug, page_url, tp, HANDOUT_GROUP))
 
     new_html = str(soup)
     return exercises, new_html
@@ -187,14 +190,6 @@ Contribuíram para este exercício:
 {author_list}
 
 '''
-
-
-def override_yaml(abs_dest_path, overrides):
-    with open(abs_dest_path) as f:
-        data = yaml.safe_load(f)
-    data.update(overrides)
-    with open(abs_dest_path, 'w') as f:
-        yaml.safe_dump(data, f, encoding='utf-8', allow_unicode=True)
 
 
 def sorted_exercise_list(src_path, code_exercises_by_path):

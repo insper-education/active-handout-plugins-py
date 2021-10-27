@@ -1,6 +1,6 @@
 from bs4 import BeautifulSoup
 
-from ..exercise import CODE_TYPE, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, Exercise, add_vscode_button, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
+from ..exercise import CODE_TYPE, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, Exercise, add_vscode_button, extract_topic, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
 from .html_utils import admonition, admonition_title, div, el, form, p, task_list, text_question
 
 
@@ -23,6 +23,7 @@ def exercise_files(url):
             'solution.py',
             'test_solution.py',
             'wrong.py',
+            'exemplo.py',
         ]
     ]
 
@@ -154,8 +155,8 @@ in multiple lines
 '''
 
 
-def add_exercise_to_path(url, slug, topic, group, meta, code_exercises_by_path):
-    exercise = Exercise(slug, url, CODE_TYPE, topic, group)
+def add_exercise_to_path(url, slug, group, meta, code_exercises_by_path):
+    exercise = Exercise(slug, url, CODE_TYPE, group)
     exercise.meta_file = MockFile(url)
     exercise.meta = meta
     code_exercises_by_path[url] = exercise
@@ -180,7 +181,6 @@ def test_sorted_exercise_list():
     add_exercise_to_path(
         'handouts/recursion/exercises/fibonacci',
         'recursion-fibonacci',
-        'recursion',
         HANDOUT_GROUP,
         make_meta('Fibonacci', 2, 2, 'recursion-fibonacci'),
         code_exercises_by_path
@@ -188,7 +188,6 @@ def test_sorted_exercise_list():
     add_exercise_to_path(
         'handouts/recursion/exercises/sum',
         'recursion-sum',
-        'recursion',
         HANDOUT_GROUP,
         make_meta('Sum', 2, 1, 'recursion-sum'),
         code_exercises_by_path
@@ -196,7 +195,6 @@ def test_sorted_exercise_list():
     add_exercise_to_path(
         'handouts/recursion/exercises/hanoi',
         'recursion-hanoi',
-        'recursion',
         HANDOUT_GROUP,
         make_meta('Hanoi', 4, 2, 'recursion-hanoi'),
         code_exercises_by_path
@@ -204,7 +202,6 @@ def test_sorted_exercise_list():
     add_exercise_to_path(
         'handouts/recursion/exercises/max_diff',
         'recursion-max_diff',
-        'recursion',
         HANDOUT_GROUP,
         make_meta('Maximum difference', 4, 3, 'max_diff'),
         code_exercises_by_path
@@ -212,7 +209,6 @@ def test_sorted_exercise_list():
     add_exercise_to_path(
         'handouts/memoization/exercises/fibonacci',
         'memoization-fibonacci',
-        'memoization',
         HANDOUT_GROUP,
         make_meta('Fibonacci', 2, 1, 'memoization-fibonacci'),
         code_exercises_by_path
@@ -234,7 +230,6 @@ def test_replace_exercise_list():
         add_exercise_to_path(
             'handouts/recursion/exercises/fibonacci',
             'recursion-fibonacci',
-            'recursion',
             HANDOUT_GROUP,
             make_meta('Fibonacci', 2, 2, 'recursion-fibonacci'),
             code_exercises_by_path
@@ -242,7 +237,6 @@ def test_replace_exercise_list():
         add_exercise_to_path(
             'handouts/recursion/exercises/sum',
             'recursion-sum',
-            'recursion',
             HANDOUT_GROUP,
             make_meta('Sum', 3, 1, 'recursion-sum'),
             code_exercises_by_path
@@ -255,3 +249,21 @@ def test_replace_exercise_list():
 '''.strip()
     assert expected in replace_exercise_list('!!! exercise-list', exercises, BASE_URL)
     assert expected in replace_exercise_list('# Title\n\n!!! exercise-list\n\n', exercises, BASE_URL)
+
+
+def test_extract_topic():
+    urls = (
+        ('aulas/fatiamento/exercises/capitaliza_string/meta.yml', 'fatiamento'),
+        ('aulas/for/exercises/valor_da_nota_fiscal/meta.yml', 'for'),
+        ('aulas/if/exercises/exercises/todo_mundo_odeia_o_chris/meta.yml', 'if'),
+        ('aulas/if/exercises/exercises/calculo_de_aumento_de_salario/meta.yml', 'if'),
+        ('aulas/lista/exercises/soma_dos_numero_impares/meta.yml', 'lista'),
+        ('aulas/lista/exercises/soma_valores_da_lista/meta.yml', 'lista'),
+        ('aulas/string/exercises/esconde_senha/meta.yml', 'string'),
+        ('aulas/while/exercises/aluno_com_duvidas/meta.yml', 'while'),
+        ('aulas/while/exercises/quantos_uns/meta.yml', 'while'),
+        ('aulas/while/exercises/raiz_quadrada_por_subtracoes/meta.yml', 'while'),
+    )
+    for url, expected in urls:
+        topic = extract_topic(url)
+        assert topic == expected

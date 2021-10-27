@@ -3,7 +3,7 @@ from mkdocs.plugins import BasePlugin
 import mkdocs.config.config_options
 import os
 
-from .exercise import add_authors, get_title, add_vscode_button, find_code_exercises, find_exercises_in_handout, is_exercise_list, get_meta_for, post_exercises, replace_exercise_list, sorted_exercise_list, override_yaml
+from .exercise import add_authors, add_vscode_button, find_code_exercises, find_exercises_in_handout, is_exercise_list, get_meta_for, post_exercises, replace_exercise_list, sorted_exercise_list
 
 
 token = os.environ.get('REPORT_TOKEN', '')
@@ -16,7 +16,6 @@ class FindExercises(BasePlugin):
 
     def on_pre_build(self, config):
         self.pages_with_exercises = []
-        self.yaml_overrides = {}
         self.code_exercises_by_path = {}
 
     def on_files(self, files, config):
@@ -35,9 +34,6 @@ class FindExercises(BasePlugin):
 
         meta_file = get_meta_for(page.file, files)
         if meta_file:
-            self.yaml_overrides[meta_file.abs_dest_path] = {
-                'title': get_title(markdown)
-            }
             new_markdown = add_vscode_button(markdown, meta_file, config['site_url'])
             project_root = Path(config['config_file_path']).parent
             return add_authors(new_markdown, self.code_exercises_by_path[meta_file.abs_src_path], project_root)
@@ -51,5 +47,5 @@ class FindExercises(BasePlugin):
 
     def on_post_build(self, config):
         post_exercises(self.pages_with_exercises, token, self.config['report_url'])
-        for abs_dest_path, overrides in self.yaml_overrides.items():
-            override_yaml(abs_dest_path, overrides)
+        for exercise in self.code_exercises_by_path.values():
+            exercise.save_meta()
