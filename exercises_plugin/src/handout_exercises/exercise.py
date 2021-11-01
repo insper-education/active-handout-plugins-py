@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import quote_plus
 import yaml
 import subprocess
+import glob
 
 from . import github
 
@@ -17,6 +18,8 @@ TEXT_TYPE = 'TEXT'
 
 EXERCISE_LIST_REGEX = r'^\s*!!!\s*exercise-list\s*'
 GIT_SHORTLOG_REGEX = r'\d+\s*(.*)<(.*)>'
+
+IGNORED_FILES = ['meta.yml', '__pycache__']
 
 
 class Exercise:
@@ -50,6 +53,7 @@ class CodeExercise(Exercise):
                 self.meta['topic'] = self.topic
             self._init_title()
             self._get_authors()
+            self._list_all_files()
         except FileNotFoundError:
             self.meta = None
 
@@ -68,6 +72,26 @@ class CodeExercise(Exercise):
         for name, email in re.findall(GIT_SHORTLOG_REGEX, str(result.stdout, 'utf8')):
             self.authors.append((name.strip(), email.strip()))
         self.authors.sort(key=lambda t: t[0])
+    
+    def __ignore_file(self, relative):
+        relative_str = str(relative)
+        for ign in IGNORED_FILES:
+            if relative_str.startswith(ign):
+                return True
+        return False
+
+    def _list_all_files(self):
+        current_folder = Path(self.meta_file.abs_src_path).parent
+        self.meta['files'] = []
+        for f in current_folder.glob('./**/*'):
+            current_file = Path(f)
+            try:
+                relative = current_file.relative_to(current_folder)
+
+                if not current_file.is_dir() and not self.__ignore_file(relative):
+                    self.meta['files'].append(str(relative))
+            except ValueError:
+                continue
 
     def save_meta(self):
         with open(self.meta_file.abs_dest_path, 'w') as f:
