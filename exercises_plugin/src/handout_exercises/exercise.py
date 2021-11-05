@@ -50,6 +50,7 @@ class CodeExercise(Exercise):
         try:
             with open(self.meta_file.abs_src_path) as f:
                 self.meta = yaml.safe_load(f)
+                self.meta['slug'] = self.slug
                 self.meta['topic'] = self.topic
             self._init_title()
             self._get_authors()
@@ -72,7 +73,7 @@ class CodeExercise(Exercise):
         for name, email in re.findall(GIT_SHORTLOG_REGEX, str(result.stdout, 'utf8')):
             self.authors.append((name.strip(), email.strip()))
         self.authors.sort(key=lambda t: t[0])
-    
+
     def __ignore_file(self, relative):
         relative_str = str(relative)
         for ign in IGNORED_FILES:
