@@ -151,7 +151,7 @@ Exercise statement
 in multiple lines
 
 
-[Resolver exercício :material-microsoft-visual-studio-code:](vscode://insper.devlife/?exercise_addr=http%3A%2F%2Flocalhost%3A8000%2Fgoat-cheese%2Fhandouts%2Frecursion%2Fexercises%2Ffibonacci%2Fmeta.yml){ .md-button .md-button--primary }
+[Resolver exercício :material-microsoft-visual-studio-code:](vscode://insper-comp.devlife/?exercise_addr=http%3A%2F%2Flocalhost%3A8000%2Fgoat-cheese%2Fhandouts%2Frecursion%2Fexercises%2Ffibonacci%2Fmeta.yml){ .md-button .md-button--primary }
 '''
 
 

@@ -188,7 +188,7 @@ def is_exercise_list(markdown):
 
 
 def add_vscode_button(markdown, meta_file, base_url):
-    ext_url = 'vscode://insper.devlife/'
+    ext_url = 'vscode://insper-comp.devlife/'
     exercise_addr = quote_plus(f'{base_url}{meta_file.url}')
     full_url = f'{ext_url}?exercise_addr={exercise_addr}'
 
