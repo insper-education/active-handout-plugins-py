@@ -200,21 +200,14 @@ def add_vscode_button(markdown, meta_file, base_url):
     return f'{markdown}\n\n{vscode_button}\n'
 
 
-def add_authors(markdown, exercise, project_root):
-
-    author_list = ''
+def add_authors(page, exercise, project_root):
+    author_list = []
     for name, email in exercise.authors:
         author = github.retrieve_author(name, email, project_root)
-        author_list += f'![]({author.picture}){{: .contributor-picture }} [{author.name}](https://github.com/{author.username})\n\n'
+        author_list.append(author)
+        #  += f'![]({author.picture}){{: .contributor-picture }} [{author.name}](https://github.com/{author.username})\n\n'
 
-    return f'''{markdown}
------------------------
-
-Contribuíram para este exercício:
-
-{author_list}
-
-'''
+    page.meta['author_list'] = author_list
 
 
 def sorted_exercise_list(src_path, code_exercises_by_path):

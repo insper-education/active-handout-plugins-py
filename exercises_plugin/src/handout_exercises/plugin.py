@@ -36,7 +36,8 @@ class FindExercises(BasePlugin):
         if meta_file:
             new_markdown = add_vscode_button(markdown, meta_file, config['site_url'])
             project_root = Path(config['config_file_path']).parent
-            return add_authors(new_markdown, self.code_exercises_by_path[meta_file.abs_src_path], project_root)
+            add_authors(page, self.code_exercises_by_path[meta_file.abs_src_path], project_root)
+            return new_markdown
 
         return markdown
 
