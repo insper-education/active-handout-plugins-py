@@ -75,9 +75,9 @@ class CodeExercise(Exercise):
         self.authors.sort(key=lambda t: t[0])
 
     def __ignore_file(self, relative):
-        relative_str = str(relative)
+        relative_parts = relative.parts
         for ign in IGNORED_FILES:
-            if relative_str.startswith(ign):
+            if ign in relative_parts:
                 return True
         return False
 

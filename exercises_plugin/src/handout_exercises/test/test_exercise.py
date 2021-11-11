@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
+import yaml
 
-from ..exercise import CODE_TYPE, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, Exercise, add_vscode_button, extract_topic, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
+from ..exercise import CODE_TYPE, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, CodeExercise, Exercise, add_vscode_button, extract_topic, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
 from .html_utils import admonition, admonition_title, div, el, form, p, task_list, text_question
 
 
@@ -267,3 +268,42 @@ def test_extract_topic():
     for url, expected in urls:
         topic = extract_topic(url)
         assert topic == expected
+
+
+def create_file(filename, content):
+    filename.parent.mkdir(parents=True, exist_ok=True)
+    with open(filename, 'w') as f:
+        f.write(content)
+
+
+def test_ignore_files_in_meta(tmp_path):
+    root = tmp_path / 'devlife-content/content/topics/recursion/exercises/hanoi'
+    root.mkdir(parents=True)
+
+    meta = {
+        'difficulty': 2,
+        'weight': 1,
+        'offering': 1,
+        'testFile': 'test_solution.py',
+        'studentFile': 'solution.py',
+    }
+    meta_filename = root / 'meta.yml'
+    with open(meta_filename, 'w') as f:
+        yaml.safe_dump(meta, f, encoding='utf-8', allow_unicode=True)
+    create_file(root / 'index.md', '# Hanoi\n\nSolve hanoi recursivelly.')
+    create_file(root / 'solution.py', 'print("Oh no...")')
+    create_file(root / '__pycache__' / 'solution.pyc', '')
+    create_file(root / 'test_solution.py', 'def test_pass():\n    assert True')
+    create_file(root / 'submodule' / 'functions.py', '# Some functions here')
+    create_file(root / 'submodule' / '__pycache__' / 'functions.pyc', '')
+
+    slug = 'recursion-max_diff'
+    url = 'handouts/recursion/exercises/max_diff'
+    tp = CODE_TYPE
+    group = HANDOUT_GROUP
+    exercise = CodeExercise(MockFile(meta_filename), slug, url, tp, group)
+
+    expected_files = ['index.md', 'solution.py', 'test_solution.py', 'submodule/functions.py']
+    assert len(exercise.meta['files']) == len(expected_files)
+    for f in expected_files:
+        assert f in exercise.meta['files']
