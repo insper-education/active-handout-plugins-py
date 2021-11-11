@@ -19,7 +19,7 @@ TEXT_TYPE = 'TEXT'
 EXERCISE_LIST_REGEX = r'^\s*!!!\s*exercise-list\s*'
 GIT_SHORTLOG_REGEX = r'\d+\s*(.*)<(.*)>'
 
-IGNORED_FILES = ['meta.yml', '__pycache__']
+IGNORED_FILES = ['meta.yml', '__pycache__', '.pytest_cache']
 
 
 class Exercise:
