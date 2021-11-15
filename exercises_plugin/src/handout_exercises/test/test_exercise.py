@@ -51,7 +51,7 @@ def test_find_code_exercises():
         ('handouts-memoization-exercises-fibonacci', 'handouts/memoization/exercises/fibonacci', 'memoization'),
     ]
 
-    exercises = find_code_exercises(files)
+    exercises = find_code_exercises(files, 1)
 
     assert len(exercises) == len(expected)
     for exercise, (slug, url, topic) in zip(exercises, expected):
@@ -276,8 +276,7 @@ def create_file(filename, content):
         f.write(content)
 
 
-def test_ignore_files_in_meta(tmp_path):
-    root = tmp_path / 'devlife-content/content/topics/recursion/exercises/hanoi'
+def create_exercise_in_path(root):
     root.mkdir(parents=True)
 
     meta = {
@@ -297,13 +296,32 @@ def test_ignore_files_in_meta(tmp_path):
     create_file(root / 'submodule' / 'functions.py', '# Some functions here')
     create_file(root / 'submodule' / '__pycache__' / 'functions.pyc', '')
 
+
+def test_ignore_files_in_meta(tmp_path):
+    root = tmp_path / 'devlife-content/content/topics/recursion/exercises/hanoi'
+    create_exercise_in_path(root)
+
     slug = 'recursion-max_diff'
     url = 'handouts/recursion/exercises/max_diff'
     tp = CODE_TYPE
     group = HANDOUT_GROUP
-    exercise = CodeExercise(MockFile(meta_filename), slug, url, tp, group)
+    exercise = CodeExercise(MockFile(root / 'meta.yml'), 1, slug, url, tp, group)
 
     expected_files = ['index.md', 'solution.py', 'test_solution.py', 'submodule/functions.py']
     assert len(exercise.meta['files']) == len(expected_files)
     for f in expected_files:
         assert f in exercise.meta['files']
+
+
+def test_auto_add_offering_to_meta(tmp_path):
+    root = tmp_path / 'devlife-content/content/topics/recursion/exercises/hanoi'
+    create_exercise_in_path(root)
+
+    slug = 'recursion-max_diff'
+    url = 'handouts/recursion/exercises/max_diff'
+    tp = CODE_TYPE
+    group = HANDOUT_GROUP
+    offering_id = 10
+    exercise = CodeExercise(MockFile(root / 'meta.yml'), offering_id, slug, url, tp, group)
+
+    assert exercise.meta['offering'] == offering_id

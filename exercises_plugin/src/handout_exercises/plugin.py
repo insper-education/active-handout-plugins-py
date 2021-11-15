@@ -12,6 +12,7 @@ token = os.environ.get('REPORT_TOKEN', '')
 class FindExercises(BasePlugin):
     config_scheme = (
         ('report_url', mkdocs.config.config_options.Type(str, default='')),
+        ('offering_id', mkdocs.config.config_options.Type(int, default=-1)),
     )
 
     def on_pre_build(self, config):
@@ -19,7 +20,7 @@ class FindExercises(BasePlugin):
         self.code_exercises_by_path = {}
 
     def on_files(self, files, config):
-        code_exercises = find_code_exercises(files)
+        code_exercises = find_code_exercises(files, self.config['offering_id'])
         self.pages_with_exercises.extend(code_exercises)
         self.code_exercises_by_path = {ex.meta_file.abs_src_path: ex for ex in code_exercises}
         return files

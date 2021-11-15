@@ -44,7 +44,7 @@ class Exercise:
 
 
 class CodeExercise(Exercise):
-    def __init__(self, meta_file, *args, **kwargs):
+    def __init__(self, meta_file, offering, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.meta_file = meta_file
         try:
@@ -52,6 +52,7 @@ class CodeExercise(Exercise):
                 self.meta = yaml.safe_load(f)
                 self.meta['slug'] = self.slug
                 self.meta['topic'] = self.topic
+                self.meta['offering'] = offering
             self._init_title()
             self._get_authors()
             self._list_all_files()
@@ -106,7 +107,7 @@ def extract_topic(url):
     return split_url[1]
 
 
-def find_code_exercises(files):
+def find_code_exercises(files, offering):
     exercises = []
 
     for f in files:
@@ -114,7 +115,7 @@ def find_code_exercises(files):
             slug_url = f.url[:-len('meta.yml')]
             slug_url = slug_url.replace('/', ' ').strip()
             exercise_url = str(Path(f.url).parent)
-            exercises.append(CodeExercise(f, slugify()(
+            exercises.append(CodeExercise(f, offering, slugify()(
                 slug_url, '-'), exercise_url, CODE_TYPE, HANDOUT_GROUP))
 
     return exercises
