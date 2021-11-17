@@ -156,6 +156,9 @@ def find_exercises_in_handout(html, page_url):
 
 
 def post_exercises(exercises, token, report_url):
+    if token == '':
+        return 
+    
     for exercise in exercises:
         try:
             st = requests.post(report_url, data=exercise.to_dict(), headers={
