@@ -39,16 +39,16 @@ def assert_exercise(exercise, slug, url, tp, topic, group):
 
 def test_find_code_exercises():
     files = (
-        exercise_files('handouts/recursion/exercises/fibonacci') +
-        exercise_files('handouts/recursion/exercises/hanoi') +
-        [MockFile('handouts/recursion/index.md')] +
-        exercise_files('handouts/memoization/exercises/fibonacci') +
-        [MockFile('handouts/memoization/index.md')]
+        exercise_files('handouts/algorithms/recursion/exercises/fibonacci') +
+        exercise_files('handouts/algorithms/recursion/exercises/hanoi') +
+        [MockFile('handouts/algorithms/recursion/index.md')] +
+        exercise_files('handouts/algorithms/memoization/exercises/fibonacci') +
+        [MockFile('handouts/algorithms/memoization/index.md')]
     )
     expected = [
-        ('handouts-recursion-exercises-fibonacci', 'handouts/recursion/exercises/fibonacci', 'recursion'),
-        ('handouts-recursion-exercises-hanoi', 'handouts/recursion/exercises/hanoi', 'recursion'),
-        ('handouts-memoization-exercises-fibonacci', 'handouts/memoization/exercises/fibonacci', 'memoization'),
+        ('handouts-algorithms-recursion-exercises-fibonacci', 'handouts/algorithms/recursion/exercises/fibonacci', 'handouts/algorithms/recursion'),
+        ('handouts-algorithms-recursion-exercises-hanoi', 'handouts/algorithms/recursion/exercises/hanoi', 'handouts/algorithms/recursion'),
+        ('handouts-algorithms-memoization-exercises-fibonacci', 'handouts/algorithms/memoization/exercises/fibonacci', 'handouts/algorithms/memoization'),
     ]
 
     exercises = find_code_exercises(files, 1)
@@ -59,7 +59,7 @@ def test_find_code_exercises():
 
 
 def test_find_exercises_in_handout():
-    page_url = 'handouts/intro/'
+    page_url = 'handouts/python/intro/'
     html = el('html', [
         el('body', [
             admonition('question choice', [
@@ -80,10 +80,10 @@ def test_find_exercises_in_handout():
     ])
     exercises, new_html = find_exercises_in_handout(html, page_url)
     expected_exercises = [
-        ('handouts-intro-0', QUIZ_TYPE),
-        ('handouts-intro-some_long_and_unique_id', TEXT_TYPE),
-        ('handouts-intro-2', TEXT_TYPE),
-        ('handouts-intro-3', TEXT_TYPE),
+        ('handouts-python-intro-0', QUIZ_TYPE),
+        ('handouts-python-intro-some_long_and_unique_id', TEXT_TYPE),
+        ('handouts-python-intro-2', TEXT_TYPE),
+        ('handouts-python-intro-3', TEXT_TYPE),
     ]
 
     soup = BeautifulSoup(new_html, 'html.parser')
@@ -92,7 +92,7 @@ def test_find_exercises_in_handout():
     assert len(html_questions) == len(expected_exercises)
     assert len(exercises) == len(expected_exercises)
     for exercise, html_question, (slug, tp) in zip(exercises, html_questions, expected_exercises):
-        assert_exercise(exercise, slug, page_url, tp, 'intro', HANDOUT_GROUP)
+        assert_exercise(exercise, slug, page_url, tp, 'handouts/python/intro', HANDOUT_GROUP)
         assert html_question.attrs['id'] == slug
 
 
@@ -254,16 +254,16 @@ def test_replace_exercise_list():
 
 def test_extract_topic():
     urls = (
-        ('aulas/fatiamento/exercises/capitaliza_string/meta.yml', 'fatiamento'),
-        ('aulas/for/exercises/valor_da_nota_fiscal/meta.yml', 'for'),
-        ('aulas/if/exercises/exercises/todo_mundo_odeia_o_chris/meta.yml', 'if'),
-        ('aulas/if/exercises/exercises/calculo_de_aumento_de_salario/meta.yml', 'if'),
-        ('aulas/lista/exercises/soma_dos_numero_impares/meta.yml', 'lista'),
-        ('aulas/lista/exercises/soma_valores_da_lista/meta.yml', 'lista'),
-        ('aulas/string/exercises/esconde_senha/meta.yml', 'string'),
-        ('aulas/while/exercises/aluno_com_duvidas/meta.yml', 'while'),
-        ('aulas/while/exercises/quantos_uns/meta.yml', 'while'),
-        ('aulas/while/exercises/raiz_quadrada_por_subtracoes/meta.yml', 'while'),
+        ('aulas/python/fatiamento/exercises/capitaliza_string/meta.yml', 'python/fatiamento'),
+        ('aulas/python/for/exercises/valor_da_nota_fiscal/meta.yml', 'python/for'),
+        ('aulas/python/if/exercises/exercises/todo_mundo_odeia_o_chris/meta.yml', 'python/if'),
+        ('aulas/python/if/exercises/exercises/calculo_de_aumento_de_salario/meta.yml', 'python/if'),
+        ('aulas/python/lista/exercises/soma_dos_numero_impares/meta.yml', 'python/lista'),
+        ('aulas/python/lista/exercises/soma_valores_da_lista/meta.yml', 'python/lista'),
+        ('aulas/python/string/exercises/esconde_senha/meta.yml', 'python/string'),
+        ('aulas/python/while/exercises/aluno_com_duvidas/meta.yml', 'python/while'),
+        ('aulas/algorithms/while/exercises/quantos_uns/meta.yml', 'algorithms/while'),
+        ('aulas/algorithms/while/exercises/raiz_quadrada_por_subtracoes/meta.yml', 'algorithms/while'),
     )
     for url, expected in urls:
         topic = extract_topic(url)
@@ -307,7 +307,7 @@ def test_ignore_files_in_meta(tmp_path):
     group = HANDOUT_GROUP
     exercise = CodeExercise(MockFile(root / 'meta.yml'), 1, slug, url, tp, group)
 
-    expected_files = ['index.md', 'solution.py', 'test_solution.py', 'submodule/functions.py']
+    expected_files = ['solution.py', 'test_solution.py', 'submodule/functions.py']
     assert len(exercise.meta['files']) == len(expected_files)
     for f in expected_files:
         assert f in exercise.meta['files']

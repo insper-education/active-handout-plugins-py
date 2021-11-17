@@ -102,9 +102,18 @@ class CodeExercise(Exercise):
 
 def extract_topic(url):
     split_url = url.split('/')
-    if len(split_url) < 2:
+
+    ignored_folders = ['content', 'aulas']
+    topic_folders = [d for d in split_url if d not in ignored_folders and d]
+
+    ex_idx = len(topic_folders)
+    if 'exercises' in topic_folders:
+        ex_idx = topic_folders.index('exercises')
+    if ex_idx < 1:  # We need at least one folder
         return url
-    return split_url[1]
+    topic_folders = topic_folders[:ex_idx]
+
+    return '/'.join(topic_folders)
 
 
 def find_code_exercises(files, offering):
