@@ -43,7 +43,7 @@ class FindExercises(BasePlugin):
         return markdown
 
     def on_page_content(self, html, page, config, files):
-        new_exercises, new_html = find_exercises_in_handout(html, page.url)
+        new_exercises, new_html = find_exercises_in_handout(html, page.url, page.file.abs_src_path, self.code_exercises_by_path)
         self.pages_with_exercises.extend(new_exercises)
         return new_html
 

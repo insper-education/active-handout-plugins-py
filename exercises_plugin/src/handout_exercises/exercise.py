@@ -10,7 +10,7 @@ import glob
 
 from . import github
 
-
+EXTRA_GROUP = 'extra'
 HANDOUT_GROUP = 'handout'
 CODE_TYPE = 'CODE'
 QUIZ_TYPE = 'QUIZ'
@@ -125,12 +125,12 @@ def find_code_exercises(files, offering):
             slug_url = slug_url.replace('/', ' ').strip()
             exercise_url = str(Path(f.url).parent)
             exercises.append(CodeExercise(f, offering, slugify()(
-                slug_url, '-'), exercise_url, CODE_TYPE, HANDOUT_GROUP))
+                slug_url, '-'), exercise_url, CODE_TYPE, EXTRA_GROUP))
 
     return exercises
 
 
-def find_exercises_in_handout(html, page_url):
+def find_exercises_in_handout(html, page_url, abs_path, code_exercises_by_path):
     exercises = []
 
     soup = BeautifulSoup(html, 'html.parser')
@@ -151,14 +151,24 @@ def find_exercises_in_handout(html, page_url):
         ex['id'] = slug = page_slug + slug
         exercises.append(Exercise(slug, page_url, tp, HANDOUT_GROUP))
 
+    for button in soup.select('.md-button'):
+        href = button.attrs['href']
+        if not href or href.startswith('vscode://'):
+            continue
+        relative_path = href.replace('index.md', '')
+        ex_path = str(Path(abs_path).parent / relative_path / 'meta.yml')
+        exercise = code_exercises_by_path.get(ex_path)
+        if exercise:
+            exercise.group = HANDOUT_GROUP
+
     new_html = str(soup)
     return exercises, new_html
 
 
 def post_exercises(exercises, token, report_url):
     if token == '':
-        return 
-    
+        return
+
     for exercise in exercises:
         try:
             st = requests.post(report_url, data=exercise.to_dict(), headers={

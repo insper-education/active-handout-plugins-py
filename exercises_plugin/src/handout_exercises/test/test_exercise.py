@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import yaml
 
-from ..exercise import CODE_TYPE, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, CodeExercise, Exercise, add_vscode_button, extract_topic, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
+from ..exercise import CODE_TYPE, EXTRA_GROUP, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, CodeExercise, Exercise, add_vscode_button, extract_topic, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
 from .html_utils import admonition, admonition_title, div, el, form, p, task_list, text_question
 
 
@@ -55,7 +55,7 @@ def test_find_code_exercises():
 
     assert len(exercises) == len(expected)
     for exercise, (slug, url, topic) in zip(exercises, expected):
-        assert_exercise(exercise, slug, url, CODE_TYPE, topic, HANDOUT_GROUP)
+        assert_exercise(exercise, slug, url, CODE_TYPE, topic, EXTRA_GROUP)
 
 
 def test_find_exercises_in_handout():
@@ -78,7 +78,7 @@ def test_find_exercises_in_handout():
             ])])
         ]),
     ])
-    exercises, new_html = find_exercises_in_handout(html, page_url)
+    exercises, new_html = find_exercises_in_handout(html, page_url, page_url, {})
     expected_exercises = [
         ('handouts-python-intro-0', QUIZ_TYPE),
         ('handouts-python-intro-some_long_and_unique_id', TEXT_TYPE),
