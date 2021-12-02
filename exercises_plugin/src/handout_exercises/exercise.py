@@ -61,7 +61,7 @@ class CodeExercise(Exercise):
 
     def _init_title(self):
         try:
-            with open(Path(self.meta_file.abs_src_path).parent / 'index.md') as f:
+            with open(Path(self.meta_file.abs_src_path).parent / 'index.md',encoding="utf-8" ) as f:
                 self.meta['title'] = get_title(f.read())
         except FileNotFoundError:
             return
@@ -247,7 +247,7 @@ def sorted_exercise_list(src_path, code_exercises_by_path):
 def replace_exercise_list(markdown, exercises, base_url):
     exercises_md = '\n'.join(
         [
-            f'- [[Nível {e.meta["difficulty"]}] {e.meta["title"]}]({base_url}{Path(e.url)})'
+            f'- [[Nível {e.meta["difficulty"]}] {e.meta["title"]}]({base_url}{Path(e.url)})'.replace ("\\","/")
             for e in exercises
         ]
     )
