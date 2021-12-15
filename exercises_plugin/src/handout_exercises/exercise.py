@@ -57,7 +57,9 @@ class CodeExercise(Exercise):
 
     def _init_title(self):
         try:
+
             with open(Path(self.meta_file.abs_src_path).parent / 'index.md', encoding='utf-8') as f:
+
                 self.meta['title'] = get_title(f.read())
         except FileNotFoundError:
             return
