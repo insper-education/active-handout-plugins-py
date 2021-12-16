@@ -135,6 +135,7 @@ def find_exercises_in_handout(html, page_url, abs_path, code_exercises_by_path):
             tp = TEXT_TYPE
 
         ex['id'] = slug = page_slug + slug
+        ex['data-pageslug'] = page_slug
         exercises.append(Exercise(slug, page_url, tp, HANDOUT_GROUP))
 
     for button in soup.select('.md-button'):
