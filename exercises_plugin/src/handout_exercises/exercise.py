@@ -5,10 +5,7 @@ import re
 from pathlib import Path
 from urllib.parse import quote_plus
 import yaml
-import subprocess
-import glob
 
-from . import github
 
 EXTRA_GROUP = 'extra'
 HANDOUT_GROUP = 'handout'
@@ -17,7 +14,6 @@ QUIZ_TYPE = 'QUIZ'
 TEXT_TYPE = 'TEXT'
 
 EXERCISE_LIST_REGEX = r'^\s*!!!\s*exercise-list\s*'
-GIT_SHORTLOG_REGEX = r'\d+\s*(.*)<(.*)>'
 
 IGNORED_FILES = ['meta.yml', '__pycache__', '.pytest_cache', 'index.md', 'raw']
 
@@ -54,16 +50,13 @@ class CodeExercise(Exercise):
                 self.meta['topic'] = self.topic
                 self.meta['offering'] = offering
             self._init_title()
-            self._get_authors()
             self._list_all_files()
         except FileNotFoundError:
             self.meta = None
-            
- def _init_title(self):
+
+    def _init_title(self):
         try:
-
             with open(Path(self.meta_file.abs_src_path).parent / 'index.md', encoding='utf-8') as f:
-
                 self.meta['title'] = get_title(f.read())
         except FileNotFoundError:
             return
@@ -214,16 +207,6 @@ def add_vscode_button(markdown, meta_file, base_url):
     vscode_button = f'[{button_text} {icon}]({full_url}){extra_classes}'
 
     return f'{markdown}\n\n{vscode_button}\n'
-
-
-def add_authors(page, exercise, project_root):
-    author_list = []
-    for name, email in exercise.authors:
-        author = github.retrieve_author(name, email, project_root)
-        author_list.append(author)
-        #  += f'![]({author.picture}){{: .contributor-picture }} [{author.name}](https://github.com/{author.username})\n\n'
-
-    page.meta['author_list'] = author_list
 
 
 def sorted_exercise_list(src_path, code_exercises_by_path):
