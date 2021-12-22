@@ -50,6 +50,8 @@ class CodeExercise(Exercise):
                 self.meta['topic'] = self.topic
                 self.meta['offering'] = offering
             self._init_title()
+            self.authors = []
+            self.__load_ignore_regex()
             self._list_all_files()
         except FileNotFoundError:
             self.meta = None
@@ -61,11 +63,26 @@ class CodeExercise(Exercise):
         except FileNotFoundError:
             return
 
+    def __load_ignore_regex(self):
+        current_folder = Path(self.meta_file.abs_src_path).parent
+        try:
+            with open(current_folder / '.ignore') as f:
+                ignore_regex_parts = [
+                    f'({s})' for s in f.readlines()
+                ]
+                self.ignore_regex = re.compile('|'.join(ignore_regex_parts))
+        except IOError:
+            self.ignore_regex = None
+
     def __ignore_file(self, relative):
         relative_parts = relative.parts
         for ign in IGNORED_FILES:
             if ign in relative_parts:
                 return True
+
+        if self.ignore_regex:
+            return re.match(self.ignore_regex, str(relative))
+
         return False
 
     def _list_all_files(self):

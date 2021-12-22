@@ -313,6 +313,36 @@ def test_ignore_files_in_meta(tmp_path):
         assert f in exercise.meta['files']
 
 
+def test_ignore_regex(tmp_path):
+    root = tmp_path
+    meta = {
+        'difficulty': 2,
+        'weight': 1,
+        'offering': 1,
+        'testFile': 'test_solution.py',
+        'studentFile': 'solution.py',
+    }
+    meta_filename = root / 'meta.yml'
+    with open(meta_filename, 'w') as f:
+        yaml.safe_dump(meta, f, encoding='utf-8', allow_unicode=True)
+
+    create_file(root / '.ignore', r'.*pyc\narquivo_errado\.py')
+    create_file(root / 'index.md', '# Hanoi\n\nSolve hanoi recursivelly.')
+    create_file(root / 'solution.py', 'print("Oh yes...")')
+    create_file(root / 'arquivo_errado.py', 'print("Oh yes...")')
+    create_file(root / 'solution.pyc', '')
+
+    slug = 'recursion-max_diff'
+    url = 'handouts/recursion/exercises/max_diff'
+    tp = CODE_TYPE
+    group = EXTRA_GROUP
+    exercise = CodeExercise(MockFile(root / 'meta.yml'), 1, slug, url, tp, group)
+
+    assert (root / 'arquivo_errado.py') not in exercise.meta['files']
+    assert (root / 'solution.pyc') not in exercise.meta['files']
+
+
+
 def test_auto_add_offering_to_meta(tmp_path):
     root = tmp_path / 'devlife-content/content/topics/recursion/exercises/hanoi'
     create_exercise_in_path(root)
