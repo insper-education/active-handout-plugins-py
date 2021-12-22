@@ -3,10 +3,6 @@ from mkdocs.plugins import BasePlugin
 import yaml
 
 
-CWD = Path(__file__).parent
-AUTHORS_DIR = CWD / '..' / '..' / '..' / 'content' / 'agradecimentos' / 'autores'
-
-
 def load_author(author_dir):
     try:
         with open(author_dir / 'meta.yml', encoding='utf-8') as f:
@@ -22,8 +18,8 @@ def load_author(author_dir):
         return None
 
 
-def load_authors():
-    author_dirs = [d for d in AUTHORS_DIR.iterdir() if d.is_dir()]
+def load_authors(authors_dir):
+    author_dirs = [d for d in authors_dir.iterdir() if d.is_dir()]
     authors = [load_author(d) for d in author_dirs]
     return sorted([a for a in authors if a], key=lambda a: a.get('name'))
 
@@ -31,7 +27,9 @@ def load_authors():
 class ListContributors(BasePlugin):
     def on_page_context(self, context, page, config, nav):
         if page.meta.get('template') == 'contributors.html':
-            context['authors'] = load_authors()
+            root_dir = Path(config['config_file_path']).parent
+            authors_dir = root_dir / 'content' / 'agradecimentos' / 'autores'
+            context['authors'] = load_authors(authors_dir)
         return context
 
 

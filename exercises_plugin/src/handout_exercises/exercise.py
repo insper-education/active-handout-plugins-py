@@ -178,14 +178,14 @@ def get_meta_for(page_file, files):
 
 def has_title(markdown):
     for line in markdown.split('\n'):
-        if line.startswith('# '):
+        if line.startswith('#'):
             return True
     return False
 
 
 def get_title(markdown):
     for line in markdown.split('\n'):
-        if line.startswith('# '):
+        if line.startswith('#'):
             return line[1:].strip()
     return None
 
