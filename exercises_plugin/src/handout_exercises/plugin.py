@@ -11,7 +11,6 @@ token = os.environ.get('REPORT_TOKEN', '')
 
 class FindExercises(BasePlugin):
     config_scheme = (
-        ('report_url', mkdocs.config.config_options.Type(str, default='')),
         ('offering_id', mkdocs.config.config_options.Type(int, default=-1)),
     )
 
@@ -45,6 +44,11 @@ class FindExercises(BasePlugin):
         return new_html
 
     def on_post_build(self, config):
-        post_exercises(self.pages_with_exercises, token, self.config['report_url'])
+        try:
+            report_url = config['extra']['ihandout_config']['report']['url']
+            post_exercises(self.pages_with_exercises, token, report_url)
+        except:
+            pass
+
         for exercise in self.code_exercises_by_path.values():
             exercise.save_meta()
