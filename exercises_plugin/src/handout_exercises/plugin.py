@@ -1,4 +1,3 @@
-from pathlib import Path
 from mkdocs.plugins import BasePlugin
 import mkdocs.config.config_options
 import os

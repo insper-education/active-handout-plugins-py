@@ -18,7 +18,7 @@ def text_question(title, question, answer_text, extra_classes=''):
 
 
 def answer(title, text):
-    return admonition('details', [
+    return admonition('answer', [
         admonition_title(title),
         p(text)
     ])

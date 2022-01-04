@@ -12,6 +12,8 @@ HANDOUT_GROUP = 'handout'
 CODE_TYPE = 'CODE'
 QUIZ_TYPE = 'QUIZ'
 TEXT_TYPE = 'TEXT'
+CSS_TYPE = 'CSS'
+SELF_ASSESS_TYPE = 'SELF'
 
 EXERCISE_LIST_REGEX = r'^\s*!!!\s*exercise-list\s*'
 
@@ -138,22 +140,32 @@ def find_exercises_in_handout(html, page_url, abs_path, code_exercises_by_path):
 
     soup = BeautifulSoup(html, 'html.parser')
     page_slug = page_url.replace('/', '-')
-    for idx, ex in enumerate(soup.select('.admonition.question')):
+    for idx, ex in enumerate(soup.select('.admonition.exercise')):
         slug = str(idx)
         for c in ex['class']:
             if c.startswith('id_'):
                 slug = c[3:]
                 break
 
-        tp = QUIZ_TYPE
         if 'css-exercise' in ex['class']:
-            tp = 'CSS'
+            tp = CSS_TYPE
         elif 'short' in ex['class'] or 'long' in ex['class']:
             tp = TEXT_TYPE
+        elif 'choice' in ex['class']:
+            tp = QUIZ_TYPE
+        else:
+            tp = SELF_ASSESS_TYPE
+
+        # Hide admonition until React component is loaded
+        ex['class'].append('hidden')
 
         ex['id'] = slug = page_slug + slug
         ex['data-pageslug'] = page_slug
         exercises.append(Exercise(slug, page_url, tp, HANDOUT_GROUP))
+
+    for ex in soup.select('.admonition.progress'):
+        # Hide admonition until React component is loaded
+        ex['class'].append('hidden')
 
     for button in soup.select('.md-button'):
         href = button.attrs['href']
@@ -164,6 +176,10 @@ def find_exercises_in_handout(html, page_url, abs_path, code_exercises_by_path):
         exercise = code_exercises_by_path.get(ex_path)
         if exercise:
             exercise.group = HANDOUT_GROUP
+            admonition = button.find_parent(class_='exercise')
+            if admonition:
+                admonition['class'].append('code-exercise')
+                admonition['id'] = exercise.slug
 
     new_html = str(soup)
     return exercises, new_html

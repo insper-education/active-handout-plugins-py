@@ -28,6 +28,7 @@ class LocalReport(BasePlugin):
     def on_config(self, config):
         site_url = config['site_url']
         if 'localhost' in site_url or '127.0.0.1' in site_url:
+            self.__replace_url_by_localhost_key(config, 'extra', 'ihandout_config', 'report', 'api-base')
             self.__replace_url_by_localhost_key(config, 'extra', 'ihandout_config', 'report', 'url')
             self.__replace_url_by_localhost_key(config, 'extra', 'ihandout_config', 'auth', 'url')
             self.__replace_url_by_localhost_key(config, 'extra', 'ihandout_config', 'auth', 'user-url')
