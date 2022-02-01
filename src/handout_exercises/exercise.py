@@ -5,6 +5,7 @@ import re
 from pathlib import Path
 from urllib.parse import quote_plus
 import yaml
+import json
 
 
 EXTRA_GROUP = 'extra'
@@ -57,6 +58,7 @@ class CodeExercise(Exercise):
             self._list_all_files()
         except FileNotFoundError:
             self.meta = None
+
 
     def _init_title(self):
         try:
@@ -196,6 +198,13 @@ def post_exercises(exercises, token, report_url):
             })
         except Exception:
             print("Couldn't post exercise", exercise)
+
+
+def export_exercises_file(exercises, site_dir):
+    all_exercises = [exercise.to_dict() for exercise in exercises]
+
+    with open(Path(site_dir) / 'exercises.json', 'w') as f:
+        json.dump(all_exercises, f)
 
 
 def get_meta_for(page_file, files):

@@ -2,7 +2,7 @@ from mkdocs.plugins import BasePlugin
 import mkdocs.config.config_options
 import os
 
-from .exercise import add_vscode_button, find_code_exercises, find_exercises_in_handout, is_exercise_list, get_meta_for, post_exercises, replace_exercise_list, sorted_exercise_list
+from .exercise import add_vscode_button, export_exercises_file, find_code_exercises, find_exercises_in_handout, is_exercise_list, get_meta_for, post_exercises, replace_exercise_list, sorted_exercise_list
 
 
 token = os.environ.get('REPORT_TOKEN', '')
@@ -18,7 +18,8 @@ class FindExercises(BasePlugin):
         self.code_exercises_by_path = {}
 
     def on_files(self, files, config):
-        code_exercises = find_code_exercises(files, self.config['offering_id'])
+        exercise_candidates = [f for f in files if not f.src_path.startswith('agradecimentos')]
+        code_exercises = find_code_exercises(exercise_candidates, self.config['offering_id'])
         self.pages_with_exercises.extend(code_exercises)
         self.code_exercises_by_path = {ex.meta_file.abs_src_path: ex for ex in code_exercises}
         return files
@@ -51,3 +52,5 @@ class FindExercises(BasePlugin):
 
         for exercise in self.code_exercises_by_path.values():
             exercise.save_meta()
+
+        export_exercises_file(self.pages_with_exercises, config['site_dir'])
