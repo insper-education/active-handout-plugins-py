@@ -1,3 +1,4 @@
+from handout_exercises.navigation import add_missing_nav_parents
 from mkdocs.plugins import BasePlugin
 import mkdocs.config.config_options
 import os
@@ -23,6 +24,9 @@ class FindExercises(BasePlugin):
         self.pages_with_exercises.extend(code_exercises)
         self.code_exercises_by_path = {ex.meta_file.abs_src_path: ex for ex in code_exercises}
         return files
+
+    def on_nav(self, nav, config, files):
+        return add_missing_nav_parents(nav, files)
 
     def on_page_markdown(self, markdown, page, config, files):
         if is_exercise_list(markdown):
