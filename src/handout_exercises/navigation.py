@@ -4,7 +4,7 @@ import os
 def add_path_pages_for_item(item, path2page):
     if hasattr(item, 'file'):
         src_path = item.file.src_path
-        parent_path = os.path.split(src_path)[0]
+        parent_path = os.path.dirname(src_path)
         path2page[parent_path] = item.parent
     if item.children:
         for child in item.children:
@@ -24,7 +24,7 @@ def find_parent(src_path, path2page):
 
     if src_path in path2page:
         return path2page[src_path]
-    parent_path = os.path.split(src_path)[0]
+    parent_path = os.path.dirname(src_path)
     return find_parent(parent_path, path2page)
 
 
