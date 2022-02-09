@@ -266,10 +266,12 @@ def sorted_exercise_list(src_path, code_exercises_by_path):
 def replace_exercise_list(markdown, exercises, base_url):
     exercises_md = '\n'.join(
         [
-            f'- [[Nível {e.meta["difficulty"]}] {e.meta["title"]}]({base_url}{Path(e.url)})'.replace ("\\","/")
+            f'<li class="exercise-list--item difficulty-{e.meta["difficulty"]}" data-slug="{e.meta["slug"]}"><a href="{base_url}{Path(e.url)}">{e.meta["title"]}</a></li>'.replace ("\\","/")
             for e in exercises
         ]
     )
+    if exercises_md.strip():
+        exercises_md = f'<ul class="exercise-list">\n{exercises_md}\n</ul>'
     return '\n'.join(
         re.sub(EXERCISE_LIST_REGEX, exercises_md, line)
         for line in markdown.split('\n')

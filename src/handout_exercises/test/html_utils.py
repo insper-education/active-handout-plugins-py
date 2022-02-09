@@ -10,7 +10,7 @@ def admonition_title(title):
 
 
 def text_question(title, question, answer_text, extra_classes=''):
-    return admonition(f'question {extra_classes}', [
+    return admonition(f'exercise {extra_classes}', [
         admonition_title(title),
         p(question),
         answer('Answer', answer_text)
@@ -24,11 +24,21 @@ def answer(title, text):
     ])
 
 
-def el(tag, children=None):
+def el(tag, children=None, extra_classes='', data={}):
     children_str = ''
     if children:
         children_str = '\n'.join(children)
-    return f'<{tag}>{children_str}</{tag}>'
+    
+
+    data_fields = ' '.join(
+        [f'data-{key}="{value}"' for (key, value) in data.items() ]
+    )
+    return f'<{tag} class="{extra_classes}" {data_fields}>{children_str}</{tag}>'
+
+
+def anchor(href, children):
+    children_str = '\n'.join(children)
+    return f'<a href="{href}">{children_str}</a>'
 
 
 def div(children=None):

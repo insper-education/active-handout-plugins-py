@@ -2,7 +2,8 @@ from bs4 import BeautifulSoup
 import yaml
 
 from ..exercise import CODE_TYPE, EXTRA_GROUP, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, CodeExercise, Exercise, add_vscode_button, extract_topic, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
-from .html_utils import admonition, admonition_title, div, el, form, p, task_list, text_question
+from .html_utils import admonition, admonition_title, div, el, form, p, task_list, text_question, anchor
+from xml.etree.ElementTree import canonicalize
 
 
 BASE_URL = 'http://localhost:8000/goat-cheese/'
@@ -62,7 +63,7 @@ def test_find_exercises_in_handout():
     page_url = 'handouts/python/intro/'
     html = el('html', [
         el('body', [
-            admonition('question choice', [
+            admonition('exercise choice', [
                 admonition_title('Question 1'),
                 p('Multiple choice'),
                 form([task_list(['a', 'b', 'c', 'd'], 'c is always right.')])
@@ -79,6 +80,7 @@ def test_find_exercises_in_handout():
         ]),
     ])
     exercises, new_html = find_exercises_in_handout(html, page_url, page_url, {})
+
     expected_exercises = [
         ('handouts-python-intro-0', QUIZ_TYPE),
         ('handouts-python-intro-some_long_and_unique_id', TEXT_TYPE),
@@ -87,7 +89,7 @@ def test_find_exercises_in_handout():
     ]
 
     soup = BeautifulSoup(new_html, 'html.parser')
-    html_questions = soup.select('.admonition.question')
+    html_questions = soup.select('.admonition.exercise')
 
     assert len(html_questions) == len(expected_exercises)
     assert len(exercises) == len(expected_exercises)
@@ -244,12 +246,25 @@ def test_replace_exercise_list():
         )
     ]
 
-    expected = f'''
-- [[Nível 2] Fibonacci]({BASE_URL}handouts/recursion/exercises/fibonacci)
-- [[Nível 3] Sum]({BASE_URL}handouts/recursion/exercises/sum)
-'''.strip()
-    assert expected in replace_exercise_list('!!! exercise-list', exercises, BASE_URL)
-    assert expected in replace_exercise_list('# Title\n\n!!! exercise-list\n\n', exercises, BASE_URL)
+    expected = canonicalize(el('ul', extra_classes="exercise-list", children=[
+        el('li', extra_classes=f'exercise-list--item difficulty-{ex.meta["difficulty"]}', data={
+            'slug': ex.slug
+        }, children=[
+            anchor(f'{BASE_URL}{ex.url}', children=[
+                ex.meta['title']
+            ])
+        ]) for ex in exercises
+    ]), strip_text=True)
+    
+    result_md_only_list = canonicalize(replace_exercise_list('!!! exercise-list', exercises, BASE_URL), strip_text=True)
+    assert expected == result_md_only_list
+
+    result_md_with_title = replace_exercise_list('# Title\n\n!!! exercise-list\n\n', exercises, BASE_URL)
+    soup = BeautifulSoup(result_md_with_title, 'html.parser')
+    lists = soup.select('.exercise-list')
+    assert len(lists) > 0
+    list_str = canonicalize(str(lists[0]), strip_text=True)
+    assert list_str == expected
 
 
 def test_extract_topic():
