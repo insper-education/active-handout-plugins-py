@@ -3,7 +3,7 @@ from mkdocs.plugins import BasePlugin
 import mkdocs.config.config_options
 import os
 
-from .exercise import add_vscode_button, export_exercises_file, find_code_exercises, find_exercises_in_handout, is_exercise_list, get_meta_for, post_exercises, replace_exercise_list, sorted_exercise_list
+from .exercise import enhance_exercise_md, export_exercises_file, find_code_exercises, find_exercises_in_handout, is_exercise_list, get_meta_for, post_exercises, replace_exercise_list, sorted_exercise_list
 
 
 token = os.environ.get('REPORT_TOKEN', '')
@@ -38,7 +38,8 @@ class FindExercises(BasePlugin):
 
         meta_file = get_meta_for(page.file, files)
         if meta_file:
-            return add_vscode_button(markdown, meta_file, config['site_url'])
+            exercise = self.code_exercises_by_path[meta_file.abs_src_path]
+            return enhance_exercise_md(exercise, markdown, meta_file, config['site_url'])
 
         return markdown
 

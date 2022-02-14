@@ -1,7 +1,7 @@
 from bs4 import BeautifulSoup
 import yaml
 
-from ..exercise import CODE_TYPE, EXTRA_GROUP, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, CodeExercise, Exercise, add_vscode_button, extract_topic, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
+from ..exercise import CODE_TYPE, EXTRA_GROUP, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, CodeExercise, Exercise, build_submission_list_admonition, build_vscode_button, enhance_exercise_md, extract_topic, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
 from .html_utils import admonition, admonition_title, div, el, form, p, task_list, text_question, anchor
 from xml.etree.ElementTree import canonicalize
 
@@ -138,7 +138,33 @@ def test_is_exercise_list():
                         assert is_exercise_list(markdown) == True
     assert is_exercise_list('!!! not-exercise-list') == False
 
-def test_add_vscode_button():
+
+def test_build_vscode_button():
+    meta_file = MockFile('handouts/recursion/exercises/fibonacci/meta.yml')
+    expected = f'[Resolver exercício :material-microsoft-visual-studio-code:](vscode://insper-comp.devlife/?exercise_addr=http%3A%2F%2Flocalhost%3A8000%2Fgoat-cheese%2Fhandouts%2Frecursion%2Fexercises%2Ffibonacci%2Fmeta.yml){{ .md-button .md-button--primary }}'
+    assert build_vscode_button(meta_file, BASE_URL) == expected
+
+
+def test_build_submission_list_admonition():
+    exercise = CodeExercise(
+        MockFile('meta.yml'),
+        1,
+        'recursion-exercises-depth_first_search',
+        '/recursion/exercises/depth_first_search',
+        CODE_TYPE, HANDOUT_GROUP
+    )
+    expected = '!!! submission-list hidden slug_recursion-exercises-depth_first_search\n    Submission list'
+    assert build_submission_list_admonition(exercise) == expected
+
+
+def test_enhance_exercise_md():
+    exercise = CodeExercise(
+        MockFile('meta.yml'),
+        1,
+        'recursion-exercises-depth_first_search',
+        '/recursion/exercises/depth_first_search',
+        CODE_TYPE, HANDOUT_GROUP
+    )
     original_md = '''
 # Exercise title
 
@@ -146,7 +172,7 @@ Exercise statement
 in multiple lines
 '''
     meta_file = MockFile('handouts/recursion/exercises/fibonacci/meta.yml')
-    output_md = add_vscode_button(original_md, meta_file, BASE_URL)
+    output_md = enhance_exercise_md(exercise, original_md, meta_file, BASE_URL)
     assert output_md == '''
 # Exercise title
 
@@ -155,6 +181,9 @@ in multiple lines
 
 
 [Resolver exercício :material-microsoft-visual-studio-code:](vscode://insper-comp.devlife/?exercise_addr=http%3A%2F%2Flocalhost%3A8000%2Fgoat-cheese%2Fhandouts%2Frecursion%2Fexercises%2Ffibonacci%2Fmeta.yml){ .md-button .md-button--primary }
+
+!!! submission-list hidden slug_recursion-exercises-depth_first_search
+    Submission list
 '''
 
 
@@ -255,7 +284,7 @@ def test_replace_exercise_list():
             ])
         ]) for ex in exercises
     ]), strip_text=True)
-    
+
     result_md_only_list = canonicalize(replace_exercise_list('!!! exercise-list', exercises, BASE_URL), strip_text=True)
     assert expected == result_md_only_list
 
