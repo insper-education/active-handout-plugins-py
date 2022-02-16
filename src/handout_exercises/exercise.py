@@ -239,7 +239,7 @@ def is_exercise_list(markdown):
     return False
 
 
-def add_vscode_button(markdown, meta_file, base_url):
+def build_vscode_button(meta_file, base_url):
     ext_url = 'vscode://insper-comp.devlife/'
     exercise_addr = quote_plus(f'{base_url}{meta_file.url}')
     full_url = f'{ext_url}?exercise_addr={exercise_addr}'
@@ -247,9 +247,18 @@ def add_vscode_button(markdown, meta_file, base_url):
     button_text = 'Resolver exercício'
     icon = ':material-microsoft-visual-studio-code:'
     extra_classes = '{ .md-button .md-button--primary }'
-    vscode_button = f'[{button_text} {icon}]({full_url}){extra_classes}'
+    return f'[{button_text} {icon}]({full_url}){extra_classes}'
 
-    return f'{markdown}\n\n{vscode_button}\n'
+
+def build_submission_list_admonition(exercise):
+    return f'!!! submission-list hidden slug_{exercise.slug}\n    Submission list'
+
+
+def enhance_exercise_md(exercise, markdown, meta_file, base_url):
+    vscode_button = build_vscode_button(meta_file, base_url)
+    submission_list_admonition = build_submission_list_admonition(exercise)
+
+    return f'{markdown}\n\n{vscode_button}\n\n{submission_list_admonition}\n'
 
 
 def sorted_exercise_list(src_path, code_exercises_by_path):
