@@ -3,6 +3,7 @@ import re
 from mkdocs.plugins import BasePlugin
 
 USE_LOCAL_JS = int(os.environ.get('USE_LOCAL_JS', '0'))
+USE_LOCAL_API = int(os.environ.get('USE_LOCAL_API', '0'))
 IGNORE_PATH = os.environ.get('IGNORE_PATH')
 
 class LocalReport(BasePlugin):
@@ -29,8 +30,7 @@ class LocalReport(BasePlugin):
             pass
 
     def on_config(self, config):
-        site_url = config['site_url']
-        if 'localhost' in site_url or '127.0.0.1' in site_url:
+        if USE_LOCAL_API:
             self.__replace_url_by_localhost_key(config, 'extra', 'ihandout_config', 'report', 'api-base')
             self.__replace_url_by_localhost_key(config, 'extra', 'ihandout_config', 'report', 'url')
             self.__replace_url_by_localhost_key(config, 'extra', 'ihandout_config', 'auth', 'email-password-url')
