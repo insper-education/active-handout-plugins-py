@@ -104,7 +104,7 @@ class CodeExercise(Exercise):
                 continue
 
     def save_meta(self):
-        with open(self.meta_file.abs_dest_path, 'w') as f:
+        with open(self.meta_file.abs_dest_path, 'w', encoding='utf-8') as f:
             yaml.safe_dump(self.meta, f, encoding='utf-8', allow_unicode=True)
 
 
