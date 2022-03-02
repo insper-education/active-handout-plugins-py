@@ -6,6 +6,7 @@ from pathlib import Path
 from urllib.parse import quote_plus
 import yaml
 import json
+import os.path as osp
 
 
 EXTRA_GROUP = 'extra'
@@ -108,7 +109,7 @@ class CodeExercise(Exercise):
 
 
 def extract_topic(url):
-    split_url = url.split('/')
+    split_url = url.split(osp.sep)
 
     ignored_folders = ['content', 'aulas']
     topic_folders = [d for d in split_url if d not in ignored_folders and d]
