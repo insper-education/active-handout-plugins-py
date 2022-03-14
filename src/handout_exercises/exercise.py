@@ -175,7 +175,12 @@ def find_exercises_in_handout(html, page_url, abs_path, code_exercises_by_path):
         if not href or href.startswith('vscode://'):
             continue
         relative_path = href.replace('index.md', '')
-        ex_path = str(Path(abs_path).parent / relative_path / 'meta.yml')
+        base_path = Path(abs_path)
+        if base_path.name == 'index.md':  # index.md is not rendered as part of the url, so it breaks the relative paths :(
+            base_path = base_path.parent
+        elif base_path.name.endswith('.md'):
+            base_path = base_path.parent / base_path.name.replace('.md', '/')
+        ex_path = str((base_path / relative_path / 'meta.yml').resolve())  # We need resolve() because we can't have relative paths in the middle
         exercise = code_exercises_by_path.get(ex_path)
         if exercise:
             exercise.group = HANDOUT_GROUP
