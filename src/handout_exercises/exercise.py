@@ -1,4 +1,3 @@
-from email.mime import base
 from bs4 import BeautifulSoup
 from pymdownx.slugs import slugify
 import requests
