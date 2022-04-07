@@ -19,7 +19,7 @@ SELF_ASSESS_TYPE = 'SELF'
 
 EXERCISE_LIST_REGEX = r'^\s*!!!\s*exercise-list\s*'
 
-IGNORED_FILES = ['meta.yml', '__pycache__', '.pytest_cache', 'index.md', 'raw']
+IGNORED_FILES = ['meta.yml', '__pycache__', '.pytest_cache', 'index.md', 'raw', '.ignore']
 
 
 class Exercise:
