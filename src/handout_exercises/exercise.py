@@ -73,7 +73,7 @@ class CodeExercise(Exercise):
         try:
             with open(current_folder / '.ignore') as f:
                 ignore_regex_parts = [
-                    f'({s})' for s in f.readlines()
+                    f'({s.strip()})' for s in f.readlines()
                 ]
                 self.ignore_regex = re.compile('|'.join(ignore_regex_parts))
         except IOError:
