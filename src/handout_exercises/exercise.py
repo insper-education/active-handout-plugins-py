@@ -7,7 +7,7 @@ from urllib.parse import quote_plus
 import yaml
 import json
 import os.path as osp
-
+import re
 
 EXTRA_GROUP = 'extra'
 HANDOUT_GROUP = 'handout'
@@ -143,8 +143,13 @@ def find_exercises_in_handout(html, page_url, abs_path, code_exercises_by_path):
 
     soup = BeautifulSoup(html, 'html.parser')
     page_slug = page_url.replace('/', '-')
+    if page_slug == '':
+        page_slug = 'main-'
+
     for idx, ex in enumerate(soup.select('.admonition.exercise')):
         slug = str(idx)
+        slug = slug + '-' + str(hash(re.sub(r"[\n\t\s]*", "", ex.text)))
+
         for c in ex['class']:
             if c.startswith('id_'):
                 slug = c[3:]
