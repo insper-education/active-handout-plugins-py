@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block extrahead %}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:700|Oxygen+Mono|Source+Sans+Pro:700|Source+Serif+Pro&amp;display=swap">
+<link rel="stylesheet" href="{{ 'assets/css/devlife.css'|url }}">
+
+{% if config.extra.ihandout_config %}
+    <script>
+        window.ihandout_config = JSON.parse(`{{ config.extra.ihandout_config|tojson|safe }}`);
+    </script>
+{% endif %}
+{% endblock %}
