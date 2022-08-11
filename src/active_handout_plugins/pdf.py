@@ -7,8 +7,8 @@ from .utils import AdmonitionVisitor
 class PdfAdmonition(AdmonitionVisitor):
     def visit(self, el):
         if not 'pdf' in el.attrib['class']:
-            return 
-        
+            return
+
         img_el = el.find("p/img")
         if img_el is not None:
             src = img_el.attrib['src']
