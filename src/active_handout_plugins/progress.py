@@ -12,16 +12,16 @@ class ProgressButtons(AdmonitionVisitor):
 
     def visit(self, el):
         if not 'progress' in el.attrib['class']:
-            return 
-        
+            return
+
         title_p = el.find("p[@class='admonition-title']")
 
         hs_code = html.escape("""
-on click 
-    add .show to the next <section/> 
+on click
+    add .show to the next <section/>
     hide me
     send remember(element: me) to window
-    halt 
+    halt
 end""")
 
         html_button = f'<a href="" id="prog-{self.count}" class="md-button md-button--primary progress" _="{hs_code}"> {title_p.text} </a>'
@@ -39,13 +39,19 @@ class SplitDocumentInSections(Treeprocessor):
             if 'class' in el.attrib and 'progress' in el.attrib['class']:
                 sections.append(current_section)
                 current_section = []
-        
+
         sections.append(current_section)
+<<<<<<< HEAD
         for i, section in enumerate(sections):
             sec_element = etree.SubElement(root, 'section')
             sec_element.attrib["class"] = "progress-section"
             if i == 0:
                 sec_element.attrib["class"] += " show"
+=======
+        for section in sections:
+            sec_element = etree.SubElement(root, 'section')
+            sec_element.attrib["class"] = "progress-section"
+>>>>>>> 872b22a (Add progress button using hyperscript)
             for el in section:
                 root.remove(el)
                 sec_element.append(el)
