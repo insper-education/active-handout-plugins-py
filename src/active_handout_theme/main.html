@@ -5,9 +5,24 @@
 <link rel="stylesheet" href="{{ 'assets/css/devlife.css'|url }}">
 <script src="https://unpkg.com/hyperscript.org"></script>
 
-{% if config.extra.ihandout_config %}
-    <script>
-        window.ihandout_config = JSON.parse(`{{ config.extra.ihandout_config|tojson|safe }}`);
-    </script>
-{% endif %}
+<script>
+    function keyFromElement(el) {
+        const docAddr = document.location.pathname;
+        return `${docAddr}/${el.id}`;
+    }
+
+    window.addEventListener("remember", function (e) {
+        localStorage[keyFromElement(e.detail.element)] = true;
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll("a.progress").forEach((e) => {
+            const k = keyFromElement(e);
+            if (localStorage.getItem(k) !== null) {
+                e.click();
+            }
+        });
+    });
+</script>
+
 {% endblock %}

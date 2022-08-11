@@ -6,6 +6,10 @@ from .utils import AdmonitionVisitor
 
 
 class ProgressButtons(AdmonitionVisitor):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self.count = 0
+
     def visit(self, el):
         if not 'progress' in el.attrib['class']:
             return 
@@ -16,12 +20,14 @@ class ProgressButtons(AdmonitionVisitor):
 on click 
     add .show to the next <section/> 
     hide me
-    halt the event
+    send remember(element: me) to window
+    halt 
 end""")
 
-        html_button = f'<a href="" class="md-button md-button--primary" _="{hs_code}"> {title_p.text} </a>'
+        html_button = f'<a href="" id="prog-{self.count}" class="md-button md-button--primary progress" _="{hs_code}"> {title_p.text} </a>'
         el.clear()
         el.append(etree.fromstring(html_button))
+        self.count += 1
 
 
 class SplitDocumentInSections(Treeprocessor):
