@@ -2,13 +2,9 @@ from markdown.treeprocessors import Treeprocessor
 import xml.etree.ElementTree as etree
 
 
-class ReplaceElementWith(Treeprocessor):
-    def __init__(self, pattern, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.pattern = pattern        
-
+class AdmonitionVisitor(Treeprocessor):
     def run(self, root):
-        for el in root.findall(self.pattern):
+        for el in root.findall(".//p[@class='admonition-title']/.."):
             self.visit(el)
 
     def visit(self, el):

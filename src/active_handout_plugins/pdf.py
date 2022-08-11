@@ -2,13 +2,13 @@ from markdown.treeprocessors import Treeprocessor
 import xml.etree.ElementTree as etree
 import re
 
-from .utils import ReplaceElementWith
+from .utils import AdmonitionVisitor
 
-class PdfAdmonition(ReplaceElementWith):
-    def __init__(self, *args, **kwargs):
-        super().__init__("div[@class='admonition pdf']", *args, **kwargs)
-
+class PdfAdmonition(AdmonitionVisitor):
     def visit(self, el):
+        if not 'pdf' in el.attrib['class']:
+            return 
+        
         img_el = el.find("p/img")
         if not img_el is None:
             src = img_el.attrib['src']
