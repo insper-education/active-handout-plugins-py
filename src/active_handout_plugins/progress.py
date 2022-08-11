@@ -41,17 +41,11 @@ class SplitDocumentInSections(Treeprocessor):
                 current_section = []
 
         sections.append(current_section)
-<<<<<<< HEAD
         for i, section in enumerate(sections):
             sec_element = etree.SubElement(root, 'section')
             sec_element.attrib["class"] = "progress-section"
             if i == 0:
                 sec_element.attrib["class"] += " show"
-=======
-        for section in sections:
-            sec_element = etree.SubElement(root, 'section')
-            sec_element.attrib["class"] = "progress-section"
->>>>>>> 872b22a (Add progress button using hyperscript)
             for el in section:
                 root.remove(el)
                 sec_element.append(el)
