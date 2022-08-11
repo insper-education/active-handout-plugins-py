@@ -636,3 +636,13 @@ hr.content-footer-sep {
   }
 }
 /* End contributors */
+
+
+
+section.progress-section {
+  display: none;
+}
+
+.md-content section.progress-section:first-child, .md-content section.progress-section.show {
+  display: block;
+} 
