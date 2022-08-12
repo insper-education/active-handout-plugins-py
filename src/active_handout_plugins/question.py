@@ -28,9 +28,9 @@ class QuestionAdmonition(AdmonitionVisitor):
         for child in el:
             if child == title or child == answer or child == submission_form:
                 continue
-            
+
             content.append(child)
-        
+
         for par in content:
             el.remove(par)
             submission_form.append(par)
@@ -63,7 +63,7 @@ class QuestionAdmonition(AdmonitionVisitor):
         hs_code = '''
 on submit
     halt the event
-    if <.answer/> 
+    if <.answer/>
         show the <.answer/> in me
     end
     add @disabled to <input/> in me
@@ -74,7 +74,7 @@ end
         '''
         submission_form.set('_', hs_code)
         self.__add_question_form_elements(el, submission_form)
-    
+
     def create_question_form(self, el, submission_form):
         return ''
 
@@ -82,7 +82,7 @@ end
 class ChoiceQuestion(QuestionAdmonition):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__('question', ['choice'], *args, **kwargs)
-    
+
     def create_question_form(self, el, submission_form):
         choice_list = submission_form.find(".//ul[@class='task-list']")
         choices = submission_form.findall(".//ul[@class='task-list']/li")
@@ -95,7 +95,7 @@ class ChoiceQuestion(QuestionAdmonition):
         html_elements += '<input type="submit" name="sendButton" value="Enviar"/>'
 
         return html_elements
-        
+
 
 class TextQuestion(QuestionAdmonition):
     def __init__(self, *args, **kwargs) -> None:
@@ -113,4 +113,4 @@ class TextQuestion(QuestionAdmonition):
 
 <input type="submit" value="Enviar"/>
 '''
-    
+
