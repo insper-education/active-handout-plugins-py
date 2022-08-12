@@ -41,9 +41,11 @@ class SplitDocumentInSections(Treeprocessor):
                 current_section = []
         
         sections.append(current_section)
-        for section in sections:
+        for i, section in enumerate(sections):
             sec_element = etree.SubElement(root, 'section')
             sec_element.attrib["class"] = "progress-section"
+            if i == 0:
+                sec_element.attrib["class"] += " show"
             for el in section:
                 root.remove(el)
                 sec_element.append(el)
