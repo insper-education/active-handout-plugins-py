@@ -8,7 +8,6 @@ class AdmonitionVisitor(Treeprocessor):
         classes_found = [cls for cls in el_classes if cls in classes_to_search]
         if len(classes_found) > 0:
             return classes_found[0]
-
         return None
 
     def run(self, root):
