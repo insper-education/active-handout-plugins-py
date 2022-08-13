@@ -1,5 +1,6 @@
 from markdown import Extension
 
+from .exercise import ExerciseAdmonition
 from .question import ChoiceQuestion, TextQuestion
 from .progress import ProgressButtons, SplitDocumentInSections
 from .counter import CounterProcessor
@@ -19,4 +20,5 @@ class ActiveHandoutExtension(Extension):
         md.treeprocessors.register(ProgressButtons(md), 'progress', 15)
         md.treeprocessors.register(TextQuestion(md), 'text-questions', 15)
         md.treeprocessors.register(ChoiceQuestion(md), 'choice-questions', 15)
+        md.treeprocessors.register(ExerciseAdmonition(md), 'exercise-questions', 15)
         md.treeprocessors.register(SplitDocumentInSections(md), 'sections', 16)
