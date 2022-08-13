@@ -30,23 +30,6 @@ class QuestionAdmonition(AdmonitionVisitor):
                 continue
 
             content.append(child)
-<<<<<<< HEAD
-=======
-        
-        submission_form = etree.SubElement(el, 'form')
-        hs_code = '''
-on submit
-    halt the event
-    if <.answer/> 
-        show the <.answer/> in me
-    end
-    add @disabled to <input/> in me
-    hide the <input[type="submit"]/> in me
-    send remember(element: me) to window
-end
-        '''
-        submission_form.set('_', hs_code)
->>>>>>> e209e6d (Allow questions without answer)
 
         for par in content:
             el.remove(par)
@@ -99,7 +82,6 @@ end
 class ChoiceQuestion(QuestionAdmonition):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__('question', ['choice'], *args, **kwargs)
-
     def create_question_form(self, el, submission_form):
         choice_list = submission_form.find(".//ul[@class='task-list']")
         choices = submission_form.findall(".//ul[@class='task-list']/li")
