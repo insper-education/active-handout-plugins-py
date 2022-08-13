@@ -20,11 +20,13 @@
             }
         });
 
-        document.querySelectorAll("div.admonition.question.short").forEach((e) => {
+        document.querySelectorAll("div.admonition.question.short, " +
+                                  "div.admonition.question.medium, " + 
+                                  "div.admonition.question.long").forEach((e) => {
             const k = keyFromElement(e);
             const itemValue = localStorage.getItem(k);
             if (itemValue !== null) {
-                e.querySelector("input[name='data']").value = itemValue;
+                e.querySelector("input[name='data'], textarea[name='data']").value = itemValue;
                 e.querySelector("input[type='submit']").click();
             }
         });
@@ -52,10 +54,12 @@
                             localStorage[keyFromElement(element.parentElement)] = choice.value;        
                         }
                     }
-                } else if (parentElement.classList.contains("short")) {
-                    const textElement = element.querySelector("input[name='data']");
+                } else if (parentElement.classList.contains("short") ||
+                           parentElement.classList.contains("medium") ||
+                           parentElement.classList.contains("long")) {
+                    const textElement = element.querySelector("input[name='data'], textarea[name='data']");
                     localStorage[keyFromElement(element.parentElement)] = textElement.value;
-                }            
+                }           
             } 
         });
     });

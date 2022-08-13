@@ -3,23 +3,24 @@ from .utils import AdmonitionVisitor
 
 
 class QuestionAdmonition(AdmonitionVisitor):
-    def __init__(self, classes, *args, **kwargs) -> None:
+    def __init__(self, base_class, subclasses, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.classes = classes
+        self.subclasses = subclasses
+        self.base_class = base_class
         self.counter = 0
 
     def visit(self, el):
-        if 'question' not in el.attrib['class']:
+        if self.base_class not in el.attrib['class']:
             return
 
-        cls = self.has_class(el, self.classes)
-        
-        if not cls:
-            return
+        cls = self.base_class
+        if self.subclasses:
+            cls = self.has_class(el, self.subclasses)
+            if not cls:
+                return
 
         self.counter += 1
         el.set("id", f"{cls}-{self.counter}")
-
         classes = el.attrib['class'].split()
         for c in classes:
             if c.startswith('id_'):
@@ -46,6 +47,7 @@ on submit
         show the <.answer/> in me
     end
     add @disabled to <input/> in me
+    add .done to me
     hide the <input[type="submit"]/> in me
     send remember(element: me) to window
 end
@@ -71,7 +73,7 @@ end
 
 class ChoiceQuestion(QuestionAdmonition):
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(['choice'], *args, **kwargs)
+        super().__init__('question', ['choice'], *args, **kwargs)
     
     def create_question_form(self, el, submission_form):
         choice_list = submission_form.find(".//ul[@class='task-list']")
@@ -89,13 +91,13 @@ class ChoiceQuestion(QuestionAdmonition):
 
 class TextQuestion(QuestionAdmonition):
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__(['short', 'medium', 'long'], *args, **kwargs)
+        super().__init__('question', ['short', 'medium', 'long'], *args, **kwargs)
 
     def create_question_form(self, el, submission_form):
         if self.has_class(el, 'short'):
             text_widget = '<input type="text" value="" name="data"/>'
         elif self.has_class(el, 'medium'):
-            text_widget = '<input type="text" value="" name="data"/>'
+            text_widget = '<textarea name="data"></textarea>'
         if self.has_class(el, 'long'):
             text_widget = '<textarea name="data"></textarea>'
         return f'''
