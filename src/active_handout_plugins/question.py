@@ -90,8 +90,14 @@ class TextQuestion(QuestionAdmonition):
         super().__init__(['short', 'medium', 'long'], *args, **kwargs)
 
     def create_question_form(self, el, submission_form):
+        if self.has_class(el, 'short'):
+            text_widget = '<input type="text" value="" name="data"/>'
+        elif self.has_class(el, 'medium'):
+            text_widget = '<input type="text" value="" name="data"/>'
+        if self.has_class(el, 'long'):
+            text_widget = '<textarea name="data"></textarea>'
         return f'''
-<input type="text" value="" name="data"/>
+{text_widget}
 
 <input type="submit" value="Enviar"/>
 '''
