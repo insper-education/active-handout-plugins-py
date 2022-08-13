@@ -20,6 +20,12 @@ class QuestionAdmonition(AdmonitionVisitor):
         self.counter += 1
         el.set("id", f"{cls}-{self.counter}")
 
+        classes = el.attrib['class'].split()
+        for c in classes:
+            if c.startswith('id_'):
+                el.set("id", c[3:])
+                el.attrib['class'] = el.attrib['class'].replace(c, '')
+
         title = el.find('p/[@class="admonition-title"]')
         answer = el.find('.//div[@class="admonition answer"]')
         if answer:
