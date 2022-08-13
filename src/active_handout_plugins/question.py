@@ -6,13 +6,19 @@ class QuestionAdmonition(AdmonitionVisitor):
     def __init__(self, classes, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.classes = classes
+        self.counter = 0
 
     def visit(self, el):
         if 'question' not in el.attrib['class']:
             return
+
+        cls = self.has_class(el, self.classes)
         
-        if not self.has_class(el, self.classes):
+        if not cls:
             return
+
+        self.counter += 1
+        el.set("id", f"{cls}-{self.counter}")
 
         title = el.find('p/[@class="admonition-title"]')
         answer = el.find('.//div[@class="admonition answer"]')
@@ -68,7 +74,7 @@ class ChoiceQuestion(QuestionAdmonition):
         for i, choice in enumerate(choices):
             end = choice.text.find('\x03')
             html_elements += f'<label><input type="radio" name="data" value="{i}"> {choice.text[end:]}  </label>\n'
-        html_elements += '<input type="submit" value="Enviar"/>'
+        html_elements += '<input type="submit" name="sendButton" value="Enviar"/>'
 
         return html_elements
         
