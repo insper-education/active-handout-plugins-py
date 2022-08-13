@@ -21,7 +21,7 @@
         });
 
         document.querySelectorAll("div.admonition.question.short, " +
-                                  "div.admonition.question.medium, " + 
+                                  "div.admonition.question.medium, " +
                                   "div.admonition.question.long").forEach((e) => {
             const k = keyFromElement(e);
             const itemValue = localStorage.getItem(k);
@@ -40,6 +40,13 @@
             }
         });
 
+        document.querySelectorAll("div.admonition.exercise").forEach(e => {
+            const k = keyFromElement(e);
+            const itemValue = localStorage.getItem(k);
+            if (itemValue !== null) {
+                e.querySelector("input[type='submit']").click();
+            }
+        });
 
         window.addEventListener("remember", function (e) {
             const element = e.detail.element;
@@ -51,7 +58,7 @@
                     const choices = element.querySelectorAll("input[name='data'][type='radio']");
                     for (let choice of choices) {
                         if (choice.checked) {
-                            localStorage[keyFromElement(element.parentElement)] = choice.value;        
+                            localStorage[keyFromElement(element.parentElement)] = choice.value;
                         }
                     }
                 } else if (parentElement.classList.contains("short") ||
@@ -59,8 +66,10 @@
                            parentElement.classList.contains("long")) {
                     const textElement = element.querySelector("input[name='data'], textarea[name='data']");
                     localStorage[keyFromElement(element.parentElement)] = textElement.value;
-                }           
-            } 
+                } else if (parentElement.classList.contains("exercise")) {
+                    localStorage[keyFromElement(parentElement)] = true;
+                }
+            }
         });
     });
 </script>
