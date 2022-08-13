@@ -30,6 +30,23 @@ class QuestionAdmonition(AdmonitionVisitor):
                 continue
 
             content.append(child)
+<<<<<<< HEAD
+=======
+        
+        submission_form = etree.SubElement(el, 'form')
+        hs_code = '''
+on submit
+    halt the event
+    if <.answer/> 
+        show the <.answer/> in me
+    end
+    add @disabled to <input/> in me
+    hide the <input[type="submit"]/> in me
+    send remember(element: me) to window
+end
+        '''
+        submission_form.set('_', hs_code)
+>>>>>>> e209e6d (Allow questions without answer)
 
         for par in content:
             el.remove(par)
