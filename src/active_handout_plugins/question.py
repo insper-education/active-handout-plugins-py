@@ -42,7 +42,9 @@ class QuestionAdmonition(AdmonitionVisitor):
         hs_code = '''
 on submit
     halt the event
-    show the <.answer/> in me
+    if <.answer/> 
+        show the <.answer/> in me
+    end
     add @disabled to <input/> in me
     hide the <input[type="submit"]/> in me
     send remember(element: me) to window
