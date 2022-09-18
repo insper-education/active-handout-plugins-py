@@ -6,6 +6,8 @@ from .progress import ProgressButtons, SplitDocumentInSections
 from .counter import CounterProcessor
 from .video import VideoAdmonition
 from .pdf import PdfAdmonition
+from .parsons import ParsonsQuestion
+
 
 class ActiveHandoutExtension(Extension):
     """ Admonition extension for Python-Markdown. """
@@ -21,4 +23,5 @@ class ActiveHandoutExtension(Extension):
         md.treeprocessors.register(TextQuestion(md), 'text-questions', 15)
         md.treeprocessors.register(ChoiceQuestion(md), 'choice-questions', 15)
         md.treeprocessors.register(ExerciseAdmonition(md), 'exercise-questions', 15)
+        md.treeprocessors.register(ParsonsQuestion(md), 'parsons-questions', 1)
         md.treeprocessors.register(SplitDocumentInSections(md), 'sections', 16)
