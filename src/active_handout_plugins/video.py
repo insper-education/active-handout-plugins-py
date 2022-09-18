@@ -14,7 +14,7 @@ class VideoAdmonition(AdmonitionVisitor):
             return 
         
         img_el = el.find("p/img")
-        if not img_el is None:
+        if img_el is not None:
             src = img_el.attrib['src']
             m = self.re.match(src)
             if m:

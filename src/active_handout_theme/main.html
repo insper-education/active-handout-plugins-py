@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 
 {% block extrahead %}
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:700|Oxygen+Mono|Source+Sans+Pro:700|Source+Serif+Pro&amp;display=swap">
+<link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:700|Oxygen+Mono|Source+Sans+Pro:700|Source+Serif+Pro&amp;display=swap">
 <link rel="stylesheet" href="{{ 'assets/css/devlife.css'|url }}">
 
 <script type="text/x-mathjax-config">
@@ -12,81 +13,11 @@
       }
     });
   </script>
-      
-  <script type="text/javascript"
-          src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
-  </script>
-  
+<script type="text/javascript"
+    src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
 <script src="https://unpkg.com/hyperscript.org"></script>
 <script src="https://unpkg.com/htmx.org@1.8.0"></script>
-
-<script>
-    function keyFromElement(el) {
-        const docAddr = document.location.pathname;
-        return `${docAddr}/${el.id}`;
-    }
-
-    document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll("a.progress").forEach((e) => {
-            const k = keyFromElement(e);
-            if (localStorage.getItem(k) !== null) {
-                e.click();
-            }
-        });
-
-        document.querySelectorAll("div.admonition.question.short, " +
-                                  "div.admonition.question.medium, " +
-                                  "div.admonition.question.long").forEach((e) => {
-            const k = keyFromElement(e);
-            const itemValue = localStorage.getItem(k);
-            if (itemValue !== null) {
-                e.querySelector("input[name='data'], textarea[name='data']").value = itemValue;
-                e.querySelector("input[type='submit']").click();
-            }
-        });
-
-        document.querySelectorAll("div.admonition.question.choice").forEach((e) => {
-            const k = keyFromElement(e);
-            const itemValue = localStorage.getItem(k);
-            if (itemValue !== null) {
-                e.querySelector(`input[name='data'][value='${itemValue}'`).checked = true;
-                e.querySelector("input[type='submit']").click();
-            }
-        });
-
-        document.querySelectorAll("div.admonition.exercise").forEach(e => {
-            const k = keyFromElement(e);
-            const itemValue = localStorage.getItem(k);
-            if (itemValue !== null) {
-                e.querySelector("input[type='submit']").click();
-            }
-        });
-
-        window.addEventListener("remember", function (e) {
-            const element = e.detail.element;
-            if (element.classList.contains("progress")) {
-                localStorage[keyFromElement(e.detail.element)] = true;
-            } else if (element.tagName === "FORM") {
-                const parentElement = element.parentElement;
-                if (parentElement.classList.contains("choice")) {
-                    const choices = element.querySelectorAll("input[name='data'][type='radio']");
-                    for (let choice of choices) {
-                        if (choice.checked) {
-                            localStorage[keyFromElement(element.parentElement)] = choice.value;
-                        }
-                    }
-                } else if (parentElement.classList.contains("short") ||
-                           parentElement.classList.contains("medium") ||
-                           parentElement.classList.contains("long")) {
-                    const textElement = element.querySelector("input[name='data'], textarea[name='data']");
-                    localStorage[keyFromElement(element.parentElement)] = textElement.value;
-                } else if (parentElement.classList.contains("exercise")) {
-                    localStorage[keyFromElement(parentElement)] = true;
-                }
-            }
-        });
-    });
-</script>
+<script src="{{ 'assets/js/main.js' | url }}"></script>
 
 {% endblock %}

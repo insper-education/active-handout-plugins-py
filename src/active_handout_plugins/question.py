@@ -9,6 +9,44 @@ class QuestionAdmonition(AdmonitionVisitor):
         self.base_class = base_class
         self.counter = 0
 
+    def __set_element_id(self, el, cls):
+        self.counter += 1
+        el.set("id", f"{cls}-{self.counter}")
+        classes = el.attrib['class'].split()
+        for c in classes:
+            if c.startswith('id_'):
+                el.set("id", c[3:])
+                el.attrib['class'] = el.attrib['class'].replace(c, '')
+
+    def __add_question_description(self, el, submission_form):
+        title = el.find('p/[@class="admonition-title"]')
+        answer = el.find('.//div[@class="admonition answer"]')
+        if answer:
+            answer.attrib['style'] = 'display: none;'
+
+        content = []
+        for child in el:
+            if child == title or child == answer or child == submission_form:
+                continue
+            
+            content.append(child)
+        
+        for par in content:
+            el.remove(par)
+            submission_form.append(par)
+
+    def __add_question_form_elements(self, el, submission_form):
+        form_elements = etree.SubElement(submission_form, 'div')
+        form_elements.set("class", "form-elements")
+        html_elements = self.create_question_form(el, submission_form)
+        form_elements.text = self.md.htmlStash.store(html_elements)
+
+        answer = el.find('.//div[@class="admonition answer"]')
+        if answer:
+            el.remove(answer)
+            submission_form.append(answer)
+
+
     def visit(self, el):
         if self.base_class not in el.attrib['class']:
             return
@@ -19,27 +57,9 @@ class QuestionAdmonition(AdmonitionVisitor):
             if not cls:
                 return
 
-        self.counter += 1
-        el.set("id", f"{cls}-{self.counter}")
-        classes = el.attrib['class'].split()
-        for c in classes:
-            if c.startswith('id_'):
-                el.set("id", c[3:])
-                el.attrib['class'] = el.attrib['class'].replace(c, '')
-
-        title = el.find('p/[@class="admonition-title"]')
-        answer = el.find('.//div[@class="admonition answer"]')
-        if answer:
-            answer.attrib['style'] = 'display: none;'
-
-        content = []
-        for child in el:
-            if child == title or child == answer:
-                continue
-            
-            content.append(child)
-        
+        self.__set_element_id(el, cls)
         submission_form = etree.SubElement(el, 'form')
+        self.__add_question_description(el, submission_form)
         hs_code = '''
 on submit
     halt the event
@@ -49,23 +69,11 @@ on submit
     add @disabled to <input/> in me
     add .done to me
     hide the <input[type="submit"]/> in me
-    send remember(element: me) to window
+    send remember(element: my parentElement) to window
 end
         '''
         submission_form.set('_', hs_code)
-
-        for par in content:
-            el.remove(par)
-            submission_form.append(par)
-
-        form_elements = etree.SubElement(submission_form, 'div')
-        form_elements.set("class", "form-elements")
-        html_elements = self.create_question_form(el, submission_form)
-        form_elements.text = self.md.htmlStash.store(html_elements)
-
-        if answer:
-            el.remove(answer)
-            submission_form.append(answer)
+        self.__add_question_form_elements(el, submission_form)
     
     def create_question_form(self, el, submission_form):
         return ''

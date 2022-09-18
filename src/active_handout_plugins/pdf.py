@@ -10,7 +10,7 @@ class PdfAdmonition(AdmonitionVisitor):
             return 
         
         img_el = el.find("p/img")
-        if not img_el is None:
+        if img_el is not None:
             src = img_el.attrib['src']
             html = f'<center><embed width="80%" height="300" type="application/pdf" src="{src}" /></center>'
             pdf_el = etree.fromstring(html)
