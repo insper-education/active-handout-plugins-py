@@ -30,7 +30,6 @@ class QuestionAdmonition(AdmonitionVisitor):
                 continue
 
             content.append(child)
-
         for par in content:
             el.remove(par)
             submission_form.append(par)
@@ -74,7 +73,6 @@ end
         '''
         submission_form.set('_', hs_code)
         self.__add_question_form_elements(el, submission_form)
-
     def create_question_form(self, el, submission_form):
         return ''
 
