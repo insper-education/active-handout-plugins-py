@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-VERSION = '0.2'
+VERSION = '0.3b3'
 
 with open("requirements.txt") as data:
     install_requires = [
@@ -16,14 +16,15 @@ setup(
     description="MkDocs customizations for Insper's active handouts",
     author='Igor Montagner',
     author_email='igordsm@gmail.com',
-    packages=find_packages(),
+    packages=find_packages('src'),
     package_dir={'': 'src'},
     include_package_data=True,
     install_requires=install_requires,
     entry_points={
         'mkdocs.themes': [
             'active-handout-theme = active_handout_theme',
-        ]
+        ],
+        'markdown.extensions': ['active-handout-plugins = active_handout_plugins:ActiveHandoutExtension']
     },
     zip_safe=False
 )
