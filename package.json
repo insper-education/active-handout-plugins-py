@@ -1,0 +1,22 @@
+{
+  "name": "active-handout",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "targets": {
+    "javascript": {
+      "source": "./src/active_handout_theme/assets_src/js/main.js",
+      "distDir": "./src/active_handout_theme/assets/js"
+    },
+    "css": {
+      "source": "./src/active_handout_theme/assets_src/scss/main.scss",
+      "distDir": "./src/active_handout_theme/assets/css"
+    }
+  },
+  "scripts": {
+    "start": "parcel watch",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "2.7.0",
+    "parcel": "^2.7.0"
+  }
+}

@@ -142,14 +142,14 @@
       this[globalName] = mainExports;
     }
   }
-})({"peJOI":[function(require,module,exports) {
+})({"1csOT":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = 1234;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "916932b22e4085ab";
-module.bundle.HMR_BUNDLE_ID = "798eea0f2d73b3df";
+module.bundle.HMR_BUNDLE_ID = "efa96c9ba4a697aa";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
   HMRAsset,
@@ -531,111 +531,55 @@ function hmrAcceptRun(bundle, id) {
     acceptedAssets[id] = true;
 }
 
-},{}],"5Y4Tf":[function(require,module,exports) {
-require("e8ef4a4a1a97e52f");
-
-},{"e8ef4a4a1a97e52f":"5H0Ul"}],"5H0Ul":[function(require,module,exports) {
-module.exports = require("./helpers/browser/js-loader")(require("./helpers/bundle-url").getBundleURL("ar3cX") + "active-handout.a4a697aa.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("ecP4v"));
-
-},{"./helpers/browser/js-loader":"3dDkg","./helpers/bundle-url":"jkqJ4"}],"3dDkg":[function(require,module,exports) {
-"use strict";
-var cacheLoader = require("../cacheLoader");
-module.exports = cacheLoader(function(bundle) {
-    return new Promise(function(resolve, reject) {
-        // Don't insert the same script twice (e.g. if it was already in the HTML)
-        var existingScripts = document.getElementsByTagName("script");
-        if ([].concat(existingScripts).some(function isCurrentBundle(script) {
-            return script.src === bundle;
-        })) {
-            resolve();
-            return;
+},{}],"ecP4v":[function(require,module,exports) {
+function keyFromElement(el) {
+    const docAddr = document.location.pathname;
+    return `${docAddr}/${el.id}`;
+}
+function saveAndSendData(key, value) {
+    localStorage[key] = value;
+    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
+// TODO: fetch POST with token
+}
+document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("a.progress").forEach((e)=>{
+        const k = keyFromElement(e);
+        if (localStorage.getItem(k) !== null) e.click();
+    });
+    document.querySelectorAll("div.admonition.question.short, div.admonition.question.medium, div.admonition.question.long").forEach((e)=>{
+        const k = keyFromElement(e);
+        const itemValue = localStorage.getItem(k);
+        if (itemValue !== null) {
+            e.querySelector("input[name='data'], textarea[name='data']").value = itemValue;
+            e.querySelector("input[type='submit']").click();
         }
-        var preloadLink = document.createElement("link");
-        preloadLink.href = bundle;
-        preloadLink.rel = "preload";
-        preloadLink.as = "script";
-        document.head.appendChild(preloadLink);
-        var script = document.createElement("script");
-        script.async = true;
-        script.type = "text/javascript";
-        script.src = bundle;
-        script.onerror = function(e) {
-            var error = new TypeError("Failed to fetch dynamically imported module: ".concat(bundle, ". Error: ").concat(e.message));
-            script.onerror = script.onload = null;
-            script.remove();
-            reject(error);
-        };
-        script.onload = function() {
-            script.onerror = script.onload = null;
-            resolve();
-        };
-        document.getElementsByTagName("head")[0].appendChild(script);
+    });
+    document.querySelectorAll("div.admonition.question.choice").forEach((e)=>{
+        const k = keyFromElement(e);
+        const itemValue = localStorage.getItem(k);
+        if (itemValue !== null) {
+            e.querySelector(`input[name='data'][value='${itemValue}'`).checked = true;
+            e.querySelector("input[type='submit']").click();
+        }
+    });
+    document.querySelectorAll("div.admonition.exercise").forEach((e)=>{
+        const k = keyFromElement(e);
+        const itemValue = localStorage.getItem(k);
+        if (itemValue !== null) e.querySelector("input[type='submit']").click();
+    });
+    window.addEventListener("remember", function(e) {
+        const element = e.detail.element;
+        if (element.classList.contains("progress")) saveAndSendData(keyFromElement(element), true);
+        else if (element.classList.contains("choice")) {
+            const choices = element.querySelectorAll("input[name='data'][type='radio']");
+            for (let choice of choices)if (choice.checked) saveAndSendData(keyFromElement(element), choice.value);
+        } else if (element.classList.contains("short") || element.classList.contains("medium") || element.classList.contains("long")) {
+            const textElement = element.querySelector("input[name='data'], textarea[name='data']");
+            saveAndSendData(keyFromElement(element), textElement.value);
+        } else if (element.classList.contains("exercise")) saveAndSendData(keyFromElement(element), true);
     });
 });
 
-},{"../cacheLoader":"khH0r"}],"khH0r":[function(require,module,exports) {
-"use strict";
-var cachedBundles = {};
-var cachedPreloads = {};
-var cachedPrefetches = {};
-function getCache(type) {
-    switch(type){
-        case "preload":
-            return cachedPreloads;
-        case "prefetch":
-            return cachedPrefetches;
-        default:
-            return cachedBundles;
-    }
-}
-module.exports = function(loader, type) {
-    return function(bundle) {
-        var cache = getCache(type);
-        if (cache[bundle]) return cache[bundle];
-        return cache[bundle] = loader.apply(null, arguments).catch(function(e) {
-            delete cache[bundle];
-            throw e;
-        });
-    };
-};
+},{}]},["1csOT"], null, "parcelRequirea86e")
 
-},{}],"jkqJ4":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}]},["peJOI","5Y4Tf"], "5Y4Tf", "parcelRequirea86e")
-
-//# sourceMappingURL=main.js.map
+//# sourceMappingURL=active-handout.a4a697aa.js.map

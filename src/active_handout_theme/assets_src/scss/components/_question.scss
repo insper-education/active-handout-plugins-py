@@ -1,0 +1,27 @@
+.admonition.question .admonition.exercise {
+  .form-elements {
+    display: flex;
+    flex-direction: column;
+
+    * {
+      margin-top: 0.5rem;
+    }
+
+    input[type="text"] {
+      border: 1px solid var(--md-primary-fg-color);
+    }
+
+    input[type="submit"] {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      padding: 0.5rem 1rem;
+      border-radius: 0.25rem;
+      align-self: flex-end;
+
+      background-color: var(--md-primary-fg-color);
+      color: white;
+    }
+  }
+}

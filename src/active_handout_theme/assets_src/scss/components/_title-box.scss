@@ -1,0 +1,12 @@
+.ah-title-box {
+  h2 {
+    margin-top: -3rem;
+    color: var(--clr-highlight-200);
+  }
+
+  .ah-breadcrumbs {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+  }
+}

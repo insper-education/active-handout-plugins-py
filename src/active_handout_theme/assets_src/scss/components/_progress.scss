@@ -1,0 +1,8 @@
+section.progress-section {
+  display: none;
+
+  &:first-child,
+  &.show {
+    display: inherit;
+  }
+}

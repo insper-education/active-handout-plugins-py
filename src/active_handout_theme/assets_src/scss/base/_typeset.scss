@@ -1,0 +1,51 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Oswald:wght@200;300;400;500;600;700&display=swap");
+
+$font-highlight: "Oswald", sans-serif;
+$font-regular: "Open Sans", sans-serif;
+$font-sizes: (
+  small: 1rem,
+  regular: 1.25rem,
+  mid: 1.563rem,
+  large: 1.953rem,
+  larger: 2.441rem,
+  huge: 3.052rem,
+);
+
+.ah-typeset {
+  font-family: $font-regular;
+  font-size: map-get($font-sizes, "regular");
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $font-highlight;
+    color: var(--clr-primary-600);
+    font-size: map-get($font-sizes, "mid");
+    margin-bottom: 2rem;
+  }
+
+  h1 {
+    font-size: map-get($font-sizes, "huge");
+  }
+
+  h2 {
+    font-size: map-get($font-sizes, "larger");
+  }
+
+  h3 {
+    font-size: map-get($font-sizes, "large");
+  }
+
+  p,
+  img {
+    margin-bottom: 1.5rem;
+  }
+
+  p {
+    line-height: 2.2;
+    text-align: justify;
+  }
+}

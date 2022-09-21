@@ -1,0 +1,32 @@
+@use "sass:color";
+
+$colors: (
+  "blue": (
+    primary: hsl(232, 47%, 25%),
+    highlight: hsl(217, 56%, 53%),
+  ),
+);
+
+:root {
+  $lightness-step: 10;
+  @each $color-scheme, $color-names in $colors {
+    @each $color-name, $value in $color-names {
+      $lightness: color.lightness($value);
+      // Reset to lightest
+      @while $lightness + $lightness-step <= 80 {
+        $lightness: $lightness + $lightness-step;
+      }
+
+      $shade: 100;
+      @while $lightness >= 20 {
+        --clr-#{$color-scheme}-#{$color-name}-#{$shade}: #{color.change(
+            $value,
+            $lightness: $lightness
+          )};
+
+        $lightness: $lightness - $lightness-step;
+        $shade: $shade + 100;
+      }
+    }
+  }
+}

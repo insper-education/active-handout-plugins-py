@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block htmltitle %}
+      {% if page.meta and page.meta.title %}
+        <title>{{ page.meta.title }} - {{ config.site_name }}</title>
+      {% elif page.title and not page.is_homepage %}
+        <title>{{ page.title | striptags }} - {{ config.site_name }}</title>
+      {% else %}
+        <title>{{ config.site_name }}</title>
+      {% endif %}
+    {% endblock %}
+    <link rel="stylesheet" href="{{ 'assets/css/main.css' | url }}">
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body>
+    <div class="ah-main-container">
+      <header class="ah-header">
+      </header>
+      <article class="ah-content ah-typeset">
+        <div class="ah-title-box">
+          <ul class="ah-breadcrumbs">
+            {% if page %}
+              {% for doc in page.ancestors[::-1] %}
+                {% if doc.link %}
+                  <li>
+                    <a href="{{ doc.link|e }}">{{ doc.title }}</a> &raquo;
+                  </li>
+                {% else %}
+                  <li>{{ doc.title }} &raquo;</li>
+                {% endif %}
+              {% endfor %}
+              <li>{{ page.title }}</li>
+            {%- endif %}
+          </ul>
+          {% if page.meta.title %}<h1>{{ page.meta.title }}</h1>{% endif %}
+          {% if page.meta.subtitle %}<h2>{{ page.meta.subtitle }}</h2>{% endif %}
+        </div>
+        {{ page.content }}
+      </article>
+    </div>
+    {% block scripts %}
+      <script src="{{ 'assets/js/main.js' | url }}"></script>
+      {% for path in config.extra_javascript %}<script src="{{ path | url }}"></script>{% endfor %}
+    {% endblock %}
+  </body>
+</html>
