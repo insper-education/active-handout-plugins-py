@@ -6,3 +6,13 @@ section.progress-section {
     display: inherit;
   }
 }
+
+.ah-progress-container {
+  display: flex;
+  width: 100%;
+  padding: 2rem 0 1rem;
+}
+
+.ah-button.progress {
+  margin: 0 auto;
+}

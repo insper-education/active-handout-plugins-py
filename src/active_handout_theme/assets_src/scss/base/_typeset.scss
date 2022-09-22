@@ -48,4 +48,28 @@ $font-sizes: (
     line-height: 2.2;
     text-align: justify;
   }
+
+  a {
+    color: var(--clr-highlight-300);
+    font-weight: 700;
+
+    &:hover {
+      color: var(--clr-highlight-200);
+    }
+  }
+
+  img {
+    margin-inline: auto;
+  }
+
+  em {
+    color: var(--clr-primary-600);
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  strong {
+    color: var(--clr-primary-600);
+    font-weight: 900;
+  }
 }

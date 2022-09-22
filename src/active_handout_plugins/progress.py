@@ -19,12 +19,12 @@ class ProgressButtons(AdmonitionVisitor):
         hs_code = html.escape("""
 on click
     add .show to the next <section/>
-    hide me
+    hide closest .ah-progress-container
     send remember(element: me) to window
     halt
 end""")
 
-        html_button = f'<a href="" id="prog-{self.count}" class="md-button md-button--primary progress" _="{hs_code}"> {title_p.text} </a>'
+        html_button = f'<div class="ah-progress-container"><button id="prog-{self.count}" class="ah-button ah-button--primary progress" _="{hs_code}"> {title_p.text} </button></div>'
         el.clear()
         el.append(etree.fromstring(html_button))
         self.count += 1

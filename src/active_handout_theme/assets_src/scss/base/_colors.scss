@@ -1,24 +1,32 @@
 @use "sass:color";
+@use "sass:list";
 
 $colors: (
+  "gray": (
+    primary: hsl(235, 5%, 53%) 0 100,
+  ),
   "blue": (
-    primary: hsl(232, 47%, 25%),
-    highlight: hsl(217, 56%, 53%),
+    primary: hsl(232, 47%, 25%) 20 80,
+    highlight: hsl(217, 56%, 53%) 20 80,
   ),
 );
 
 :root {
   $lightness-step: 10;
   @each $color-scheme, $color-names in $colors {
-    @each $color-name, $value in $color-names {
+    @each $color-name, $config in $color-names {
+      $value: list.nth($config, 1);
+      $min-pct: list.nth($config, 2);
+      $max-pct: list.nth($config, 3);
+
       $lightness: color.lightness($value);
       // Reset to lightest
-      @while $lightness + $lightness-step <= 80 {
+      @while $lightness + $lightness-step <= $max-pct {
         $lightness: $lightness + $lightness-step;
       }
 
       $shade: 100;
-      @while $lightness >= 20 {
+      @while $lightness >= $min-pct {
         --clr-#{$color-scheme}-#{$color-name}-#{$shade}: #{color.change(
             $value,
             $lightness: $lightness

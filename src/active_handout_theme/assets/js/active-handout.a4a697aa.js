@@ -532,54 +532,191 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"ecP4v":[function(require,module,exports) {
-function keyFromElement(el) {
-    const docAddr = document.location.pathname;
-    return `${docAddr}/${el.id}`;
-}
-function saveAndSendData(key, value) {
-    localStorage[key] = value;
-    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
-// TODO: fetch POST with token
-}
+var _progress = require("./progress");
+var _question = require("./question");
 document.addEventListener("DOMContentLoaded", function() {
-    document.querySelectorAll("a.progress").forEach((e)=>{
-        const k = keyFromElement(e);
-        if (localStorage.getItem(k) !== null) e.click();
-    });
-    document.querySelectorAll("div.admonition.question.short, div.admonition.question.medium, div.admonition.question.long").forEach((e)=>{
-        const k = keyFromElement(e);
-        const itemValue = localStorage.getItem(k);
-        if (itemValue !== null) {
-            e.querySelector("input[name='data'], textarea[name='data']").value = itemValue;
-            e.querySelector("input[type='submit']").click();
-        }
-    });
-    document.querySelectorAll("div.admonition.question.choice").forEach((e)=>{
-        const k = keyFromElement(e);
-        const itemValue = localStorage.getItem(k);
-        if (itemValue !== null) {
-            e.querySelector(`input[name='data'][value='${itemValue}'`).checked = true;
-            e.querySelector("input[type='submit']").click();
-        }
-    });
-    document.querySelectorAll("div.admonition.exercise").forEach((e)=>{
-        const k = keyFromElement(e);
-        const itemValue = localStorage.getItem(k);
-        if (itemValue !== null) e.querySelector("input[type='submit']").click();
-    });
+    let rememberCallbacks = [];
+    (0, _progress.initProgressPlugin)(rememberCallbacks);
+    (0, _question.initQuestionPlugin)(rememberCallbacks);
     window.addEventListener("remember", function(e) {
         const element = e.detail.element;
-        if (element.classList.contains("progress")) saveAndSendData(keyFromElement(element), true);
-        else if (element.classList.contains("choice")) {
-            const choices = element.querySelectorAll("input[name='data'][type='radio']");
-            for (let choice of choices)if (choice.checked) saveAndSendData(keyFromElement(element), choice.value);
-        } else if (element.classList.contains("short") || element.classList.contains("medium") || element.classList.contains("long")) {
-            const textElement = element.querySelector("input[name='data'], textarea[name='data']");
-            saveAndSendData(keyFromElement(element), textElement.value);
-        } else if (element.classList.contains("exercise")) saveAndSendData(keyFromElement(element), true);
+        for (let remember of rememberCallbacks)if (remember.match(element)) {
+            remember.callback(element);
+            break;
+        }
     });
 });
 
-},{}]},["1csOT"], null, "parcelRequirea86e")
+},{"./progress":"fzxNo","./question":"132rX"}],"fzxNo":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
+var _clientDb = require("../client-db");
+var _telemetry = require("../telemetry");
+function initProgressPlugin(rememberCallbacks) {
+    queryProgressBtns().forEach((e)=>{
+        if ((0, _clientDb.getValue)(e)) e.click();
+    });
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains("progress"),
+        callback: (el)=>{
+            (0, _telemetry.saveAndSendData)(el, true);
+        }
+    });
+}
+function queryProgressBtns() {
+    return document.querySelectorAll("button.progress");
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ","../client-db":"j0pff"}],"5oERU":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"kpvgZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
+var _clientDb = require("./client-db");
+function saveAndSendData(elOrKey, value) {
+    (0, _clientDb.setValue)(elOrKey, value);
+    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
+// TODO: fetch POST with token
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client-db":"j0pff"}],"j0pff":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "setValue", ()=>setValue);
+parcelHelpers.export(exports, "getValue", ()=>getValue);
+function getKey(elOrKey) {
+    if (typeof elOrKey === "string") return elOrKey;
+    const docAddr = document.location.pathname;
+    return `${docAddr}/${elOrKey.id}`;
+}
+function setValue(elOrKey, value) {
+    const key = getKey(elOrKey);
+    localStorage[key] = value;
+}
+function getValue(elOrKey) {
+    const key = getKey(elOrKey);
+    return localStorage.getItem(key);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"132rX":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initQuestionPlugin", ()=>initQuestionPlugin);
+var _clientDb = require("../client-db");
+var _telemetry = require("../telemetry");
+var _queries = require("./queries");
+function initQuestionPlugin(rememberCallbacks) {
+    initTextQuestions(rememberCallbacks);
+    initChoiceQuestions(rememberCallbacks);
+    initExercises(rememberCallbacks);
+}
+function initTextQuestions(rememberCallbacks) {
+    (0, _queries.queryTextQuestions)().forEach((el)=>{
+        const prevAnswer = (0, _clientDb.getValue)(el);
+        if (prevAnswer !== null) {
+            (0, _queries.queryTextInputs)(el).value = prevAnswer;
+            (0, _queries.querySubmitBtn)(el).click();
+        }
+    });
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains("short") || el.classList.contains("medium") || el.classList.contains("long"),
+        callback: (el)=>{
+            const textElement = (0, _queries.queryTextInputs)(el);
+            (0, _telemetry.saveAndSendData)(element, textElement.value);
+        }
+    });
+}
+function initChoiceQuestions(rememberCallbacks) {
+    (0, _queries.queryChoiceQuestions)().forEach((el)=>{
+        const prevAnswer = (0, _clientDb.getValue)(el);
+        if (prevAnswer !== null) {
+            (0, _queries.queryOption)(el, prevAnswer).checked = true;
+            (0, _queries.querySubmitBtn)(el).click();
+        }
+    });
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains("choice"),
+        callback: (el)=>{
+            const choices = (0, _queries.queryOptions)(el);
+            for (let choice of choices)if (choice.checked) (0, _telemetry.saveAndSendData)(el, choice.value);
+        }
+    });
+}
+function initExercises(rememberCallbacks) {
+    (0, _queries.queryExercises)().forEach((el)=>{
+        const prevAnswer = (0, _clientDb.getValue)(el);
+        if (prevAnswer !== null) (0, _queries.querySubmitBtn)(el).click();
+    });
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains("exercise"),
+        callback: (el)=>{
+            (0, _telemetry.saveAndSendData)(el, true);
+        }
+    });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"jbGr6","../client-db":"j0pff","../telemetry":"kpvgZ"}],"jbGr6":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "queryTextQuestions", ()=>queryTextQuestions);
+parcelHelpers.export(exports, "queryChoiceQuestions", ()=>queryChoiceQuestions);
+parcelHelpers.export(exports, "queryExercises", ()=>queryExercises);
+parcelHelpers.export(exports, "queryTextInputs", ()=>queryTextInputs);
+parcelHelpers.export(exports, "queryOptions", ()=>queryOptions);
+parcelHelpers.export(exports, "queryOption", ()=>queryOption);
+parcelHelpers.export(exports, "querySubmitBtn", ()=>querySubmitBtn);
+function queryTextQuestions() {
+    return document.querySelectorAll("div.admonition.question.short, div.admonition.question.medium, div.admonition.question.long");
+}
+function queryChoiceQuestions() {
+    return document.querySelectorAll("div.admonition.question.choice");
+}
+function queryExercises() {
+    return document.querySelectorAll("div.admonition.exercise");
+}
+function queryTextInputs(el) {
+    return el.querySelector("input[name='data'], textarea[name='data']");
+}
+function queryOptions(el) {
+    return el.querySelectorAll("input[name='data'][type='radio']");
+}
+function queryOption(el, value) {
+    return el.querySelector(`input[name='data'][value='${value}'`);
+}
+function querySubmitBtn(el) {
+    return el.querySelector("input[type='submit']");
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

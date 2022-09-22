@@ -27,10 +27,10 @@
               {% for doc in page.ancestors[::-1] %}
                 {% if doc.link %}
                   <li>
-                    <a href="{{ doc.link|e }}">{{ doc.title }}</a> &raquo;
+                    <a href="{{ doc.link|e }}">{{ doc.title }}</a>
                   </li>
                 {% else %}
-                  <li>{{ doc.title }} &raquo;</li>
+                  <li>{{ doc.title }}</li>
                 {% endif %}
               {% endfor %}
               <li>{{ page.title }}</li>
@@ -43,6 +43,7 @@
       </article>
     </div>
     {% block scripts %}
+      <script>var base_url = '{{ base_url }}';</script>
       <script src="{{ 'assets/js/main.js' | url }}"></script>
       {% for path in config.extra_javascript %}<script src="{{ path | url }}"></script>{% endfor %}
     {% endblock %}
