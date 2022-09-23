@@ -1,5 +1,5 @@
-$background: hsl(218, 80%, 96%);
-$highlight-background: hsl(218, 80%, 96%);
+$background: var(--clr-admonition-background);
+$highlight-background: var(--clr-admonition-background);
 $comment: hsl(219, 8%, 58%);
 $error-background: hsl(328, 100%, 94%);
 $error-color: hsl(328, 100%, 29%);

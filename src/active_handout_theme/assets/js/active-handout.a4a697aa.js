@@ -532,9 +532,11 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"ecP4v":[function(require,module,exports) {
+var _tabbedContent = require("./tabbed-content");
 var _progress = require("./progress");
 var _question = require("./question");
-document.addEventListener("DOMContentLoaded", function() {
+function onLoad() {
+    (0, _tabbedContent.initTabbedPlugin)();
     let rememberCallbacks = [];
     (0, _progress.initProgressPlugin)(rememberCallbacks);
     (0, _question.initQuestionPlugin)(rememberCallbacks);
@@ -545,9 +547,11 @@ document.addEventListener("DOMContentLoaded", function() {
             break;
         }
     });
-});
+}
+if (document.readyState !== "loading") onLoad();
+else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./progress":"fzxNo","./question":"132rX"}],"fzxNo":[function(require,module,exports) {
+},{"./progress":"fzxNo","./question":"132rX","./tabbed-content":"eIlmk"}],"fzxNo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
@@ -715,6 +719,82 @@ function queryOption(el, value) {
 }
 function querySubmitBtn(el) {
     return el.querySelector("input[type='submit']");
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"eIlmk":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initTabbedPlugin", ()=>initTabbedPlugin);
+// Source: https://facelessuser.github.io/pymdown-extensions/extensions/tabbed/
+// Identify whether a tab bar can be scrolled left or right and apply indicator classes
+const tabOverflow = ()=>{
+    const checkScroll = (e)=>{
+        // Use a margin as we just don't always align exactly on the right.
+        const margin = 3;
+        const target = e.target;
+        if (!e.target.matches(".tabbed-labels")) return;
+        const scrollWidth = target.scrollWidth - target.clientWidth;
+        target.classList.remove("tabbed-scroll", "tabbed-scroll-left", "tabbed-scroll-right");
+        if (e.type === "resize" || e.type === "scroll") {
+            if (scrollWidth === 0) return;
+            target.classList.add("tabbed-scroll");
+            if (!target.scrollLeft) target.classList.add("tabbed-scroll-right");
+            else if (target.scrollLeft < scrollWidth - margin) target.classList.add("tabbed-scroll-left", "tabbed-scroll-right");
+            else target.classList.add("tabbed-scroll-left");
+        }
+    };
+    // Change the tab to either the previous or next input - depending on which indicator was clicked.
+    // Make sure the current, selected input is scrolled into view.
+    const tabChange = (e)=>{
+        const target = e.target;
+        const selected = target.closest(".tabbed-set").querySelector("input:checked");
+        let updated = null;
+        if (target.classList.contains("tabbed-scroll-right") && e.offsetX >= e.target.offsetWidth - 15) {
+            const sib = selected.nextSibling;
+            updated = selected;
+            if (sib && sib.tagName === "INPUT") updated = sib;
+        } else if (target.classList.contains("tabbed-scroll-left") && e.offsetX <= 15) {
+            const sib1 = selected.previousSibling;
+            updated = selected;
+            if (sib1 && sib1.tagName === "INPUT") updated = sib1;
+        }
+        if (updated) updated.click();
+    };
+    const onResize = new ResizeObserver((entries)=>{
+        entries.forEach((entry)=>{
+            checkScroll({
+                target: entry.target,
+                type: "resize"
+            });
+        });
+    });
+    const labels = document.querySelectorAll(".tabbed-alternate > .tabbed-labels");
+    labels.forEach((el)=>{
+        checkScroll({
+            target: el,
+            type: "resize"
+        });
+        onResize.observe(el);
+        el.addEventListener("resize", checkScroll);
+        el.addEventListener("scroll", checkScroll);
+        el.addEventListener("click", tabChange);
+    });
+};
+// Smooth scroll tab into view when changed
+const tabScroll = ()=>{
+    const tabs = document.querySelectorAll(".tabbed-alternate > input");
+    for (const tab of tabs)tab.addEventListener("change", ()=>{
+        const label = document.querySelector(`label[for=${tab.id}]`);
+        label.scrollIntoView({
+            block: "nearest",
+            inline: "nearest",
+            behavior: "smooth"
+        });
+    });
+};
+function initTabbedPlugin() {
+    tabOverflow();
+    tabScroll();
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")

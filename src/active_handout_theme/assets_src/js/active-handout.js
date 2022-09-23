@@ -1,7 +1,10 @@
+import { initTabbedPlugin } from "./tabbed-content";
 import { initProgressPlugin } from "./progress";
 import { initQuestionPlugin } from "./question";
 
-document.addEventListener("DOMContentLoaded", function () {
+function onLoad() {
+  initTabbedPlugin();
+
   let rememberCallbacks = [];
   initProgressPlugin(rememberCallbacks);
   initQuestionPlugin(rememberCallbacks);
@@ -15,4 +18,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     }
   });
-});
+}
+
+if (document.readyState !== "loading") {
+  onLoad();
+} else {
+  document.addEventListener("DOMContentLoaded", onLoad);
+}

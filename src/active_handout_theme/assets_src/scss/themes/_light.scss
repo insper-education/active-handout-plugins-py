@@ -1,3 +1,6 @@
+$admonition-background: hsl(225, 75%, 97%);
+$admonition-background-dim: hsl(225, 22%, 93%);
+
 :root {
   --clr-primary-100: var(--clr-blue-primary-100);
   --clr-primary-200: var(--clr-blue-primary-200);
@@ -16,4 +19,7 @@
   --clr-text-dim: var(--clr-gray-primary-400);
   --clr-text-dim-hover: var(--clr-gray-primary-300);
   --clr-text-highlight-background: white;
+
+  --clr-admonition-background: #{$admonition-background};
+  --clr-admonition-background-dim: #{$admonition-background-dim};
 }
