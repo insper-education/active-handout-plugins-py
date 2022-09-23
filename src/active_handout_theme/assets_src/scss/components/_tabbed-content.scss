@@ -1,0 +1,163 @@
+@use "../abstracts/variables" as *;
+
+$max-tabs: 20;
+$arrow-size: 0.9em;
+
+.tabbed-alternate {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  margin: 0 (-$admonition-extra-inline) $space-between-block;
+
+  > input {
+    display: none;
+  }
+
+  .tabbed-content {
+    width: 100%;
+    border-radius: 0 $border-radius $border-radius $border-radius;
+    background: var(--clr-admonition-background);
+  }
+
+  .tabbed-labels.tabbed-scroll .tabbed-content {
+    border-radius: 0 0 $border-radius $border-radius;
+  }
+
+  .tabbed-block {
+    display: none;
+    padding: $admonition-extra-block $admonition-extra-inline;
+  }
+
+  @for $child-idx from 1 through $max-tabs {
+    input:nth-child(#{$child-idx}):checked
+      ~ .tabbed-content
+      > :nth-child(#{$child-idx}) {
+      display: block;
+    }
+  }
+}
+
+.tabbed-labels {
+  display: flex;
+  width: 100%;
+  overflow: auto;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  > label {
+    width: auto;
+    font-weight: 700;
+    font-size: 0.84em;
+    white-space: nowrap;
+    border-bottom: 0.1rem solid transparent;
+    scroll-snap-align: start;
+    border-radius: $border-radius $border-radius 0 0;
+    cursor: pointer;
+    transition: background-color 250ms, color 250ms;
+    background: var(--clr-admonition-background-dim);
+    padding: $admonition-extra-block $admonition-extra-inline;
+  }
+
+  &.tabbed-scroll-left::before {
+    display: inline-block;
+    font-size: $arrow-size;
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: $admonition-extra-block 0;
+    color: gray;
+    background: linear-gradient(
+      to right,
+      var(--clr-admonition-background-dim) 75%,
+      rgba(255, 255, 255, 0)
+    );
+    content: "\25C0";
+    cursor: pointer;
+  }
+
+  &.tabbed-scroll-right::after {
+    display: inline-block;
+    font-size: $arrow-size;
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: $admonition-extra-block 0;
+    color: gray;
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0),
+      var(--clr-admonition-background-dim) 25%
+    );
+    content: "\25B6";
+    cursor: pointer;
+  }
+
+  @for $child-idx from 1 through $max-tabs {
+    > label:nth-child(#{$child-idx}) {
+      order: $child-idx;
+    }
+  }
+}
+
+@media screen {
+  .tabbed-alternate {
+    @for $child-idx from 1 through $max-tabs {
+      input:nth-child(#{$child-idx}):checked
+        ~ .tabbed-labels
+        > :nth-child(#{$child-idx}) {
+        color: var(--clr-primary-600);
+        background: var(--clr-admonition-background);
+      }
+    }
+  }
+
+  .tabbed-labels {
+    > label {
+      color: var(--clr-text-dim);
+
+      &:hover {
+        color: var(--clr-text-dim-hover);
+      }
+    }
+
+    > label + label {
+      margin-left: 0.1rem;
+    }
+  }
+}
+
+@media print {
+  .tabbed-alternate {
+    .tabbed-content {
+      display: contents;
+    }
+
+    .tabbed-block {
+      display: block;
+      margin-bottom: 1em;
+      border: 1px solid gray;
+      border-top: none;
+      border-radius: 0 0 $border-radius $border-radius;
+    }
+
+    @for $child-idx from 1 through $max-tabs {
+      .tabbed-block:nth-child(#{$child-idx}) {
+        order: $child-idx;
+      }
+    }
+  }
+
+  .tabbed-labels {
+    display: contents;
+
+    > label {
+      border: 1px solid gray;
+      border-bottom: none;
+      border-radius: $border-radius $border-radius 0 0;
+    }
+  }
+}
