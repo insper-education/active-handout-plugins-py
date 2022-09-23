@@ -1,0 +1,35 @@
+@use "../base/typeset" as *;
+
+.ah-typeset {
+  $left: 1.5rem;
+
+  ol,
+  ul {
+    counter-reset: ah-item-counter;
+    list-style: none;
+    padding-left: $left;
+
+    li {
+      counter-increment: ah-item-counter;
+      position: relative;
+
+      &::before {
+        position: absolute;
+        top: 0;
+        left: (-$left);
+
+        color: var(--clr-primary-400);
+        font-weight: bold;
+        font-family: $font-highlight;
+      }
+    }
+  }
+
+  ol li::before {
+    content: counter(ah-item-counter) ".";
+  }
+
+  ul li::before {
+    content: "\2726";
+  }
+}

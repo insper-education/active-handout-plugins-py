@@ -141,8 +141,8 @@ p, h1, h2, h3, h4, h5, h6 {
   --clr-text-dim: var(--clr-gray-primary-400);
   --clr-text-dim-hover: var(--clr-gray-primary-300);
   --clr-text-highlight-background: white;
-  --clr-admonition-background: #f2f4fd;
-  --clr-admonition-background-dim: #e9ebf1;
+  --clr-admonition-background: #f2f4fdcc;
+  --clr-admonition-background-dim: #e9ebf1cc;
 }
 
 div.highlight, :not(.highlight) > pre {
@@ -366,6 +366,34 @@ code {
 
 .ah-header {
   min-height: 2rem;
+}
+
+.ah-typeset ol, .ah-typeset ul {
+  counter-reset: ah-item-counter;
+  padding-left: 1.5rem;
+  list-style: none;
+}
+
+.ah-typeset ol li, .ah-typeset ul li {
+  counter-increment: ah-item-counter;
+  position: relative;
+}
+
+.ah-typeset ol li:before, .ah-typeset ul li:before {
+  color: var(--clr-primary-400);
+  font-family: Oswald, sans-serif;
+  font-weight: bold;
+  position: absolute;
+  top: 0;
+  left: -1.5rem;
+}
+
+.ah-typeset ol li:before {
+  content: counter(ah-item-counter) ".";
+}
+
+.ah-typeset ul li:before {
+  content: "✦";
 }
 
 section.progress-section {
