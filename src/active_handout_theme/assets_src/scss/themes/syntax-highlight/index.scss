@@ -1,5 +1,32 @@
 @use "active-handout" as *;
+@use "../../abstracts/variables" as *;
+@use "../../base/typeset" as *;
 
+div.highlight,
+:not(.highlight) > pre {
+  background: $highlight-background;
+  padding: $admonition-extra-block $admonition-extra-inline;
+  margin: 0 (-$admonition-extra-inline) $space-between-block;
+  border-radius: $border-radius;
+
+  code {
+    padding: 0;
+    border-radius: 0;
+  }
+}
+
+code {
+  font-family: $font-mono;
+  $extra-block: 0.2em;
+  $extra-inline: 0.5em;
+
+  background: $highlight-background;
+
+  padding: $extra-block $extra-inline;
+  border-radius: $border-radius;
+}
+
+// Syntax highlight colors
 .highlight .hll {
   background-color: $background;
 }
