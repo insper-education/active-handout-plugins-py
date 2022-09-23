@@ -5,7 +5,7 @@ from .utils import AdmonitionVisitor
 
 
 class CounterProcessor(AdmonitionVisitor):
-    TO_COUNT = ['question', 'tip', 'exercise']
+    TO_COUNT = ['tip', 'exercise']
 
     def run(self, root):
         self.counters = {adm: 0 for adm in CounterProcessor.TO_COUNT}

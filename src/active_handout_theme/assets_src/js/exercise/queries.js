@@ -1,17 +1,17 @@
-export function queryTextQuestions() {
+export function queryTextExercises() {
   return document.querySelectorAll(
-    "div.admonition.question.short, " +
-      "div.admonition.question.medium, " +
-      "div.admonition.question.long"
+    "div.admonition.exercise.short, " +
+      "div.admonition.exercise.medium, " +
+      "div.admonition.exercise.long"
   );
 }
 
-export function queryChoiceQuestions() {
-  return document.querySelectorAll("div.admonition.question.choice");
+export function queryChoiceExercises() {
+  return document.querySelectorAll("div.admonition.exercise.choice");
 }
 
-export function queryExercises() {
-  return document.querySelectorAll("div.admonition.exercise");
+export function querySelfProgressExercises() {
+  return document.querySelectorAll("div.admonition.exercise.self-progress");
 }
 
 export function queryTextInputs(el) {

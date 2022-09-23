@@ -1,4 +1,18 @@
-.admonition.question .admonition.exercise {
+.admonition.exercise {
+  background: var(--clr-primary-600);
+  color: var(--clr-text-highlight-background);
+
+  .admonition-title {
+    color: var(--clr-highlight-100);
+  }
+
+  ol,
+  ul {
+    li::before {
+      color: var(--clr-highlight-100);
+    }
+  }
+
   .form-elements {
     display: flex;
     flex-direction: column;

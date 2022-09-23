@@ -17,6 +17,10 @@
     color: var(--clr-text-dim);
 
     li {
+      &::before {
+        content: "";
+      }
+
       & + li::before {
         content: "»";
         padding-right: 1rem;

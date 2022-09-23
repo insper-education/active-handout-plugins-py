@@ -1,13 +1,13 @@
 import { initTabbedPlugin } from "./tabbed-content";
 import { initProgressPlugin } from "./progress";
-import { initQuestionPlugin } from "./question";
+import { initExercisePlugin } from "./exercise";
 
 function onLoad() {
   initTabbedPlugin();
 
   let rememberCallbacks = [];
   initProgressPlugin(rememberCallbacks);
-  initQuestionPlugin(rememberCallbacks);
+  initExercisePlugin(rememberCallbacks);
 
   window.addEventListener("remember", function (e) {
     const element = e.detail.element;

@@ -1,0 +1,17 @@
+@use "../abstracts/variables" as *;
+@use "../base/typeset" as *;
+
+.admonition {
+  background: var(--clr-admonition-background);
+  margin: 0 (-$admonition-extra-inline);
+  padding: $admonition-extra-block $admonition-extra-inline;
+  border-radius: $border-radius;
+
+  .admonition-title {
+    font-family: $font-highlight;
+    font-size: map-get($font-sizes, "large");
+    font-weight: 700;
+    border-bottom: 2px solid currentColor;
+    color: var(--clr-primary-600);
+  }
+}

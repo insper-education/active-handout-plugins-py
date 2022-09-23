@@ -15,11 +15,21 @@ div.highlight,
   }
 }
 
+.admonition,
+.tabbed-content {
+  div.highlight,
+  :not(.highlight) > pre {
+    padding-inline: calc($admonition-extra-inline / 2);
+    margin: 0 0 $space-between-block;
+  }
+}
+
 code {
   font-family: $font-mono;
   $extra-block: 0.2em;
   $extra-inline: 0.5em;
 
+  color: var(--clr-text);
   background: $highlight-background;
 
   padding: $extra-block $extra-inline;

@@ -15,6 +15,7 @@ $font-sizes: (
 );
 
 .ah-typeset {
+  color: var(--clr-text);
   font-family: $font-regular;
   font-size: map-get($font-sizes, "regular");
 
@@ -74,5 +75,10 @@ $font-sizes: (
   strong {
     color: var(--clr-primary-600);
     font-weight: 900;
+  }
+
+  li {
+    line-height: 2.2;
+    margin-bottom: 1em;
   }
 }

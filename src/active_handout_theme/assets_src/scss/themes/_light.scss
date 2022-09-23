@@ -1,5 +1,6 @@
-$admonition-background: hsl(225, 75%, 97%, 0.8);
-$admonition-background-dim: hsl(225, 22%, 93%, 0.8);
+$admonition-background: hsl(229, 100%, 91%);
+$admonition-background-dim: hsl(225, 22%, 93%);
+$code-background: hsl(229, 100%, 97%);
 
 :root {
   --clr-primary-100: var(--clr-blue-primary-100);
@@ -16,10 +17,12 @@ $admonition-background-dim: hsl(225, 22%, 93%, 0.8);
   --clr-highlight-500: var(--clr-blue-highlight-500);
   --clr-highlight-600: var(--clr-blue-highlight-600);
 
+  --clr-text: hsl(180, 4%, 5%);
   --clr-text-dim: var(--clr-gray-primary-400);
   --clr-text-dim-hover: var(--clr-gray-primary-300);
   --clr-text-highlight-background: white;
 
   --clr-admonition-background: #{$admonition-background};
   --clr-admonition-background-dim: #{$admonition-background-dim};
+  --clr-code-background: #{$code-background};
 }

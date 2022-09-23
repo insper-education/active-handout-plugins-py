@@ -64,6 +64,7 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 .ah-typeset {
+  color: var(--clr-text);
   font-family: Open Sans, sans-serif;
   font-size: 1.25rem;
 }
@@ -120,6 +121,11 @@ p, h1, h2, h3, h4, h5, h6 {
   font-weight: 900;
 }
 
+.ah-typeset li {
+  margin-bottom: 1em;
+  line-height: 2.2;
+}
+
 .ah-content {
   max-width: 60ch;
   margin: 0 auto 2rem;
@@ -138,18 +144,20 @@ p, h1, h2, h3, h4, h5, h6 {
   --clr-highlight-400: var(--clr-blue-highlight-400);
   --clr-highlight-500: var(--clr-blue-highlight-500);
   --clr-highlight-600: var(--clr-blue-highlight-600);
+  --clr-text: #0c0d0d;
   --clr-text-dim: var(--clr-gray-primary-400);
   --clr-text-dim-hover: var(--clr-gray-primary-300);
   --clr-text-highlight-background: white;
-  --clr-admonition-background: #f2f4fdcc;
-  --clr-admonition-background-dim: #e9ebf1cc;
+  --clr-admonition-background: #d1daff;
+  --clr-admonition-background-dim: #e9ebf1;
+  --clr-code-background: #f0f3ff;
 }
 
 div.highlight, :not(.highlight) > pre {
-  background: var(--clr-admonition-background);
+  background: var(--clr-code-background);
   border-radius: .2em;
-  margin: 0 -1rem 1.5rem;
-  padding: 1rem;
+  margin: 0 -2rem 1.5rem;
+  padding: 1rem 2rem;
 }
 
 div.highlight code, :not(.highlight) > pre code {
@@ -157,19 +165,25 @@ div.highlight code, :not(.highlight) > pre code {
   padding: 0;
 }
 
+.admonition div.highlight, .admonition :not(.highlight) > pre, .tabbed-content div.highlight, .tabbed-content :not(.highlight) > pre {
+  margin: 0 0 1.5rem;
+  padding-inline: 1rem;
+}
+
 code {
-  background: var(--clr-admonition-background);
+  color: var(--clr-text);
+  background: var(--clr-code-background);
   border-radius: .2em;
   padding: .2em .5em;
   font-family: Fira Mono, monospace;
 }
 
 .highlight .hll {
-  background-color: var(--clr-admonition-background);
+  background-color: var(--clr-code-background);
 }
 
 .highlight {
-  background: var(--clr-admonition-background);
+  background: var(--clr-code-background);
   color: #0d0d07;
 }
 
@@ -338,6 +352,21 @@ code {
   color: #7c55c3;
 }
 
+.admonition {
+  background: var(--clr-admonition-background);
+  border-radius: .2em;
+  margin: 0 -2rem;
+  padding: 1rem 2rem;
+}
+
+.admonition .admonition-title {
+  color: var(--clr-primary-600);
+  border-bottom: 2px solid;
+  font-family: Oswald, sans-serif;
+  font-size: 1.953rem;
+  font-weight: 700;
+}
+
 .ah-button, a.ah-button {
   color: var(--clr-primary-600);
   border: 1px solid var(--clr-primary-600);
@@ -414,20 +443,29 @@ section.progress-section:first-child, section.progress-section.show {
   margin: 0 auto;
 }
 
-.admonition.question .admonition.exercise .form-elements {
+.admonition.exercise {
+  background: var(--clr-primary-600);
+  color: var(--clr-text-highlight-background);
+}
+
+.admonition.exercise .admonition-title, .admonition.exercise ol li:before, .admonition.exercise ul li:before {
+  color: var(--clr-highlight-100);
+}
+
+.admonition.exercise .form-elements {
   flex-direction: column;
   display: flex;
 }
 
-.admonition.question .admonition.exercise .form-elements * {
+.admonition.exercise .form-elements * {
   margin-top: .5rem;
 }
 
-.admonition.question .admonition.exercise .form-elements input[type="text"] {
+.admonition.exercise .form-elements input[type="text"] {
   border: 1px solid var(--md-primary-fg-color);
 }
 
-.admonition.question .admonition.exercise .form-elements input[type="submit"] {
+.admonition.exercise .form-elements input[type="submit"] {
   background-color: var(--md-primary-fg-color);
   color: #fff;
   border-radius: .25rem;
@@ -441,7 +479,7 @@ section.progress-section:first-child, section.progress-section.show {
 
 .tabbed-alternate {
   flex-flow: column wrap;
-  margin: 0 -1rem 1.5rem;
+  margin: 0 -2rem 1.5rem;
   display: flex;
   position: relative;
 }
@@ -461,7 +499,7 @@ section.progress-section:first-child, section.progress-section.show {
 }
 
 .tabbed-alternate .tabbed-block {
-  padding: 1rem;
+  padding: 1rem 2rem;
   display: none;
 }
 
@@ -488,7 +526,7 @@ section.progress-section:first-child, section.progress-section.show {
   background: var(--clr-admonition-background-dim);
   border-bottom: .1rem solid #0000;
   border-radius: .2em .2em 0 0;
-  padding: 1rem;
+  padding: 1rem 2rem;
   font-size: .84em;
   font-weight: 700;
   transition: background-color .25s, color .25s;
@@ -738,6 +776,10 @@ section.progress-section:first-child, section.progress-section.show {
   padding-left: 0;
   list-style: none;
   display: flex;
+}
+
+.ah-title-box .ah-breadcrumbs li:before {
+  content: "";
 }
 
 .ah-title-box .ah-breadcrumbs li + li:before {

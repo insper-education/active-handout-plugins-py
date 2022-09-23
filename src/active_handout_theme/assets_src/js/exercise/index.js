@@ -1,23 +1,23 @@
 import { getValue } from "../client-db";
 import { saveAndSendData } from "../telemetry";
 import {
-  queryChoiceQuestions,
-  queryExercises,
+  queryChoiceExercises,
+  querySelfProgressExercises,
   queryOption,
   queryOptions,
   querySubmitBtn,
   queryTextInputs,
-  queryTextQuestions,
+  queryTextExercises,
 } from "./queries";
 
-export function initQuestionPlugin(rememberCallbacks) {
-  initTextQuestions(rememberCallbacks);
-  initChoiceQuestions(rememberCallbacks);
-  initExercises(rememberCallbacks);
+export function initExercisePlugin(rememberCallbacks) {
+  initTextExercises(rememberCallbacks);
+  initChoiceExercises(rememberCallbacks);
+  initSelfProgressExercises(rememberCallbacks);
 }
 
-function initTextQuestions(rememberCallbacks) {
-  queryTextQuestions().forEach((el) => {
+function initTextExercises(rememberCallbacks) {
+  queryTextExercises().forEach((el) => {
     const prevAnswer = getValue(el);
     if (prevAnswer !== null) {
       queryTextInputs(el).value = prevAnswer;
@@ -37,8 +37,8 @@ function initTextQuestions(rememberCallbacks) {
   });
 }
 
-function initChoiceQuestions(rememberCallbacks) {
-  queryChoiceQuestions().forEach((el) => {
+function initChoiceExercises(rememberCallbacks) {
+  queryChoiceExercises().forEach((el) => {
     const prevAnswer = getValue(el);
     if (prevAnswer !== null) {
       queryOption(el, prevAnswer).checked = true;
@@ -59,8 +59,8 @@ function initChoiceQuestions(rememberCallbacks) {
   });
 }
 
-function initExercises(rememberCallbacks) {
-  queryExercises().forEach((el) => {
+function initSelfProgressExercises(rememberCallbacks) {
+  querySelfProgressExercises().forEach((el) => {
     const prevAnswer = getValue(el);
     if (prevAnswer !== null) {
       querySubmitBtn(el).click();
