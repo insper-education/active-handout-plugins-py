@@ -19,6 +19,7 @@
     li {
       &::before {
         content: "";
+        position: static;
       }
 
       & + li::before {

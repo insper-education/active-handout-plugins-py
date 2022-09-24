@@ -3,12 +3,48 @@ from .utils import AdmonitionVisitor
 
 
 class ExerciseAdmonition(AdmonitionVisitor):
-    def __init__(self, base_class, subclasses, *args, **kwargs) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
+        self.__visitors = []
+    
+    def register(self, visitor, weight):
+        self.__visitors.append((weight, visitor))
+        self.__visitors.sort()
+    
+    @property
+    def visitors(self):
+        for _, v in self.__visitors:
+            yield v
+    
+    def __select_visitor(self, el):
+        """Return the first match based on the priority"""
+
+        for visitor in self.visitors:
+            cls = visitor.base_class
+            if cls not in el.attrib['class']:
+                continue
+
+            if visitor.subclasses:
+                cls = self.has_class(el, visitor.subclasses)
+                if not cls:
+                    continue
+            
+            return visitor, cls
+        return None, None
+
+    def visit(self, el):
+        visitor, cls = self.__select_visitor(el)
+        if visitor:
+            visitor.visit(el, cls)
+
+
+class ExerciseAdmonitionVisitor:
+    def __init__(self, base_class, subclasses, md) -> None:
+        self.md = md
         self.subclasses = subclasses
         self.base_class = base_class
         self.counter = 0
-
+    
     def __set_element_id(self, el, cls):
         self.counter += 1
         el.set("id", f"{cls}-{self.counter}")
@@ -47,16 +83,7 @@ class ExerciseAdmonition(AdmonitionVisitor):
             submission_form.append(answer)
 
 
-    def visit(self, el):
-        if self.base_class not in el.attrib['class']:
-            return
-
-        cls = self.base_class
-        if self.subclasses:
-            cls = self.has_class(el, self.subclasses)
-            if not cls:
-                return
-
+    def visit(self, el, cls):
         self.__set_element_id(el, cls)
         submission_form = etree.SubElement(el, 'form')
         self.__add_exercise_description(el, submission_form)
@@ -74,12 +101,13 @@ end
         '''
         submission_form.set('_', hs_code)
         self.__add_exercise_form_elements(el, submission_form)
+    
 
     def create_exercise_form(self, el, submission_form):
         return ''
 
 
-class ChoiceExercise(ExerciseAdmonition):
+class ChoiceExercise(ExerciseAdmonitionVisitor):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__('exercise', ['choice'], *args, **kwargs)
 
@@ -97,7 +125,7 @@ class ChoiceExercise(ExerciseAdmonition):
         return html_elements
 
 
-class TextExercise(ExerciseAdmonition):
+class TextExercise(ExerciseAdmonitionVisitor):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__('exercise', ['short', 'medium', 'long'], *args, **kwargs)
 
@@ -115,9 +143,9 @@ class TextExercise(ExerciseAdmonition):
 '''
 
 
-class SelfProgressExercise(ExerciseAdmonition):
+class SelfProgressExercise(ExerciseAdmonitionVisitor):
     def __init__(self, *args, **kwargs) -> None:
-        super().__init__('exercise', ['self-progress'], *args, **kwargs)
+        super().__init__('exercise', [], *args, **kwargs)
 
     def create_exercise_form(self, el, submission_form):
         return '''

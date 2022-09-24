@@ -780,6 +780,7 @@ section.progress-section:first-child, section.progress-section.show {
 
 .ah-title-box .ah-breadcrumbs li:before {
   content: "";
+  position: static;
 }
 
 .ah-title-box .ah-breadcrumbs li + li:before {
