@@ -1,7 +1,4 @@
-from markdown.treeprocessors import Treeprocessor
-import xml.etree.ElementTree as etree
-
-from .utils import AdmonitionVisitor
+from .admonition import AdmonitionVisitor
 
 
 class CounterProcessor(AdmonitionVisitor):

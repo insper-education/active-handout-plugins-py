@@ -1,5 +1,7 @@
+@use "../abstracts/variables" as *;
+
 .admonition.exercise {
-  background: var(--clr-primary-600);
+  background: var(--clr-highlight-600);
   color: var(--clr-text-highlight-background);
 
   .admonition-title {
@@ -16,13 +18,14 @@
   .form-elements {
     display: flex;
     flex-direction: column;
+    counter-reset: alternative-counter;
 
     * {
       margin-top: 0.5rem;
     }
 
     input[type="text"] {
-      border: 1px solid var(--md-primary-fg-color);
+      border: 1px solid var(--clr-primary-600);
     }
 
     input[type="submit"] {
@@ -34,8 +37,56 @@
       border-radius: 0.25rem;
       align-self: flex-end;
 
-      background-color: var(--md-primary-fg-color);
+      background-color: var(--clr-highlight-300);
       color: white;
+    }
+
+    .alternative {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      background: var(--clr-admonition-background);
+      padding-right: $admonition-extra-inline;
+      color: var(--clr-text);
+      counter-increment: alternative-counter;
+      border-radius: $border-radius;
+      transition: transform 0.1s ease-in-out;
+
+      &.selected {
+        border: 4px solid var(--clr-highlight-100);
+      }
+
+      &:hover,
+      &:active,
+      &:focus {
+        cursor: pointer;
+        transform: scale(1.01);
+      }
+
+      input[type="radio"] {
+        display: none;
+      }
+
+      .content {
+        margin-top: 0;
+        padding-block: $admonition-extra-block;
+      }
+
+      &::before {
+        content: counter(alternative-counter, upper-alpha);
+        display: inline-grid;
+        place-items: center;
+
+        background: var(--clr-highlight-300);
+        padding: $admonition-extra-block;
+        margin-right: $admonition-extra-block;
+        border-radius: $border-radius 0 0 $border-radius;
+        width: calc(2 * $admonition-extra-block + 1em);
+        height: 100%;
+
+        color: white;
+        font-weight: 900;
+      }
     }
   }
 }

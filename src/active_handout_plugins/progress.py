@@ -2,7 +2,7 @@ from markdown.treeprocessors import Treeprocessor
 import xml.etree.ElementTree as etree
 import html
 
-from .utils import AdmonitionVisitor
+from .admonition import AdmonitionVisitor
 
 
 class ProgressButtons(AdmonitionVisitor):

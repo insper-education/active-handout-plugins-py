@@ -1,8 +1,8 @@
-from markdown.treeprocessors import Treeprocessor
 import xml.etree.ElementTree as etree
 import re
 
-from .utils import AdmonitionVisitor
+from .admonition import AdmonitionVisitor
+
 
 class VideoAdmonition(AdmonitionVisitor):
     def __init__(self, *args, **kwargs):

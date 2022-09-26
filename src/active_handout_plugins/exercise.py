@@ -1,48 +1,13 @@
 import xml.etree.ElementTree as etree
-from .utils import AdmonitionVisitor
+from .admonition import AdmonitionVisitor
 
 
 class ExerciseAdmonition(AdmonitionVisitor):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, base_class, subclasses, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
-        self.__visitors = []
-    
-    def register(self, visitor, weight):
-        self.__visitors.append((weight, visitor))
-        self.__visitors.sort()
-    
-    @property
-    def visitors(self):
-        for _, v in self.__visitors:
-            yield v
-    
-    def __select_visitor(self, el):
-        """Return the first match based on the priority"""
 
-        for visitor in self.visitors:
-            cls = visitor.base_class
-            if cls not in el.attrib['class']:
-                continue
-
-            if visitor.subclasses:
-                cls = self.has_class(el, visitor.subclasses)
-                if not cls:
-                    continue
-            
-            return visitor, cls
-        return None, None
-
-    def visit(self, el):
-        visitor, cls = self.__select_visitor(el)
-        if visitor:
-            visitor.visit(el, cls)
-
-
-class ExerciseAdmonitionVisitor:
-    def __init__(self, base_class, subclasses, md) -> None:
-        self.md = md
-        self.subclasses = subclasses
         self.base_class = base_class
+        self.subclasses = subclasses
         self.counter = 0
     
     def __set_element_id(self, el, cls):
@@ -81,9 +46,22 @@ class ExerciseAdmonitionVisitor:
         if answer:
             el.remove(answer)
             submission_form.append(answer)
+    
+    def __match_class(self, el):
+        cls = self.base_class
+        if cls not in el.attrib['class']:
+            return None
 
+        if self.subclasses:
+            return self.has_class(el, self.subclasses)
+        
+        return cls
 
-    def visit(self, el, cls):
+    def match(self, el):
+        return bool(self.__match_class(el))
+
+    def visit(self, el):
+        cls = self.__match_class(el)
         self.__set_element_id(el, cls)
         submission_form = etree.SubElement(el, 'form')
         self.__add_exercise_description(el, submission_form)
@@ -107,7 +85,7 @@ end
         return ''
 
 
-class ChoiceExercise(ExerciseAdmonitionVisitor):
+class ChoiceExercise(ExerciseAdmonition):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__('exercise', ['choice'], *args, **kwargs)
 
@@ -116,16 +94,24 @@ class ChoiceExercise(ExerciseAdmonitionVisitor):
         choices = submission_form.findall(".//ul[@class='task-list']/li")
         submission_form.remove(choice_list)
 
-        html_elements = ''
+        html_elements = '<div class="alternative-set">'
         for i, choice in enumerate(choices):
-            end = choice.text.find('\x03')
-            html_elements += f'<label><input type="radio" name="data" value="{i}"> {choice.text[end:]}  </label>\n'
-        html_elements += '<input type="submit" name="sendButton" value="Enviar"/>'
+            end = choice.text.find('\x03') + 1
+            content = choice.text[end:] + ''.join(etree.tostring(e, 'unicode') for e in choice if e.tag != 'label')
+            html_elements +=  f'''
+<label class="alternative">
+  <div class="content">
+    <input type="radio" name="data" value="{i}" _="on click remove .selected from .alternative in closest .alternative-set add .selected to the closest .alternative end">
+    {content}
+  </div>
+</label>
+'''
+        html_elements += '</div><input class="ah-button ah-button--primary" type="submit" name="sendButton" value="Enviar"/>'
 
         return html_elements
 
 
-class TextExercise(ExerciseAdmonitionVisitor):
+class TextExercise(ExerciseAdmonition):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__('exercise', ['short', 'medium', 'long'], *args, **kwargs)
 
@@ -143,7 +129,7 @@ class TextExercise(ExerciseAdmonitionVisitor):
 '''
 
 
-class SelfProgressExercise(ExerciseAdmonitionVisitor):
+class SelfProgressExercise(ExerciseAdmonition):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__('exercise', [], *args, **kwargs)
 

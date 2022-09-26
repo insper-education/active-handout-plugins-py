@@ -64,7 +64,7 @@ code {
   color: $operator;
 } /* Operator */
 .highlight .p {
-  color: $name;
+  color: $punctuation;
 } /* Punctuation */
 .highlight .ch {
   color: $comment;
@@ -130,7 +130,7 @@ code {
   color: $generic;
 } /* Name.Attribute */
 .highlight .nb {
-  color: $name;
+  color: $built-in;
 } /* Name.Builtin */
 .highlight .nc {
   color: $generic;
