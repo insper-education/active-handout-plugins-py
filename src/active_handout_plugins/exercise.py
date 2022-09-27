@@ -89,26 +89,37 @@ class ChoiceExercise(ExerciseAdmonition):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__('exercise', ['choice'], *args, **kwargs)
 
+    def __is_answer(self, stash_key):
+        key = int(stash_key[stash_key.index(':')+1:])
+        return 'checked' in self.md.htmlStash.rawHtmlBlocks[key]
+
     def create_exercise_form(self, el, submission_form):
         choice_list = submission_form.find(".//ul[@class='task-list']")
         choices = submission_form.findall(".//ul[@class='task-list']/li")
         submission_form.remove(choice_list)
 
-        html_elements = '<div class="alternative-set">'
+        html_alternatives = []
+        answer_idx = -1
         for i, choice in enumerate(choices):
             end = choice.text.find('\x03') + 1
+            is_answer = self.__is_answer(choice.text[:end-1])
+            if is_answer:
+                answer_idx = i
             content = choice.text[end:] + ''.join(etree.tostring(e, 'unicode') for e in choice if e.tag != 'label')
-            html_elements +=  f'''
+            html_alternatives.append(f'''
 <label class="alternative">
   <div class="content">
     <input type="radio" name="data" value="{i}" _="on click remove .selected from .alternative in closest .alternative-set add .selected to the closest .alternative end">
     {content}
   </div>
 </label>
+''')
+        return f'''
+<div class="alternative-set" data-answer-idx="{answer_idx}">
+  {"".join(html_alternatives)}
+</div>
+<input class="ah-button ah-button--primary" type="submit" name="sendButton" value="Enviar"/>
 '''
-        html_elements += '</div><input class="ah-button ah-button--primary" type="submit" name="sendButton" value="Enviar"/>'
-
-        return html_elements
 
 
 class TextExercise(ExerciseAdmonition):

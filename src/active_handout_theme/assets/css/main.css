@@ -455,11 +455,8 @@ section.progress-section:first-child, section.progress-section.show {
 .admonition.exercise .form-elements {
   counter-reset: alternative-counter;
   flex-direction: column;
+  margin-bottom: 1rem;
   display: flex;
-}
-
-.admonition.exercise .form-elements * {
-  margin-top: .5rem;
 }
 
 .admonition.exercise .form-elements input[type="text"] {
@@ -473,8 +470,15 @@ section.progress-section:first-child, section.progress-section.show {
   justify-content: center;
   align-self: flex-end;
   align-items: center;
+  margin-top: 1rem;
   padding: .5rem 1rem;
   font-weight: bold;
+  display: flex;
+}
+
+.admonition.exercise .form-elements .alternative-set {
+  flex-direction: column;
+  gap: .5rem;
   display: flex;
 }
 
@@ -482,6 +486,7 @@ section.progress-section:first-child, section.progress-section.show {
   background: var(--clr-admonition-background);
   color: var(--clr-text);
   counter-increment: alternative-counter;
+  --selection-color: var(--clr-highlight-100);
   border-radius: .2em;
   grid-template-columns: auto 1fr;
   align-items: center;
@@ -491,7 +496,7 @@ section.progress-section:first-child, section.progress-section.show {
 }
 
 .admonition.exercise .form-elements .alternative.selected {
-  border: 4px solid var(--clr-highlight-100);
+  border: 4px solid var(--selection-color);
 }
 
 .admonition.exercise .form-elements .alternative:hover, .admonition.exercise .form-elements .alternative:active, .admonition.exercise .form-elements .alternative:focus {
