@@ -22,8 +22,18 @@ export function queryOptions(el) {
   return el.querySelectorAll("input[name='data'][type='radio']");
 }
 
+export function queryCorrectOptionIdx(el) {
+  const alternativeSet = el.querySelector(".alternative-set");
+  if (!alternativeSet) return "";
+  return alternativeSet.getAttribute("data-answer-idx");
+}
+
 export function queryOption(el, value) {
   return el.querySelector(`input[name='data'][value='${value}'`);
+}
+
+export function queryParentAlternative(option) {
+  return option.closest(".alternative");
 }
 
 export function querySubmitBtn(el) {

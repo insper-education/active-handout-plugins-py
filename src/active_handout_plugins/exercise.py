@@ -9,7 +9,7 @@ class ExerciseAdmonition(AdmonitionVisitor):
         self.base_class = base_class
         self.subclasses = subclasses
         self.counter = 0
-    
+
     def __set_element_id(self, el, cls):
         self.counter += 1
         el.set("id", f"{cls}-{self.counter}")
@@ -46,7 +46,7 @@ class ExerciseAdmonition(AdmonitionVisitor):
         if answer:
             el.remove(answer)
             submission_form.append(answer)
-    
+
     def __match_class(self, el):
         cls = self.base_class
         if cls not in el.attrib['class']:
@@ -54,7 +54,7 @@ class ExerciseAdmonition(AdmonitionVisitor):
 
         if self.subclasses:
             return self.has_class(el, self.subclasses)
-        
+
         return cls
 
     def match(self, el):
@@ -72,14 +72,14 @@ on submit
         show the <.answer/> in me
     end
     add @disabled to <input/> in me
-    add .done to me
+    add .done to closest .exercise
     hide the <input[type="submit"]/> in me
     send remember(element: my parentElement) to window
 end
         '''
         submission_form.set('_', hs_code)
         self.__add_exercise_form_elements(el, submission_form)
-    
+
 
     def create_exercise_form(self, el, submission_form):
         return ''

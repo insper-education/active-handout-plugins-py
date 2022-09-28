@@ -3,7 +3,8 @@ function getKey(elOrKey) {
     return elOrKey;
   }
   const docAddr = document.location.pathname;
-  return `${docAddr}/${elOrKey.id}`;
+  const slash = docAddr.endsWith("/") ? "" : "/";
+  return `${docAddr}${slash}${elOrKey.id}`;
 }
 
 export function setValue(elOrKey, value) {

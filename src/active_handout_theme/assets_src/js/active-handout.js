@@ -6,8 +6,6 @@ function onLoad() {
   initTabbedPlugin();
 
   let rememberCallbacks = [];
-  initProgressPlugin(rememberCallbacks);
-  initExercisePlugin(rememberCallbacks);
 
   window.addEventListener("remember", function (e) {
     const element = e.detail.element;
@@ -18,6 +16,9 @@ function onLoad() {
       }
     }
   });
+
+  initProgressPlugin(rememberCallbacks);
+  initExercisePlugin(rememberCallbacks);
 }
 
 if (document.readyState !== "loading") {

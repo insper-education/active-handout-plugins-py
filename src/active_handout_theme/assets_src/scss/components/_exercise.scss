@@ -1,18 +1,44 @@
 @use "../abstracts/variables" as *;
 
 .admonition.exercise {
-  background: var(--clr-highlight-600);
-  color: var(--clr-text-highlight-background);
+  --admonition-text-color: var(--clr-text-highlight-background);
+  --admonition-text-highlight: var(--clr-highlight-100);
+  --admonition-title-color: var(--clr-highlight-100);
 
-  .admonition-title {
-    color: var(--clr-highlight-100);
+  &,
+  & * {
+    transition: background 0.1s ease-in-out;
+  }
+
+  background: var(--clr-highlight-600);
+
+  &.done {
+    --admonition-text-color: var(--clr-text-highlight-background);
+    --admonition-text-highlight: var(--clr-gray-primary-300);
+    --admonition-title-color: white;
+
+    background: var(--clr-gray-primary-700);
   }
 
   ol,
   ul {
     li::before {
-      color: var(--clr-highlight-100);
+      color: var(--admonition-text-highlight);
     }
+  }
+
+  form {
+    display: grid;
+  }
+
+  .admonition.answer {
+    --admonition-text-color: var(--clr-text);
+    --admonition-title-color: var(--clr-primary-600);
+
+    margin-top: (2 * $admonition-extra-block);
+    margin-bottom: (-$admonition-extra-block);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
 
   .form-elements {
@@ -38,7 +64,7 @@
       font-weight: bold;
 
       background-color: var(--clr-highlight-300);
-      color: white;
+      color: var(--admonition-text-color);
     }
 
     .alternative-set {
@@ -60,7 +86,7 @@
       --selection-color: var(--clr-highlight-100);
 
       &.selected {
-        border: 4px solid var(--selection-color);
+        outline: 0.3rem solid var(--selection-color);
       }
 
       &:hover,
@@ -68,6 +94,30 @@
       &:focus {
         cursor: pointer;
         transform: scale(1.01);
+      }
+
+      &.correct {
+        background: var(--clr-success-primary-200);
+
+        &::before {
+          background: var(--clr-success-primary-500);
+        }
+
+        &.selected {
+          outline-color: var(--clr-success-primary-300);
+        }
+      }
+
+      &.wrong {
+        background: var(--clr-fail-primary-200);
+
+        &::before {
+          background: var(--clr-fail-primary-600);
+        }
+
+        &.selected {
+          outline-color: var(--clr-fail-primary-400);
+        }
       }
 
       input[type="radio"] {

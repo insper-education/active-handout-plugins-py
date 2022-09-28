@@ -1,6 +1,13 @@
 @use "sass:color";
 @use "sass:list";
 
+// Original theme colors
+$color1: #21295c;
+$color2: #1b3b6f;
+$color3: #065a82;
+$color4: #1c7293;
+$color5: #9eb3c2;
+
 $colors: (
   "gray": (
     primary: hsl(235, 5%, 53%) 0 100,
@@ -8,6 +15,15 @@ $colors: (
   "blue": (
     primary: hsl(232, 47%, 25%) 20 80,
     highlight: hsl(217, 56%, 53%) 20 80,
+  ),
+  "success": (
+    primary: hsl(145, 71%, 47%) 0 100,
+  ),
+  "fail": (
+    primary: hsl(15, 100%, 50%) 0 100,
+  ),
+  "warn": (
+    primary: hsl(40, 100%, 67%) 0 100,
   ),
 );
 

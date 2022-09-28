@@ -538,8 +538,6 @@ var _exercise = require("./exercise");
 function onLoad() {
     (0, _tabbedContent.initTabbedPlugin)();
     let rememberCallbacks = [];
-    (0, _progress.initProgressPlugin)(rememberCallbacks);
-    (0, _exercise.initExercisePlugin)(rememberCallbacks);
     window.addEventListener("remember", function(e) {
         const element = e.detail.element;
         for (let remember of rememberCallbacks)if (remember.match(element)) {
@@ -547,11 +545,95 @@ function onLoad() {
             break;
         }
     });
+    (0, _progress.initProgressPlugin)(rememberCallbacks);
+    (0, _exercise.initExercisePlugin)(rememberCallbacks);
 }
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./exercise":"dmczC"}],"eIlmk":[function(require,module,exports) {
+},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC"}],"fzxNo":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
+var _clientDb = require("../client-db");
+var _telemetry = require("../telemetry");
+function initProgressPlugin(rememberCallbacks) {
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains("progress"),
+        callback: (el)=>{
+            (0, _telemetry.saveAndSendData)(el, true);
+        }
+    });
+    queryProgressBtns().forEach((e)=>{
+        if ((0, _clientDb.getValue)(e)) e.click();
+    });
+}
+function queryProgressBtns() {
+    return document.querySelectorAll("button.progress");
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ","../client-db":"j0pff"}],"5oERU":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"kpvgZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
+var _clientDb = require("./client-db");
+function saveAndSendData(elOrKey, value) {
+    (0, _clientDb.setValue)(elOrKey, value);
+    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
+// TODO: fetch POST with token
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client-db":"j0pff"}],"j0pff":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "setValue", ()=>setValue);
+parcelHelpers.export(exports, "getValue", ()=>getValue);
+function getKey(elOrKey) {
+    if (typeof elOrKey === "string") return elOrKey;
+    const docAddr = document.location.pathname;
+    const slash = docAddr.endsWith("/") ? "" : "/";
+    return `${docAddr}${slash}${elOrKey.id}`;
+}
+function setValue(elOrKey, value) {
+    const key = getKey(elOrKey);
+    localStorage[key] = value;
+}
+function getValue(elOrKey) {
+    const key = getKey(elOrKey);
+    return localStorage.getItem(key);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"eIlmk":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initTabbedPlugin", ()=>initTabbedPlugin);
@@ -627,88 +709,7 @@ function initTabbedPlugin() {
     tabScroll();
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5oERU":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"fzxNo":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
-var _clientDb = require("../client-db");
-var _telemetry = require("../telemetry");
-function initProgressPlugin(rememberCallbacks) {
-    queryProgressBtns().forEach((e)=>{
-        if ((0, _clientDb.getValue)(e)) e.click();
-    });
-    rememberCallbacks.push({
-        match: (el)=>el.classList.contains("progress"),
-        callback: (el)=>{
-            (0, _telemetry.saveAndSendData)(el, true);
-        }
-    });
-}
-function queryProgressBtns() {
-    return document.querySelectorAll("button.progress");
-}
-
-},{"../client-db":"j0pff","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"j0pff":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "setValue", ()=>setValue);
-parcelHelpers.export(exports, "getValue", ()=>getValue);
-function getKey(elOrKey) {
-    if (typeof elOrKey === "string") return elOrKey;
-    const docAddr = document.location.pathname;
-    return `${docAddr}/${elOrKey.id}`;
-}
-function setValue(elOrKey, value) {
-    const key = getKey(elOrKey);
-    localStorage[key] = value;
-}
-function getValue(elOrKey) {
-    const key = getKey(elOrKey);
-    return localStorage.getItem(key);
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"kpvgZ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
-var _clientDb = require("./client-db");
-function saveAndSendData(elOrKey, value) {
-    (0, _clientDb.setValue)(elOrKey, value);
-    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
-// TODO: fetch POST with token
-}
-
-},{"./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"dmczC":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"dmczC":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initExercisePlugin", ()=>initExercisePlugin);
@@ -716,11 +717,21 @@ var _clientDb = require("../client-db");
 var _telemetry = require("../telemetry");
 var _queries = require("./queries");
 function initExercisePlugin(rememberCallbacks) {
-    initTextExercises(rememberCallbacks);
-    initChoiceExercises(rememberCallbacks);
-    initSelfProgressExercises(rememberCallbacks);
+    rememberCallbacks.push({
+        match: matchTextExercises,
+        callback: rememberTextExercise
+    }, {
+        match: matchChoiceExercises,
+        callback: rememberChoiceExercise
+    }, {
+        match: matchSelfProgressExercises,
+        callback: rememberSelfProgressExercise
+    });
+    initTextExercises();
+    initChoiceExercises();
+    initSelfProgressExercises();
 }
-function initTextExercises(rememberCallbacks) {
+function initTextExercises() {
     (0, _queries.queryTextExercises)().forEach((el)=>{
         const prevAnswer = (0, _clientDb.getValue)(el);
         if (prevAnswer !== null) {
@@ -728,41 +739,50 @@ function initTextExercises(rememberCallbacks) {
             (0, _queries.querySubmitBtn)(el).click();
         }
     });
-    rememberCallbacks.push({
-        match: (el)=>el.classList.contains("short") || el.classList.contains("medium") || el.classList.contains("long"),
-        callback: (el)=>{
-            const textElement = (0, _queries.queryTextInputs)(el);
-            (0, _telemetry.saveAndSendData)(element, textElement.value);
-        }
-    });
 }
-function initChoiceExercises(rememberCallbacks) {
+function matchTextExercises(el) {
+    return el.classList.contains("short") || el.classList.contains("medium") || el.classList.contains("long");
+}
+function rememberTextExercise(el) {
+    const textElement = (0, _queries.queryTextInputs)(el);
+    (0, _telemetry.saveAndSendData)(element, textElement.value);
+}
+function initChoiceExercises() {
     (0, _queries.queryChoiceExercises)().forEach((el)=>{
         const prevAnswer = (0, _clientDb.getValue)(el);
         if (prevAnswer !== null) {
-            (0, _queries.queryOption)(el, prevAnswer).checked = true;
+            const option = (0, _queries.queryOption)(el, prevAnswer);
+            const alternative = (0, _queries.queryParentAlternative)(option);
+            option.setAttribute("checked", true);
+            alternative.classList.add("selected");
             (0, _queries.querySubmitBtn)(el).click();
         }
     });
-    rememberCallbacks.push({
-        match: (el)=>el.classList.contains("choice"),
-        callback: (el)=>{
-            const choices = (0, _queries.queryOptions)(el);
-            for (let choice of choices)if (choice.checked) (0, _telemetry.saveAndSendData)(el, choice.value);
-        }
-    });
 }
-function initSelfProgressExercises(rememberCallbacks) {
+function matchChoiceExercises(el) {
+    return el.classList.contains("choice");
+}
+function rememberChoiceExercise(el) {
+    const choices = (0, _queries.queryOptions)(el);
+    const correctIdx = (0, _queries.queryCorrectOptionIdx)(el);
+    for (let choice of choices){
+        const alternative = (0, _queries.queryParentAlternative)(choice);
+        if (correctIdx === choice.value) alternative.classList.add("correct");
+        else alternative.classList.add("wrong");
+        if (choice.checked) (0, _telemetry.saveAndSendData)(el, choice.value);
+    }
+}
+function initSelfProgressExercises() {
     (0, _queries.querySelfProgressExercises)().forEach((el)=>{
         const prevAnswer = (0, _clientDb.getValue)(el);
         if (prevAnswer !== null) (0, _queries.querySubmitBtn)(el).click();
     });
-    rememberCallbacks.push({
-        match: (el)=>el.classList.contains("exercise"),
-        callback: (el)=>{
-            (0, _telemetry.saveAndSendData)(el, true);
-        }
-    });
+}
+function matchSelfProgressExercises(el) {
+    return el.classList.contains("exercise");
+}
+function rememberSelfProgressExercise(el) {
+    (0, _telemetry.saveAndSendData)(el, true);
 }
 
 },{"../client-db":"j0pff","../telemetry":"kpvgZ","./queries":"5VMWX","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5VMWX":[function(require,module,exports) {
@@ -773,7 +793,9 @@ parcelHelpers.export(exports, "queryChoiceExercises", ()=>queryChoiceExercises);
 parcelHelpers.export(exports, "querySelfProgressExercises", ()=>querySelfProgressExercises);
 parcelHelpers.export(exports, "queryTextInputs", ()=>queryTextInputs);
 parcelHelpers.export(exports, "queryOptions", ()=>queryOptions);
+parcelHelpers.export(exports, "queryCorrectOptionIdx", ()=>queryCorrectOptionIdx);
 parcelHelpers.export(exports, "queryOption", ()=>queryOption);
+parcelHelpers.export(exports, "queryParentAlternative", ()=>queryParentAlternative);
 parcelHelpers.export(exports, "querySubmitBtn", ()=>querySubmitBtn);
 function queryTextExercises() {
     return document.querySelectorAll("div.admonition.exercise.short, div.admonition.exercise.medium, div.admonition.exercise.long");
@@ -790,8 +812,16 @@ function queryTextInputs(el) {
 function queryOptions(el) {
     return el.querySelectorAll("input[name='data'][type='radio']");
 }
+function queryCorrectOptionIdx(el) {
+    const alternativeSet = el.querySelector(".alternative-set");
+    if (!alternativeSet) return "";
+    return alternativeSet.getAttribute("data-answer-idx");
+}
 function queryOption(el, value) {
     return el.querySelector(`input[name='data'][value='${value}'`);
+}
+function queryParentAlternative(option) {
+    return option.closest(".alternative");
 }
 function querySubmitBtn(el) {
     return el.querySelector("input[type='submit']");
