@@ -1,2 +1,28 @@
 @forward "light";
 @forward "syntax-highlight";
+
+:root {
+  // Background
+  --clr-background: var(--clr-background-default);
+  // Text
+  --clr-text: var(--clr-text-default);
+  --clr-text-em: var(--clr-text-em-default);
+  --clr-text-strong: var(--clr-text-strong-default);
+  // Title
+  --clr-title: var(--clr-title-default);
+  --clr-subtitle: var(--clr-subtitle-default);
+  // Link
+  --clr-link: var(--clr-link-default);
+  --clr-link-hover: var(--clr-link-default-hover);
+  // Bullet points
+  --clr-bullet: var(--clr-bullet-default);
+  // Button
+  --clr-btn: var(--clr-btn-default);
+  --clr-btn-border: var(--clr-btn-default-border);
+  --clr-btn-text: var(--clr-btn-default-text);
+  --clr-btn-text-hover: var(--clr-btn-default-text-hover);
+}
+
+body {
+  background-color: var(--clr-background);
+}

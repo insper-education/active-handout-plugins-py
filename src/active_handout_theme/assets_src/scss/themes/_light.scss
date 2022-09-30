@@ -1,28 +1,60 @@
-$admonition-background: hsl(229, 100%, 91%);
-$admonition-background-dim: hsl(225, 22%, 93%);
-$code-background: hsl(229, 100%, 97%);
-
 :root {
-  --clr-primary-100: var(--clr-blue-primary-100);
-  --clr-primary-200: var(--clr-blue-primary-200);
-  --clr-primary-300: var(--clr-blue-primary-300);
-  --clr-primary-400: var(--clr-blue-primary-400);
-  --clr-primary-500: var(--clr-blue-primary-500);
-  --clr-primary-600: var(--clr-blue-primary-600);
+  --clr-white: var(--clr-gray-primary-1);
+  --clr-black: var(--clr-gray-primary-15);
 
-  --clr-highlight-100: var(--clr-blue-highlight-100);
-  --clr-highlight-200: var(--clr-blue-highlight-200);
-  --clr-highlight-300: var(--clr-blue-highlight-300);
-  --clr-highlight-400: var(--clr-blue-highlight-400);
-  --clr-highlight-500: var(--clr-blue-highlight-500);
-  --clr-highlight-600: var(--clr-blue-highlight-600);
-
-  --clr-text: hsl(180, 4%, 5%);
-  --clr-text-dim: var(--clr-gray-primary-400);
-  --clr-text-dim-hover: var(--clr-gray-primary-300);
-  --clr-text-highlight-background: white;
-
-  --clr-admonition-background: #{$admonition-background};
-  --clr-admonition-background-dim: #{$admonition-background-dim};
-  --clr-code-background: #{$code-background};
+  // Background
+  --clr-background-default: var(--clr-white);
+  // Text
+  --clr-text-default: var(--clr-black);
+  --clr-text-default-hover: var(--clr-gray-primary-8);
+  --clr-text-disabled: var(--clr-gray-primary-5);
+  --clr-text-disabled-hover: var(--clr-gray-primary-4);
+  --clr-text-em-default: var(--clr-blue-primary-6);
+  --clr-text-strong-default: var(--clr-blue-primary-6);
+  // Title
+  --clr-title-default: var(--clr-blue-primary-6);
+  --clr-subtitle-default: var(--clr-blue-highlight-4);
+  // Link
+  --clr-link-default: var(--clr-blue-highlight-4);
+  --clr-link-default-hover: var(--clr-blue-highlight-3);
+  // Bullet points
+  --clr-bullet-default: var(--clr-blue-highlight-3);
+  // Button default
+  --clr-btn-default: transparent;
+  --clr-btn-default-border: var(--clr-blue-primary-5);
+  --clr-btn-default-text: var(--clr-blue-primary-5);
+  --clr-btn-default-text-hover: var(--clr-blue-primary-4);
+  // Button disabled
+  --clr-btn-disabled: var(--clr-gray-primary-3);
+  // Button primary
+  --clr-btn-primary: var(--clr-blue-highlight-4);
+  --clr-btn-primary-text: var(--clr-white);
+  --clr-btn-primary-text-hover: var(--clr-white);
+  // Admonition
+  --clr-admonition-default-background: var(--clr-blue-highlight-1);
+  --clr-admonition-default-text: var(--clr-text-default);
+  --clr-admonition-default-title: var(--clr-title-default);
+  // Admonition disabled
+  --clr-admonition-disabled-background: var(--clr-gray-primary-2);
+  --clr-admonition-disabled-text: var(--clr-text-default);
+  --clr-admonition-disabled-title: var(--clr-title-default);
+  --clr-admonition-disabled-bullet: var(--clr-bullet-default);
+  // Exercise
+  --clr-admonition-exercise-background: var(--clr-blue-highlight-6);
+  --clr-admonition-exercise-text: var(--clr-white);
+  --clr-admonition-exercise-title: var(--clr-blue-highlight-1);
+  --clr-admonition-exercise-bullet: var(--clr-blue-highlight-1);
+  // Code
+  --clr-code-background: hsl(229, 100%, 97%);
+  --clr-code-comment: hsl(219, 8%, 58%);
+  --clr-code-error-background: hsl(328, 100%, 94%);
+  --clr-code-error-text: hsl(328, 100%, 29%);
+  --clr-code-keyword: hsl(211, 100%, 44%);
+  --clr-code-literal: hsl(261, 48%, 55%);
+  --clr-code-name: hsl(60, 30%, 4%);
+  --clr-code-punctuation: hsl(210, 17%, 45%);
+  --clr-code-builtin: hsl(338, 95%, 56%);
+  --clr-code-operator: hsl(338, 95%, 56%);
+  --clr-code-generic: hsl(120, 100%, 30%);
+  --clr-code-string: hsl(33, 87%, 46%);
 }

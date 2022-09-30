@@ -2,20 +2,20 @@
 @use "../base/typeset" as *;
 
 .admonition {
-  --admonition-text-color: var(--clr-text);
-  --admonition-title-color: var(--clr-primary-600);
+  --clr-background: var(--clr-admonition-default-background);
+  --clr-text: var(--clr-admonition-default-text);
+  --clr-title: var(--clr-admonition-default-title);
 
-  background: var(--clr-admonition-background);
-  margin: 0 (-$admonition-extra-inline);
+  background: var(--clr-background);
+  margin: 0 (-$admonition-extra-inline) (2 * $admonition-extra-block);
   padding: $admonition-extra-block $admonition-extra-inline;
   border-radius: $border-radius;
-  color: var(--admonition-text-color);
 
   .admonition-title {
     font-family: $font-highlight;
     font-size: map-get($font-sizes, "large");
     font-weight: 700;
     border-bottom: 2px solid currentColor;
-    color: var(--admonition-title-color);
+    color: var(--clr-title);
   }
 }

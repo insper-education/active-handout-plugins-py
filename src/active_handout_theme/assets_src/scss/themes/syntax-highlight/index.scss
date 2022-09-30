@@ -1,10 +1,9 @@
-@use "active-handout" as *;
 @use "../../abstracts/variables" as *;
 @use "../../base/typeset" as *;
 
 div.highlight,
 :not(.highlight) > pre {
-  background: $highlight-background;
+  background: var(--clr-code-background);
   padding: $admonition-extra-block $admonition-extra-inline;
   margin: 0 (-$admonition-extra-inline) $space-between-block;
   border-radius: $border-radius;
@@ -30,8 +29,8 @@ code {
   $extra-block: 0.2em;
   $extra-inline: 0.5em;
 
-  color: var(--clr-text);
-  background: $highlight-background;
+  color: var(--clr-code-name);
+  background: var(--clr-code-background);
 
   padding: $extra-block $extra-inline;
   border-radius: $border-radius;
@@ -39,214 +38,214 @@ code {
 
 // Syntax highlight colors
 .highlight .hll {
-  background-color: $background;
+  background-color: var(--clr-code-background);
 }
 .highlight {
-  background: $highlight-background;
-  color: $name;
+  background: var(--clr-code-background);
+  color: var(--clr-code-name);
 }
 .highlight .c {
-  color: $comment;
+  color: var(--clr-code-comment);
 } /* Comment */
 .highlight .err {
-  color: $error-color;
-  background-color: $error-background;
+  color: var(--clr-code-error-text);
+  background-color: var(--clr-code-error-background);
 } /* Error */
 .highlight .k {
-  color: $keyword;
+  color: var(--clr-code-keyword);
 } /* Keyword */
 .highlight .l {
-  color: $literal;
+  color: var(--clr-code-literal);
 } /* Literal */
 .highlight .n {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name */
 .highlight .o {
-  color: $operator;
+  color: var(--clr-code-operator);
 } /* Operator */
 .highlight .p {
-  color: $punctuation;
+  color: var(--clr-code-punctuation);
 } /* Punctuation */
 .highlight .ch {
-  color: $comment;
+  color: var(--clr-code-comment);
 } /* Comment.Hashbang */
 .highlight .cm {
-  color: $comment;
+  color: var(--clr-code-comment);
 } /* Comment.Multiline */
 .highlight .cp {
-  color: $comment;
+  color: var(--clr-code-comment);
 } /* Comment.Preproc */
 .highlight .cpf {
-  color: $comment;
+  color: var(--clr-code-comment);
 } /* Comment.PreprocFile */
 .highlight .c1 {
-  color: $comment;
+  color: var(--clr-code-comment);
 } /* Comment.Single */
 .highlight .cs {
-  color: $comment;
+  color: var(--clr-code-comment);
 } /* Comment.Special */
 .highlight .gd {
-  color: $operator;
+  color: var(--clr-code-operator);
 } /* Generic.Deleted */
 .highlight .ge {
   font-style: italic;
 } /* Generic.Emph */
 .highlight .gi {
-  color: $generic;
+  color: var(--clr-code-generic);
 } /* Generic.Inserted */
 .highlight .gs {
   font-weight: bold;
 } /* Generic.Strong */
 .highlight .gu {
-  color: $comment;
+  color: var(--clr-code-comment);
 } /* Generic.Subheading */
 .highlight .kc {
-  color: $keyword;
+  color: var(--clr-code-keyword);
 } /* Keyword.Constant */
 .highlight .kd {
-  color: $keyword;
+  color: var(--clr-code-keyword);
 } /* Keyword.Declaration */
 .highlight .kn {
-  color: $operator;
+  color: var(--clr-code-operator);
 } /* Keyword.Namespace */
 .highlight .kp {
-  color: $keyword;
+  color: var(--clr-code-keyword);
 } /* Keyword.Pseudo */
 .highlight .kr {
-  color: $keyword;
+  color: var(--clr-code-keyword);
 } /* Keyword.Reserved */
 .highlight .kt {
-  color: $keyword;
+  color: var(--clr-code-keyword);
 } /* Keyword.Type */
 .highlight .ld {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.Date */
 .highlight .m {
-  color: $literal;
+  color: var(--clr-code-literal);
 } /* Literal.Number */
 .highlight .s {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String */
 .highlight .na {
-  color: $generic;
+  color: var(--clr-code-generic);
 } /* Name.Attribute */
 .highlight .nb {
-  color: $built-in;
+  color: var(--clr-code-builtin);
 } /* Name.Builtin */
 .highlight .nc {
-  color: $generic;
+  color: var(--clr-code-generic);
 } /* Name.Class */
 .highlight .no {
-  color: $keyword;
+  color: var(--clr-code-keyword);
 } /* Name.Constant */
 .highlight .nd {
-  color: $generic;
+  color: var(--clr-code-generic);
 } /* Name.Decorator */
 .highlight .ni {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name.Entity */
 .highlight .ne {
-  color: $generic;
+  color: var(--clr-code-generic);
 } /* Name.Exception */
 .highlight .nf {
-  color: $generic;
+  color: var(--clr-code-generic);
 } /* Name.Function */
 .highlight .nl {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name.Label */
 .highlight .nn {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name.Namespace */
 .highlight .nx {
-  color: $generic;
+  color: var(--clr-code-generic);
 } /* Name.Other */
 .highlight .py {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name.Property */
 .highlight .nt {
-  color: $operator;
+  color: var(--clr-code-operator);
 } /* Name.Tag */
 .highlight .nv {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name.Variable */
 .highlight .ow {
-  color: $operator;
+  color: var(--clr-code-operator);
 } /* Operator.Word */
 .highlight .w {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Text.Whitespace */
 .highlight .mb {
-  color: $literal;
+  color: var(--clr-code-literal);
 } /* Literal.Number.Bin */
 .highlight .mf {
-  color: $literal;
+  color: var(--clr-code-literal);
 } /* Literal.Number.Float */
 .highlight .mh {
-  color: $literal;
+  color: var(--clr-code-literal);
 } /* Literal.Number.Hex */
 .highlight .mi {
-  color: $literal;
+  color: var(--clr-code-literal);
 } /* Literal.Number.Integer */
 .highlight .mo {
-  color: $literal;
+  color: var(--clr-code-literal);
 } /* Literal.Number.Oct */
 .highlight .sa {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Affix */
 .highlight .sb {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Backtick */
 .highlight .sc {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Char */
 .highlight .dl {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Delimiter */
 .highlight .sd {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Doc */
 .highlight .s2 {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Double */
 .highlight .se {
-  color: $literal;
+  color: var(--clr-code-literal);
 } /* Literal.String.Escape */
 .highlight .sh {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Heredoc */
 .highlight .si {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Interpol */
 .highlight .sx {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Other */
 .highlight .sr {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Regex */
 .highlight .s1 {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Single */
 .highlight .ss {
-  color: $string;
+  color: var(--clr-code-string);
 } /* Literal.String.Symbol */
 .highlight .bp {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name.Builtin.Pseudo */
 .highlight .fm {
-  color: $generic;
+  color: var(--clr-code-generic);
 } /* Name.Function.Magic */
 .highlight .vc {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name.Variable.Class */
 .highlight .vg {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name.Variable.Global */
 .highlight .vi {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name.Variable.Instance */
 .highlight .vm {
-  color: $name;
+  color: var(--clr-code-name);
 } /* Name.Variable.Magic */
 .highlight .il {
-  color: $literal;
+  color: var(--clr-code-literal);
 } /* Literal.Number.Integer.Long */

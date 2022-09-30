@@ -1,149 +1,131 @@
 @use "../abstracts/variables" as *;
 
 .admonition.exercise {
-  --admonition-text-color: var(--clr-text-highlight-background);
-  --admonition-text-highlight: var(--clr-highlight-100);
-  --admonition-title-color: var(--clr-highlight-100);
+  --clr-background: var(--clr-admonition-exercise-background);
+  --clr-text: var(--clr-admonition-exercise-text);
+  --clr-title: var(--clr-admonition-exercise-title);
+  --clr-bullet: var(--clr-admonition-exercise-bullet);
 
   &,
   & * {
     transition: background 0.1s ease-in-out;
   }
 
-  background: var(--clr-highlight-600);
-
   &.done {
-    --admonition-text-color: var(--clr-text-highlight-background);
-    --admonition-text-highlight: var(--clr-gray-primary-300);
-    --admonition-title-color: white;
-
-    background: var(--clr-gray-primary-700);
-  }
-
-  ol,
-  ul {
-    li::before {
-      color: var(--admonition-text-highlight);
-    }
+    --clr-background: var(--clr-admonition-disabled-background);
+    --clr-text: var(--clr-admonition-disabled-text);
+    --clr-title: var(--clr-admonition-disabled-title);
+    --clr-bullet: var(--clr-admonition-disabled-bullet);
   }
 
   form {
     display: grid;
   }
+}
 
-  .admonition.answer {
-    --admonition-text-color: var(--clr-text);
-    --admonition-title-color: var(--clr-primary-600);
+.admonition.answer {
+  margin-top: (2 * $admonition-extra-block);
+  margin-bottom: (-$admonition-extra-block);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
 
-    margin-top: (2 * $admonition-extra-block);
-    margin-bottom: (-$admonition-extra-block);
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
+.form-elements {
+  display: flex;
+  flex-direction: column;
+  counter-reset: alternative-counter;
+  margin-bottom: $admonition-extra-block;
+
+  input[type="submit"] {
+    display: flex;
+    align-self: flex-end;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: $admonition-extra-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+
+    font-weight: bold;
   }
 
-  .form-elements {
+  .alternative-set {
     display: flex;
     flex-direction: column;
-    counter-reset: alternative-counter;
-    margin-bottom: $admonition-extra-block;
+    gap: 0.5rem;
+  }
 
-    input[type="text"] {
-      border: 1px solid var(--clr-primary-600);
+  .alternative {
+    --clr-text: var(--clr-text-default);
+    --selection-color: var(--clr-blue-highlight-2);
+
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    background: var(--clr-admonition-default-background);
+    padding-right: $admonition-extra-inline;
+    counter-increment: alternative-counter;
+    border-radius: $border-radius;
+    transition: transform 0.1s ease-in-out;
+
+    &.selected {
+      outline: 0.3rem solid var(--selection-color);
     }
 
-    input[type="submit"] {
-      display: flex;
-      align-self: flex-end;
-      justify-content: center;
-      align-items: center;
-
-      margin-top: $admonition-extra-block;
-      padding: 0.5rem 1rem;
-      border-radius: 0.25rem;
-
-      font-weight: bold;
-
-      background-color: var(--clr-highlight-300);
-      color: var(--admonition-text-color);
+    &:hover,
+    &:active,
+    &:focus {
+      cursor: pointer;
+      transform: scale(1.01);
     }
 
-    .alternative-set {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .alternative {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: center;
-      background: var(--clr-admonition-background);
-      padding-right: $admonition-extra-inline;
-      color: var(--clr-text);
-      counter-increment: alternative-counter;
-      border-radius: $border-radius;
-      transition: transform 0.1s ease-in-out;
-      --selection-color: var(--clr-highlight-100);
-
-      &.selected {
-        outline: 0.3rem solid var(--selection-color);
-      }
-
-      &:hover,
-      &:active,
-      &:focus {
-        cursor: pointer;
-        transform: scale(1.01);
-      }
-
-      &.correct {
-        background: var(--clr-success-primary-200);
-
-        &::before {
-          background: var(--clr-success-primary-500);
-        }
-
-        &.selected {
-          outline-color: var(--clr-success-primary-300);
-        }
-      }
-
-      &.wrong {
-        background: var(--clr-fail-primary-200);
-
-        &::before {
-          background: var(--clr-fail-primary-600);
-        }
-
-        &.selected {
-          outline-color: var(--clr-fail-primary-400);
-        }
-      }
-
-      input[type="radio"] {
-        display: none;
-      }
-
-      .content {
-        margin-top: 0;
-        padding-block: $admonition-extra-block;
-      }
+    &.correct {
+      background: var(--clr-success-primary-2);
 
       &::before {
-        content: counter(alternative-counter, upper-alpha);
-        display: inline-grid;
-        place-items: center;
-
-        background: var(--clr-highlight-300);
-        padding: $admonition-extra-block;
-        margin-right: $admonition-extra-block;
-        border-radius: $border-radius 0 0 $border-radius;
-        width: calc(2 * $admonition-extra-block + 1em);
-        height: 100%;
-
-        color: white;
-        font-weight: 900;
+        background: var(--clr-success-primary-5);
       }
+
+      &.selected {
+        outline-color: var(--clr-success-primary-4);
+      }
+    }
+
+    &.wrong {
+      background: var(--clr-fail-primary-2);
+
+      &::before {
+        background: var(--clr-fail-primary-6);
+      }
+
+      &.selected {
+        outline-color: var(--clr-fail-primary-5);
+      }
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    .content {
+      margin-top: 0;
+      padding-block: $admonition-extra-block;
+    }
+
+    &::before {
+      content: counter(alternative-counter, upper-alpha);
+      display: inline-grid;
+      place-items: center;
+
+      background: var(--clr-blue-highlight-3);
+      padding: $admonition-extra-block;
+      margin-right: $admonition-extra-block;
+      border-radius: $border-radius 0 0 $border-radius;
+      width: calc(2 * $admonition-extra-block + 1em);
+      height: 100%;
+
+      color: white;
+      font-weight: 900;
     }
   }
 }

@@ -26,7 +26,7 @@ $font-sizes: (
   h5,
   h6 {
     font-family: $font-highlight;
-    color: var(--clr-primary-600);
+    color: var(--clr-title);
     font-size: map-get($font-sizes, "mid");
     margin-bottom: 2rem;
   }
@@ -49,16 +49,17 @@ $font-sizes: (
   }
 
   p {
+    color: var(--clr-text);
     line-height: 2.2;
     text-align: justify;
   }
 
   a {
-    color: var(--clr-highlight-300);
+    color: var(--clr-link);
     font-weight: 700;
 
     &:hover {
-      color: var(--clr-highlight-200);
+      color: var(--clr-link-hover);
     }
   }
 
@@ -67,18 +68,27 @@ $font-sizes: (
   }
 
   em {
-    color: var(--clr-primary-600);
+    --clr-text: var(--clr-text-em);
+
+    color: var(--clr-text);
     font-weight: 700;
     font-style: italic;
   }
 
   strong {
-    color: var(--clr-primary-600);
+    --clr-text: var(--clr-text-strong);
+
+    color: var(--clr-text);
     font-weight: 900;
   }
 
   li {
+    color: var(--clr-text);
     line-height: 2.2;
     margin-bottom: 1em;
+
+    &::before {
+      color: var(--clr-bullet);
+    }
   }
 }

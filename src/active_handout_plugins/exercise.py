@@ -109,7 +109,7 @@ class ChoiceExercise(ExerciseAdmonition):
             html_alternatives.append(f'''
 <label class="alternative">
   <div class="content">
-    <input type="radio" name="data" value="{i}" _="on click remove .selected from .alternative in closest .alternative-set add .selected to the closest .alternative end">
+    <input type="radio" name="data" value="{i}" _="on click remove .selected from .alternative in closest .alternative-set add .selected to the closest .alternative remove @disabled from <input[type='submit']/> in closest .form-elements end">
     {content}
   </div>
 </label>
@@ -118,7 +118,7 @@ class ChoiceExercise(ExerciseAdmonition):
 <div class="alternative-set" data-answer-idx="{answer_idx}">
   {"".join(html_alternatives)}
 </div>
-<input class="ah-button ah-button--primary" type="submit" name="sendButton" value="Enviar"/>
+<input class="ah-button ah-button--primary" type="submit" name="sendButton" value="Enviar" disabled />
 '''
 
 
