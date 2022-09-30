@@ -755,7 +755,9 @@ function initChoiceExercises() {
             const alternative = (0, _queries.queryParentAlternative)(option);
             option.setAttribute("checked", true);
             alternative.classList.add("selected");
-            (0, _queries.querySubmitBtn)(el).click();
+            const submitBtn = (0, _queries.querySubmitBtn)(el);
+            submitBtn.disabled = false;
+            submitBtn.click();
         }
     });
 }

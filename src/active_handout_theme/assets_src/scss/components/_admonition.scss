@@ -5,6 +5,8 @@
   --clr-background: var(--clr-admonition-default-background);
   --clr-text: var(--clr-admonition-default-text);
   --clr-title: var(--clr-admonition-default-title);
+  --clr-text-em: var(--clr-admonition-text-em);
+  --clr-text-strong: var(--clr-admonition-text-strong);
 
   background: var(--clr-background);
   margin: 0 (-$admonition-extra-inline) (2 * $admonition-extra-block);

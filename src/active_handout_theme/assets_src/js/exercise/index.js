@@ -64,7 +64,9 @@ function initChoiceExercises() {
       const alternative = queryParentAlternative(option);
       option.setAttribute("checked", true);
       alternative.classList.add("selected");
-      querySubmitBtn(el).click();
+      const submitBtn = querySubmitBtn(el);
+      submitBtn.disabled = false;
+      submitBtn.click();
     }
   });
 }

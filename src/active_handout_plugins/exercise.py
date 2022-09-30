@@ -105,7 +105,10 @@ class ChoiceExercise(ExerciseAdmonition):
             is_answer = self.__is_answer(choice.text[:end-1])
             if is_answer:
                 answer_idx = i
-            content = choice.text[end:] + ''.join(etree.tostring(e, 'unicode') for e in choice if e.tag != 'label')
+            text = choice.text[end:]
+            if text.startswith('*'):
+                text = text[1:]
+            content = text + ''.join(etree.tostring(e, 'unicode') for e in choice if e.tag != 'label')
             html_alternatives.append(f'''
 <label class="alternative">
   <div class="content">

@@ -202,9 +202,11 @@ p, h1, h2, h3, h4, h5, h6 {
   --clr-btn-primary: var(--clr-blue-highlight-4);
   --clr-btn-primary-text: var(--clr-white);
   --clr-btn-primary-text-hover: var(--clr-white);
-  --clr-admonition-default-background: var(--clr-blue-highlight-1);
+  --clr-admonition-default-background: var(--clr-gray-primary-2);
   --clr-admonition-default-text: var(--clr-text-default);
   --clr-admonition-default-title: var(--clr-title-default);
+  --clr-admonition-text-em: var(--clr-text-em-default);
+  --clr-admonition-text-strong: var(--clr-text-strong-default);
   --clr-admonition-disabled-background: var(--clr-gray-primary-2);
   --clr-admonition-disabled-text: var(--clr-text-default);
   --clr-admonition-disabled-title: var(--clr-title-default);
@@ -212,6 +214,8 @@ p, h1, h2, h3, h4, h5, h6 {
   --clr-admonition-exercise-background: var(--clr-blue-highlight-6);
   --clr-admonition-exercise-text: var(--clr-white);
   --clr-admonition-exercise-title: var(--clr-blue-highlight-1);
+  --clr-admonition-exercise-text-em: var(--clr-gray-primary-2);
+  --clr-admonition-exercise-text-strong: var(--clr-gray-primary-2);
   --clr-admonition-exercise-bullet: var(--clr-blue-highlight-1);
   --clr-code-background: #f0f3ff;
   --clr-code-comment: #8b919c;
@@ -451,6 +455,8 @@ body {
   --clr-background: var(--clr-admonition-default-background);
   --clr-text: var(--clr-admonition-default-text);
   --clr-title: var(--clr-admonition-default-title);
+  --clr-text-em: var(--clr-admonition-text-em);
+  --clr-text-strong: var(--clr-admonition-text-strong);
   background: var(--clr-background);
   border-radius: .2em;
   margin: 0 -2rem 2rem;
@@ -549,6 +555,8 @@ section.progress-section:first-child, section.progress-section.show {
   --clr-text: var(--clr-admonition-exercise-text);
   --clr-title: var(--clr-admonition-exercise-title);
   --clr-bullet: var(--clr-admonition-exercise-bullet);
+  --clr-text-em: var(--clr-admonition-exercise-text-em);
+  --clr-text-strong: var(--clr-admonition-exercise-text-strong);
 }
 
 .admonition.exercise, .admonition.exercise * {
@@ -562,11 +570,22 @@ section.progress-section:first-child, section.progress-section.show {
   --clr-bullet: var(--clr-admonition-disabled-bullet);
 }
 
+.admonition.exercise.done .alternative:hover, .admonition.exercise.done .alternative:active, .admonition.exercise.done .alternative:focus {
+  cursor: inherit;
+  transform: none;
+}
+
 .admonition.exercise form {
   display: grid;
 }
 
 .admonition.answer {
+  --clr-background: var(--clr-admonition-exercise-background);
+  --clr-text: var(--clr-admonition-exercise-text);
+  --clr-title: var(--clr-admonition-exercise-title);
+  --clr-bullet: var(--clr-admonition-exercise-bullet);
+  --clr-text-em: var(--clr-admonition-exercise-text-em);
+  --clr-text-strong: var(--clr-admonition-exercise-text-strong);
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   margin-top: 2rem;
@@ -600,6 +619,7 @@ section.progress-section:first-child, section.progress-section.show {
 .form-elements .alternative {
   --clr-text: var(--clr-text-default);
   --selection-color: var(--clr-blue-highlight-2);
+  --clr-code-background: #fefefebb;
   background: var(--clr-admonition-default-background);
   counter-increment: alternative-counter;
   border-radius: .2em;
@@ -624,6 +644,7 @@ section.progress-section:first-child, section.progress-section.show {
 }
 
 .form-elements .alternative.correct:before {
+  content: "✓";
   background: var(--clr-success-primary-5);
 }
 
@@ -632,15 +653,16 @@ section.progress-section:first-child, section.progress-section.show {
 }
 
 .form-elements .alternative.wrong {
-  background: var(--clr-fail-primary-2);
+  background: var(--clr-gray-primary-3);
 }
 
 .form-elements .alternative.wrong:before {
-  background: var(--clr-fail-primary-6);
+  content: "✕";
+  background: var(--clr-gray-primary-6);
 }
 
 .form-elements .alternative.wrong.selected {
-  outline-color: var(--clr-fail-primary-5);
+  outline-color: var(--clr-gray-primary-8);
 }
 
 .form-elements .alternative input[type="radio"] {
@@ -664,6 +686,10 @@ section.progress-section:first-child, section.progress-section.show {
   padding: 1rem;
   font-weight: 900;
   display: inline-grid;
+}
+
+.form-elements .alternative .highlight:last-child {
+  margin-bottom: 0;
 }
 
 .tabbed-alternate {
