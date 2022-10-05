@@ -35,12 +35,12 @@
 }
 
 .admonition.answer {
-  --clr-background: var(--clr-admonition-exercise-background);
-  --clr-text: var(--clr-admonition-exercise-text);
-  --clr-title: var(--clr-admonition-exercise-title);
-  --clr-bullet: var(--clr-admonition-exercise-bullet);
-  --clr-text-em: var(--clr-admonition-exercise-text-em);
-  --clr-text-strong: var(--clr-admonition-exercise-text-strong);
+  --clr-background: var(--clr-admonition-answer-background);
+  --clr-text: var(--clr-admonition-answer-text);
+  --clr-title: var(--clr-admonition-answer-title);
+  --clr-bullet: var(--clr-admonition-answer-bullet);
+  --clr-text-em: var(--clr-admonition-answer-text-em);
+  --clr-text-strong: var(--clr-admonition-answer-text-strong);
 
   margin-top: (2 * $admonition-extra-block);
   margin-bottom: (-$admonition-extra-block);

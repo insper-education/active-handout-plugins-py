@@ -57,6 +57,7 @@ $font-sizes: (
   a {
     color: var(--clr-link);
     font-weight: 700;
+    text-underline-offset: 0.2em;
 
     &:hover {
       color: var(--clr-link-hover);

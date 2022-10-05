@@ -41,11 +41,31 @@
         </div>
         {{ page.content }}
       </article>
+      <footer class="ah-footer ah-typeset">
+        <div class="ah-footer-nav">
+          {% if page.previous_page %}
+            <a href="{{ page.previous_page.url|url }}"
+               class="ah-prev"
+               title="{{ page.previous_page.title }}">
+              <span class="nav-label">{% trans %}Previous{% endtrans %}</span>
+              <span class="nav-title">{{ page.previous_page.title }}</span>
+            </a>
+          {% endif %}
+          {% if page.next_page %}
+            <a href="{{ page.next_page.url|url }}"
+               class="ah-next"
+               title="{{ page.next_page.title }}">
+              <span class="nav-label">{% trans %}Next{% endtrans %}</span>
+              <span class="nav-title">{{ page.next_page.title }}</span>
+            </a>
+          {% endif %}
     </div>
-    {% block scripts %}
-      <script>var base_url = '{{ base_url }}';</script>
-      <script src="{{ 'assets/js/main.js' | url }}"></script>
-      {% for path in config.extra_javascript %}<script src="{{ path | url }}"></script>{% endfor %}
-    {% endblock %}
-  </body>
+  </footer>
+</div>
+{% block scripts %}
+  <script>var base_url = '{{ base_url }}';</script>
+  <script src="{{ 'assets/js/main.js' | url }}"></script>
+  {% for path in config.extra_javascript %}<script src="{{ path | url }}"></script>{% endfor %}
+{% endblock %}
+</body>
 </html>

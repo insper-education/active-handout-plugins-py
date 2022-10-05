@@ -1,4 +1,6 @@
+@use "../abstracts/variables" as *;
+
 .ah-content {
-  max-width: 60ch;
+  max-width: $max-content-width;
   margin: 0 auto 2rem;
 }

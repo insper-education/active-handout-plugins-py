@@ -13,12 +13,12 @@
   --clr-text-strong-default: var(--clr-blue-primary-6);
   // Title
   --clr-title-default: var(--clr-blue-primary-6);
-  --clr-subtitle-default: var(--clr-blue-highlight-4);
+  --clr-subtitle-default: var(--clr-blue-highlight-5);
   // Link
-  --clr-link-default: var(--clr-blue-highlight-4);
-  --clr-link-default-hover: var(--clr-blue-highlight-3);
+  --clr-link-default: var(--clr-blue-highlight-5);
+  --clr-link-default-hover: var(--clr-blue-highlight-4);
   // Bullet points
-  --clr-bullet-default: var(--clr-blue-highlight-3);
+  --clr-bullet-default: var(--clr-blue-highlight-5);
   // Button default
   --clr-btn-default: transparent;
   --clr-btn-default-border: var(--clr-blue-primary-5);
@@ -27,27 +27,34 @@
   // Button disabled
   --clr-btn-disabled: var(--clr-gray-primary-3);
   // Button primary
-  --clr-btn-primary: var(--clr-blue-highlight-4);
+  --clr-btn-primary: var(--clr-blue-highlight-5);
   --clr-btn-primary-text: var(--clr-white);
   --clr-btn-primary-text-hover: var(--clr-white);
   // Admonition
-  --clr-admonition-default-background: var(--clr-gray-primary-2);
+  --clr-admonition-default-background: var(--clr-blue-highlight-1);
   --clr-admonition-default-text: var(--clr-text-default);
   --clr-admonition-default-title: var(--clr-title-default);
   --clr-admonition-text-em: var(--clr-text-em-default);
   --clr-admonition-text-strong: var(--clr-text-strong-default);
   // Admonition disabled
-  --clr-admonition-disabled-background: var(--clr-gray-primary-2);
+  --clr-admonition-disabled-background: var(--clr-blue-highlight-1);
   --clr-admonition-disabled-text: var(--clr-text-default);
   --clr-admonition-disabled-title: var(--clr-title-default);
   --clr-admonition-disabled-bullet: var(--clr-bullet-default);
   // Exercise
-  --clr-admonition-exercise-background: var(--clr-blue-highlight-6);
+  --clr-admonition-exercise-background: var(--clr-blue-highlight-7);
   --clr-admonition-exercise-text: var(--clr-white);
   --clr-admonition-exercise-title: var(--clr-blue-highlight-1);
   --clr-admonition-exercise-text-em: var(--clr-gray-primary-2);
   --clr-admonition-exercise-text-strong: var(--clr-gray-primary-2);
-  --clr-admonition-exercise-bullet: var(--clr-blue-highlight-1);
+  --clr-admonition-exercise-bullet: var(--clr-blue-highlight-2);
+  // Answer
+  --clr-admonition-answer-background: var(--clr-gray-primary-5);
+  --clr-admonition-answer-text: var(--clr-text-default);
+  --clr-admonition-answer-title: var(--clr-title-default);
+  --clr-admonition-answer-text-em: var(--clr-text-em-default);
+  --clr-admonition-answer-text-strong: var(--clr-text-strong-default);
+  --clr-admonition-answer-bullet: var(--clr-bullet-default);
   // Code
   --clr-code-background: hsl(229, 100%, 97%);
   --clr-code-comment: hsl(219, 8%, 58%);

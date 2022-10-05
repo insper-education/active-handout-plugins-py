@@ -1,11 +1,14 @@
+@use "../base/typeset" as *;
+
 .ah-title-box {
   h1 {
     margin-top: -0.5rem;
   }
 
   h2 {
-    margin-top: -2.8rem;
+    margin-top: -2.4rem;
     color: var(--clr-subtitle);
+    font-size: map-get($font-sizes, "large");
   }
 
   .ah-breadcrumbs {
