@@ -19,6 +19,12 @@
   <body>
     <div class="ah-main-container">
       <header class="ah-header">
+        <a href="{{ config.extra.homepage | d(nav.homepage.url, true) | url }}"
+           title="{{ config.site_name | e }}"
+           class="ah-logo"
+           aria-label="{{ config.site_name }}">
+          {{ config.site_name | e }}
+        </a>
       </header>
       <article class="ah-content ah-typeset">
         <div class="ah-title-box">
@@ -59,13 +65,13 @@
               <span class="nav-title">{{ page.next_page.title }}</span>
             </a>
           {% endif %}
+        </div>
+      </footer>
     </div>
-  </footer>
-</div>
-{% block scripts %}
-  <script>var base_url = '{{ base_url }}';</script>
-  <script src="{{ 'assets/js/main.js' | url }}"></script>
-  {% for path in config.extra_javascript %}<script src="{{ path | url }}"></script>{% endfor %}
-{% endblock %}
-</body>
+    {% block scripts %}
+      <script>var base_url = '{{ base_url }}';</script>
+      <script src="{{ 'assets/js/main.js' | url }}"></script>
+      {% for path in config.extra_javascript %}<script src="{{ path | url }}"></script>{% endfor %}
+    {% endblock %}
+  </body>
 </html>

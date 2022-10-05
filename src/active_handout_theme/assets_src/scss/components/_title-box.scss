@@ -20,9 +20,14 @@
     color: var(--clr-text-disabled);
 
     li {
+      --clr-text: var(--clr-text-disabled);
+      line-height: 1;
+      margin-bottom: 0;
+
       &::before {
         content: "";
         position: static;
+        color: inherit;
       }
 
       & + li::before {

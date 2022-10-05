@@ -711,7 +711,16 @@ body {
 }
 
 .ah-header {
-  min-height: 2rem;
+  padding: .5em 1em;
+  font-family: Open Sans, sans-serif;
+  font-size: 1.25rem;
+  display: flex;
+}
+
+.ah-header .ah-logo {
+  color: var(--clr-title);
+  font-weight: 700;
+  text-decoration: none;
 }
 
 .ah-typeset ol, .ah-typeset ul {
@@ -1058,8 +1067,15 @@ section.progress-section:first-child, section.progress-section.show {
   display: flex;
 }
 
+.ah-title-box .ah-breadcrumbs li {
+  --clr-text: var(--clr-text-disabled);
+  margin-bottom: 0;
+  line-height: 1;
+}
+
 .ah-title-box .ah-breadcrumbs li:before {
   content: "";
+  color: inherit;
   position: static;
 }
 
