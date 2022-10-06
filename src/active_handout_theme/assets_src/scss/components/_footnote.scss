@@ -1,0 +1,56 @@
+@use "../abstracts/variables" as *;
+
+.footnote {
+  position: fixed;
+  top: 0;
+  left: calc(100% + #{$admonition-extra-inline});
+  max-width: calc(50vw - 50% - #{$admonition-extra-inline * 2});
+  width: 100%;
+
+  hr {
+    display: none;
+  }
+
+  .footnote-backref {
+    display: none;
+  }
+}
+
+.ah-typeset .footnote > ol li {
+  --clr-background: var(--clr-admonition-default-background);
+
+  $shadow-size: 1rem;
+  background: var(--clr-background);
+  box-shadow: 0 0 #{$shadow-size} var(--clr-shadow-default);
+
+  margin: $admonition-extra-block $admonition-extra-inline;
+  padding: $admonition-extra-block $admonition-extra-inline;
+  border-radius: $border-radius;
+
+  &::before {
+    content: "";
+    position: absolute;
+    height: 5px;
+    width: calc(var(--dist-x) + 2 * #{$admonition-extra-inline});
+    left: 0;
+    top: 50%;
+    transform: translate(-100%, -50%);
+
+    background: var(--clr-background);
+  }
+
+  pre {
+    margin-inline: 0;
+  }
+
+  > p:last-child {
+    margin-bottom: 0;
+  }
+
+  &.floating-note {
+    position: absolute;
+    top: var(--ref-y);
+    left: 0;
+    transform: translate(0, -50%);
+  }
+}

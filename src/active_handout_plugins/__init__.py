@@ -1,6 +1,7 @@
 from markdown import Extension
 
 from .admonition import AdmonitionVisitorSelector
+from .footnote import FootnoteTreeprocessor
 from .exercise import ChoiceExercise, SelfProgressExercise, TextExercise
 from .progress import ProgressButtons, SplitDocumentInSections
 from .counter import CounterProcessor
@@ -28,3 +29,6 @@ class ActiveHandoutExtension(Extension):
         md.treeprocessors.register(exercise_admonitions, 'exercises', 15)
         md.treeprocessors.register(ParsonsQuestion(md), 'parsons-questions', 1)
         md.treeprocessors.register(SplitDocumentInSections(md), 'sections', 16)
+        # Must be greater than 50 because of the footnote dependency:
+        # https://github.com/Python-Markdown/markdown/blob/master/markdown/extensions/footnotes.py#L86
+        md.treeprocessors.register(FootnoteTreeprocessor(md), 'footnote-aside', 55)

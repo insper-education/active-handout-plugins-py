@@ -1,6 +1,7 @@
 import { initTabbedPlugin } from "./tabbed-content";
 import { initProgressPlugin } from "./progress";
 import { initExercisePlugin } from "./exercise";
+import { initFooterPlugin } from "./footer";
 
 function onLoad() {
   initTabbedPlugin();
@@ -19,6 +20,7 @@ function onLoad() {
 
   initProgressPlugin(rememberCallbacks);
   initExercisePlugin(rememberCallbacks);
+  initFooterPlugin();
 }
 
 if (document.readyState !== "loading") {

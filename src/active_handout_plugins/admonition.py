@@ -9,7 +9,7 @@ class AdmonitionVisitor(Treeprocessor):
             return classes_found[0]
 
         return None
-    
+
     def match(self, el):
         raise NotImplemented()
 
@@ -25,16 +25,16 @@ class AdmonitionVisitorSelector(AdmonitionVisitor):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.__visitors = []
-    
+
     def register(self, visitor, weight):
         self.__visitors.append((weight, visitor))
         self.__visitors.sort(reverse=True)
-    
+
     @property
     def visitors(self):
         for _, v in self.__visitors:
             yield v
-    
+
     def __select_visitor(self, el):
         """Return the first match based on the priority"""
 

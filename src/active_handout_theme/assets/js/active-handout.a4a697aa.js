@@ -535,6 +535,7 @@ function hmrAcceptRun(bundle, id) {
 var _tabbedContent = require("./tabbed-content");
 var _progress = require("./progress");
 var _exercise = require("./exercise");
+var _footer = require("./footer");
 function onLoad() {
     (0, _tabbedContent.initTabbedPlugin)();
     let rememberCallbacks = [];
@@ -547,11 +548,12 @@ function onLoad() {
     });
     (0, _progress.initProgressPlugin)(rememberCallbacks);
     (0, _exercise.initExercisePlugin)(rememberCallbacks);
+    (0, _footer.initFooterPlugin)();
 }
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC"}],"fzxNo":[function(require,module,exports) {
+},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC","./footer":"Hin5a"}],"fzxNo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
@@ -827,6 +829,29 @@ function queryParentAlternative(option) {
 }
 function querySubmitBtn(el) {
     return el.querySelector("input[type='submit']");
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"Hin5a":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initFooterPlugin", ()=>initFooterPlugin);
+function initFooterPlugin() {
+    const contentRect = document.getElementsByClassName("ah-content")[0].getBoundingClientRect();
+    const baseRight = contentRect.right;
+    const baseTop = contentRect.top;
+    const footnoteLinks = document.getElementsByClassName("footnote-ref");
+    for (let footnoteLink of footnoteLinks){
+        const footnoteRef = footnoteLink.closest("sup").previousElementSibling;
+        const noteId = footnoteLink.getAttribute("href").substring(1);
+        const note = document.getElementById(noteId);
+        const rect = footnoteRef.getBoundingClientRect();
+        const distX = baseRight - rect.left;
+        const refY = rect.bottom - baseTop;
+        console.log(baseTop, rect.bottom);
+        note.classList.add("floating-note");
+        note.style.setProperty("--dist-x", `${distX}px`);
+        note.style.setProperty("--ref-y", `${refY}px`);
+    }
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")

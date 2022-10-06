@@ -181,13 +181,17 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .ah-content {
   max-width: 60ch;
+  width: 100%;
   margin: 0 auto 2rem;
+  position: relative;
+  transform: rotate(0);
 }
 
 :root {
   --clr-white: var(--clr-gray-primary-1);
   --clr-black: var(--clr-gray-primary-15);
   --clr-background-default: var(--clr-white);
+  --clr-shadow-default: var(--clr-gray-primary-2);
   --clr-text-default: var(--clr-black);
   --clr-text-default-hover: var(--clr-gray-primary-8);
   --clr-text-disabled: var(--clr-gray-primary-5);
@@ -656,7 +660,7 @@ body {
 .ah-footer-nav {
   max-width: 60ch;
   justify-content: space-between;
-  margin: 0 auto 2rem;
+  margin: 2rem auto;
   display: flex;
 }
 
@@ -708,6 +712,53 @@ body {
   height: 1em;
   grid-area: arrow;
   display: block;
+}
+
+.footnote {
+  max-width: calc(50vw - 50% - 4rem);
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: calc(100% + 2rem);
+}
+
+.footnote hr, .footnote .footnote-backref {
+  display: none;
+}
+
+.ah-typeset .footnote > ol li {
+  --clr-background: var(--clr-admonition-default-background);
+  background: var(--clr-background);
+  box-shadow: 0 0 1rem var(--clr-shadow-default);
+  border-radius: .2em;
+  margin: 1rem 2rem;
+  padding: 1rem 2rem;
+}
+
+.ah-typeset .footnote > ol li:before {
+  content: "";
+  height: 5px;
+  width: calc(var(--dist-x)  + 2 * 2rem);
+  background: var(--clr-background);
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translate(-100%, -50%);
+}
+
+.ah-typeset .footnote > ol li pre {
+  margin-inline: 0;
+}
+
+.ah-typeset .footnote > ol li > p:last-child {
+  margin-bottom: 0;
+}
+
+.ah-typeset .footnote > ol li.floating-note {
+  top: var(--ref-y);
+  position: absolute;
+  left: 0;
+  transform: translate(0, -50%);
 }
 
 .ah-header {

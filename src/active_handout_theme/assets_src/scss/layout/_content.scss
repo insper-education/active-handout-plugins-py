@@ -1,6 +1,10 @@
 @use "../abstracts/variables" as *;
 
 .ah-content {
+  position: relative;
   max-width: $max-content-width;
+  width: 100%;
   margin: 0 auto 2rem;
+  // We need this so the footnotes with position fixed work as expected: https://stackoverflow.com/a/25768682/14985018
+  transform: rotate(0deg);
 }
