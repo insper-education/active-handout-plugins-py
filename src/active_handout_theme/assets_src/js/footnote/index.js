@@ -11,27 +11,23 @@ export function initFooterPlugin() {
   const contentRect = document
     .getElementsByClassName("ah-content")[0]
     .getBoundingClientRect();
-  const baseRight = contentRect.right;
+
   const footnoteLinks = document.getElementsByClassName("footnote-ref");
 
   for (let footnoteLink of footnoteLinks) {
-    initFootnote(footnoteLink, baseRight);
+    initFootnote(footnoteLink, contentRect);
   }
 }
 
-function initFootnote(footnoteLink, baseRight) {
+function initFootnote(footnoteLink, contentRect) {
   const footnoteRef = findRef(footnoteLink);
   const note = findNote(footnoteLink);
   const footnoteCard = setupCard(note);
   const footnoteCloseBtn = setupCloseBtn(footnoteCard);
-  const footnoteContainer = setupContainer(
-    footnoteRef,
-    footnoteCard,
-    baseRight
-  );
+  const footnoteContainer = setupContainer(footnoteRef, footnoteCard);
   setupCallbacks(footnoteContainer, footnoteRef, footnoteCloseBtn);
 
-  setCustomProps(footnoteContainer, footnoteCard, baseRight);
+  setCustomProps(footnoteContainer, footnoteCard, contentRect);
 }
 
 function setupCard(note) {
@@ -46,7 +42,7 @@ function setupCard(note) {
 function setupContainer(footnoteRef, footnoteCard) {
   const footnoteContainer = document.createElement("span");
   footnoteContainer.classList.add("footnote-container");
-  if (window.innerWidth > 700) {
+  if (window.innerWidth > 1440) {
     footnoteContainer.classList.add("opened");
   }
 
@@ -93,7 +89,12 @@ function findNote(footnoteLink) {
   return document.getElementById(noteId);
 }
 
-function setCustomProps(footnoteContainer, footnoteCard, baseRight) {
-  const distX = baseRight - footnoteContainer.getBoundingClientRect().left;
+function setCustomProps(footnoteContainer, footnoteCard, contentRect) {
+  const offsetX = footnoteContainer.getBoundingClientRect().left;
+  const distX = contentRect.right - offsetX;
   footnoteCard.style.setProperty("--dist-x", `${distX}px`);
+  footnoteCard.style.setProperty(
+    "--offset-x",
+    `${offsetX - contentRect.left}px`
+  );
 }

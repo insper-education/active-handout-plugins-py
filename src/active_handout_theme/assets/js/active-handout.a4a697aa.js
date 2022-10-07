@@ -535,7 +535,7 @@ function hmrAcceptRun(bundle, id) {
 var _tabbedContent = require("./tabbed-content");
 var _progress = require("./progress");
 var _exercise = require("./exercise");
-var _footer = require("./footer");
+var _footnote = require("./footnote");
 function onLoad() {
     (0, _tabbedContent.initTabbedPlugin)();
     let rememberCallbacks = [];
@@ -548,12 +548,12 @@ function onLoad() {
     });
     (0, _progress.initProgressPlugin)(rememberCallbacks);
     (0, _exercise.initExercisePlugin)(rememberCallbacks);
-    (0, _footer.initFooterPlugin)();
+    (0, _footnote.initFooterPlugin)();
 }
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC","./footer":"Hin5a"}],"fzxNo":[function(require,module,exports) {
+},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC","./footnote":"70ehP"}],"fzxNo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
@@ -831,7 +831,7 @@ function querySubmitBtn(el) {
     return el.querySelector("input[type='submit']");
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"Hin5a":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"70ehP":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 /*
@@ -845,18 +845,17 @@ The footnote is structured as follows:
 */ parcelHelpers.export(exports, "initFooterPlugin", ()=>initFooterPlugin);
 function initFooterPlugin() {
     const contentRect = document.getElementsByClassName("ah-content")[0].getBoundingClientRect();
-    const baseRight = contentRect.right;
     const footnoteLinks = document.getElementsByClassName("footnote-ref");
-    for (let footnoteLink of footnoteLinks)initFootnote(footnoteLink, baseRight);
+    for (let footnoteLink of footnoteLinks)initFootnote(footnoteLink, contentRect);
 }
-function initFootnote(footnoteLink, baseRight) {
+function initFootnote(footnoteLink, contentRect) {
     const footnoteRef = findRef(footnoteLink);
     const note = findNote(footnoteLink);
     const footnoteCard = setupCard(note);
     const footnoteCloseBtn = setupCloseBtn(footnoteCard);
-    const footnoteContainer = setupContainer(footnoteRef, footnoteCard, baseRight);
+    const footnoteContainer = setupContainer(footnoteRef, footnoteCard);
     setupCallbacks(footnoteContainer, footnoteRef, footnoteCloseBtn);
-    setCustomProps(footnoteContainer, footnoteCard, baseRight);
+    setCustomProps(footnoteContainer, footnoteCard, contentRect);
 }
 function setupCard(note) {
     const footnoteCard = document.createElement("div");
@@ -868,7 +867,7 @@ function setupCard(note) {
 function setupContainer(footnoteRef, footnoteCard) {
     const footnoteContainer = document.createElement("span");
     footnoteContainer.classList.add("footnote-container");
-    if (window.innerWidth > 700) footnoteContainer.classList.add("opened");
+    if (window.innerWidth > 1440) footnoteContainer.classList.add("opened");
     // Move to container
     footnoteRef.parentElement.replaceChild(footnoteContainer, footnoteRef);
     footnoteContainer.appendChild(footnoteRef);
@@ -900,9 +899,11 @@ function findNote(footnoteLink) {
     const noteId = footnoteLink.getAttribute("href").substring(1);
     return document.getElementById(noteId);
 }
-function setCustomProps(footnoteContainer, footnoteCard, baseRight) {
-    const distX = baseRight - footnoteContainer.getBoundingClientRect().left;
+function setCustomProps(footnoteContainer, footnoteCard, contentRect) {
+    const offsetX = footnoteContainer.getBoundingClientRect().left;
+    const distX = contentRect.right - offsetX;
     footnoteCard.style.setProperty("--dist-x", `${distX}px`);
+    footnoteCard.style.setProperty("--offset-x", `${offsetX - contentRect.left}px`);
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")

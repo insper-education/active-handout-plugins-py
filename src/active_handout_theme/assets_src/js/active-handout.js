@@ -1,7 +1,7 @@
 import { initTabbedPlugin } from "./tabbed-content";
 import { initProgressPlugin } from "./progress";
 import { initExercisePlugin } from "./exercise";
-import { initFooterPlugin } from "./footer";
+import { initFooterPlugin } from "./footnote";
 
 function onLoad() {
   initTabbedPlugin();

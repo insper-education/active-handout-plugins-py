@@ -1,3 +1,4 @@
+@use "../abstracts/mixins" as *;
 @use "../abstracts/variables" as *;
 @use "../base/typeset" as *;
 
@@ -37,8 +38,19 @@
       padding-bottom: $admonition-extra-block;
       left: var(--dist-x);
 
+      @include smaller-than("large") {
+        top: 1.5em;
+        left: calc(var(--offset-x) * (-1));
+        max-width: min(100vw, $max-content-width);
+        margin-left: 0;
+      }
+
       li.footnote-content::before {
         width: calc(var(--dist-x) + 1.5 * #{$admonition-extra-inline});
+
+        @include smaller-than("large") {
+          display: none;
+        }
       }
     }
 
@@ -71,6 +83,11 @@
   transform: translate(0, -50%);
 
   transition: all $animation-duration ease-in;
+
+  @include smaller-than("large") {
+    transition: none;
+    transform: none;
+  }
 
   li.footnote-content {
     list-style: none;
