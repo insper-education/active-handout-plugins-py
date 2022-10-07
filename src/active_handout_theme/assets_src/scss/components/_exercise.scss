@@ -1,3 +1,4 @@
+@use "../abstracts/mixins" as *;
 @use "../abstracts/variables" as *;
 
 .admonition.exercise {
@@ -18,6 +19,8 @@
     --clr-text: var(--clr-admonition-disabled-text);
     --clr-title: var(--clr-admonition-disabled-title);
     --clr-bullet: var(--clr-admonition-disabled-bullet);
+    --clr-text-em: var(--clr-admonition-disabled-em);
+    --clr-text-strong: var(--clr-admonition-disabled-strong);
 
     .alternative {
       &:hover,
@@ -68,9 +71,10 @@
   }
 
   .alternative-set {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr;
     gap: 0.5rem;
+    max-width: 100%;
   }
 
   .alternative {
@@ -86,6 +90,7 @@
     counter-increment: alternative-counter;
     border-radius: $border-radius;
     transition: transform 0.1s ease-in-out;
+    max-width: 100%;
 
     &.selected {
       outline: 0.3rem solid var(--selection-color);
@@ -129,6 +134,7 @@
     }
 
     .content {
+      display: grid;
       margin-top: 0;
       padding-block: $admonition-extra-block;
     }
@@ -152,5 +158,11 @@
     .highlight:last-child {
       margin-bottom: 0;
     }
+  }
+}
+
+@include greater-than("medium") {
+  .two-cols .alternative-set {
+    grid-template-columns: 1fr 1fr;
   }
 }

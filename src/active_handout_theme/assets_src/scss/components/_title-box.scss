@@ -1,3 +1,4 @@
+@use "../abstracts/mixins" as *;
 @use "../base/typeset" as *;
 
 .ah-title-box {
@@ -9,6 +10,11 @@
     margin-top: -2.4rem;
     color: var(--clr-subtitle);
     font-size: map-get($font-sizes, "large");
+
+    @include smaller-than("medium") {
+      font-size: map-get($font-sizes, "mid");
+      margin-top: -1rem;
+    }
   }
 
   .ah-breadcrumbs {
@@ -19,10 +25,14 @@
 
     color: var(--clr-text-disabled);
 
+    @include smaller-than("medium") {
+      display: none;
+    }
+
     li {
       --clr-text: var(--clr-text-disabled);
       line-height: 1;
-      margin-bottom: 0;
+      margin-bottom: 0.5rem;
 
       &::before {
         content: "";

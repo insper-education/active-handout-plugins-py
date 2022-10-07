@@ -1,3 +1,4 @@
+@use "../abstracts/mixins" as *;
 @use "../abstracts/variables" as *;
 
 .ah-footer-nav {
@@ -6,6 +7,10 @@
 
   max-width: $max-content-width;
   margin: 2rem auto 2rem;
+
+  @include smaller-than("medium") {
+    padding-inline: $small-extra-inline;
+  }
 
   a {
     display: grid;
@@ -29,6 +34,7 @@
 
   .nav-title {
     grid-area: title;
+    color: var(--clr-title-default);
   }
 
   .ah-prev {
@@ -58,6 +64,10 @@
       width: 1em;
       height: 1em;
       grid-area: arrow;
+    }
+
+    .nav-title {
+      text-align: right;
     }
   }
 }

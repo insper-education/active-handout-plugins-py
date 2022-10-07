@@ -8,10 +8,10 @@
   // Text
   --clr-text-default: var(--clr-black);
   --clr-text-default-hover: var(--clr-gray-primary-8);
-  --clr-text-disabled: var(--clr-gray-primary-5);
-  --clr-text-disabled-hover: var(--clr-gray-primary-4);
   --clr-text-em-default: var(--clr-blue-primary-6);
   --clr-text-strong-default: var(--clr-blue-primary-6);
+  --clr-text-disabled: var(--clr-gray-primary-5);
+  --clr-text-disabled-hover: var(--clr-gray-primary-4);
   // Title
   --clr-title-default: var(--clr-blue-primary-6);
   --clr-subtitle-default: var(--clr-blue-highlight-5);
@@ -38,10 +38,12 @@
   --clr-admonition-text-em: var(--clr-text-em-default);
   --clr-admonition-text-strong: var(--clr-text-strong-default);
   // Admonition disabled
-  --clr-admonition-disabled-background: var(--clr-blue-highlight-1);
+  --clr-admonition-disabled-background: var(--clr-gray-primary-4);
   --clr-admonition-disabled-text: var(--clr-text-default);
   --clr-admonition-disabled-title: var(--clr-title-default);
   --clr-admonition-disabled-bullet: var(--clr-bullet-default);
+  --clr-admonition-disabled-em: var(--clr-text-em-default);
+  --clr-admonition-disabled-strong: var(--clr-text-strong-default);
   // Exercise
   --clr-admonition-exercise-background: var(--clr-blue-highlight-7);
   --clr-admonition-exercise-text: var(--clr-white);

@@ -1,4 +1,5 @@
 @use "../abstracts/variables" as *;
+@use "../abstracts/mixins" as *;
 @use "../base/typeset" as *;
 
 .admonition {
@@ -19,5 +20,9 @@
     font-weight: 700;
     border-bottom: 2px solid currentColor;
     color: var(--clr-title);
+
+    @include smaller-than("medium") {
+      font-size: map-get($font-sizes, "mid");
+    }
   }
 }
