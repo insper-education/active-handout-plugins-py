@@ -181,10 +181,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .ah-content {
   max-width: 60ch;
-  width: 100%;
   margin: 0 auto 2rem;
-  position: relative;
-  transform: rotate(0);
 }
 
 :root {
@@ -251,6 +248,7 @@ div.highlight, :not(.highlight) > pre {
   border-radius: .2em;
   margin: 0 -2rem 1.5rem;
   padding: 1rem 2rem;
+  overflow: auto;
 }
 
 div.highlight code, :not(.highlight) > pre code {
@@ -515,6 +513,10 @@ body {
   border: none;
 }
 
+.ah-button--borderless, a.ah-button--borderless {
+  border: none;
+}
+
 .admonition.exercise {
   --clr-background: var(--clr-admonition-exercise-background);
   --clr-text: var(--clr-admonition-exercise-text);
@@ -714,51 +716,108 @@ body {
   display: block;
 }
 
-.footnote {
-  max-width: calc(50vw - 50% - 4rem);
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: calc(100% + 2rem);
-}
-
-.footnote hr, .footnote .footnote-backref {
+.footnote hr, .footnote-backref, .footnote-ref {
   display: none;
 }
 
-.ah-typeset .footnote > ol li {
+.footnote-container {
   --clr-background: var(--clr-admonition-default-background);
-  background: var(--clr-background);
-  box-shadow: 0 0 1rem var(--clr-shadow-default);
   border-radius: .2em;
-  margin: 1rem 2rem;
-  padding: 1rem 2rem;
+  line-height: 1.7;
+  display: inline-block;
+  position: relative;
 }
 
-.ah-typeset .footnote > ol li:before {
+.footnote-container a.footnote-anchor {
+  color: var(--clr-text-strong);
+  -webkit-text-decoration: 5px underline dashed var(--clr-background);
+  text-decoration: 5px underline dashed var(--clr-background);
+}
+
+.footnote-container.opened {
+  border: 2px solid var(--clr-background);
+}
+
+.footnote-container.opened .footnote-card {
+  height: auto;
+  left: var(--dist-x);
+  padding-top: 2rem;
+  padding-bottom: 1rem;
+}
+
+.footnote-container.opened .footnote-card li.footnote-content:before {
+  width: calc(var(--dist-x)  + 1.5 * 2rem);
+}
+
+.footnote-container.opened .footnote-close-btn {
+  display: inherit;
+}
+
+.footnote-container.opened a.footnote-anchor {
+  text-decoration: none;
+}
+
+.footnote-card {
+  background: var(--clr-background);
+  box-shadow: 0 0 1rem var(--clr-shadow-default);
+  max-width: calc(50vw - 30ch - 6rem);
+  height: 0;
+  width: 100vw;
+  border-radius: .2em;
+  margin: 0 0 1rem 3rem;
+  padding: 0 2rem;
+  transition: all .2s ease-in;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  transform: translate(0, -50%);
+}
+
+.footnote-card li.footnote-content {
+  height: 100%;
+  margin-bottom: 0;
+  font-size: 1rem;
+  line-height: 1.5;
+  list-style: none;
+  overflow: hidden;
+}
+
+.footnote-card li.footnote-content:before {
   content: "";
   height: 5px;
-  width: calc(var(--dist-x)  + 2 * 2rem);
+  width: 0;
   background: var(--clr-background);
+  transition: all .2s ease-in;
   position: absolute;
   top: 50%;
   left: 0;
   transform: translate(-100%, -50%);
 }
 
-.ah-typeset .footnote > ol li pre {
+.footnote-card li.footnote-content pre {
   margin-inline: 0;
 }
 
-.ah-typeset .footnote > ol li > p:last-child {
+.footnote-card li.footnote-content p {
+  text-align: start;
+  margin-bottom: 1em;
+}
+
+.footnote-card li.footnote-content p img:first-child, .footnote-card li.footnote-content > :last-child {
   margin-bottom: 0;
 }
 
-.ah-typeset .footnote > ol li.floating-note {
-  top: var(--ref-y);
+.footnote-close-btn {
+  padding: .5em;
+  display: none;
   position: absolute;
-  left: 0;
-  transform: translate(0, -50%);
+  top: 0;
+  right: 0;
+}
+
+.footnote-close-btn svg {
+  height: 1.2rem;
+  width: 1.2rem;
 }
 
 .ah-header {
