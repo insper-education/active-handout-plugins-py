@@ -810,6 +810,7 @@ body {
 .footnote-container.opened .footnote-card {
   height: auto;
   left: var(--dist-x);
+  z-index: 100;
   padding-top: 2rem;
   padding-bottom: 1rem;
 }

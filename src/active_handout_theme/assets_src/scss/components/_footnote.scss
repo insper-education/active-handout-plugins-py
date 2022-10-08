@@ -37,6 +37,7 @@
       padding-top: 2 * $admonition-extra-block;
       padding-bottom: $admonition-extra-block;
       left: var(--dist-x);
+      z-index: 100;
 
       @include smaller-than("large") {
         top: 1.5em;
