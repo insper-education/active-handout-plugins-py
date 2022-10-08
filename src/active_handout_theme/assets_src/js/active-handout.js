@@ -13,14 +13,13 @@ function onLoad() {
     for (let remember of rememberCallbacks) {
       if (remember.match(element)) {
         remember.callback(element);
-        break;
       }
     }
   });
 
   initProgressPlugin(rememberCallbacks);
   initExercisePlugin(rememberCallbacks);
-  initFooterPlugin();
+  initFooterPlugin(rememberCallbacks);
 }
 
 if (document.readyState !== "loading") {

@@ -7,12 +7,31 @@ The footnote is structured as follows:
   </div>
 </span>
 */
-export function initFooterPlugin() {
+export function initFooterPlugin(rememberCallbacks) {
+  rememberCallbacks.push({
+    match: (el) => el.classList.contains("progress"),
+    callback: (el) => {
+      const className = "progress-section";
+      const openedSection = el.closest(`.${className}`).nextElementSibling;
+      if (!openedSection.classList.contains(className)) {
+        return;
+      }
+
+      initFootnotes(openedSection);
+    },
+  });
+
+  initFootnotes(document);
+}
+
+function initFootnotes(container) {
   const contentRect = document
     .getElementsByClassName("ah-content")[0]
     .getBoundingClientRect();
 
-  const footnoteLinks = document.getElementsByClassName("footnote-ref");
+  const footnoteLinks = container.querySelectorAll(
+    ".progress-section.show .footnote-ref"
+  );
 
   for (let footnoteLink of footnoteLinks) {
     initFootnote(footnoteLink, contentRect);
