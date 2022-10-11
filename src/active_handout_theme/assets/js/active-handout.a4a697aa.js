@@ -534,6 +534,7 @@ function hmrAcceptRun(bundle, id) {
 },{}],"ecP4v":[function(require,module,exports) {
 var _tabbedContent = require("./tabbed-content");
 var _progress = require("./progress");
+var _menu = require("./menu");
 var _exercise = require("./exercise");
 var _footnote = require("./footnote");
 function onLoad() {
@@ -543,6 +544,7 @@ function onLoad() {
         const element = e.detail.element;
         for (let remember of rememberCallbacks)if (remember.match(element)) remember.callback(element);
     });
+    (0, _menu.initMenuPlugin)(rememberCallbacks);
     (0, _progress.initProgressPlugin)(rememberCallbacks);
     (0, _exercise.initExercisePlugin)(rememberCallbacks);
     (0, _footnote.initFooterPlugin)(rememberCallbacks);
@@ -550,7 +552,89 @@ function onLoad() {
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./exercise":"dmczC","./footnote":"70ehP"}],"eIlmk":[function(require,module,exports) {
+},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC","./footnote":"70ehP","./menu":"5D3Be"}],"fzxNo":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
+var _clientDb = require("../client-db");
+var _telemetry = require("../telemetry");
+function initProgressPlugin(rememberCallbacks) {
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains("progress"),
+        callback: (el)=>{
+            (0, _telemetry.saveAndSendData)(el, true);
+        }
+    });
+    queryProgressBtns().forEach((e)=>{
+        if ((0, _clientDb.getValue)(e)) e.click();
+    });
+}
+function queryProgressBtns() {
+    return document.querySelectorAll("button.progress");
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ","../client-db":"j0pff"}],"5oERU":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"kpvgZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
+var _clientDb = require("./client-db");
+function saveAndSendData(elOrKey, value) {
+    (0, _clientDb.setValue)(elOrKey, value);
+    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
+// TODO: fetch POST with token
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client-db":"j0pff"}],"j0pff":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "setValue", ()=>setValue);
+parcelHelpers.export(exports, "getValue", ()=>getValue);
+function getKey(elOrKey) {
+    if (typeof elOrKey === "string") return elOrKey;
+    const docAddr = document.location.pathname;
+    const slash = docAddr.endsWith("/") ? "" : "/";
+    return `${docAddr}${slash}${elOrKey.id}`;
+}
+function setValue(elOrKey, value) {
+    const key = getKey(elOrKey);
+    localStorage[key] = value;
+}
+function getValue(elOrKey) {
+    const key = getKey(elOrKey);
+    return localStorage.getItem(key);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"eIlmk":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initTabbedPlugin", ()=>initTabbedPlugin);
@@ -626,89 +710,7 @@ function initTabbedPlugin() {
     tabScroll();
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5oERU":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"fzxNo":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
-var _clientDb = require("../client-db");
-var _telemetry = require("../telemetry");
-function initProgressPlugin(rememberCallbacks) {
-    rememberCallbacks.push({
-        match: (el)=>el.classList.contains("progress"),
-        callback: (el)=>{
-            (0, _telemetry.saveAndSendData)(el, true);
-        }
-    });
-    queryProgressBtns().forEach((e)=>{
-        if ((0, _clientDb.getValue)(e)) e.click();
-    });
-}
-function queryProgressBtns() {
-    return document.querySelectorAll("button.progress");
-}
-
-},{"../client-db":"j0pff","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"j0pff":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "setValue", ()=>setValue);
-parcelHelpers.export(exports, "getValue", ()=>getValue);
-function getKey(elOrKey) {
-    if (typeof elOrKey === "string") return elOrKey;
-    const docAddr = document.location.pathname;
-    const slash = docAddr.endsWith("/") ? "" : "/";
-    return `${docAddr}${slash}${elOrKey.id}`;
-}
-function setValue(elOrKey, value) {
-    const key = getKey(elOrKey);
-    localStorage[key] = value;
-}
-function getValue(elOrKey) {
-    const key = getKey(elOrKey);
-    return localStorage.getItem(key);
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"kpvgZ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
-var _clientDb = require("./client-db");
-function saveAndSendData(elOrKey, value) {
-    (0, _clientDb.setValue)(elOrKey, value);
-    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
-// TODO: fetch POST with token
-}
-
-},{"./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"dmczC":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"dmczC":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initExercisePlugin", ()=>initExercisePlugin);
@@ -819,7 +821,7 @@ function queryCorrectOptionIdx(el) {
     return alternativeSet.getAttribute("data-answer-idx");
 }
 function queryOption(el, value) {
-    return el.querySelector(`input[name='data'][value='${value}'`);
+    return el.querySelector(`input[name='data'][value='${value}']`);
 }
 function queryParentAlternative(option) {
     return option.closest(".alternative");
@@ -915,6 +917,31 @@ function setCustomProps(footnoteContainer, footnoteCard, contentRect) {
     footnoteCard.style.setProperty("--offset-x", `${offsetX - contentRect.left}px`);
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5D3Be":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initMenuPlugin", ()=>initMenuPlugin);
+var _clientDb = require("../client-db");
+function isMenuOpened(menuBtn) {
+    return menuBtn.getAttribute("data-action") === "close";
+}
+function initMenuPlugin(rememberCallbacks) {
+    const btnClass = "ah-menu-btn";
+    const navClass = "ah-navigation";
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains(btnClass),
+        callback: (el)=>{
+            (0, _clientDb.setValue)("menu-opened", isMenuOpened(el));
+        }
+    });
+    const nav = document.getElementsByClassName(navClass)[0];
+    const menuBtns = document.getElementsByClassName(btnClass);
+    for (let menuBtn of menuBtns)menuBtn.addEventListener("click", function() {
+        if (isMenuOpened(menuBtn)) nav.classList.remove("show");
+        else nav.classList.add("show");
+    });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

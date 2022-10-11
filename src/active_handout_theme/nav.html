@@ -1,0 +1,25 @@
+{% if not nav_item.children %}
+  <li {% if nav_item.active %}class="active"{% endif %}>
+    {% if nav_item.canonical_url == page.canonical_url %}
+      {{ nav_item.title }}
+      <ul>
+        {% for toc_item in page.toc %}
+          <li>
+            <a href="{{ toc_item.url }}">{{ toc_item.title }}</a>
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <a href="{{ nav_item.url|url }}">{{ nav_item.title }}</a>
+    {% endif %}
+  </li>
+{% else %}
+  <li>
+    {{ nav_item.title }}
+    <ul>
+      {% for nav_item in nav_item.children %}
+        {% include "nav.html" %}
+      {% endfor %}
+    </ul>
+  </li>
+{% endif %}

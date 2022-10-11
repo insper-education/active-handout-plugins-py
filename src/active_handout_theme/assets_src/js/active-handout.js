@@ -1,5 +1,6 @@
 import { initTabbedPlugin } from "./tabbed-content";
 import { initProgressPlugin } from "./progress";
+import { initMenuPlugin } from "./menu";
 import { initExercisePlugin } from "./exercise";
 import { initFooterPlugin } from "./footnote";
 
@@ -17,6 +18,7 @@ function onLoad() {
     }
   });
 
+  initMenuPlugin(rememberCallbacks);
   initProgressPlugin(rememberCallbacks);
   initExercisePlugin(rememberCallbacks);
   initFooterPlugin(rememberCallbacks);

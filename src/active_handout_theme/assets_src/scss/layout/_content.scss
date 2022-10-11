@@ -3,7 +3,7 @@
 
 .ah-content {
   max-width: $max-content-width;
-  margin: 0 auto 2rem;
+  margin: 3em auto 2em;
 
   @include smaller-than("medium") {
     padding: $small-extra-block $small-extra-inline;

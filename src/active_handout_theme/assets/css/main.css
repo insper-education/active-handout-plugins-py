@@ -213,7 +213,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .ah-content {
   max-width: 60ch;
-  margin: 0 auto 2rem;
+  margin: 3em auto 2em;
 }
 
 @media (max-width: 800px) {
@@ -689,6 +689,10 @@ body {
 .form-elements .alternative .content {
   margin-top: 0;
   padding-block: 1rem;
+}
+
+.form-elements .alternative .content div.highlight {
+  grid-template-columns: 0;
   display: grid;
 }
 
@@ -913,13 +917,17 @@ body {
 }
 
 .ah-header {
+  width: 100%;
+  background: linear-gradient(to bottom, var(--clr-background), var(--clr-background) 90%, transparent);
   padding: .5em 1em;
   font-family: Open Sans, sans-serif;
   font-size: 1.25rem;
   display: flex;
+  position: fixed;
+  top: 0;
 }
 
-.ah-header .ah-logo {
+.ah-logo {
   color: var(--clr-title);
   font-weight: 700;
   text-decoration: none;
@@ -961,6 +969,67 @@ body {
 .ah-menu-btn svg {
   width: 1em;
   height: 1em;
+}
+
+.ah-navigation {
+  z-index: 1000;
+  isolation: isolate;
+  max-width: min(80%, 300px);
+  color: var(--clr-text);
+  padding: .5em 1em;
+  font-family: Open Sans, sans-serif;
+  font-size: 1rem;
+  display: none;
+  position: fixed;
+  top: 0;
+}
+
+.ah-navigation.show {
+  display: initial;
+}
+
+@media (max-width: 800px) {
+  .ah-navigation.show {
+    max-height: 100vh;
+    height: 100%;
+    overflow-y: auto;
+  }
+
+  .ah-navigation.show:before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: red;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+  .ah-navigation.show :after {
+    content: "";
+    background: linear-gradient(to right, var(--clr-background), var(--clr-background) 90%, transparent);
+    z-index: -1;
+    position: absolute;
+    inset: 0;
+  }
+}
+
+.ah-navigation ul {
+  padding: 0;
+  list-style: none;
+}
+
+.ah-navigation ul li {
+  margin-bottom: .5em;
+}
+
+.ah-navigation ul ul {
+  padding-left: 1.5em;
+}
+
+.ah-nav-header {
+  font-size: 1.25rem;
 }
 
 section.progress-section {
