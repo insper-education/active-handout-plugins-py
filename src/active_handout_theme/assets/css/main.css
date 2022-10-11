@@ -953,6 +953,16 @@ body {
   content: "✦";
 }
 
+.ah-menu-btn {
+  margin-right: 1em;
+  padding: 0;
+}
+
+.ah-menu-btn svg {
+  width: 1em;
+  height: 1em;
+}
+
 section.progress-section {
   display: none;
 }
