@@ -134,9 +134,13 @@
     }
 
     .content {
-      display: grid;
       margin-top: 0;
       padding-block: $admonition-extra-block;
+
+      div.highlight {
+        display: grid;
+        grid-template-columns: 0;
+      }
     }
 
     &::before {

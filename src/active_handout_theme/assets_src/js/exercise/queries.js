@@ -29,7 +29,7 @@ export function queryCorrectOptionIdx(el) {
 }
 
 export function queryOption(el, value) {
-  return el.querySelector(`input[name='data'][value='${value}'`);
+  return el.querySelector(`input[name='data'][value='${value}']`);
 }
 
 export function queryParentAlternative(option) {
