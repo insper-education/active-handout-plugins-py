@@ -952,8 +952,15 @@ function initMenuPlugin(rememberCallbacks) {
         if (isMenuOpened(menuBtn)) nav.classList.remove("show");
         else nav.classList.add("show");
     });
-    document.addEventListener("click", (event)=>{
-        console.log(window.innerWidth, (0, _breakpoints.getBreakpoint)("medium"), window.innerWidth > (0, _breakpoints.getBreakpoint)("medium"));
+    const togglableItems = document.getElementsByClassName("ah-togglable-item");
+    for (let item of togglableItems){
+        const handle = item.getElementsByClassName("ah-togglable-handle")[0];
+        handle.addEventListener("click", function(event) {
+            event.stopPropagation();
+            item.classList.toggle("opened");
+        });
+    }
+    document.addEventListener("click", function(event) {
         if (!nav.classList.contains("show") || window.innerWidth > (0, _breakpoints.getBreakpoint)("medium")) return;
         if (!navContainer.contains(event.target)) nav.classList.remove("show");
     });

@@ -30,12 +30,16 @@ export function initMenuPlugin(rememberCallbacks) {
     });
   }
 
-  document.addEventListener("click", (event) => {
-    console.log(
-      window.innerWidth,
-      getBreakpoint("medium"),
-      window.innerWidth > getBreakpoint("medium")
-    );
+  const togglableItems = document.getElementsByClassName("ah-togglable-item");
+  for (let item of togglableItems) {
+    const handle = item.getElementsByClassName("ah-togglable-handle")[0];
+    handle.addEventListener("click", function (event) {
+      event.stopPropagation();
+      item.classList.toggle("opened");
+    });
+  }
+
+  document.addEventListener("click", function (event) {
     if (
       !nav.classList.contains("show") ||
       window.innerWidth > getBreakpoint("medium")

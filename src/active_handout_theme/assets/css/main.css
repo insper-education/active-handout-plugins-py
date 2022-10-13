@@ -927,6 +927,7 @@ body {
 .ah-header {
   width: 100%;
   background: linear-gradient(to bottom, var(--clr-background), var(--clr-background) 90%, transparent);
+  z-index: 999;
   padding: .5em 1em;
   font-family: Open Sans, sans-serif;
   font-size: 1.25rem;
@@ -1048,8 +1049,22 @@ body {
   margin-bottom: .5em;
 }
 
+.ah-navigation ul li.active {
+  font-weight: 700;
+}
+
+.ah-navigation ul li.active ul {
+  border-left: 2px solid var(--clr-link);
+  font-weight: normal;
+}
+
 .ah-navigation ul ul {
   padding-left: 1.5em;
+}
+
+.ah-navigation a:not(.ah-logo) {
+  color: var(--clr-link);
+  text-decoration: none;
 }
 
 .ah-nav-header {
@@ -1058,7 +1073,34 @@ body {
 }
 
 .ah-nav-body {
+  margin-top: 1em;
   font-size: 1rem;
+}
+
+.ah-togglable-item .ah-togglable-handle {
+  cursor: pointer;
+}
+
+.ah-togglable-item:before {
+  content: "▸";
+  color: var(--clr-link);
+  transition: transform .1s linear;
+  display: inline-block;
+}
+
+.ah-togglable-item.opened:before {
+  transform: rotate(90deg);
+}
+
+.ah-togglable-item.opened > ul {
+  max-height: 100vh;
+  overflow: auto;
+}
+
+.ah-togglable-item > ul {
+  max-height: 0;
+  transition: max-height .2s linear;
+  overflow: hidden;
 }
 
 section.progress-section {

@@ -12,6 +12,7 @@
     var(--clr-background) 90%,
     transparent
   );
+  z-index: 999;
 
   font-family: $font-regular;
   font-size: map-get($font-sizes, "regular");

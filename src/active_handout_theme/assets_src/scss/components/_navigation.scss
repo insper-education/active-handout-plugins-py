@@ -76,11 +76,25 @@
 
     li {
       margin-bottom: 0.5em;
+
+      &.active {
+        font-weight: 700;
+
+        ul {
+          font-weight: normal;
+          border-left: 2px solid var(--clr-link);
+        }
+      }
     }
 
     & ul {
       padding-left: 1.5em;
     }
+  }
+
+  a:not(.ah-logo) {
+    color: var(--clr-link);
+    text-decoration: none;
   }
 }
 
@@ -90,5 +104,36 @@
 }
 
 .ah-nav-body {
+  margin-top: 1em;
   font-size: map-get($font-sizes, "small");
+}
+
+.ah-togglable-item {
+  .ah-togglable-handle {
+    cursor: pointer;
+  }
+
+  &::before {
+    content: "\25B8";
+    display: inline-block;
+    color: var(--clr-link);
+    transition: transform 0.1s linear;
+  }
+
+  &.opened {
+    &::before {
+      transform: rotate(90deg);
+    }
+
+    > ul {
+      max-height: 100vh;
+      overflow: auto;
+    }
+  }
+
+  > ul {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s linear;
+  }
 }

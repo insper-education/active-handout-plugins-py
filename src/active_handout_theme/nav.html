@@ -1,7 +1,7 @@
 {% if not nav_item.children %}
-  <li {% if nav_item.active %}class="active"{% endif %}>
-    {% if nav_item.canonical_url == page.canonical_url %}
-      {{ nav_item.title }}
+  {% if nav_item.active %}
+    <li class="active ah-togglable-item opened">
+      <span class="ah-togglable-handle">{{ nav_item.title }}</span>
       <ul>
         {% for toc_item in page.toc %}
           <li>
@@ -9,13 +9,15 @@
           </li>
         {% endfor %}
       </ul>
-    {% else %}
+    </li>
+  {% else %}
+    <li>
       <a href="{{ nav_item.url|url }}">{{ nav_item.title }}</a>
-    {% endif %}
-  </li>
+    </li>
+  {% endif %}
 {% else %}
-  <li>
-    {{ nav_item.title }}
+  <li class="ah-togglable-item opened">
+    <span class="ah-togglable-handle">{{ nav_item.title }}</span>
     <ul>
       {% for nav_item in nav_item.children %}
         {% include "nav.html" %}
