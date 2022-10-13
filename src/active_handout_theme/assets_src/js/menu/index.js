@@ -39,14 +39,23 @@ export function initMenuPlugin(rememberCallbacks) {
     });
   }
 
+  const tocItems = document.getElementsByClassName("ah-toc-item");
+  for (let item of tocItems) {
+    item.addEventListener("click", function () {
+      if (menuIsOverContent()) {
+        nav.classList.remove("show");
+      }
+    });
+  }
+
   document.addEventListener("click", function (event) {
-    if (
-      !nav.classList.contains("show") ||
-      window.innerWidth > getBreakpoint("medium")
-    )
-      return;
+    if (!nav.classList.contains("show") || !menuIsOverContent()) return;
     if (!navContainer.contains(event.target)) {
       nav.classList.remove("show");
     }
   });
+}
+
+function menuIsOverContent() {
+  return window.innerWidth <= getBreakpoint("medium");
 }

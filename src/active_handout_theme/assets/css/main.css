@@ -233,6 +233,10 @@ p, h1, h2, h3, h4, h5, h6 {
   }
 }
 
+.ah-content * {
+  scroll-margin-top: var(--header-height, 50px);
+}
+
 :root {
   --clr-white: var(--clr-gray-primary-1);
   --clr-black: var(--clr-gray-primary-15);

@@ -8,4 +8,8 @@
   @include smaller-than("medium") {
     padding: $small-extra-block $small-extra-inline;
   }
+
+  * {
+    scroll-margin-top: var(--header-height, 50px);
+  }
 }

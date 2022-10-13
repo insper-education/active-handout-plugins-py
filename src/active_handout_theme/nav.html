@@ -4,7 +4,7 @@
       <span class="ah-togglable-handle">{{ nav_item.title }}</span>
       <ul>
         {% for toc_item in page.toc %}
-          <li>
+          <li class="ah-toc-item">
             <a href="{{ toc_item.url }}">{{ toc_item.title }}</a>
           </li>
         {% endfor %}
