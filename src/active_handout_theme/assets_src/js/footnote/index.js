@@ -1,3 +1,5 @@
+import { getBreakpoint } from "../breakpoints";
+
 /*
 The footnote is structured as follows:
 <span class="footnote-container">
@@ -61,7 +63,7 @@ function setupCard(note) {
 function setupContainer(footnoteRef, footnoteCard) {
   const footnoteContainer = document.createElement("span");
   footnoteContainer.classList.add("footnote-container");
-  if (window.innerWidth > 1440) {
+  if (window.innerWidth > getBreakpoint("large", 1440)) {
     footnoteContainer.classList.add("opened");
   }
 

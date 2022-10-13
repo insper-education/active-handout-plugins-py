@@ -842,6 +842,7 @@ The footnote is structured as follows:
   </div>
 </span>
 */ parcelHelpers.export(exports, "initFooterPlugin", ()=>initFooterPlugin);
+var _breakpoints = require("../breakpoints");
 function initFooterPlugin(rememberCallbacks) {
     rememberCallbacks.push({
         match: (el)=>el.classList.contains("progress"),
@@ -878,7 +879,7 @@ function setupCard(note) {
 function setupContainer(footnoteRef, footnoteCard) {
     const footnoteContainer = document.createElement("span");
     footnoteContainer.classList.add("footnote-container");
-    if (window.innerWidth > 1440) footnoteContainer.classList.add("opened");
+    if (window.innerWidth > (0, _breakpoints.getBreakpoint)("large", 1440)) footnoteContainer.classList.add("opened");
     // Move to container
     footnoteRef.parentElement.replaceChild(footnoteContainer, footnoteRef);
     footnoteContainer.appendChild(footnoteRef);
@@ -917,11 +918,20 @@ function setCustomProps(footnoteContainer, footnoteCard, contentRect) {
     footnoteCard.style.setProperty("--offset-x", `${offsetX - contentRect.left}px`);
 }
 
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../breakpoints":"bXeyp"}],"bXeyp":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getBreakpoint", ()=>getBreakpoint);
+function getBreakpoint(name, defaultVal) {
+    return parseInt(window.getComputedStyle(document.documentElement).getPropertyValue(`--breakpoint-${name}`, defaultVal));
+}
+
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5D3Be":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initMenuPlugin", ()=>initMenuPlugin);
 var _clientDb = require("../client-db");
+var _breakpoints = require("../breakpoints");
 function isMenuOpened(menuBtn) {
     return menuBtn.getAttribute("data-action") === "close";
 }
@@ -935,13 +945,20 @@ function initMenuPlugin(rememberCallbacks) {
         }
     });
     const nav = document.getElementsByClassName(navClass)[0];
+    const navContainer = nav.getElementsByClassName("ah-nav-container")[0];
     const menuBtns = document.getElementsByClassName(btnClass);
-    for (let menuBtn of menuBtns)menuBtn.addEventListener("click", function() {
+    for (let menuBtn of menuBtns)menuBtn.addEventListener("click", function(event) {
+        event.stopPropagation();
         if (isMenuOpened(menuBtn)) nav.classList.remove("show");
         else nav.classList.add("show");
     });
+    document.addEventListener("click", (event)=>{
+        console.log(window.innerWidth, (0, _breakpoints.getBreakpoint)("medium"), window.innerWidth > (0, _breakpoints.getBreakpoint)("medium"));
+        if (!nav.classList.contains("show") || window.innerWidth > (0, _breakpoints.getBreakpoint)("medium")) return;
+        if (!navContainer.contains(event.target)) nav.classList.remove("show");
+    });
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff"}]},["1csOT"], null, "parcelRequirea86e")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff","../breakpoints":"bXeyp"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

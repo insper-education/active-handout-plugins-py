@@ -78,12 +78,13 @@ $font-sizes: (
   }
 
   a {
-    color: var(--clr-link);
-    font-weight: 700;
+    color: var(--clr-text);
+    text-decoration-color: var(--clr-link);
     text-underline-offset: 0.2em;
+    transition: color 0.2s ease-in-out;
 
     &:hover {
-      color: var(--clr-link-hover);
+      color: var(--clr-link);
     }
   }
 

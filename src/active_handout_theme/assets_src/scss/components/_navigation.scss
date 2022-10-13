@@ -2,48 +2,70 @@
 @use "../base/index" as *;
 
 .ah-navigation {
+  $transition-time: 0.2s;
+  $content-width: min(80vw, 300px);
+
   position: fixed;
   top: 0;
   font-family: $font-regular;
-  font-size: map-get($font-sizes, "small");
-  padding: 0.5em 1em;
+  font-size: map-get($font-sizes, "regular");
   z-index: 1000;
   isolation: isolate;
-  max-width: min(80%, 300px);
-  display: none;
-
+  width: 0%;
+  max-height: 100vh;
+  height: 100%;
+  overflow-y: auto;
+  overflow: hidden;
+  transition: width $transition-time ease-in-out;
   color: var(--clr-text);
 
+  .ah-nav-container {
+    position: relative;
+    padding: 0.5em 1em;
+    width: $content-width;
+    height: 100%;
+  }
+
+  ::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      var(--clr-background),
+      var(--clr-background) 90%,
+      transparent
+    );
+    z-index: -1;
+  }
+
+  @include smaller-than("medium") {
+    &::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: transparent;
+      backdrop-filter: blur(0);
+      width: 0%;
+      height: 100%;
+      z-index: -2;
+      transition: background $transition-time ease-in-out,
+        backdrop-filter $transition-time ease-in-out,
+        width 0s linear $transition-time;
+    }
+  }
+
   &.show {
-    display: initial;
+    width: $content-width;
 
     @include smaller-than("medium") {
-      max-height: 100vh;
-      height: 100%;
-      overflow-y: auto;
-
       &::before {
-        content: "";
-        position: fixed;
-        top: 0;
-        left: 0;
-        background: red;
         width: 100%;
-        height: 100%;
-        z-index: -2;
-      }
-
-      ::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(
-          to right,
-          var(--clr-background),
-          var(--clr-background) 90%,
-          transparent
-        );
-        z-index: -1;
+        background: #3d3d3d3d;
+        backdrop-filter: blur(1px);
+        transition: background $transition-time ease-in-out,
+          backdrop-filter $transition-time ease-in-out;
       }
     }
   }
@@ -63,5 +85,10 @@
 }
 
 .ah-nav-header {
+  display: flex;
   font-size: map-get($font-sizes, "regular");
+}
+
+.ah-nav-body {
+  font-size: map-get($font-sizes, "small");
 }

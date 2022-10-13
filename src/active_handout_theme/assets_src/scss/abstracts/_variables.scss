@@ -4,6 +4,12 @@ $breakpoints: (
   "huge": 2000px,
 );
 
+:root {
+  @each $name, $value in $breakpoints {
+    --breakpoint-#{$name}: #{$value};
+  }
+}
+
 $border-radius: 0.2em;
 $admonition-extra-block: 1rem;
 $admonition-extra-inline: 2rem;
