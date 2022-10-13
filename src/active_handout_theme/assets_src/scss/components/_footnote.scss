@@ -27,6 +27,7 @@
   a.footnote-anchor {
     color: var(--clr-text-strong);
     text-decoration: 5px underline dashed var(--clr-background);
+    background: none;
   }
 
   &.opened {

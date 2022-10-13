@@ -79,9 +79,8 @@ $font-sizes: (
 
   a {
     color: var(--clr-text);
-    text-decoration-color: var(--clr-link);
-    text-underline-offset: 0.2em;
-    transition: color 0.2s ease-in-out;
+    text-decoration: none;
+    @include animated-underline(var(--clr-link), var(--clr-link), 100%, 0);
 
     &:hover {
       color: var(--clr-link);
