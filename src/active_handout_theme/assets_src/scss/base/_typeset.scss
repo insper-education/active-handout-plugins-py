@@ -34,7 +34,8 @@ $font-sizes: (
     font-family: $font-highlight;
     color: var(--clr-title);
     font-size: map-get($font-sizes, "regular");
-    margin-bottom: 2.5rem;
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
     line-height: 1.2;
 
     @include smaller-than("medium") {
@@ -115,4 +116,22 @@ $font-sizes: (
       color: var(--clr-bullet);
     }
   }
+}
+
+del {
+  background: var(--clr-fail-primary-6);
+  text-decoration-color: hsl(var(--clr-fail-primary-8-hsl) / 0.5);
+}
+
+ins {
+  background: var(--clr-success-primary-4);
+  text-decoration-color: var(--clr-success-primary-7);
+}
+
+mark {
+  background: var(--clr-warn-primary-5);
+}
+
+span.critic.comment {
+  background: var(--clr-gray-primary-3);
 }

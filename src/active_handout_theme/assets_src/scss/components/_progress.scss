@@ -7,6 +7,13 @@ section.progress-section {
   }
 }
 
+// First progress section
+.ah-title-box + section.progress-section {
+  :is(h1, h2, h3, h4, h5, h6):first-child {
+    margin-top: 0;
+  }
+}
+
 .ah-progress-container {
   display: flex;
   width: 100%;

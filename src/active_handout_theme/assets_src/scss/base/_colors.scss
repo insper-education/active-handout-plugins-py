@@ -65,6 +65,9 @@ $colors: (
           #{$saturation},
           #{$lightness}
         );
+        --clr-#{$color-scheme}-#{$color-name}-#{$shade}-hsl: #{$hue}
+          #{$saturation}
+          #{$lightness};
 
         $saturation: $saturation + $saturation-step;
         $lightness: $lightness + $lightness-step;

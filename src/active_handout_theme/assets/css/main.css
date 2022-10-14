@@ -37,71 +37,137 @@ p, h1, h2, h3, h4, h5, h6 {
 
 :root {
   --clr-gray-primary-1: #fbfcfd;
+  --clr-gray-primary-1-hsl: 233 40% 99%;
   --clr-gray-primary-2: #e3e5f2;
+  --clr-gray-primary-2-hsl: 233 37.8571% 92%;
   --clr-gray-primary-3: #cbcee6;
+  --clr-gray-primary-3-hsl: 233 35.7143% 85%;
   --clr-gray-primary-4: #b4b8da;
+  --clr-gray-primary-4-hsl: 233 33.5714% 78%;
   --clr-gray-primary-5: #9ea3cc;
+  --clr-gray-primary-5-hsl: 233 31.4286% 71%;
   --clr-gray-primary-6: #888fbe;
+  --clr-gray-primary-6-hsl: 233 29.2857% 64%;
   --clr-gray-primary-7: #747baf;
+  --clr-gray-primary-7-hsl: 233 27.1429% 57%;
   --clr-gray-primary-8: #60679f;
+  --clr-gray-primary-8-hsl: 233 25% 50%;
   --clr-gray-primary-9: #555a87;
+  --clr-gray-primary-9-hsl: 233 22.8571% 43%;
   --clr-gray-primary-10: #494d6f;
+  --clr-gray-primary-10-hsl: 233 20.7143% 36%;
   --clr-gray-primary-11: #3c3f58;
+  --clr-gray-primary-11-hsl: 233 18.5714% 29%;
   --clr-gray-primary-12: #2f3141;
+  --clr-gray-primary-12-hsl: 233 16.4286% 22%;
   --clr-gray-primary-13: #21222c;
+  --clr-gray-primary-13-hsl: 233 14.2857% 15%;
   --clr-gray-primary-14: #121317;
+  --clr-gray-primary-14-hsl: 233 12.1429% 8%;
   --clr-gray-primary-15: #020203;
+  --clr-gray-primary-15-hsl: 233 10% 1%;
   --clr-blue-primary-1: #c7cceb;
+  --clr-blue-primary-1-hsl: 232 47% 85%;
   --clr-blue-primary-2: #a1a9dd;
+  --clr-blue-primary-2-hsl: 232 47% 75%;
   --clr-blue-primary-3: #7c87d0;
+  --clr-blue-primary-3-hsl: 232 47% 65%;
   --clr-blue-primary-4: #5665c2;
+  --clr-blue-primary-4-hsl: 232 47% 55%;
   --clr-blue-primary-5: #3d4ba9;
+  --clr-blue-primary-5-hsl: 232 47% 45%;
   --clr-blue-primary-6: #2f3a83;
+  --clr-blue-primary-6-hsl: 232 47% 35%;
   --clr-blue-primary-7: #222a5e;
+  --clr-blue-primary-7-hsl: 232 47% 25%;
   --clr-blue-highlight-1: #e3ebf7;
+  --clr-blue-highlight-1-hsl: 217 56% 93%;
   --clr-blue-highlight-2: #bfd1ed;
+  --clr-blue-highlight-2-hsl: 217 56% 84%;
   --clr-blue-highlight-3: #9cb7e3;
+  --clr-blue-highlight-3-hsl: 217 56% 75%;
   --clr-blue-highlight-4: #789dd9;
+  --clr-blue-highlight-4-hsl: 217 56% 66%;
   --clr-blue-highlight-5: #5483cf;
+  --clr-blue-highlight-5-hsl: 217 56% 57%;
   --clr-blue-highlight-6: #366abf;
+  --clr-blue-highlight-6-hsl: 217 56% 48%;
   --clr-blue-highlight-7: #2c569b;
+  --clr-blue-highlight-7-hsl: 217 56% 39%;
   --clr-blue-highlight-8: #224377;
+  --clr-blue-highlight-8-hsl: 217 56% 30%;
   --clr-blue-highlight-9: #182f54;
+  --clr-blue-highlight-9-hsl: 217 56% 21%;
   --clr-blue-highlight-10: #0d1b30;
+  --clr-blue-highlight-10-hsl: 217 56% 12%;
   --clr-blue-highlight-11: #03070c;
+  --clr-blue-highlight-11-hsl: 217 56% 3%;
   --clr-success-primary-1: #fff;
+  --clr-success-primary-1-hsl: 145 71% 100%;
   --clr-success-primary-2: #d3f8e2;
+  --clr-success-primary-2-hsl: 145 71% 90%;
   --clr-success-primary-3: #a8f0c6;
+  --clr-success-primary-3-hsl: 145 71% 80%;
   --clr-success-primary-4: #7ce9a9;
+  --clr-success-primary-4-hsl: 145 71% 70%;
   --clr-success-primary-5: #51e18d;
+  --clr-success-primary-5-hsl: 145 71% 60%;
   --clr-success-primary-6: #25da70;
+  --clr-success-primary-6-hsl: 145 71% 50%;
   --clr-success-primary-7: #1eae5a;
+  --clr-success-primary-7-hsl: 145 71% 40%;
   --clr-success-primary-8: #168343;
+  --clr-success-primary-8-hsl: 145 71% 30%;
   --clr-success-primary-9: #0f572d;
+  --clr-success-primary-9-hsl: 145 71% 20%;
   --clr-success-primary-10: #072c16;
+  --clr-success-primary-10-hsl: 145 71% 10%;
   --clr-success-primary-11: #000;
+  --clr-success-primary-11-hsl: 145 71% 0%;
   --clr-fail-primary-1: #fff;
+  --clr-fail-primary-1-hsl: 15 100% 100%;
   --clr-fail-primary-2: #ffd9cc;
+  --clr-fail-primary-2-hsl: 15 100% 90%;
   --clr-fail-primary-3: #ffb399;
+  --clr-fail-primary-3-hsl: 15 100% 80%;
   --clr-fail-primary-4: #ff8c66;
+  --clr-fail-primary-4-hsl: 15 100% 70%;
   --clr-fail-primary-5: #f63;
+  --clr-fail-primary-5-hsl: 15 100% 60%;
   --clr-fail-primary-6: #ff4000;
+  --clr-fail-primary-6-hsl: 15 100% 50%;
   --clr-fail-primary-7: #c30;
+  --clr-fail-primary-7-hsl: 15 100% 40%;
   --clr-fail-primary-8: #992600;
+  --clr-fail-primary-8-hsl: 15 100% 30%;
   --clr-fail-primary-9: #661a00;
+  --clr-fail-primary-9-hsl: 15 100% 20%;
   --clr-fail-primary-10: #330d00;
+  --clr-fail-primary-10-hsl: 15 100% 10%;
   --clr-fail-primary-11: #000;
+  --clr-fail-primary-11-hsl: 15 100% 0%;
   --clr-warn-primary-1: #fff;
+  --clr-warn-primary-1-hsl: 40 100% 100%;
   --clr-warn-primary-2: #fec;
+  --clr-warn-primary-2-hsl: 40 100% 90%;
   --clr-warn-primary-3: #fd9;
+  --clr-warn-primary-3-hsl: 40 100% 80%;
   --clr-warn-primary-4: #fc6;
+  --clr-warn-primary-4-hsl: 40 100% 70%;
   --clr-warn-primary-5: #fb3;
+  --clr-warn-primary-5-hsl: 40 100% 60%;
   --clr-warn-primary-6: #fa0;
+  --clr-warn-primary-6-hsl: 40 100% 50%;
   --clr-warn-primary-7: #c80;
+  --clr-warn-primary-7-hsl: 40 100% 40%;
   --clr-warn-primary-8: #960;
+  --clr-warn-primary-8-hsl: 40 100% 30%;
   --clr-warn-primary-9: #640;
+  --clr-warn-primary-9-hsl: 40 100% 20%;
   --clr-warn-primary-10: #320;
+  --clr-warn-primary-10-hsl: 40 100% 10%;
   --clr-warn-primary-11: #000;
+  --clr-warn-primary-11-hsl: 40 100% 0%;
 }
 
 .emojione {
@@ -128,7 +194,8 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .ah-typeset h1, .ah-typeset h2, .ah-typeset h3, .ah-typeset h4, .ah-typeset h5, .ah-typeset h6 {
   color: var(--clr-title);
-  margin-bottom: 2.5rem;
+  margin-top: 1.5em;
+  margin-bottom: .5em;
   font-family: Oswald, sans-serif;
   font-size: 1.25rem;
   line-height: 1.2;
@@ -220,6 +287,26 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .ah-typeset li:before {
   color: var(--clr-bullet);
+}
+
+del {
+  background: var(--clr-fail-primary-6);
+  -webkit-text-decoration-color: hsl(var(--clr-fail-primary-8-hsl) / .5);
+  text-decoration-color: hsl(var(--clr-fail-primary-8-hsl) / .5);
+}
+
+ins {
+  background: var(--clr-success-primary-4);
+  -webkit-text-decoration-color: var(--clr-success-primary-7);
+  text-decoration-color: var(--clr-success-primary-7);
+}
+
+mark {
+  background: var(--clr-warn-primary-5);
+}
+
+span.critic.comment {
+  background: var(--clr-gray-primary-3);
 }
 
 .ah-content {
@@ -1142,6 +1229,10 @@ section.progress-section:first-child, section.progress-section.show {
   display: inherit;
 }
 
+.ah-title-box + section.progress-section :is(h1, h2, h3, h4, h5, h6):first-child {
+  margin-top: 0;
+}
+
 .ah-progress-container {
   width: 100%;
   padding: 2rem 0 1rem;
@@ -1438,7 +1529,7 @@ section.progress-section:first-child, section.progress-section.show {
 
 .ah-title-box h2 {
   color: var(--clr-subtitle);
-  margin-top: -2.4rem;
+  margin-top: -1em;
   font-size: 1.953rem;
 }
 
