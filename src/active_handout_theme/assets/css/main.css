@@ -333,7 +333,7 @@ span.critic.comment {
   --clr-white: var(--clr-gray-primary-1);
   --clr-black: var(--clr-gray-primary-15);
   --clr-background-default: var(--clr-white);
-  --clr-shadow-default: var(--clr-gray-primary-2);
+  --clr-shadow-default: var(--clr-gray-primary-5);
   --clr-text-default: var(--clr-black);
   --clr-text-default-hover: var(--clr-gray-primary-8);
   --clr-text-em-default: var(--clr-blue-primary-6);

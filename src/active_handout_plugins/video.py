@@ -20,7 +20,7 @@ class VideoAdmonition(AdmonitionVisitor):
             if m:
                 html = f'<iframe width="100%" height="500" type="text/html" src="https://www.youtube.com/embed/{m.group(2)}?autoplay=0"></iframe>'
             else:
-                html = f'<video width="100%" src="{src}" />'
+                html = f'<video width="100%" src="{src}" controls="true" />'
 
             video_el = etree.fromstring(html)
             el.clear()
