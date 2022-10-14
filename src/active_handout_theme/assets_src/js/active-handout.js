@@ -20,7 +20,7 @@ function onLoad() {
   });
 
   initStyle();
-  initMenuPlugin(rememberCallbacks);
+  initMenuPlugin();
   initProgressPlugin(rememberCallbacks);
   initExercisePlugin(rememberCallbacks);
   initFooterPlugin(rememberCallbacks);

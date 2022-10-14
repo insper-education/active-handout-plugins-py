@@ -546,7 +546,7 @@ function onLoad() {
         for (let remember of rememberCallbacks)if (remember.match(element)) remember.callback(element);
     });
     (0, _style.initStyle)();
-    (0, _menu.initMenuPlugin)(rememberCallbacks);
+    (0, _menu.initMenuPlugin)();
     (0, _progress.initProgressPlugin)(rememberCallbacks);
     (0, _exercise.initExercisePlugin)(rememberCallbacks);
     (0, _footnote.initFooterPlugin)(rememberCallbacks);
@@ -934,25 +934,17 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initMenuPlugin", ()=>initMenuPlugin);
 var _clientDb = require("../client-db");
 var _breakpoints = require("../breakpoints");
-function isMenuOpened(menuBtn) {
-    return menuBtn.getAttribute("data-action") === "close";
-}
-function initMenuPlugin(rememberCallbacks) {
-    const btnClass = "ah-menu-btn";
-    const navClass = "ah-navigation";
-    rememberCallbacks.push({
-        match: (el)=>el.classList.contains(btnClass),
-        callback: (el)=>{
-            (0, _clientDb.setValue)("menu-opened", isMenuOpened(el));
-        }
-    });
+const btnClass = "ah-menu-btn";
+const navClass = "ah-navigation";
+const menuOpenedKey = "menu-opened";
+function initMenuPlugin() {
     const nav = document.getElementsByClassName(navClass)[0];
     const navContainer = nav.getElementsByClassName("ah-nav-container")[0];
     const menuBtns = document.getElementsByClassName(btnClass);
+    if (prefersOpenMenu() && !menuIsOverContent()) openMenu();
     for (let menuBtn of menuBtns)menuBtn.addEventListener("click", function(event) {
         event.stopPropagation();
-        if (isMenuOpened(menuBtn)) nav.classList.remove("show");
-        else nav.classList.add("show");
+        toggleMenu(menuBtn);
     });
     const togglableItems = document.getElementsByClassName("ah-togglable-item");
     for (let item of togglableItems){
@@ -964,15 +956,37 @@ function initMenuPlugin(rememberCallbacks) {
     }
     const tocItems = document.getElementsByClassName("ah-toc-item");
     for (let item1 of tocItems)item1.addEventListener("click", function() {
-        if (menuIsOverContent()) nav.classList.remove("show");
+        if (menuIsOverContent()) closeMenu();
     });
     document.addEventListener("click", function(event) {
         if (!nav.classList.contains("show") || !menuIsOverContent()) return;
-        if (!navContainer.contains(event.target)) nav.classList.remove("show");
+        if (!navContainer.contains(event.target)) closeMenu();
     });
+}
+function isMenuOpened() {
+    return getNav().classList.contains("show");
 }
 function menuIsOverContent() {
     return window.innerWidth <= (0, _breakpoints.getBreakpoint)("medium");
+}
+function getNav() {
+    return document.getElementsByClassName(navClass)[0];
+}
+function openMenu() {
+    getNav().classList.add("show");
+    (0, _clientDb.setValue)(menuOpenedKey, true);
+}
+function closeMenu() {
+    getNav().classList.remove("show");
+    (0, _clientDb.setValue)(menuOpenedKey, false);
+}
+function prefersOpenMenu() {
+    const openedPref = (0, _clientDb.getValue)(menuOpenedKey);
+    return openedPref && openedPref == "true";
+}
+function toggleMenu(menuBtn) {
+    if (isMenuOpened(menuBtn)) closeMenu();
+    else openMenu();
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff","../breakpoints":"bXeyp"}],"5DGm5":[function(require,module,exports) {

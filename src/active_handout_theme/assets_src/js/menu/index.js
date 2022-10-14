@@ -1,32 +1,23 @@
-import { setValue } from "../client-db";
+import { getValue, setValue } from "../client-db";
 import { getBreakpoint } from "../breakpoints";
 
-function isMenuOpened(menuBtn) {
-  return menuBtn.getAttribute("data-action") === "close";
-}
+const btnClass = "ah-menu-btn";
+const navClass = "ah-navigation";
+const menuOpenedKey = "menu-opened";
 
-export function initMenuPlugin(rememberCallbacks) {
-  const btnClass = "ah-menu-btn";
-  const navClass = "ah-navigation";
-
-  rememberCallbacks.push({
-    match: (el) => el.classList.contains(btnClass),
-    callback: (el) => {
-      setValue("menu-opened", isMenuOpened(el));
-    },
-  });
-
+export function initMenuPlugin() {
   const nav = document.getElementsByClassName(navClass)[0];
   const navContainer = nav.getElementsByClassName("ah-nav-container")[0];
   const menuBtns = document.getElementsByClassName(btnClass);
+
+  if (prefersOpenMenu() && !menuIsOverContent()) {
+    openMenu();
+  }
+
   for (let menuBtn of menuBtns) {
     menuBtn.addEventListener("click", function (event) {
       event.stopPropagation();
-      if (isMenuOpened(menuBtn)) {
-        nav.classList.remove("show");
-      } else {
-        nav.classList.add("show");
-      }
+      toggleMenu(menuBtn);
     });
   }
 
@@ -43,7 +34,7 @@ export function initMenuPlugin(rememberCallbacks) {
   for (let item of tocItems) {
     item.addEventListener("click", function () {
       if (menuIsOverContent()) {
-        nav.classList.remove("show");
+        closeMenu();
       }
     });
   }
@@ -51,11 +42,42 @@ export function initMenuPlugin(rememberCallbacks) {
   document.addEventListener("click", function (event) {
     if (!nav.classList.contains("show") || !menuIsOverContent()) return;
     if (!navContainer.contains(event.target)) {
-      nav.classList.remove("show");
+      closeMenu();
     }
   });
 }
 
+function isMenuOpened() {
+  return getNav().classList.contains("show");
+}
+
 function menuIsOverContent() {
   return window.innerWidth <= getBreakpoint("medium");
+}
+
+function getNav() {
+  return document.getElementsByClassName(navClass)[0];
+}
+
+function openMenu() {
+  getNav().classList.add("show");
+  setValue(menuOpenedKey, true);
+}
+
+function closeMenu() {
+  getNav().classList.remove("show");
+  setValue(menuOpenedKey, false);
+}
+
+function prefersOpenMenu() {
+  const openedPref = getValue(menuOpenedKey);
+  return openedPref && openedPref == "true";
+}
+
+function toggleMenu(menuBtn) {
+  if (isMenuOpened(menuBtn)) {
+    closeMenu();
+  } else {
+    openMenu();
+  }
 }
