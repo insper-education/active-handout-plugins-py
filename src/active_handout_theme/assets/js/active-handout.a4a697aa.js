@@ -941,6 +941,7 @@ function initMenuPlugin() {
     const nav = document.getElementsByClassName(navClass)[0];
     const navContainer = nav.getElementsByClassName("ah-nav-container")[0];
     const menuBtns = document.getElementsByClassName(btnClass);
+    const closeMenuBtn = document.getElementsByClassName("close-menu")[0];
     if (prefersOpenMenu() && !menuIsOverContent()) openMenu();
     for (let menuBtn of menuBtns)menuBtn.addEventListener("click", function(event) {
         event.stopPropagation();
@@ -958,6 +959,7 @@ function initMenuPlugin() {
     for (let item1 of tocItems)item1.addEventListener("click", function() {
         if (menuIsOverContent()) closeMenu();
     });
+    closeMenuBtn.addEventListener("click", closeMenu);
     document.addEventListener("click", function(event) {
         if (!nav.classList.contains("show") || !menuIsOverContent()) return;
         if (!navContainer.contains(event.target)) closeMenu();
@@ -967,7 +969,7 @@ function isMenuOpened() {
     return getNav().classList.contains("show");
 }
 function menuIsOverContent() {
-    return window.innerWidth <= (0, _breakpoints.getBreakpoint)("medium");
+    return window.innerWidth <= (0, _breakpoints.getBreakpoint)("large");
 }
 function getNav() {
     return document.getElementsByClassName(navClass)[0];

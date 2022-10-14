@@ -19,15 +19,23 @@
   <body>
     <div class="ah-main-container">
       <header class="ah-header">
-        {% include "header-start.html" %}
+        <button class="ah-menu-btn ah-button ah-button--borderless"
+                aria-label="toggle menu">
+          {% include 'icon/menu.svg' %}
+        </button>
+        <a href="{{ config.extra.homepage | d(nav.homepage.url, true) | url }}"
+           title="{{ config.site_name | e }}"
+           class="ah-logo"
+           aria-label="{{ config.site_name }}">
+          {{ config.site_name | e }}
+        </a>
       </header>
       <nav class="ah-navigation">
         <div class="ah-nav-container">
-          <div class="ah-nav-header">
-            {% with is_menu=True %}
-              {% include "header-start.html" %}
-            {% endwith %}
-          </div>
+          <button class="ah-menu-btn ah-button ah-button--borderless close-menu"
+                  aria-label="close menu">
+            {% include 'icon/cross.svg' %}
+          </button>
           <ul class="ah-nav-body">
             {% for nav_item in nav %}
               {% include "nav.html" %}

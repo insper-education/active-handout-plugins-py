@@ -9,6 +9,7 @@ export function initMenuPlugin() {
   const nav = document.getElementsByClassName(navClass)[0];
   const navContainer = nav.getElementsByClassName("ah-nav-container")[0];
   const menuBtns = document.getElementsByClassName(btnClass);
+  const closeMenuBtn = document.getElementsByClassName("close-menu")[0];
 
   if (prefersOpenMenu() && !menuIsOverContent()) {
     openMenu();
@@ -39,6 +40,8 @@ export function initMenuPlugin() {
     });
   }
 
+  closeMenuBtn.addEventListener("click", closeMenu);
+
   document.addEventListener("click", function (event) {
     if (!nav.classList.contains("show") || !menuIsOverContent()) return;
     if (!navContainer.contains(event.target)) {
@@ -52,7 +55,7 @@ function isMenuOpened() {
 }
 
 function menuIsOverContent() {
-  return window.innerWidth <= getBreakpoint("medium");
+  return window.innerWidth <= getBreakpoint("large");
 }
 
 function getNav() {

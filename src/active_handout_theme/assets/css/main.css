@@ -750,6 +750,7 @@ body {
 
 .ah-footer-nav a {
   color: var(--clr-text);
+  background: none;
   align-items: center;
   column-gap: 1em;
   font-weight: 400;
@@ -989,6 +990,7 @@ body {
 }
 
 .ah-navigation {
+  top: var(--header-height, 50px);
   z-index: 1000;
   isolation: isolate;
   width: 0%;
@@ -999,12 +1001,24 @@ body {
   font-size: 1.25rem;
   transition: width .2s ease-in-out;
   position: fixed;
-  top: 0;
   overflow: hidden;
 }
 
+.ah-navigation .close-menu {
+  width: 1em;
+  height: 1em;
+  margin: .25em 0 1em;
+  display: none;
+}
+
+@media (max-width: 1440px) {
+  .ah-navigation .close-menu {
+    display: block;
+  }
+}
+
 .ah-navigation .ah-nav-container {
-  width: min(80vw, 300px);
+  width: max(300px, 50vw - 30ch - 2rem);
   height: 100%;
   padding: .5em 1em;
   position: relative;
@@ -1018,7 +1032,11 @@ body {
   inset: 0;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1440px) {
+  .ah-navigation {
+    top: 0;
+  }
+
   .ah-navigation:before {
     content: "";
     -webkit-backdrop-filter: blur();
@@ -1035,10 +1053,10 @@ body {
 }
 
 .ah-navigation.show {
-  width: min(80vw, 300px);
+  width: max(300px, 50vw - 30ch - 2rem);
 }
 
-@media (max-width: 800px) {
+@media (max-width: 1440px) {
   .ah-navigation.show:before {
     width: 100%;
     -webkit-backdrop-filter: blur(1px);
@@ -1084,13 +1102,7 @@ body {
   background-size: 100% 2px;
 }
 
-.ah-nav-header {
-  font-size: 1.25rem;
-  display: flex;
-}
-
 .ah-nav-body {
-  margin-top: 1em;
   font-size: 1rem;
 }
 

@@ -10,6 +10,6 @@
   }
 
   * {
-    scroll-margin-top: var(--header-height, 50px);
+    scroll-margin-top: $header-height;
   }
 }

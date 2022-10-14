@@ -10,6 +10,8 @@ $breakpoints: (
   }
 }
 
+$header-height: var(--header-height, 50px);
+
 $border-radius: 0.2em;
 $admonition-extra-block: 1rem;
 $admonition-extra-inline: 2rem;

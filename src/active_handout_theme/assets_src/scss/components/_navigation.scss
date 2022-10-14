@@ -3,10 +3,10 @@
 
 .ah-navigation {
   $transition-time: 0.2s;
-  $content-width: min(80vw, 300px);
+  $content-width: max(300px, calc(50vw - 30ch - #{$admonition-extra-inline}));
 
   position: fixed;
-  top: 0;
+  top: $header-height;
   font-family: $font-regular;
   font-size: map-get($font-sizes, "regular");
   z-index: 1000;
@@ -18,6 +18,17 @@
   overflow: hidden;
   transition: width $transition-time ease-in-out;
   color: var(--clr-text);
+
+  .close-menu {
+    display: none;
+    width: 1em;
+    height: 1em;
+    margin: 0.25em 0 1em;
+
+    @include smaller-than("large") {
+      display: block;
+    }
+  }
 
   .ah-nav-container {
     position: relative;
@@ -39,7 +50,9 @@
     z-index: -1;
   }
 
-  @include smaller-than("medium") {
+  @include smaller-than("large") {
+    top: 0;
+
     &::before {
       content: "";
       position: fixed;
@@ -59,7 +72,7 @@
   &.show {
     width: $content-width;
 
-    @include smaller-than("medium") {
+    @include smaller-than("large") {
       &::before {
         width: 100%;
         background: #3d3d3d3d;
@@ -100,13 +113,7 @@
   }
 }
 
-.ah-nav-header {
-  display: flex;
-  font-size: map-get($font-sizes, "regular");
-}
-
 .ah-nav-body {
-  margin-top: 1em;
   font-size: map-get($font-sizes, "small");
 }
 
