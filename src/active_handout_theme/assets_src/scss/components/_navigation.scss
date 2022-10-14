@@ -12,12 +12,12 @@
   z-index: 1000;
   isolation: isolate;
   width: 0%;
-  max-height: 100vh;
   height: 100%;
   overflow-y: auto;
   overflow: hidden;
   transition: width $transition-time ease-in-out;
   color: var(--clr-text);
+  @include vh(max-height, 100);
 
   .close-menu {
     display: none;
@@ -135,7 +135,7 @@
     }
 
     > ul {
-      max-height: 100vh;
+      @include vh(max-height, 100);
       overflow: auto;
     }
   }

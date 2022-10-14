@@ -994,9 +994,10 @@ body {
   z-index: 1000;
   isolation: isolate;
   width: 0%;
-  max-height: 100vh;
   height: 100%;
   color: var(--clr-text);
+  max-height: 100vh;
+  max-height: calc(var(--vh, 1vh) * 100);
   font-family: Open Sans, sans-serif;
   font-size: 1.25rem;
   transition: width .2s ease-in-out;
@@ -1123,6 +1124,7 @@ body {
 
 .ah-togglable-item.opened > ul {
   max-height: 100vh;
+  max-height: calc(var(--vh, 1vh) * 100);
   overflow: auto;
 }
 
