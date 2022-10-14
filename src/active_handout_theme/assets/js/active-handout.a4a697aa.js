@@ -543,7 +543,10 @@ function onLoad() {
     let rememberCallbacks = [];
     window.addEventListener("remember", function(e) {
         const element = e.detail.element;
-        for (let remember of rememberCallbacks)if (remember.match(element)) remember.callback(element);
+        for (let remember of rememberCallbacks)if (remember.match(element)) {
+            const stop = remember.callback(element);
+            if (stop) break;
+        }
     });
     (0, _style.initStyle)();
     (0, _menu.initMenuPlugin)();
@@ -738,7 +741,10 @@ function initTextExercises() {
     (0, _queries.queryTextExercises)().forEach((el)=>{
         const prevAnswer = (0, _clientDb.getValue)(el);
         if (prevAnswer !== null) {
-            (0, _queries.queryTextInputs)(el).value = prevAnswer;
+            const input = (0, _queries.queryTextInputs)(el);
+            input.value = prevAnswer;
+            const growWrap = input.closest(".grow-wrap");
+            if (growWrap) growWrap.dataset.replicatedValue = prevAnswer;
             (0, _queries.querySubmitBtn)(el).click();
         }
     });
@@ -748,7 +754,8 @@ function matchTextExercises(el) {
 }
 function rememberTextExercise(el) {
     const textElement = (0, _queries.queryTextInputs)(el);
-    (0, _telemetry.saveAndSendData)(element, textElement.value);
+    (0, _telemetry.saveAndSendData)(el, textElement.value);
+    return true;
 }
 function initChoiceExercises() {
     (0, _queries.queryChoiceExercises)().forEach((el)=>{
@@ -776,6 +783,7 @@ function rememberChoiceExercise(el) {
         else alternative.classList.add("wrong");
         if (choice.checked) (0, _telemetry.saveAndSendData)(el, choice.value);
     }
+    return true;
 }
 function initSelfProgressExercises() {
     (0, _queries.querySelfProgressExercises)().forEach((el)=>{
@@ -788,6 +796,7 @@ function matchSelfProgressExercises(el) {
 }
 function rememberSelfProgressExercise(el) {
     (0, _telemetry.saveAndSendData)(el, true);
+    return true;
 }
 
 },{"../client-db":"j0pff","../telemetry":"kpvgZ","./queries":"5VMWX","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5VMWX":[function(require,module,exports) {
@@ -1003,6 +1012,16 @@ function initStyle() {
         // We execute the same script as before
         let vh = window.innerHeight * 0.01;
         document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
+    initTextArea();
+}
+function initTextArea() {
+    const growers = document.querySelectorAll(".grow-wrap");
+    growers.forEach((grower)=>{
+        const textarea = grower.querySelector("textarea");
+        textarea.addEventListener("input", ()=>{
+            grower.dataset.replicatedValue = textarea.value;
+        });
     });
 }
 

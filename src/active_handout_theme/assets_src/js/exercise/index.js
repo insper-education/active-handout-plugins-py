@@ -37,7 +37,13 @@ function initTextExercises() {
   queryTextExercises().forEach((el) => {
     const prevAnswer = getValue(el);
     if (prevAnswer !== null) {
-      queryTextInputs(el).value = prevAnswer;
+      const input = queryTextInputs(el);
+      input.value = prevAnswer;
+      const growWrap = input.closest(".grow-wrap");
+      if (growWrap) {
+        growWrap.dataset.replicatedValue = prevAnswer;
+      }
+
       querySubmitBtn(el).click();
     }
   });
@@ -53,7 +59,8 @@ function matchTextExercises(el) {
 
 function rememberTextExercise(el) {
   const textElement = queryTextInputs(el);
-  saveAndSendData(element, textElement.value);
+  saveAndSendData(el, textElement.value);
+  return true;
 }
 
 function initChoiceExercises() {
@@ -90,6 +97,8 @@ function rememberChoiceExercise(el) {
       saveAndSendData(el, choice.value);
     }
   }
+
+  return true;
 }
 
 function initSelfProgressExercises() {
@@ -107,4 +116,5 @@ function matchSelfProgressExercises(el) {
 
 function rememberSelfProgressExercise(el) {
   saveAndSendData(el, true);
+  return true;
 }

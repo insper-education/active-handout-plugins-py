@@ -116,6 +116,11 @@ $font-sizes: (
       color: var(--clr-bullet);
     }
   }
+
+  input {
+    border: 1px solid transparent;
+    border-radius: $border-radius;
+  }
 }
 
 del {

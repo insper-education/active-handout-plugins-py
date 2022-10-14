@@ -72,6 +72,7 @@ on submit
         show the <.answer/> in me
     end
     add @disabled to <input/> in me
+    add @disabled to <textarea/> in me
     add .done to closest .exercise
     hide the <input[type="submit"]/> in me
     send remember(element: my parentElement) to window
@@ -133,13 +134,13 @@ class TextExercise(ExerciseAdmonition):
         if self.has_class(el, 'short'):
             text_widget = '<input type="text" value="" name="data"/>'
         elif self.has_class(el, 'medium'):
-            text_widget = '<textarea name="data"></textarea>'
+            text_widget = '<div class="grow-wrap"><textarea name="data"></textarea></div>'
         if self.has_class(el, 'long'):
-            text_widget = '<textarea name="data"></textarea>'
+            text_widget = '<div class="grow-wrap"><textarea name="data"></textarea></div>'
         return f'''
 {text_widget}
 
-<input type="submit" value="Enviar"/>
+<input class="ah-button ah-button--primary" type="submit" value="Enviar"/>
 '''
 
 
@@ -150,5 +151,5 @@ class SelfProgressExercise(ExerciseAdmonition):
     def create_exercise_form(self, el, submission_form):
         return '''
 <input type="hidden" name="data" value="OK" />
-<input type="submit" name="enviar" value="Marcar como feito" />
+<input class="ah-button ah-button--primary" type="submit" name="enviar" value="Marcar como feito" />
 '''

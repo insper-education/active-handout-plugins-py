@@ -289,6 +289,11 @@ p, h1, h2, h3, h4, h5, h6 {
   color: var(--clr-bullet);
 }
 
+.ah-typeset input {
+  border: 1px solid #0000;
+  border-radius: .2em;
+}
+
 del {
   background: var(--clr-fail-primary-6);
   -webkit-text-decoration-color: hsl(var(--clr-fail-primary-8-hsl) / .5);
@@ -1561,6 +1566,29 @@ section.progress-section:first-child, section.progress-section.show {
 
 .ah-typeset .task-list .task-list-control input[type="checkbox"]:disabled:not(:checked) + .task-list-indicator:after {
   color: hsl(var(--clr-gray-primary-3-hsl) / .7);
+}
+
+.grow-wrap {
+  display: grid;
+}
+
+.grow-wrap:after {
+  content: attr(data-replicated-value) " ";
+  white-space: pre-wrap;
+  visibility: hidden;
+}
+
+.grow-wrap > textarea {
+  resize: none;
+  overflow: hidden;
+}
+
+.grow-wrap > textarea, .grow-wrap:after {
+  font: inherit;
+  border: 1px solid #0000;
+  border-radius: .2em;
+  grid-area: 1 / 1 / 2 / 2;
+  padding: .5rem;
 }
 
 .ah-title-box h1 {

@@ -1,0 +1,27 @@
+@use "../abstracts/index" as *;
+
+.grow-wrap {
+  // Source: https://css-tricks.com/the-cleanest-trick-for-autogrowing-textareas/
+  display: grid;
+
+  &::after {
+    content: attr(data-replicated-value) " ";
+    white-space: pre-wrap;
+    visibility: hidden;
+  }
+
+  > textarea {
+    resize: none;
+    overflow: hidden;
+  }
+
+  > textarea,
+  &::after {
+    /* Identical styling required!! */
+    border: 1px solid transparent;
+    border-radius: $border-radius;
+    padding: 0.5rem;
+    font: inherit;
+    grid-area: 1 / 1 / 2 / 2;
+  }
+}
