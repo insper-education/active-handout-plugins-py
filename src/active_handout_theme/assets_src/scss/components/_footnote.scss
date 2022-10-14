@@ -73,7 +73,9 @@
   background: var(--clr-background);
   box-shadow: 0 0 #{$shadow-size} var(--clr-shadow-default);
 
-  max-width: calc(50vw - 30ch - #{$admonition-extra-inline * 3});
+  max-width: calc(
+    50vw - #{$max-content-width / 2} - #{$admonition-extra-inline * 3}
+  );
   height: 0; // Replaced when container is .opened
   width: 100vw;
   margin: 0 0 $admonition-extra-block (1.5 * $admonition-extra-inline);

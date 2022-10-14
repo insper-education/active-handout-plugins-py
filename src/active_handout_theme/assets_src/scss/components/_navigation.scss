@@ -3,7 +3,10 @@
 
 .ah-navigation {
   $transition-time: 0.2s;
-  $content-width: max(300px, calc(50vw - 30ch - #{$admonition-extra-inline}));
+  $content-width: max(
+    300px,
+    calc(50vw - #{$max-content-width / 2} - #{$admonition-extra-inline})
+  );
 
   position: fixed;
   top: $header-height;

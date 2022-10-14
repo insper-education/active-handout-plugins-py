@@ -249,6 +249,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .ah-typeset a {
   color: var(--clr-text);
+  word-break: break-all;
   background-image: linear-gradient(90deg, var(--clr-link), var(--clr-link));
   background-position: 0 100%;
   background-repeat: no-repeat;
@@ -315,7 +316,7 @@ span.critic.comment {
 }
 
 .ah-content {
-  max-width: 60ch;
+  max-width: 70ch;
   margin: 3em auto 2em;
 }
 
@@ -828,7 +829,7 @@ body {
 }
 
 .ah-footer-nav {
-  max-width: 60ch;
+  max-width: 70ch;
   justify-content: space-between;
   margin: 2rem auto;
   display: flex;
@@ -932,7 +933,7 @@ body {
   .footnote-container.opened .footnote-card {
     top: 1.5em;
     left: calc(var(--offset-x) * -1);
-    max-width: min(100vw, 60ch);
+    max-width: min(100vw, 70ch);
     margin-left: 0;
   }
 }
@@ -958,7 +959,7 @@ body {
 .footnote-card {
   background: var(--clr-background);
   box-shadow: 0 0 1rem var(--clr-shadow-default);
-  max-width: calc(50vw - 30ch - 6rem);
+  max-width: calc(50vw - 35ch - 6rem);
   height: 0;
   width: 100vw;
   border-radius: .2em;
@@ -1111,7 +1112,7 @@ body {
 }
 
 .ah-navigation .ah-nav-container {
-  width: max(300px, 50vw - 30ch - 2rem);
+  width: max(300px, 50vw - 35ch - 2rem);
   height: 100%;
   padding: .5em 1em;
   position: relative;
@@ -1146,7 +1147,7 @@ body {
 }
 
 .ah-navigation.show {
-  width: max(300px, 50vw - 30ch - 2rem);
+  width: max(300px, 50vw - 35ch - 2rem);
 }
 
 @media (max-width: 1440px) {
