@@ -1523,6 +1523,46 @@ section.progress-section:first-child, section.progress-section.show {
   }
 }
 
+.ah-typeset .task-list {
+  padding-left: 0;
+}
+
+.ah-typeset .task-list-item:before, .ah-typeset .task-list .task-list-control input[type="checkbox"]:disabled {
+  display: none;
+}
+
+.ah-typeset .task-list .task-list-control input[type="checkbox"]:disabled + .task-list-indicator {
+  isolation: isolate;
+  width: 1em;
+  height: 1em;
+  place-items: baseline;
+  display: inline-grid;
+}
+
+.ah-typeset .task-list .task-list-control input[type="checkbox"]:disabled + .task-list-indicator:before {
+  content: "";
+  width: .9em;
+  height: .9em;
+  border: 2px solid var(--clr-bullet);
+  z-index: -1;
+  border-radius: .2em;
+  grid-area: 1 / 1;
+}
+
+.ah-typeset .task-list .task-list-control input[type="checkbox"]:disabled + .task-list-indicator:after {
+  content: "✓";
+  grid-area: 1 / 1;
+  font-size: 1.5em;
+}
+
+.ah-typeset .task-list .task-list-control input[type="checkbox"]:disabled:checked + .task-list-indicator:after {
+  color: var(--clr-title-default);
+}
+
+.ah-typeset .task-list .task-list-control input[type="checkbox"]:disabled:not(:checked) + .task-list-indicator:after {
+  color: hsl(var(--clr-gray-primary-3-hsl) / .7);
+}
+
 .ah-title-box h1 {
   margin-top: -.5rem;
 }
