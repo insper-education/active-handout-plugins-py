@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Active-Handout 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-15 11:09-0300\n"
+"POT-Creation-Date: 2022-10-15 11:34-0300\n"
 "PO-Revision-Date: 2022-10-15 11:00-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -19,31 +19,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: active_handout_theme/404.html:4
+#: src/active_handout_plugins/exercise.py:106
+msgid "Submit"
+msgstr "Enviar"
+
+#: src/active_handout_theme/404.html:4
 msgid "Page not found"
 msgstr "Página não encontrada"
 
-#: active_handout_theme/404.html:5
+#: src/active_handout_theme/404.html:5
 msgid "The page you've tried to access does not exist."
 msgstr "A página que você tentou acessar não existe."
 
-#: active_handout_theme/404.html:9
+#: src/active_handout_theme/404.html:9
 msgid "If you have typed this address, check if you have mistyped it."
 msgstr ""
 "Se você digitou esse endereço, verifique se não cometeu algum erro de "
 "digitação."
 
-#: active_handout_theme/404.html:11
+#: src/active_handout_theme/404.html:11
 msgid ""
 "If you've copied this address or clicked a link, please email the "
 "instructor to let them know. Don't forget to include the address!"
-msgstr "Se você copiou esse endereço ou clicou em um link, por favor mande um email relatando o problema. Não esqueça de dizer qual é o endereço!"
+msgstr ""
+"Se você copiou esse endereço ou clicou em um link, por favor mande um "
+"email relatando o problema. Não esqueça de dizer qual é o endereço!"
 
-#: active_handout_theme/base.html:73
+#: src/active_handout_theme/base.html:75
 msgid "Previous"
 msgstr "Anterior"
 
-#: active_handout_theme/base.html:81
+#: src/active_handout_theme/base.html:83
 msgid "Next"
 msgstr "Próximo"
 

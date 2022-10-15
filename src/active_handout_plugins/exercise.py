@@ -1,3 +1,4 @@
+from gettext import gettext as _
 import xml.etree.ElementTree as etree
 from .admonition import AdmonitionVisitor
 
@@ -101,6 +102,9 @@ class ChoiceExercise(ExerciseAdmonition):
 
         html_alternatives = []
         answer_idx = -1
+
+        submit_str = _('Submit')
+
         for i, choice in enumerate(choices):
             end = choice.text.find('\x03') + 1
             is_answer = self.__is_answer(choice.text[:end-1])
@@ -122,7 +126,7 @@ class ChoiceExercise(ExerciseAdmonition):
 <div class="alternative-set" data-answer-idx="{answer_idx}">
   {"".join(html_alternatives)}
 </div>
-<input class="ah-button ah-button--primary" type="submit" name="sendButton" value="Enviar" disabled />
+<input class="ah-button ah-button--primary" type="submit" name="sendButton" value="{submit_str}" disabled />
 '''
 
 
