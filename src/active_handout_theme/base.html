@@ -44,25 +44,27 @@
         </div>
       </nav>
       <main class="ah-content ah-typeset">
-        <div class="ah-title-box">
-          <ul class="ah-breadcrumbs">
-            {% if page %}
-              {% for doc in page.ancestors[::-1] %}
-                {% if doc.link %}
-                  <li>
-                    <a href="{{ doc.link|e }}">{{ doc.title }}</a>
-                  </li>
-                {% else %}
-                  <li>{{ doc.title }}</li>
-                {% endif %}
-              {% endfor %}
-              <li>{{ page.title }}</li>
-            {%- endif %}
-          </ul>
-          {% if page.meta.title %}<h1>{{ page.meta.title }}</h1>{% endif %}
-          {% if page.meta.subtitle %}<h2>{{ page.meta.subtitle }}</h2>{% endif %}
-        </div>
-        {{ page.content }}
+        {% block content %}
+          <div class="ah-title-box">
+            <ul class="ah-breadcrumbs">
+              {% if page %}
+                {% for doc in page.ancestors[::-1] %}
+                  {% if doc.link %}
+                    <li>
+                      <a href="{{ doc.link|e }}">{{ doc.title }}</a>
+                    </li>
+                  {% else %}
+                    <li>{{ doc.title }}</li>
+                  {% endif %}
+                {% endfor %}
+                <li>{{ page.title }}</li>
+              {%- endif %}
+            </ul>
+            {% if page.meta and page.meta.title %}<h1>{{ page.meta.title }}</h1>{% endif %}
+            {% if page.meta and page.meta.subtitle %}<h2>{{ page.meta.subtitle }}</h2>{% endif %}
+          </div>
+          {{ page.content }}
+        {% endblock %}
       </main>
       <footer class="ah-footer ah-typeset">
         <div class="ah-footer-nav">

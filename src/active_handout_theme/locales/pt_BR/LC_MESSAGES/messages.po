@@ -1,0 +1,49 @@
+# Portuguese (Brazil) translations for Active-Handout.
+# Copyright (C) 2022 Active-Handout
+# This file is distributed under the same license as the Active-Handout
+# project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Active-Handout 0.1\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2022-10-15 11:09-0300\n"
+"PO-Revision-Date: 2022-10-15 11:00-0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: pt_BR\n"
+"Language-Team: pt_BR <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.10.3\n"
+
+#: active_handout_theme/404.html:4
+msgid "Page not found"
+msgstr "Página não encontrada"
+
+#: active_handout_theme/404.html:5
+msgid "The page you've tried to access does not exist."
+msgstr "A página que você tentou acessar não existe."
+
+#: active_handout_theme/404.html:9
+msgid "If you have typed this address, check if you have mistyped it."
+msgstr ""
+"Se você digitou esse endereço, verifique se não cometeu algum erro de "
+"digitação."
+
+#: active_handout_theme/404.html:11
+msgid ""
+"If you've copied this address or clicked a link, please email the "
+"instructor to let them know. Don't forget to include the address!"
+msgstr "Se você copiou esse endereço ou clicou em um link, por favor mande um email relatando o problema. Não esqueça de dizer qual é o endereço!"
+
+#: active_handout_theme/base.html:73
+msgid "Previous"
+msgstr "Anterior"
+
+#: active_handout_theme/base.html:81
+msgid "Next"
+msgstr "Próximo"
+
