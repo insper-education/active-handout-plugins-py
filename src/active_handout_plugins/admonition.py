@@ -28,7 +28,7 @@ class AdmonitionVisitorSelector(AdmonitionVisitor):
 
     def register(self, visitor, weight):
         self.__visitors.append((weight, visitor))
-        self.__visitors.sort(reverse=True)
+        self.__visitors.sort(reverse=True, key=lambda v: v[0])
 
     @property
     def visitors(self):

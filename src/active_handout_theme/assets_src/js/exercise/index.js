@@ -111,7 +111,7 @@ function initSelfProgressExercises() {
 }
 
 function matchSelfProgressExercises(el) {
-  return el.classList.contains("exercise");
+  return el.classList.contains("self-progress");
 }
 
 function rememberSelfProgressExercise(el) {

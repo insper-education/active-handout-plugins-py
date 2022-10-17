@@ -66,6 +66,7 @@ class ExerciseAdmonition(AdmonitionVisitor):
     def visit(self, el):
         cls = self.__match_class(el)
         self.__set_element_id(el, cls)
+        self.add_extra_classes(el)
         submission_form = etree.SubElement(el, 'form')
         self.__add_exercise_description(el, submission_form)
         hs_code = '''
@@ -87,6 +88,9 @@ end
 
     def create_exercise_form(self, el, submission_form):
         return ''
+
+    def add_extra_classes(self, el):
+        return
 
 
 class ChoiceExercise(ExerciseAdmonition):
@@ -163,3 +167,6 @@ class SelfProgressExercise(ExerciseAdmonition):
 <input type="hidden" name="data" value="OK" />
 <input class="ah-button ah-button--primary" type="submit" name="{submit_str}" value="{mark_done_str}" />
 '''
+
+    def add_extra_classes(self, el):
+        el.attrib['class'] += ' self-progress'

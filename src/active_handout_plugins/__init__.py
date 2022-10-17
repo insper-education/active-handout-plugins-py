@@ -7,7 +7,7 @@ from .progress import ProgressButtons, SplitDocumentInSections
 from .counter import CounterProcessor
 from .video import VideoAdmonition
 from .pdf import PdfAdmonition
-from .parsons import ParsonsQuestion
+from .parsons import ParsonsExercise
 
 
 class ActiveHandoutExtension(Extension):
@@ -25,6 +25,7 @@ class ActiveHandoutExtension(Extension):
         exercise_admonitions = AdmonitionVisitorSelector(md)
         exercise_admonitions.register(ChoiceExercise(md), 3)
         exercise_admonitions.register(TextExercise(md), 2)
+        exercise_admonitions.register(ParsonsExercise(md), 2)
         exercise_admonitions.register(SelfProgressExercise(md), 1)
 
         md.treeprocessors.register(VideoAdmonition(md), 'video-admonition', 15)
@@ -32,5 +33,4 @@ class ActiveHandoutExtension(Extension):
         md.treeprocessors.register(CounterProcessor(md), 'counter', 15)
         md.treeprocessors.register(ProgressButtons(md), 'progress', 15)
         md.treeprocessors.register(exercise_admonitions, 'exercises', 15)
-        md.treeprocessors.register(ParsonsQuestion(md), 'parsons-questions', 1)
         md.treeprocessors.register(SplitDocumentInSections(md), 'sections', 16)
