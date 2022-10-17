@@ -1,5 +1,5 @@
-from gettext import gettext as _
 import xml.etree.ElementTree as etree
+from .l10n import gettext as _
 from .admonition import AdmonitionVisitor
 
 
@@ -25,6 +25,8 @@ class ExerciseAdmonition(AdmonitionVisitor):
         answer = el.find('.//div[@class="admonition answer"]')
         if answer:
             answer.attrib['style'] = 'display: none;'
+            answer_title = answer.find('p/[@class="admonition-title"]')
+            answer_title.text = _(answer_title.text)
 
         content = []
         for child in el:
@@ -141,10 +143,12 @@ class TextExercise(ExerciseAdmonition):
             text_widget = '<div class="grow-wrap"><textarea name="data"></textarea></div>'
         if self.has_class(el, 'long'):
             text_widget = '<div class="grow-wrap"><textarea name="data"></textarea></div>'
+
+        submit_str = _('Submit')
         return f'''
 {text_widget}
 
-<input class="ah-button ah-button--primary" type="submit" value="Enviar"/>
+<input class="ah-button ah-button--primary" type="submit" value="{submit_str}"/>
 '''
 
 
@@ -153,7 +157,9 @@ class SelfProgressExercise(ExerciseAdmonition):
         super().__init__('exercise', [], *args, **kwargs)
 
     def create_exercise_form(self, el, submission_form):
-        return '''
+        submit_str = _('Submit')
+        mark_done_str = _('Mark as done')
+        return f'''
 <input type="hidden" name="data" value="OK" />
-<input class="ah-button ah-button--primary" type="submit" name="enviar" value="Marcar como feito" />
+<input class="ah-button ah-button--primary" type="submit" name="{submit_str}" value="{mark_done_str}" />
 '''

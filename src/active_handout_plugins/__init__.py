@@ -1,5 +1,6 @@
 from markdown import Extension
 
+from .l10n import init_l10n
 from .admonition import AdmonitionVisitorSelector
 from .exercise import ChoiceExercise, SelfProgressExercise, TextExercise
 from .progress import ProgressButtons, SplitDocumentInSections
@@ -11,10 +12,15 @@ from .parsons import ParsonsQuestion
 
 class ActiveHandoutExtension(Extension):
     """ Admonition extension for Python-Markdown. """
+    config = {
+        'locale': ['en', 'locale should be the same as for the theme'],
+    }
 
     def extendMarkdown(self, md):
         """ Add Admonition to Markdown instance. """
         md.registerExtension(self)
+
+        init_l10n(self.getConfig('locale'))
 
         exercise_admonitions = AdmonitionVisitorSelector(md)
         exercise_admonitions.register(ChoiceExercise(md), 3)

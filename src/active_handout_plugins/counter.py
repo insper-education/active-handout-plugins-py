@@ -1,4 +1,5 @@
 from .admonition import AdmonitionVisitor
+from .l10n import gettext as _
 
 
 class CounterProcessor(AdmonitionVisitor):
@@ -13,4 +14,4 @@ class CounterProcessor(AdmonitionVisitor):
             if c in el.attrib['class']:
                 title = el.find("p[@class='admonition-title']")
                 self.counters[c] += 1
-                title.text = f'{title.text} {self.counters[c]}'
+                title.text = f'{_(title.text)} {self.counters[c]}'
