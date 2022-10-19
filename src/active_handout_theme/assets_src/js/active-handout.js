@@ -3,6 +3,7 @@ import { initProgressPlugin } from "./progress";
 import { initMenuPlugin } from "./menu";
 import { initExercisePlugin } from "./exercise";
 import { initFooterPlugin } from "./footnote";
+import { initParsonsPlugin } from "./parsons";
 import { initStyle } from "./style";
 
 function onLoad() {
@@ -23,6 +24,7 @@ function onLoad() {
   initStyle();
   initMenuPlugin();
   initProgressPlugin(rememberCallbacks);
+  initParsonsPlugin(rememberCallbacks);
   initExercisePlugin(rememberCallbacks);
   initFooterPlugin(rememberCallbacks);
 }

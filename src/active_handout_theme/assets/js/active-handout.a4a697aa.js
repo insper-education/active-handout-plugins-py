@@ -537,6 +537,7 @@ var _progress = require("./progress");
 var _menu = require("./menu");
 var _exercise = require("./exercise");
 var _footnote = require("./footnote");
+var _parsons = require("./parsons");
 var _style = require("./style");
 function onLoad() {
     (0, _tabbedContent.initTabbedPlugin)();
@@ -551,13 +552,14 @@ function onLoad() {
     (0, _style.initStyle)();
     (0, _menu.initMenuPlugin)();
     (0, _progress.initProgressPlugin)(rememberCallbacks);
+    (0, _parsons.initParsonsPlugin)(rememberCallbacks);
     (0, _exercise.initExercisePlugin)(rememberCallbacks);
     (0, _footnote.initFooterPlugin)(rememberCallbacks);
 }
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC","./footnote":"70ehP","./menu":"5D3Be","./style":"5DGm5"}],"fzxNo":[function(require,module,exports) {
+},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC","./footnote":"70ehP","./menu":"5D3Be","./style":"5DGm5","./parsons":"1AI9I"}],"fzxNo":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
@@ -1023,6 +1025,149 @@ function initTextArea() {
             grower.dataset.replicatedValue = textarea.value;
         });
     });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"1AI9I":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initParsonsPlugin", ()=>initParsonsPlugin);
+var _queries = require("./queries");
+function initParsonsPlugin(rememberCallbacks) {
+    (0, _queries.queryParsonsExercises)().forEach((exercise)=>{
+        const destArea = (0, _queries.queryDropArea)(exercise);
+        const origArea = (0, _queries.queryDragArea)(exercise);
+        const areas = [
+            origArea,
+            destArea
+        ];
+        const destContainer = destArea.closest(".parsons-container");
+        const origContainer = origArea.closest(".parsons-container");
+        const containers = [
+            origContainer,
+            destContainer
+        ];
+        const ctx = {
+            dragged: null,
+            exercise,
+            areas,
+            destArea,
+            origArea,
+            containers,
+            destContainer,
+            origContainer
+        };
+        ctx.onDrag = makeDragEnterContainer(ctx);
+        ctx.onDrop = makeDropListener(ctx);
+        (0, _queries.queryParsonsLines)(exercise).forEach((line)=>{
+            line.addEventListener("dragstart", makeDragStart(ctx));
+        });
+    });
+}
+function makeDragEnterContainer({ containers , exercise  }) {
+    return (ev)=>{
+        ev.preventDefault();
+        const slot = selectCurrentSlot(ev, exercise);
+        if (slot) {
+            setDragOver(slot, exercise);
+            shiftLines(ev.target);
+            containers.forEach((otherContainer)=>{
+                otherContainer.classList.remove("drag-over");
+            });
+            slot.closest(".parsons-container").classList.add("drag-over");
+        }
+    };
+}
+function makeDragStart(ctx) {
+    return (ev)=>{
+        window.addEventListener("dragenter", ctx.onDrag);
+        window.addEventListener("dragover", ctx.onDrag);
+        window.addEventListener("drop", ctx.onDrop);
+        const line = ev.target;
+        for (let area of ctx.areas)area.appendChild(createLineSlot(ctx));
+        setDragging(line);
+        ctx.dragged = line;
+    };
+}
+function createLineSlot(ctx) {
+    const lineSlot = document.createElement("div");
+    lineSlot.classList.add("line-slot");
+    return lineSlot;
+}
+function setDragging(target) {
+    setTimeout(()=>{
+        // We need this timeout because the element is copied to
+        // be displayed as an image while dragging
+        target.closest(".line-slot").classList.add("dragging");
+    }, 0);
+}
+function cleanUpSlots(exercise) {
+    const slots = exercise.querySelectorAll(".line-slot");
+    for (let slot of slots){
+        slot.classList.remove("dragging");
+        if (slot.querySelectorAll(".parsons-line").length === 0) slot.remove();
+    }
+}
+function selectElementWithClass(ev, className) {
+    const elementsBellowMouse = document.elementsFromPoint(ev.clientX, ev.clientY);
+    for(let i = 0; i < elementsBellowMouse.length; i++){
+        if (elementsBellowMouse[i].classList.contains(className)) return elementsBellowMouse[i];
+    }
+}
+function selectCurrentSlot(ev, exercise) {
+    let slot = selectElementWithClass(ev, "line-slot");
+    if (slot) return slot;
+    const container = selectElementWithClass(ev, "parsons-container");
+    if (container) return container.querySelector(".line-slot:not(.with-line)");
+    return exercise.querySelector(".line-slot.drag-over");
+}
+function shiftLines(line) {
+// console.log(line);
+}
+function insertLineInSlot(slot, ctx) {
+    const prevSlot = ctx.dragged.closest(".line-slot");
+    slot.appendChild(ctx.dragged);
+    slot.classList.remove("drag-over");
+    slot.classList.add("with-line");
+    ctx.dragged = null;
+    prevSlot.remove();
+}
+function setDragOver(slot, exercise) {
+    slot.classList.add("drag-over");
+    exercise.querySelectorAll(".line-slot").forEach((other)=>{
+        if (other !== slot) other.classList.remove("drag-over");
+    });
+}
+function makeDropListener(ctx) {
+    return (ev)=>{
+        ev.preventDefault();
+        window.removeEventListener("dragenter", ctx.onDrag);
+        window.removeEventListener("dragover", ctx.onDrag);
+        window.removeEventListener("drop", ctx.onDrop);
+        const slot = selectCurrentSlot(ev, ctx.exercise);
+        if (slot) insertLineInSlot(slot, ctx);
+        ctx.containers.forEach((container)=>container.classList.remove("drag-over"));
+        cleanUpSlots(ctx.exercise);
+    };
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"6FJZc"}],"6FJZc":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
+parcelHelpers.export(exports, "queryDropArea", ()=>queryDropArea);
+parcelHelpers.export(exports, "queryDragArea", ()=>queryDragArea);
+parcelHelpers.export(exports, "queryParsonsLines", ()=>queryParsonsLines);
+function queryParsonsExercises() {
+    return document.querySelectorAll("div.admonition.exercise.parsons");
+}
+function queryDropArea(exercise) {
+    return exercise.querySelector(".parsons-drop-area");
+}
+function queryDragArea(exercise) {
+    return exercise.querySelector(".parsons-drag-area");
+}
+function queryParsonsLines(exercise) {
+    return exercise.querySelectorAll(".parsons-line");
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")

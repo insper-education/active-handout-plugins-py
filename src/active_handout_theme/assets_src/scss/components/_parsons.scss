@@ -1,0 +1,46 @@
+@use "../abstracts/index" as *;
+
+.parsons-container {
+  &.drag-over {
+    border: 1px solid var(--clr-warn-primary-6);
+  }
+
+  pre {
+    white-space: inherit;
+  }
+}
+
+.parsons-code {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: 1fr 1fr;
+
+  @include smaller-than(medium) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.parsons-line {
+  padding: 0.5em;
+  white-space: pre;
+  cursor: move;
+}
+
+.line-slot {
+  margin-bottom: 0.2em;
+  border: 1px dashed var(--clr-link-default);
+  min-height: 2.5em;
+  border-radius: $border-radius;
+
+  &.with-line {
+    border: 1px solid var(--clr-link-default);
+  }
+
+  &.dragging {
+    display: none;
+  }
+
+  &.drag-over {
+    background-color: var(--clr-shadow-default);
+  }
+}

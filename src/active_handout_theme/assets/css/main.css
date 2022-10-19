@@ -671,6 +671,11 @@ body {
   border: none;
 }
 
+.ah-btn-group {
+  gap: .5em;
+  display: flex;
+}
+
 .admonition.exercise {
   --clr-background: var(--clr-admonition-exercise-background);
   --clr-text: var(--clr-admonition-exercise-text);
@@ -725,11 +730,15 @@ body {
 .form-elements input[type="submit"] {
   border-radius: .25rem;
   justify-content: center;
-  align-self: flex-end;
   align-items: center;
   margin-top: 1rem;
   padding: .5rem 1rem;
   font-weight: bold;
+  display: flex;
+}
+
+.form-elements .ah-btn-group, .form-elements input[type="submit"] {
+  align-self: flex-end;
   display: flex;
 }
 
@@ -1225,6 +1234,51 @@ body {
   max-height: 0;
   transition: max-height .2s linear;
   overflow: hidden;
+}
+
+.parsons-container.drag-over {
+  border: 1px solid var(--clr-warn-primary-6);
+}
+
+.parsons-container pre {
+  white-space: inherit;
+}
+
+.parsons-code {
+  grid-template-columns: 1fr 1fr;
+  gap: .5rem;
+  display: grid;
+}
+
+@media (max-width: 800px) {
+  .parsons-code {
+    grid-template-columns: 1fr;
+  }
+}
+
+.parsons-line {
+  white-space: pre;
+  cursor: move;
+  padding: .5em;
+}
+
+.line-slot {
+  border: 1px dashed var(--clr-link-default);
+  min-height: 2.5em;
+  border-radius: .2em;
+  margin-bottom: .2em;
+}
+
+.line-slot.with-line {
+  border: 1px solid var(--clr-link-default);
+}
+
+.line-slot.dragging {
+  display: none;
+}
+
+.line-slot.drag-over {
+  background-color: var(--clr-shadow-default);
 }
 
 section.progress-section {

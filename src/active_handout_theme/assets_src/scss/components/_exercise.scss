@@ -59,7 +59,6 @@
 
   input[type="submit"] {
     display: flex;
-    align-self: flex-end;
     justify-content: center;
     align-items: center;
 
@@ -68,6 +67,12 @@
     border-radius: 0.25rem;
 
     font-weight: bold;
+  }
+
+  .ah-btn-group,
+  input[type="submit"] {
+    display: flex;
+    align-self: flex-end;
   }
 
   .alternative-set {

@@ -17,16 +17,19 @@ class ParsonsExercise(ExerciseAdmonition):
         lines[0] = lines[0][start_index:]
 
         random.shuffle(lines)
-        left_panel = '<div class="highlight original-code"><pre><code class="parsons-drag-area">'
+        left_panel = '''
+<div class="parsons-container highlight original-code">
+    <pre><code class="parsons-area parsons-drag-area">
+'''
         for l in lines:
             indent_count = l.count('    ')
             l_no_indent = l.replace('    ', '')
-            left_panel += f'<div class="parsons-line" draggable="true" data-indentCount={indent_count}>{l_no_indent}</div>'
+            left_panel += f'<div class="line-slot with-line"><div class="parsons-line" draggable="true" data-indentCount={indent_count}>{l_no_indent}</div></div>'
         left_panel += '</code></pre></div>'
 
         right_panel = '''
-<div class="highlight parsons-drop-div">
-    <pre><code class="parsons-drop-area"><div class="indent-line"> </div></code></pre>
+<div class="parsons-container highlight parsons-drop-div">
+    <pre><code class="parsons-area parsons-drop-area"></code></pre>
 </div>
 '''
         code.set("class", "parsons-code")
@@ -35,8 +38,10 @@ class ParsonsExercise(ExerciseAdmonition):
 
         return '''
         <input type="hidden" name="data" value=""/>
-        <input type="button" name="sendButton" value="Testar"/>
-        <input type="button" name="resetButton" value="Reset"/>
+        <div class="ah-btn-group">
+          <input type="button" class="ah-button ah-button--primary" name="resetButton" value="Reset"/>
+          <input type="button" class="ah-button ah-button--primary" name="sendButton" value="Testar"/>
+        </div>
         '''
 
 
