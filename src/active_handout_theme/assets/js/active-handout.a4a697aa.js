@@ -1069,7 +1069,7 @@ function makeDragEnterContainer({ containers , exercise  }) {
         const slot = selectCurrentSlot(ev, exercise);
         if (slot) {
             setDragOver(slot, exercise);
-            shiftLines(ev.target);
+            shiftLines(slot);
             containers.forEach((otherContainer)=>{
                 otherContainer.classList.remove("drag-over");
             });
@@ -1120,8 +1120,22 @@ function selectCurrentSlot(ev, exercise) {
     if (container) return container.querySelector(".line-slot:not(.with-line)");
     return exercise.querySelector(".line-slot.drag-over");
 }
-function shiftLines(line) {
-// console.log(line);
+function shiftLines(slot) {
+    if (!slot.classList.contains("with-line")) return;
+    const area = slot.closest(".parsons-area");
+    const emptySlot = selectEmptySlot(area);
+    if (emptyIsBefore(area, emptySlot, slot)) area.insertBefore(emptySlot, slot.nextSibling);
+    else area.insertBefore(emptySlot, slot);
+}
+function selectEmptySlot(area) {
+    return area.querySelector(".line-slot:not(.with-line)");
+}
+function emptyIsBefore(area, emptySlot, refSlot) {
+    for (let slot of area.querySelectorAll(".line-slot")){
+        if (slot === emptySlot) return true;
+        if (slot === refSlot) return false;
+    }
+    return false;
 }
 function insertLineInSlot(slot, ctx) {
     const prevSlot = ctx.dragged.closest(".line-slot");
