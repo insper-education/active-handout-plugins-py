@@ -1,10 +1,6 @@
 @use "../abstracts/index" as *;
 
 .parsons-container {
-  &.drag-over {
-    border: 1px solid var(--clr-warn-primary-6);
-  }
-
   pre {
     white-space: inherit;
   }

@@ -1236,10 +1236,6 @@ body {
   overflow: hidden;
 }
 
-.parsons-container.drag-over {
-  border: 1px solid var(--clr-warn-primary-6);
-}
-
 .parsons-container pre {
   white-space: inherit;
 }
