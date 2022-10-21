@@ -2,6 +2,8 @@ import { createElementWithClasses } from "../dom-utils";
 import {
   queryAreaFromInside,
   queryContainerFromInside,
+  queryDragArea,
+  queryDropArea,
   queryEmptySlot,
   queryLastSlot,
   queryParsonsContainers,
@@ -89,6 +91,27 @@ export function cleanUpSlots(exercise) {
       slot.remove();
     }
   }
+}
+
+export function resetExercise(exercise) {
+  const origArea = queryDragArea(exercise);
+  const destArea = queryDropArea(exercise);
+  queryParsonsLines(destArea).forEach((line) => {
+    const slot = querySlotFromInside(line);
+    const newSlot = createElementWithClasses(
+      "div",
+      ["line-slot", "with-line"],
+      origArea
+    );
+    createElementWithClasses(
+      "div",
+      ["subslot", "cur-indent", "single-subslot"],
+      newSlot
+    );
+    createElementWithClasses("div", ["line-placeholder"], newSlot);
+    newSlot.appendChild(line);
+    slot.remove();
+  });
 }
 
 function resetContainers(containers, exceptThis) {

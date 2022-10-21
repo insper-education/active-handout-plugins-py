@@ -2,6 +2,10 @@ export function queryParsonsExercises() {
   return document.querySelectorAll("div.admonition.exercise.parsons");
 }
 
+export function queryResetButton(exercise) {
+  return exercise.querySelector("input[name=resetButton]");
+}
+
 export function queryParsonsContainers(exercise) {
   return exercise.querySelectorAll(".parsons-container");
 }

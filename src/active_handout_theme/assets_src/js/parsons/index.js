@@ -3,6 +3,7 @@ import {
   queryDropArea,
   queryParsonsExercises,
   queryParsonsLines,
+  queryResetButton,
   selectSubslotUnderCursor,
 } from "./queries";
 import {
@@ -14,6 +15,7 @@ import {
   insertLineInSubslot,
   addDragListeners,
   setCurrentSubslot,
+  resetExercise,
 } from "./utils";
 
 export function initParsonsPlugin(rememberCallbacks) {
@@ -24,6 +26,10 @@ function registerListeners(exercise) {
   const destArea = queryDropArea(exercise);
   const origArea = queryDragArea(exercise);
   let draggedLine = null;
+
+  queryResetButton(exercise).addEventListener("click", () =>
+    resetExercise(exercise)
+  );
 
   function onDrag(ev) {
     ev.preventDefault();

@@ -1040,6 +1040,7 @@ function registerListeners(exercise) {
     const destArea = (0, _queries.queryDropArea)(exercise);
     const origArea = (0, _queries.queryDragArea)(exercise);
     let draggedLine = null;
+    (0, _queries.queryResetButton)(exercise).addEventListener("click", ()=>(0, _utils.resetExercise)(exercise));
     function onDrag(ev) {
         ev.preventDefault();
         if (!(0, _utils.eventIsInsideExercise)(ev, exercise)) return;
@@ -1068,6 +1069,7 @@ function registerListeners(exercise) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
+parcelHelpers.export(exports, "queryResetButton", ()=>queryResetButton);
 parcelHelpers.export(exports, "queryParsonsContainers", ()=>queryParsonsContainers);
 parcelHelpers.export(exports, "queryDropArea", ()=>queryDropArea);
 parcelHelpers.export(exports, "queryDragArea", ()=>queryDragArea);
@@ -1085,6 +1087,9 @@ parcelHelpers.export(exports, "selectSubslotUnderCursor", ()=>selectSubslotUnder
 parcelHelpers.export(exports, "selectExerciseUnderCursor", ()=>selectExerciseUnderCursor);
 function queryParsonsExercises() {
     return document.querySelectorAll("div.admonition.exercise.parsons");
+}
+function queryResetButton(exercise) {
+    return exercise.querySelector("input[name=resetButton]");
 }
 function queryParsonsContainers(exercise) {
     return exercise.querySelectorAll(".parsons-container");
@@ -1156,6 +1161,7 @@ parcelHelpers.export(exports, "setCurrentSubslot", ()=>setCurrentSubslot);
 parcelHelpers.export(exports, "createSlot", ()=>createSlot);
 parcelHelpers.export(exports, "hide", ()=>hide);
 parcelHelpers.export(exports, "cleanUpSlots", ()=>cleanUpSlots);
+parcelHelpers.export(exports, "resetExercise", ()=>resetExercise);
 var _domUtils = require("../dom-utils");
 var _queries = require("./queries");
 function removeDragListeners(onDrag, onDrop) {
@@ -1227,6 +1233,27 @@ function cleanUpSlots(exercise) {
         slot.classList.remove("dragging");
         if ((0, _queries.queryParsonsLines)(slot).length === 0) slot.remove();
     }
+}
+function resetExercise(exercise) {
+    const origArea = (0, _queries.queryDragArea)(exercise);
+    const destArea = (0, _queries.queryDropArea)(exercise);
+    (0, _queries.queryParsonsLines)(destArea).forEach((line)=>{
+        const slot = (0, _queries.querySlotFromInside)(line);
+        const newSlot = (0, _domUtils.createElementWithClasses)("div", [
+            "line-slot",
+            "with-line"
+        ], origArea);
+        (0, _domUtils.createElementWithClasses)("div", [
+            "subslot",
+            "cur-indent",
+            "single-subslot"
+        ], newSlot);
+        (0, _domUtils.createElementWithClasses)("div", [
+            "line-placeholder"
+        ], newSlot);
+        newSlot.appendChild(line);
+        slot.remove();
+    });
 }
 function resetContainers(containers, exceptThis) {
     containers.forEach((otherContainer)=>{
