@@ -1,3 +1,4 @@
+import { createElementWithClasses } from "../dom-utils";
 import {
   queryAreaFromInside,
   queryContainerFromInside,
@@ -7,6 +8,7 @@ import {
   queryParsonsLines,
   querySlotFromInside,
   querySlots,
+  querySubslots,
 } from "./queries";
 
 export function addDragListeners(onDrag, onDrop) {
@@ -21,19 +23,30 @@ export function removeDragListeners(onDrag, onDrop) {
   window.addEventListener("drop", onDrop);
 }
 
-export function insertLineInSlot(line, slot) {
-  if (!slot) return;
+export function insertLineInSubslot(line, subslot) {
+  if (!subslot) return;
+
+  const slot = querySlotFromInside(subslot);
   slot.classList.remove("drag-over");
   slot.classList.add("with-line");
+  subslot.classList.remove("drag-over");
+  subslot.classList.add("cur-indent");
+
   slot.appendChild(line);
 }
 
-export function setCurrentSlot(slot, exercise) {
-  if (!slot) return;
+export function setCurrentSubslot(subslot, exercise) {
+  if (!subslot) return;
 
+  const slot = querySlotFromInside(subslot);
   slot.classList.add("drag-over");
+  subslot.classList.add("drag-over");
+
   querySlots(exercise).forEach((other) => {
     if (other !== slot) other.classList.remove("drag-over");
+  });
+  querySubslots(exercise).forEach((other) => {
+    if (other !== subslot) other.classList.remove("drag-over");
   });
 
   shiftLines(slot);
@@ -44,12 +57,14 @@ export function setCurrentSlot(slot, exercise) {
   container.classList.add("drag-over");
 }
 
-export function createSlots(areas) {
-  for (let area of areas) {
-    const lineSlot = document.createElement("div");
-    lineSlot.classList.add("line-slot");
-    area.appendChild(lineSlot);
+export function createSlot(area, subslotCount, additionalClass) {
+  const slot = createElementWithClasses("div", ["line-slot"], area);
+  const classList = ["subslot"];
+  if (additionalClass) classList.push(additionalClass);
+  for (let i = 0; i < subslotCount; i++) {
+    createElementWithClasses("div", [...classList, `subslot-${i + 1}`], slot);
   }
+  createElementWithClasses("div", ["line-placeholder"], slot);
 }
 
 export function hide(line) {
@@ -98,4 +113,16 @@ function emptyIsBeforeRef(area, emptySlot, refSlot) {
     if (slot === refSlot) return false;
   }
   return false;
+}
+
+function getIndentCount(subslot) {
+  const prefix = "subslot-";
+
+  for (let className of subslot.classList) {
+    if (className.startsWith(prefix)) {
+      const count = parseInt(className.substr(prefix.length));
+      if (count) return count - 1;
+    }
+  }
+  return 0;
 }

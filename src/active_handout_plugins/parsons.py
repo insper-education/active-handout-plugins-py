@@ -24,7 +24,13 @@ class ParsonsExercise(ExerciseAdmonition):
         for l in lines:
             indent_count = l.count('    ')
             l_no_indent = l.replace('    ', '')
-            left_panel += f'<div class="line-slot with-line"><div class="parsons-line" draggable="true" data-indentCount={indent_count}>{l_no_indent}</div></div>'
+            left_panel += f'''
+<div class="line-slot with-line">
+    <div class="subslot cur-indent single-subslot"></div>
+    <div class="line-placeholder"></div>
+    <div class="parsons-line" draggable="true" data-indentCount={indent_count}>{l_no_indent}</div>
+</div>
+'''
         left_panel += '</code></pre></div>'
 
         right_panel = '''

@@ -1042,21 +1042,19 @@ function registerListeners(exercise) {
     let draggedLine = null;
     function onDrag(ev) {
         ev.preventDefault();
-        (0, _utils.setCurrentSlot)((0, _queries.selectSlotUnderCursor)(ev, exercise), exercise);
+        (0, _utils.setCurrentSubslot)((0, _queries.selectSubslotUnderCursor)(ev, exercise), exercise);
     }
     function onDrop(ev) {
         ev.preventDefault();
         (0, _utils.addDragListeners)(onDrag, onDrop);
-        (0, _utils.insertLineInSlot)(draggedLine, (0, _queries.selectSlotUnderCursor)(ev, exercise));
+        (0, _utils.insertLineInSubslot)(draggedLine, (0, _queries.selectSubslotUnderCursor)(ev, exercise));
         (0, _utils.cleanUpSlots)(exercise);
         draggedLine = null;
     }
     function onDragStart(ev) {
         (0, _utils.removeDragListeners)(onDrag, onDrop);
-        (0, _utils.createSlots)([
-            origArea,
-            destArea
-        ]);
+        (0, _utils.createSlot)(origArea, 1, "single-subslot");
+        (0, _utils.createSlot)(destArea, 6);
         draggedLine = ev.target;
         (0, _utils.hide)(draggedLine);
     }
@@ -1075,12 +1073,14 @@ parcelHelpers.export(exports, "queryDragArea", ()=>queryDragArea);
 parcelHelpers.export(exports, "queryParsonsLines", ()=>queryParsonsLines);
 parcelHelpers.export(exports, "queryLastSlot", ()=>queryLastSlot);
 parcelHelpers.export(exports, "querySlots", ()=>querySlots);
+parcelHelpers.export(exports, "querySubslots", ()=>querySubslots);
 parcelHelpers.export(exports, "queryEmptySlot", ()=>queryEmptySlot);
 parcelHelpers.export(exports, "queryCurrentSlot", ()=>queryCurrentSlot);
 parcelHelpers.export(exports, "querySlotFromInside", ()=>querySlotFromInside);
 parcelHelpers.export(exports, "queryAreaFromInside", ()=>queryAreaFromInside);
 parcelHelpers.export(exports, "queryContainerFromInside", ()=>queryContainerFromInside);
 parcelHelpers.export(exports, "selectSlotUnderCursor", ()=>selectSlotUnderCursor);
+parcelHelpers.export(exports, "selectSubslotUnderCursor", ()=>selectSubslotUnderCursor);
 function queryParsonsExercises() {
     return document.querySelectorAll("div.admonition.exercise.parsons");
 }
@@ -1102,6 +1102,9 @@ function queryLastSlot(container) {
 function querySlots(exercise) {
     return exercise.querySelectorAll(".line-slot");
 }
+function querySubslots(slot) {
+    return slot.querySelectorAll(".subslot");
+}
 function queryEmptySlot(container) {
     return container.querySelector(".line-slot:not(.with-line)");
 }
@@ -1118,11 +1121,17 @@ function queryContainerFromInside(el) {
     return el.closest(".parsons-container");
 }
 function selectSlotUnderCursor(ev, exercise) {
-    let slot = selectElementWithClass(ev, "line-slot");
+    const slot = selectElementWithClass(ev, "line-slot");
     if (slot) return slot;
     const container = selectElementWithClass(ev, "parsons-container");
     if (container) return queryEmptySlot(container);
     return queryCurrentSlot(exercise);
+}
+function selectSubslotUnderCursor(ev, exercise) {
+    const subslot = selectElementWithClass(ev, "subslot");
+    if (subslot) return subslot;
+    const slot = selectSlotUnderCursor(ev, exercise);
+    return slot.querySelector(".subslot");
 }
 function selectElementWithClass(ev, className) {
     const elementsBellowMouse = document.elementsFromPoint(ev.clientX, ev.clientY);
@@ -1136,11 +1145,12 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "addDragListeners", ()=>addDragListeners);
 parcelHelpers.export(exports, "removeDragListeners", ()=>removeDragListeners);
-parcelHelpers.export(exports, "insertLineInSlot", ()=>insertLineInSlot);
-parcelHelpers.export(exports, "setCurrentSlot", ()=>setCurrentSlot);
-parcelHelpers.export(exports, "createSlots", ()=>createSlots);
+parcelHelpers.export(exports, "insertLineInSubslot", ()=>insertLineInSubslot);
+parcelHelpers.export(exports, "setCurrentSubslot", ()=>setCurrentSubslot);
+parcelHelpers.export(exports, "createSlot", ()=>createSlot);
 parcelHelpers.export(exports, "hide", ()=>hide);
 parcelHelpers.export(exports, "cleanUpSlots", ()=>cleanUpSlots);
+var _domUtils = require("../dom-utils");
 var _queries = require("./queries");
 function addDragListeners(onDrag, onDrop) {
     window.removeEventListener("dragenter", onDrag);
@@ -1152,17 +1162,25 @@ function removeDragListeners(onDrag, onDrop) {
     window.addEventListener("dragover", onDrag);
     window.addEventListener("drop", onDrop);
 }
-function insertLineInSlot(line, slot) {
-    if (!slot) return;
+function insertLineInSubslot(line, subslot) {
+    if (!subslot) return;
+    const slot = (0, _queries.querySlotFromInside)(subslot);
     slot.classList.remove("drag-over");
     slot.classList.add("with-line");
+    subslot.classList.remove("drag-over");
+    subslot.classList.add("cur-indent");
     slot.appendChild(line);
 }
-function setCurrentSlot(slot, exercise) {
-    if (!slot) return;
+function setCurrentSubslot(subslot, exercise) {
+    if (!subslot) return;
+    const slot = (0, _queries.querySlotFromInside)(subslot);
     slot.classList.add("drag-over");
+    subslot.classList.add("drag-over");
     (0, _queries.querySlots)(exercise).forEach((other)=>{
         if (other !== slot) other.classList.remove("drag-over");
+    });
+    (0, _queries.querySubslots)(exercise).forEach((other)=>{
+        if (other !== subslot) other.classList.remove("drag-over");
     });
     shiftLines(slot);
     const container = (0, _queries.queryContainerFromInside)(slot);
@@ -1170,12 +1188,21 @@ function setCurrentSlot(slot, exercise) {
     resetContainers(containers, container);
     container.classList.add("drag-over");
 }
-function createSlots(areas) {
-    for (let area of areas){
-        const lineSlot = document.createElement("div");
-        lineSlot.classList.add("line-slot");
-        area.appendChild(lineSlot);
-    }
+function createSlot(area, subslotCount, additionalClass) {
+    const slot = (0, _domUtils.createElementWithClasses)("div", [
+        "line-slot"
+    ], area);
+    const classList = [
+        "subslot"
+    ];
+    if (additionalClass) classList.push(additionalClass);
+    for(let i = 0; i < subslotCount; i++)(0, _domUtils.createElementWithClasses)("div", [
+        ...classList,
+        `subslot-${i + 1}`
+    ], slot);
+    (0, _domUtils.createElementWithClasses)("div", [
+        "line-placeholder"
+    ], slot);
 }
 function hide(line) {
     setTimeout(()=>{
@@ -1211,7 +1238,26 @@ function emptyIsBeforeRef(area, emptySlot, refSlot) {
     }
     return false;
 }
+function getIndentCount(subslot) {
+    const prefix = "subslot-";
+    for (let className of subslot.classList)if (className.startsWith(prefix)) {
+        const count = parseInt(className.substr(prefix.length));
+        if (count) return count - 1;
+    }
+    return 0;
+}
 
-},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")
+},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../dom-utils":"NCBha"}],"NCBha":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "createElementWithClasses", ()=>createElementWithClasses);
+function createElementWithClasses(tagName, classList, parent) {
+    const el = document.createElement(tagName);
+    for (let className of classList)el.classList.add(className);
+    if (parent) parent.appendChild(el);
+    return el;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

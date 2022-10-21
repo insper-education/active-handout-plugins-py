@@ -1,5 +1,8 @@
 @use "../abstracts/index" as *;
 
+$subslot-count: 6;
+$indent-size: 4ch;
+
 .parsons-container {
   pre {
     white-space: inherit;
@@ -17,9 +20,12 @@
 }
 
 .parsons-line {
+  position: relative;
   padding: 0.5em;
-  white-space: pre;
+  white-space: pre-wrap;
   cursor: move;
+  grid-column: 1 / span $subslot-count;
+  grid-row: 1;
 }
 
 .line-slot {
@@ -27,6 +33,64 @@
   border: 1px dashed var(--clr-link-default);
   min-height: 2.5em;
   border-radius: $border-radius;
+  isolation: isolate;
+
+  display: grid;
+  grid-template-columns: repeat(($subslot-count - 1), $indent-size) auto;
+
+  .subslot {
+    z-index: -1;
+    position: relative;
+    isolation: isolate;
+    grid-row: 1;
+
+    @for $i from 1 to ($subslot-count + 1) {
+      &.subslot-#{$i} {
+        grid-column: $i;
+
+        &.drag-over ~ .line-placeholder {
+          background-color: var(--clr-shadow-3);
+          grid-column: $i / span ($subslot-count - $i + 1);
+        }
+
+        &.cur-indent ~ .parsons-line {
+          grid-column: $i / span ($subslot-count - $i + 1);
+        }
+      }
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0.1em;
+      background-color: var(--clr-shadow-2);
+      border-radius: $border-radius;
+      z-index: -1;
+    }
+
+    &.single-subslot {
+      grid-column: 1 / span $subslot-count;
+    }
+
+    &.single-subslot,
+    &.drag-over,
+    &.cur-indent {
+      &::before {
+        background-color: transparent;
+      }
+
+      ~ .subslot {
+        &::before {
+          background-color: transparent;
+        }
+      }
+    }
+  }
+
+  .line-placeholder {
+    grid-row: 1;
+    grid-column: 1 / span $subslot-count;
+  }
 
   &.with-line {
     border: 1px solid var(--clr-link-default);
@@ -34,9 +98,5 @@
 
   &.dragging {
     display: none;
-  }
-
-  &.drag-over {
-    background-color: var(--clr-shadow-default);
   }
 }

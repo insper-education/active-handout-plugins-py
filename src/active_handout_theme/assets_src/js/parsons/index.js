@@ -3,16 +3,16 @@ import {
   queryDropArea,
   queryParsonsExercises,
   queryParsonsLines,
-  selectSlotUnderCursor,
+  selectSubslotUnderCursor,
 } from "./queries";
 import {
   addDragListeners,
   cleanUpSlots,
-  createSlots,
+  createSlot,
   hide,
-  insertLineInSlot,
+  insertLineInSubslot,
   removeDragListeners,
-  setCurrentSlot,
+  setCurrentSubslot,
 } from "./utils";
 
 export function initParsonsPlugin(rememberCallbacks) {
@@ -26,14 +26,14 @@ function registerListeners(exercise) {
 
   function onDrag(ev) {
     ev.preventDefault();
-    setCurrentSlot(selectSlotUnderCursor(ev, exercise), exercise);
+    setCurrentSubslot(selectSubslotUnderCursor(ev, exercise), exercise);
   }
 
   function onDrop(ev) {
     ev.preventDefault();
     addDragListeners(onDrag, onDrop);
 
-    insertLineInSlot(draggedLine, selectSlotUnderCursor(ev, exercise));
+    insertLineInSubslot(draggedLine, selectSubslotUnderCursor(ev, exercise));
     cleanUpSlots(exercise);
     draggedLine = null;
   }
@@ -41,7 +41,8 @@ function registerListeners(exercise) {
   function onDragStart(ev) {
     removeDragListeners(onDrag, onDrop);
 
-    createSlots([origArea, destArea]);
+    createSlot(origArea, 1, "single-subslot");
+    createSlot(destArea, 6);
 
     draggedLine = ev.target;
     hide(draggedLine);

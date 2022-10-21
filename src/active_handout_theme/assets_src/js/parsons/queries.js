@@ -26,6 +26,10 @@ export function querySlots(exercise) {
   return exercise.querySelectorAll(".line-slot");
 }
 
+export function querySubslots(slot) {
+  return slot.querySelectorAll(".subslot");
+}
+
 export function queryEmptySlot(container) {
   return container.querySelector(".line-slot:not(.with-line)");
 }
@@ -47,11 +51,21 @@ export function queryContainerFromInside(el) {
 }
 
 export function selectSlotUnderCursor(ev, exercise) {
-  let slot = selectElementWithClass(ev, "line-slot");
+  const slot = selectElementWithClass(ev, "line-slot");
   if (slot) return slot;
+
   const container = selectElementWithClass(ev, "parsons-container");
   if (container) return queryEmptySlot(container);
+
   return queryCurrentSlot(exercise);
+}
+
+export function selectSubslotUnderCursor(ev, exercise) {
+  const subslot = selectElementWithClass(ev, "subslot");
+  if (subslot) return subslot;
+
+  const slot = selectSlotUnderCursor(ev, exercise);
+  return slot.querySelector(".subslot");
 }
 
 function selectElementWithClass(ev, className) {
