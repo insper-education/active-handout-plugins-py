@@ -6,12 +6,13 @@ import {
   selectSubslotUnderCursor,
 } from "./queries";
 import {
-  addDragListeners,
+  removeDragListeners,
   cleanUpSlots,
   createSlot,
+  eventIsInsideExercise,
   hide,
   insertLineInSubslot,
-  removeDragListeners,
+  addDragListeners,
   setCurrentSubslot,
 } from "./utils";
 
@@ -26,20 +27,23 @@ function registerListeners(exercise) {
 
   function onDrag(ev) {
     ev.preventDefault();
+    if (!eventIsInsideExercise(ev, exercise)) return;
     setCurrentSubslot(selectSubslotUnderCursor(ev, exercise), exercise);
   }
 
   function onDrop(ev) {
     ev.preventDefault();
-    addDragListeners(onDrag, onDrop);
+    removeDragListeners(onDrag, onDrop);
 
-    insertLineInSubslot(draggedLine, selectSubslotUnderCursor(ev, exercise));
+    if (eventIsInsideExercise(ev, exercise)) {
+      insertLineInSubslot(draggedLine, selectSubslotUnderCursor(ev, exercise));
+    }
     cleanUpSlots(exercise);
     draggedLine = null;
   }
 
   function onDragStart(ev) {
-    removeDragListeners(onDrag, onDrop);
+    addDragListeners(onDrag, onDrop);
 
     createSlot(origArea, 1, "single-subslot");
     createSlot(destArea, 6);

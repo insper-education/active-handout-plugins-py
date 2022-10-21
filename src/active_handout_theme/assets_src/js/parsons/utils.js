@@ -9,15 +9,16 @@ import {
   querySlotFromInside,
   querySlots,
   querySubslots,
+  selectExerciseUnderCursor,
 } from "./queries";
 
-export function addDragListeners(onDrag, onDrop) {
+export function removeDragListeners(onDrag, onDrop) {
   window.removeEventListener("dragenter", onDrag);
   window.removeEventListener("dragover", onDrag);
   window.removeEventListener("drop", onDrop);
 }
 
-export function removeDragListeners(onDrag, onDrop) {
+export function addDragListeners(onDrag, onDrop) {
   window.addEventListener("dragenter", onDrag);
   window.addEventListener("dragover", onDrag);
   window.addEventListener("drop", onDrop);
@@ -33,6 +34,10 @@ export function insertLineInSubslot(line, subslot) {
   subslot.classList.add("cur-indent");
 
   slot.appendChild(line);
+}
+
+export function eventIsInsideExercise(ev, exercise) {
+  return selectExerciseUnderCursor(ev) === exercise;
 }
 
 export function setCurrentSubslot(subslot, exercise) {

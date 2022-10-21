@@ -1042,17 +1042,18 @@ function registerListeners(exercise) {
     let draggedLine = null;
     function onDrag(ev) {
         ev.preventDefault();
+        if (!(0, _utils.eventIsInsideExercise)(ev, exercise)) return;
         (0, _utils.setCurrentSubslot)((0, _queries.selectSubslotUnderCursor)(ev, exercise), exercise);
     }
     function onDrop(ev) {
         ev.preventDefault();
-        (0, _utils.addDragListeners)(onDrag, onDrop);
-        (0, _utils.insertLineInSubslot)(draggedLine, (0, _queries.selectSubslotUnderCursor)(ev, exercise));
+        (0, _utils.removeDragListeners)(onDrag, onDrop);
+        if ((0, _utils.eventIsInsideExercise)(ev, exercise)) (0, _utils.insertLineInSubslot)(draggedLine, (0, _queries.selectSubslotUnderCursor)(ev, exercise));
         (0, _utils.cleanUpSlots)(exercise);
         draggedLine = null;
     }
     function onDragStart(ev) {
-        (0, _utils.removeDragListeners)(onDrag, onDrop);
+        (0, _utils.addDragListeners)(onDrag, onDrop);
         (0, _utils.createSlot)(origArea, 1, "single-subslot");
         (0, _utils.createSlot)(destArea, 6);
         draggedLine = ev.target;
@@ -1081,6 +1082,7 @@ parcelHelpers.export(exports, "queryAreaFromInside", ()=>queryAreaFromInside);
 parcelHelpers.export(exports, "queryContainerFromInside", ()=>queryContainerFromInside);
 parcelHelpers.export(exports, "selectSlotUnderCursor", ()=>selectSlotUnderCursor);
 parcelHelpers.export(exports, "selectSubslotUnderCursor", ()=>selectSubslotUnderCursor);
+parcelHelpers.export(exports, "selectExerciseUnderCursor", ()=>selectExerciseUnderCursor);
 function queryParsonsExercises() {
     return document.querySelectorAll("div.admonition.exercise.parsons");
 }
@@ -1133,6 +1135,9 @@ function selectSubslotUnderCursor(ev, exercise) {
     const slot = selectSlotUnderCursor(ev, exercise);
     return slot.querySelector(".subslot");
 }
+function selectExerciseUnderCursor(ev) {
+    return selectElementWithClass(ev, "exercise");
+}
 function selectElementWithClass(ev, className) {
     const elementsBellowMouse = document.elementsFromPoint(ev.clientX, ev.clientY);
     for(let i = 0; i < elementsBellowMouse.length; i++){
@@ -1143,21 +1148,22 @@ function selectElementWithClass(ev, className) {
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"lDj3O":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "addDragListeners", ()=>addDragListeners);
 parcelHelpers.export(exports, "removeDragListeners", ()=>removeDragListeners);
+parcelHelpers.export(exports, "addDragListeners", ()=>addDragListeners);
 parcelHelpers.export(exports, "insertLineInSubslot", ()=>insertLineInSubslot);
+parcelHelpers.export(exports, "eventIsInsideExercise", ()=>eventIsInsideExercise);
 parcelHelpers.export(exports, "setCurrentSubslot", ()=>setCurrentSubslot);
 parcelHelpers.export(exports, "createSlot", ()=>createSlot);
 parcelHelpers.export(exports, "hide", ()=>hide);
 parcelHelpers.export(exports, "cleanUpSlots", ()=>cleanUpSlots);
 var _domUtils = require("../dom-utils");
 var _queries = require("./queries");
-function addDragListeners(onDrag, onDrop) {
+function removeDragListeners(onDrag, onDrop) {
     window.removeEventListener("dragenter", onDrag);
     window.removeEventListener("dragover", onDrag);
     window.removeEventListener("drop", onDrop);
 }
-function removeDragListeners(onDrag, onDrop) {
+function addDragListeners(onDrag, onDrop) {
     window.addEventListener("dragenter", onDrag);
     window.addEventListener("dragover", onDrag);
     window.addEventListener("drop", onDrop);
@@ -1170,6 +1176,9 @@ function insertLineInSubslot(line, subslot) {
     subslot.classList.remove("drag-over");
     subslot.classList.add("cur-indent");
     slot.appendChild(line);
+}
+function eventIsInsideExercise(ev, exercise) {
+    return (0, _queries.selectExerciseUnderCursor)(ev) === exercise;
 }
 function setCurrentSubslot(subslot, exercise) {
     if (!subslot) return;

@@ -68,6 +68,10 @@ export function selectSubslotUnderCursor(ev, exercise) {
   return slot.querySelector(".subslot");
 }
 
+export function selectExerciseUnderCursor(ev) {
+  return selectElementWithClass(ev, "exercise");
+}
+
 function selectElementWithClass(ev, className) {
   const elementsBellowMouse = document.elementsFromPoint(
     ev.clientX,
