@@ -1041,6 +1041,7 @@ function registerListeners(exercise) {
     const origArea = (0, _queries.queryDragArea)(exercise);
     let draggedLine = null;
     (0, _queries.queryResetButton)(exercise).addEventListener("click", ()=>(0, _utils.resetExercise)(exercise));
+    (0, _queries.querySubmitButton)(exercise).addEventListener("click", ()=>(0, _utils.submitExercise)(exercise));
     function onDrag(ev) {
         ev.preventDefault();
         if (!(0, _utils.eventIsInsideExercise)(ev, exercise)) return;
@@ -1070,6 +1071,8 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
 parcelHelpers.export(exports, "queryResetButton", ()=>queryResetButton);
+parcelHelpers.export(exports, "querySubmitButton", ()=>querySubmitButton);
+parcelHelpers.export(exports, "queryAnswer", ()=>queryAnswer);
 parcelHelpers.export(exports, "queryParsonsContainers", ()=>queryParsonsContainers);
 parcelHelpers.export(exports, "queryDropArea", ()=>queryDropArea);
 parcelHelpers.export(exports, "queryDragArea", ()=>queryDragArea);
@@ -1090,6 +1093,12 @@ function queryParsonsExercises() {
 }
 function queryResetButton(exercise) {
     return exercise.querySelector("input[name=resetButton]");
+}
+function querySubmitButton(exercise) {
+    return exercise.querySelector("input[name=sendButton]");
+}
+function queryAnswer(exercise) {
+    return exercise.querySelector(".admonition.answer");
 }
 function queryParsonsContainers(exercise) {
     return exercise.querySelectorAll(".parsons-container");
@@ -1162,6 +1171,7 @@ parcelHelpers.export(exports, "createSlot", ()=>createSlot);
 parcelHelpers.export(exports, "hide", ()=>hide);
 parcelHelpers.export(exports, "cleanUpSlots", ()=>cleanUpSlots);
 parcelHelpers.export(exports, "resetExercise", ()=>resetExercise);
+parcelHelpers.export(exports, "submitExercise", ()=>submitExercise);
 var _domUtils = require("../dom-utils");
 var _queries = require("./queries");
 function removeDragListeners(onDrag, onDrop) {
@@ -1235,6 +1245,7 @@ function cleanUpSlots(exercise) {
     }
 }
 function resetExercise(exercise) {
+    hideAnswer((0, _queries.queryAnswer)(exercise));
     const origArea = (0, _queries.queryDragArea)(exercise);
     const destArea = (0, _queries.queryDropArea)(exercise);
     (0, _queries.queryParsonsLines)(destArea).forEach((line)=>{
@@ -1255,6 +1266,32 @@ function resetExercise(exercise) {
         slot.remove();
     });
 }
+function submitExercise(exercise) {
+    exercise.classList.remove("correct");
+    exercise.classList.remove("wrong");
+    const origArea = (0, _queries.queryDragArea)(exercise);
+    const answerArea = (0, _queries.queryDropArea)(exercise);
+    const lines = (0, _queries.queryParsonsLines)(answerArea);
+    let correct = lines.length > 0 && (0, _queries.queryParsonsLines)(origArea).length === 0;
+    lines.forEach((line, idx)=>{
+        const slot = (0, _queries.querySlotFromInside)(line);
+        const correctLineNum = getLineNumber(line);
+        const isCorrectLine = correctLineNum === idx + 1;
+        const correctIndent = parseInt(line.dataset.indentcount);
+        const isCorrectIndent = correctIndent === getIndentCount(slot);
+        correct && (correct = isCorrectLine && isCorrectIndent);
+    });
+    // We need this timeout so the browser has time to reset the
+    // exercise before animating again
+    setTimeout(()=>{
+        if (correct) exercise.classList.add("correct");
+        else exercise.classList.add("wrong");
+    }, 0);
+    showAnswer((0, _queries.queryAnswer)(exercise));
+}
+function getLineNumber(line) {
+    return parseInt(line.querySelector("a").id.split("-")[2]);
+}
 function resetContainers(containers, exceptThis) {
     containers.forEach((otherContainer)=>{
         if (otherContainer !== exceptThis) shiftLines((0, _queries.queryLastSlot)(otherContainer));
@@ -1274,13 +1311,20 @@ function emptyIsBeforeRef(area, emptySlot, refSlot) {
     }
     return false;
 }
-function getIndentCount(subslot) {
+function getIndentCount(slot) {
+    const subslot = slot.querySelector(".subslot.cur-indent");
     const prefix = "subslot-";
     for (let className of subslot.classList)if (className.startsWith(prefix)) {
         const count = parseInt(className.substr(prefix.length));
         if (count) return count - 1;
     }
     return 0;
+}
+function showAnswer(answer) {
+    answer.style.display = "inherit";
+}
+function hideAnswer(answer) {
+    answer.style.display = "none";
 }
 
 },{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../dom-utils":"NCBha"}],"NCBha":[function(require,module,exports) {

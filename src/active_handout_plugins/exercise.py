@@ -49,6 +49,13 @@ class ExerciseAdmonition(AdmonitionVisitor):
         if answer:
             el.remove(answer)
             submission_form.append(answer)
+        else:
+            answer_content = self.create_answer()
+            if answer_content:
+                answer = etree.SubElement(submission_form, 'div')
+                answer.set("class", "admonition answer")
+                answer.set("style", "display: none;")
+                answer.text = self.md.htmlStash.store(answer_content)
 
     def __match_class(self, el):
         cls = self.base_class
@@ -91,6 +98,9 @@ end
 
     def add_extra_classes(self, el):
         return
+
+    def create_answer(self):
+        return ''
 
 
 class ChoiceExercise(ExerciseAdmonition):

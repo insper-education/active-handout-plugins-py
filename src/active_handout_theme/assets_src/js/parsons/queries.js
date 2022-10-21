@@ -6,6 +6,14 @@ export function queryResetButton(exercise) {
   return exercise.querySelector("input[name=resetButton]");
 }
 
+export function querySubmitButton(exercise) {
+  return exercise.querySelector("input[name=sendButton]");
+}
+
+export function queryAnswer(exercise) {
+  return exercise.querySelector(".admonition.answer");
+}
+
 export function queryParsonsContainers(exercise) {
   return exercise.querySelectorAll(".parsons-container");
 }

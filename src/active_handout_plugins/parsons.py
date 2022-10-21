@@ -45,9 +45,14 @@ class ParsonsExercise(ExerciseAdmonition):
         return '''
         <input type="hidden" name="data" value=""/>
         <div class="ah-btn-group">
-          <input type="button" class="ah-button ah-button--primary" name="resetButton" value="Reset"/>
-          <input type="button" class="ah-button ah-button--primary" name="sendButton" value="Testar"/>
+            <input type="button" class="ah-button ah-button--primary" name="resetButton" value="Reset"/>
+            <input type="button" class="ah-button ah-button--primary" name="sendButton" value="Testar"/>
         </div>
         '''
 
-
+    def create_answer(self):
+        return f'''
+<p class="admonition-title">Resposta</p>
+<p class="wrong-answer">Wrong answer</p>
+<p class="correct-answer">Correct answer</p>
+'''

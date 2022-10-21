@@ -4,6 +4,7 @@ import {
   queryParsonsExercises,
   queryParsonsLines,
   queryResetButton,
+  querySubmitButton,
   selectSubslotUnderCursor,
 } from "./queries";
 import {
@@ -16,6 +17,7 @@ import {
   addDragListeners,
   setCurrentSubslot,
   resetExercise,
+  submitExercise,
 } from "./utils";
 
 export function initParsonsPlugin(rememberCallbacks) {
@@ -29,6 +31,10 @@ function registerListeners(exercise) {
 
   queryResetButton(exercise).addEventListener("click", () =>
     resetExercise(exercise)
+  );
+
+  querySubmitButton(exercise).addEventListener("click", () =>
+    submitExercise(exercise)
   );
 
   function onDrag(ev) {

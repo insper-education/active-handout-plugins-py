@@ -1246,6 +1246,48 @@ body {
   overflow: hidden;
 }
 
+.parsons {
+  position: relative;
+}
+
+.parsons .correct-answer, .parsons .wrong-answer {
+  display: none;
+}
+
+.parsons.correct .correct-answer {
+  display: inherit;
+}
+
+.parsons.wrong {
+  animation-name: shakeIt;
+  animation-duration: .25s;
+  animation-iteration-count: 2;
+}
+
+.parsons.wrong .wrong-answer {
+  display: inherit;
+}
+
+@keyframes shakeIt {
+  from {
+    top: 0;
+    left: 0;
+  }
+
+  25% {
+    left: -40px;
+  }
+
+  75% {
+    left: 40px;
+  }
+
+  to {
+    top: 0;
+    left: 0;
+  }
+}
+
 .parsons-container pre {
   white-space: inherit;
 }

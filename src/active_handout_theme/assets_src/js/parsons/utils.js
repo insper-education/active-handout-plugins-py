@@ -1,5 +1,6 @@
 import { createElementWithClasses } from "../dom-utils";
 import {
+  queryAnswer,
   queryAreaFromInside,
   queryContainerFromInside,
   queryDragArea,
@@ -94,6 +95,8 @@ export function cleanUpSlots(exercise) {
 }
 
 export function resetExercise(exercise) {
+  hideAnswer(queryAnswer(exercise));
+
   const origArea = queryDragArea(exercise);
   const destArea = queryDropArea(exercise);
   queryParsonsLines(destArea).forEach((line) => {
@@ -112,6 +115,43 @@ export function resetExercise(exercise) {
     newSlot.appendChild(line);
     slot.remove();
   });
+}
+
+export function submitExercise(exercise) {
+  exercise.classList.remove("correct");
+  exercise.classList.remove("wrong");
+
+  const origArea = queryDragArea(exercise);
+  const answerArea = queryDropArea(exercise);
+
+  const lines = queryParsonsLines(answerArea);
+  let correct = lines.length > 0 && queryParsonsLines(origArea).length === 0;
+  lines.forEach((line, idx) => {
+    const slot = querySlotFromInside(line);
+
+    const correctLineNum = getLineNumber(line);
+    const isCorrectLine = correctLineNum === idx + 1;
+
+    const correctIndent = parseInt(line.dataset.indentcount);
+    const isCorrectIndent = correctIndent === getIndentCount(slot);
+
+    correct &&= isCorrectLine && isCorrectIndent;
+  });
+
+  // We need this timeout so the browser has time to reset the
+  // exercise before animating again
+  setTimeout(() => {
+    if (correct) {
+      exercise.classList.add("correct");
+    } else {
+      exercise.classList.add("wrong");
+    }
+  }, 0);
+  showAnswer(queryAnswer(exercise));
+}
+
+function getLineNumber(line) {
+  return parseInt(line.querySelector("a").id.split("-")[2]);
 }
 
 function resetContainers(containers, exceptThis) {
@@ -143,9 +183,9 @@ function emptyIsBeforeRef(area, emptySlot, refSlot) {
   return false;
 }
 
-function getIndentCount(subslot) {
+function getIndentCount(slot) {
+  const subslot = slot.querySelector(".subslot.cur-indent");
   const prefix = "subslot-";
-
   for (let className of subslot.classList) {
     if (className.startsWith(prefix)) {
       const count = parseInt(className.substr(prefix.length));
@@ -153,4 +193,12 @@ function getIndentCount(subslot) {
     }
   }
   return 0;
+}
+
+function showAnswer(answer) {
+  answer.style.display = "inherit";
+}
+
+function hideAnswer(answer) {
+  answer.style.display = "none";
 }
