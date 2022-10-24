@@ -19,9 +19,18 @@ import {
   resetExercise,
   submitExercise,
 } from "./utils";
+import { saveAndSendData } from "../telemetry";
 
 export function initParsonsPlugin(rememberCallbacks) {
   queryParsonsExercises().forEach(registerListeners);
+
+  rememberCallbacks.push({
+    match: (el) => el.classList.contains("parsons"),
+    callback: (el, { correct }) => {
+      saveAndSendData(el, correct);
+      return true;
+    },
+  });
 }
 
 function registerListeners(exercise) {

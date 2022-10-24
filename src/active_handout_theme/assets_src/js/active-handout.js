@@ -15,7 +15,7 @@ function onLoad() {
     const element = e.detail.element;
     for (let remember of rememberCallbacks) {
       if (remember.match(element)) {
-        const stop = remember.callback(element);
+        const stop = remember.callback(element, e.detail.args);
         if (stop) break;
       }
     }

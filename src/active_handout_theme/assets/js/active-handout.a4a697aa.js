@@ -545,7 +545,7 @@ function onLoad() {
     window.addEventListener("remember", function(e) {
         const element = e.detail.element;
         for (let remember of rememberCallbacks)if (remember.match(element)) {
-            const stop = remember.callback(element);
+            const stop = remember.callback(element, e.detail.args);
             if (stop) break;
         }
     });
@@ -1033,8 +1033,16 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initParsonsPlugin", ()=>initParsonsPlugin);
 var _queries = require("./queries");
 var _utils = require("./utils");
+var _telemetry = require("../telemetry");
 function initParsonsPlugin(rememberCallbacks) {
     (0, _queries.queryParsonsExercises)().forEach(registerListeners);
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains("parsons"),
+        callback: (el, { correct  })=>{
+            (0, _telemetry.saveAndSendData)(el, correct);
+            return true;
+        }
+    });
 }
 function registerListeners(exercise) {
     const destArea = (0, _queries.queryDropArea)(exercise);
@@ -1066,7 +1074,7 @@ function registerListeners(exercise) {
     });
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"6FJZc","./utils":"lDj3O"}],"6FJZc":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ"}],"6FJZc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
@@ -1288,6 +1296,9 @@ function submitExercise(exercise) {
         else exercise.classList.add("wrong");
     }, 0);
     showAnswer((0, _queries.queryAnswer)(exercise));
+    (0, _domUtils.sendRemember)(exercise, {
+        correct
+    });
 }
 function getLineNumber(line) {
     return parseInt(line.querySelector("a").id.split("-")[2]);
@@ -1331,11 +1342,21 @@ function hideAnswer(answer) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createElementWithClasses", ()=>createElementWithClasses);
+parcelHelpers.export(exports, "sendRemember", ()=>sendRemember);
 function createElementWithClasses(tagName, classList, parent) {
     const el = document.createElement(tagName);
     for (let className of classList)el.classList.add(className);
     if (parent) parent.appendChild(el);
     return el;
+}
+function sendRemember(element, args) {
+    const ev = new CustomEvent("remember", {
+        detail: {
+            element,
+            args
+        }
+    });
+    window.dispatchEvent(ev);
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")

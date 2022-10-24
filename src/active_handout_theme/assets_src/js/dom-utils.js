@@ -8,3 +8,8 @@ export function createElementWithClasses(tagName, classList, parent) {
   }
   return el;
 }
+
+export function sendRemember(element, args) {
+  const ev = new CustomEvent("remember", { detail: { element, args } });
+  window.dispatchEvent(ev);
+}

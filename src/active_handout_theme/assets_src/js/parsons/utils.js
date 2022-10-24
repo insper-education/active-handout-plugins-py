@@ -1,4 +1,4 @@
-import { createElementWithClasses } from "../dom-utils";
+import { createElementWithClasses, sendRemember } from "../dom-utils";
 import {
   queryAnswer,
   queryAreaFromInside,
@@ -148,6 +148,8 @@ export function submitExercise(exercise) {
     }
   }, 0);
   showAnswer(queryAnswer(exercise));
+
+  sendRemember(exercise, { correct });
 }
 
 function getLineNumber(line) {
