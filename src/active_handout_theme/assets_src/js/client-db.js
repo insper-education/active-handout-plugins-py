@@ -1,4 +1,4 @@
-function getKey(elOrKey) {
+export function getKey(elOrKey) {
   if (typeof elOrKey === "string") {
     return elOrKey;
   }

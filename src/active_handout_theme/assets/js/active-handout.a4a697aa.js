@@ -539,27 +539,29 @@ var _exercise = require("./exercise");
 var _footnote = require("./footnote");
 var _parsons = require("./parsons");
 var _style = require("./style");
+var _auth = require("./auth");
 function onLoad() {
-    (0, _tabbedContent.initTabbedPlugin)();
     let rememberCallbacks = [];
+    const user = (0, _auth.initAuth)();
     window.addEventListener("remember", function(e) {
         const element = e.detail.element;
         for (let remember of rememberCallbacks)if (remember.match(element)) {
-            const stop = remember.callback(element, e.detail.args);
+            const stop = remember.callback(element, user, e.detail.args);
             if (stop) break;
         }
     });
+    (0, _tabbedContent.initTabbedPlugin)();
     (0, _style.initStyle)();
-    (0, _menu.initMenuPlugin)();
     (0, _progress.initProgressPlugin)(rememberCallbacks);
     (0, _parsons.initParsonsPlugin)(rememberCallbacks);
     (0, _exercise.initExercisePlugin)(rememberCallbacks);
     (0, _footnote.initFooterPlugin)(rememberCallbacks);
+    (0, _menu.initMenuPlugin)();
 }
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./menu":"5D3Be","./exercise":"dmczC","./footnote":"70ehP","./parsons":"1AI9I","./style":"5DGm5"}],"eIlmk":[function(require,module,exports) {
+},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./menu":"5D3Be","./exercise":"dmczC","./footnote":"70ehP","./parsons":"1AI9I","./style":"5DGm5","./auth":"joUbb"}],"eIlmk":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initTabbedPlugin", ()=>initTabbedPlugin);
@@ -689,6 +691,7 @@ function queryProgressBtns() {
 },{"../client-db":"j0pff","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"j0pff":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getKey", ()=>getKey);
 parcelHelpers.export(exports, "setValue", ()=>setValue);
 parcelHelpers.export(exports, "getValue", ()=>getValue);
 parcelHelpers.export(exports, "removeValue", ()=>removeValue);
@@ -715,14 +718,80 @@ function removeValue(elOrKey) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
+var _apiClient = require("./apiClient");
 var _clientDb = require("./client-db");
-function saveAndSendData(elOrKey, value) {
-    (0, _clientDb.setValue)(elOrKey, value);
-    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
-// TODO: fetch POST with token
+function saveAndSendData(element, value, user, points) {
+    const slug = (0, _clientDb.getKey)(element);
+    (0, _clientDb.setValue)(slug, JSON.stringify(value));
+    if (user && telemetryEnabled && backendUrl && courseSlug) (0, _apiClient.postTelemetryData)(user, value, slug, extractTags(element), points);
+}
+function extractTags(element) {
+    const tags = [];
+    const tagPrefix = "tag-";
+    for (let className of element.classList)if (className.startsWith(tagPrefix)) tags.push(className.substring(tagPrefix.length));
+    return tags;
 }
 
-},{"./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5D3Be":[function(require,module,exports) {
+},{"./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./apiClient":"emRW9"}],"emRW9":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "postTelemetryData", ()=>postTelemetryData);
+parcelHelpers.export(exports, "getJSON", ()=>getJSON);
+parcelHelpers.export(exports, "postJSON", ()=>postJSON);
+async function postTelemetryData(token, log, exerciseSlug, exerciseTags, points) {
+    if (!telemetryEnabled || !backendUrl || !courseSlug) return;
+    const exercise = {
+        course: courseSlug,
+        slug: exerciseSlug || "",
+        tags: exerciseTags || []
+    };
+    if (!Number.isFinite(points)) points = 0;
+    postJSON("/telemetry", {
+        exercise,
+        points: points,
+        log
+    }, token);
+}
+async function getJSON(endpoint, token) {
+    const url = buildUrl(endpoint);
+    if (!url) return null;
+    const init = createInit(token);
+    return makeJSONRequest(url, init);
+}
+async function postJSON(endpoint, data, token) {
+    const url = buildUrl(endpoint);
+    if (!url) return null;
+    const init = createInit(token);
+    init.method = "POST";
+    if (data) init.body = JSON.stringify(data);
+    return makeJSONRequest(url, init);
+}
+function makeJSONRequest(url, init) {
+    return fetch(url, init).then((response)=>response.json()).catch((reason)=>{
+        console.error(reason);
+        return null;
+    });
+}
+function buildUrl(endpoint) {
+    if (!backendUrl) return "";
+    let url = backendUrl;
+    if (!url.endsWith("/")) url += "/";
+    if (endpoint.startsWith("/")) endpoint = endpoint.substr(1);
+    url += endpoint;
+    return url;
+}
+function createInit(token) {
+    const init = {
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+    if (token) init.headers.Authorization = `Token ${token}`;
+    return init;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5D3Be":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initMenuPlugin", ()=>initMenuPlugin);
@@ -835,9 +904,9 @@ function initTextExercises() {
 function matchTextExercises(el) {
     return el.classList.contains("short") || el.classList.contains("medium") || el.classList.contains("long");
 }
-function rememberTextExercise(el) {
+function rememberTextExercise(el, user) {
     const textElement = (0, _queries.queryTextInputs)(el);
-    (0, _telemetry.saveAndSendData)(el, textElement.value);
+    (0, _telemetry.saveAndSendData)(el, textElement.value, user);
     return true;
 }
 function initChoiceExercises() {
@@ -857,14 +926,17 @@ function initChoiceExercises() {
 function matchChoiceExercises(el) {
     return el.classList.contains("choice");
 }
-function rememberChoiceExercise(el) {
+function rememberChoiceExercise(el, user) {
     const choices = (0, _queries.queryOptions)(el);
     const correctIdx = (0, _queries.queryCorrectOptionIdx)(el);
     for (let choice of choices){
         const alternative = (0, _queries.queryParentAlternative)(choice);
         if (correctIdx === choice.value) alternative.classList.add("correct");
         else alternative.classList.add("wrong");
-        if (choice.checked) (0, _telemetry.saveAndSendData)(el, choice.value);
+        if (choice.checked) {
+            const points = correctIdx === choice.value ? 1 : 0;
+            (0, _telemetry.saveAndSendData)(el, choice.value, user, points);
+        }
     }
     return true;
 }
@@ -877,8 +949,8 @@ function initSelfProgressExercises() {
 function matchSelfProgressExercises(el) {
     return el.classList.contains("self-progress");
 }
-function rememberSelfProgressExercise(el) {
-    (0, _telemetry.saveAndSendData)(el, true);
+function rememberSelfProgressExercise(el, user) {
+    (0, _telemetry.saveAndSendData)(el, true, user);
     return true;
 }
 
@@ -1023,8 +1095,11 @@ function initParsonsPlugin(rememberCallbacks) {
     (0, _queries.queryParsonsExercises)().forEach(registerListeners);
     rememberCallbacks.push({
         match: (el)=>el.classList.contains("parsons"),
-        callback: (el, { correct  })=>{
-            (0, _telemetry.saveAndSendData)(el, correct);
+        callback: (el, user, { correct , code  })=>{
+            (0, _telemetry.saveAndSendData)(el, JSON.stringify({
+                correct,
+                code
+            }), user, correct ? 1 : 0);
             return true;
         }
     });
@@ -1066,6 +1141,7 @@ parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises
 parcelHelpers.export(exports, "queryResetButton", ()=>queryResetButton);
 parcelHelpers.export(exports, "querySubmitButton", ()=>querySubmitButton);
 parcelHelpers.export(exports, "queryAnswer", ()=>queryAnswer);
+parcelHelpers.export(exports, "queryCorrectAnswer", ()=>queryCorrectAnswer);
 parcelHelpers.export(exports, "queryParsonsContainers", ()=>queryParsonsContainers);
 parcelHelpers.export(exports, "queryDropArea", ()=>queryDropArea);
 parcelHelpers.export(exports, "queryDragArea", ()=>queryDragArea);
@@ -1092,6 +1168,9 @@ function querySubmitButton(exercise) {
 }
 function queryAnswer(exercise) {
     return exercise.querySelector(".admonition.answer");
+}
+function queryCorrectAnswer(exercise) {
+    return exercise.querySelector(".parsons-answer");
 }
 function queryParsonsContainers(exercise) {
     return exercise.querySelectorAll(".parsons-container");
@@ -1266,14 +1345,13 @@ function submitExercise(exercise) {
     const answerArea = (0, _queries.queryDropArea)(exercise);
     const lines = (0, _queries.queryParsonsLines)(answerArea);
     let correct = lines.length > 0 && (0, _queries.queryParsonsLines)(origArea).length === 0;
+    let answerCorrect = (0, _queries.queryCorrectAnswer)(exercise).innerText;
+    let answerText = "";
     lines.forEach((line, idx)=>{
         const slot = (0, _queries.querySlotFromInside)(line);
-        const correctLineNum = getLineNumber(line);
-        const isCorrectLine = correctLineNum === idx + 1;
-        const correctIndent = parseInt(line.dataset.indentcount);
-        const isCorrectIndent = correctIndent === getIndentCount(slot);
-        correct && (correct = isCorrectLine && isCorrectIndent);
+        answerText += "    ".repeat(getIndentCount(slot)) + slot.innerText + "\n";
     });
+    correct = correct && answerText === answerCorrect;
     // We need this timeout so the browser has time to reset the
     // exercise before animating again
     setTimeout(()=>{
@@ -1282,11 +1360,9 @@ function submitExercise(exercise) {
     }, 0);
     showAnswer((0, _queries.queryAnswer)(exercise));
     (0, _domUtils.sendRemember)(exercise, {
-        correct
+        "correct": correct,
+        "answer": answerText
     });
-}
-function getLineNumber(line) {
-    return parseInt(line.querySelector("a").id.split("-")[2]);
 }
 function resetContainers(containers, exceptThis) {
     containers.forEach((otherContainer)=>{
@@ -1328,6 +1404,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createElementWithClasses", ()=>createElementWithClasses);
 parcelHelpers.export(exports, "sendRemember", ()=>sendRemember);
+parcelHelpers.export(exports, "absoluteURL", ()=>absoluteURL);
 function createElementWithClasses(tagName, classList, parent) {
     const el = document.createElement(tagName);
     for (let className of classList)el.classList.add(className);
@@ -1342,6 +1419,21 @@ function sendRemember(element, args) {
         }
     });
     window.dispatchEvent(ev);
+}
+function absoluteURL(relative) {
+    const base = window.location.href;
+    const stack = base.split("/");
+    const parts = relative.split("/");
+    // Remove trailing empty string
+    if (!stack[stack.length - 1]) stack.pop();
+    for (let part of parts){
+        if (part == ".") continue;
+        if (part == "..") stack.pop();
+        else stack.push(part);
+    }
+    // Add trailing empty string
+    if (stack[stack.length - 1]) stack.push("");
+    return stack.join("/");
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5DGm5":[function(require,module,exports) {
@@ -1367,6 +1459,32 @@ function initTextArea() {
             grower.dataset.replicatedValue = textarea.value;
         });
     });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"joUbb":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initAuth", ()=>initAuth);
+const USER_DATA_KEY = "active-handout--user-data";
+function initAuth() {
+    handleRedirects();
+    let user = localStorage.getItem(USER_DATA_KEY);
+    const authMenuContainer = document.getElementById("user-menu");
+    document.body.addEventListener("htmx:afterSettle", function(evt) {
+        if (evt.target == authMenuContainer) {
+            if (user) document.getElementById("logout_btn").classList.remove("hidden");
+            else document.getElementById("login_btn").classList.remove("hidden");
+        }
+    });
+    return user;
+}
+function handleRedirects() {
+    if (location.search.includes("token=")) {
+        const params = new URLSearchParams(location.search);
+        const token = params.get("token");
+        localStorage.setItem(USER_DATA_KEY, token);
+        window.location.href = window.location.href.replace(window.location.search, "");
+    }
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")

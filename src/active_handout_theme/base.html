@@ -13,7 +13,42 @@
         <title>{{ config.site_name }}</title>
       {% endif %}
     {% endblock %}
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:700|Oxygen+Mono|Source+Sans+Pro:700|Source+Serif+Pro&amp;display=swap">
     <link rel="stylesheet" href="{{ 'assets/css/main.css' | url }}">
+    <script>
+      // SETUP GLOBAL CONSTANTS
+      var base_url = '{{ base_url }}';
+      {% if config.active_handout.telemetry %}
+      var telemetryEnabled = true;
+      var backendUrl = "{{ config.active_handout.backend_url }}";
+      var courseSlug = "{{ config.COURSE_SLUG }}";
+      {% else %}
+      var telemetryEnabled = false;
+      var backendUrl = "";
+      var courseSlug = "";
+      {% endif %}
+
+      // SETUP PLUGIN
+      window.initialized = false;
+      if (!window.initializers) window.initializers = [];
+      window.registerInitializer = (initialize) => {
+        if (window.initialized) initialize();
+        else window.initializers.push(initialize);
+      };
+    </script>
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          processEscapes: true
+        }
+      });
+    </script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="https://unpkg.com/hyperscript.org"></script>
+    <script src="https://unpkg.com/htmx.org@1.8.4"></script>
+    <script src="{{ 'assets/js/main.js'|url }}"></script>
     {% block extrahead %}{% endblock %}
     {% for path in config.extra_css %}<link rel="stylesheet" href="{{ path | url }}">{% endfor %}
   </head>
@@ -30,6 +65,11 @@
            aria-label="{{ config.site_name }}">
           {{ config.site_name | e }}
         </a>
+        <div class="ah-header--right">
+          {% if config.active_handout.telemetry %}
+          <div id="user-menu" hx-get="{{ config.active_handout.backend_user_menu_url}}" hx-trigger="load"> </div>
+          {% endif %}
+        </div>
       </header>
       <nav class="ah-navigation">
         <div class="ah-nav-container">
@@ -92,8 +132,6 @@
       </footer>
     </div>
     {% block scripts %}
-      <script>var base_url = '{{ base_url }}';</script>
-      <script src="{{ 'assets/js/main.js' | url }}"></script>
       {% for path in config.extra_javascript %}<script src="{{ path | url }}"></script>{% endfor %}
     {% endblock %}
   </body>

@@ -13,3 +13,23 @@ export function sendRemember(element, args) {
   const ev = new CustomEvent("remember", { detail: { element, args } });
   window.dispatchEvent(ev);
 }
+
+export function absoluteURL(relative) {
+  const base = window.location.href;
+  const stack = base.split("/");
+  const parts = relative.split("/");
+
+  // Remove trailing empty string
+  if (!stack[stack.length - 1]) stack.pop();
+
+  for (let part of parts) {
+    if (part == ".") continue;
+    if (part == "..") stack.pop();
+    else stack.push(part);
+  }
+
+  // Add trailing empty string
+  if (stack[stack.length - 1]) stack.push("");
+
+  return stack.join("/");
+}

@@ -5,28 +5,30 @@ import { initExercisePlugin } from "./exercise";
 import { initFooterPlugin } from "./footnote";
 import { initParsonsPlugin } from "./parsons";
 import { initStyle } from "./style";
+import { initAuth } from "./auth";
 
 function onLoad() {
-  initTabbedPlugin();
-
   let rememberCallbacks = [];
 
+  const user = initAuth();
   window.addEventListener("remember", function (e) {
     const element = e.detail.element;
     for (let remember of rememberCallbacks) {
       if (remember.match(element)) {
-        const stop = remember.callback(element, e.detail.args);
+        const stop = remember.callback(element, user, e.detail.args);
         if (stop) break;
       }
     }
   });
+  
+  initTabbedPlugin();
 
   initStyle();
-  initMenuPlugin();
   initProgressPlugin(rememberCallbacks);
   initParsonsPlugin(rememberCallbacks);
   initExercisePlugin(rememberCallbacks);
   initFooterPlugin(rememberCallbacks);
+  initMenuPlugin();
 }
 
 if (document.readyState !== "loading") {

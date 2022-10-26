@@ -61,3 +61,6 @@ class ParsonsExercise(ExerciseAdmonition):
 <p class="wrong-answer">Wrong answer</p>
 <p class="correct-answer">Correct answer</p>
 '''
+
+    def get_tags(self, el):
+        return ['parsons-exercise']

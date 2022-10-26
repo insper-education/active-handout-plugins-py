@@ -58,3 +58,8 @@
   #{$prop}: #{$value}vh; /* Fallback for browsers that do not support Custom Properties */
   #{$prop}: calc(var(--vh, 1vh) * $value);
 }
+
+
+.hidden {
+  display: none;
+}

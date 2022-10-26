@@ -32,13 +32,15 @@ export function initExercisePlugin(rememberCallbacks) {
   initChoiceExercises();
   initSelfProgressExercises();
 
-  document.getElementById("resetHandoutButton").addEventListener("click", function() {
-    const exercises = document.querySelectorAll(".admonition.exercise");
-    for (const ex of exercises) {
+  document
+    .getElementById("resetHandoutButton")
+    .addEventListener("click", function () {
+      const exercises = document.querySelectorAll(".admonition.exercise");
+      for (const ex of exercises) {
         removeValue(ex);
-    }
-    location.reload();
-  });
+      }
+      location.reload();
+    });
 }
 
 function initTextExercises() {
@@ -65,9 +67,9 @@ function matchTextExercises(el) {
   );
 }
 
-function rememberTextExercise(el) {
+function rememberTextExercise(el, user) {
   const textElement = queryTextInputs(el);
-  saveAndSendData(el, textElement.value);
+  saveAndSendData(el, textElement.value, user);
   return true;
 }
 
@@ -90,7 +92,7 @@ function matchChoiceExercises(el) {
   return el.classList.contains("choice");
 }
 
-function rememberChoiceExercise(el) {
+function rememberChoiceExercise(el, user) {
   const choices = queryOptions(el);
   const correctIdx = queryCorrectOptionIdx(el);
   for (let choice of choices) {
@@ -102,7 +104,8 @@ function rememberChoiceExercise(el) {
     }
 
     if (choice.checked) {
-      saveAndSendData(el, choice.value);
+      const points = correctIdx === choice.value ? 1 : 0;
+      saveAndSendData(el, choice.value, user, points);
     }
   }
 
@@ -122,7 +125,7 @@ function matchSelfProgressExercises(el) {
   return el.classList.contains("self-progress");
 }
 
-function rememberSelfProgressExercise(el) {
-  saveAndSendData(el, true);
+function rememberSelfProgressExercise(el, user) {
+  saveAndSendData(el, true, user);
   return true;
 }

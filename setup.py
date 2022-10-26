@@ -24,7 +24,8 @@ setup(
         'mkdocs.themes': [
             'active-handout-theme = active_handout_theme',
         ],
-        'markdown.extensions': ['active-handout-plugins = active_handout_plugins:ActiveHandoutExtension']
+        'markdown.extensions': ['active-handout-plugins = active_handout_plugins:ActiveHandoutExtension'],
+        'mkdocs.plugins': ['active-handout = active_handout_plugins.mkdocs_plugin:ActiveHandoutPlugin']
     },
     zip_safe=False
 )

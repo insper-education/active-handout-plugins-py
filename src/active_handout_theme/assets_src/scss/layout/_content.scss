@@ -13,33 +13,3 @@
     scroll-margin-top: $header-height;
   }
 }
-
-#resetHandoutButton {
-    float: right;
-    display: flex;
-    flex-direction: row;
-
-    border: 0px;
-    background-color: transparent;
-}
-
-#resetHandoutButton::after {
-    content: "Reset";
-    max-width: 0ch;
-    overflow: hidden;
-
-    transition: max-width 0.5s;
-}
-
-#resetHandoutButton:hover::after {
-    max-width: 10ch;
-    transition: max-width 0.5s;
-}
-
-#resetHandoutButton svg {
-    width: 1em;
-    display: inline;
-    vertical-align: middle;
-}
-
-
