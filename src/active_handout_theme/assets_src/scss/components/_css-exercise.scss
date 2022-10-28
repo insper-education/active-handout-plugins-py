@@ -1,0 +1,13 @@
+@use "../abstracts/index.scss" as *;
+
+@use "highlight.js/styles/base16/atelier-heath-light.css";
+
+.css-playground {
+  background-color: #f7f3f7;
+  border-radius: $border-radius;
+}
+
+.playground-code-editor {
+  padding: 1rem;
+  border-radius: $border-radius;
+}

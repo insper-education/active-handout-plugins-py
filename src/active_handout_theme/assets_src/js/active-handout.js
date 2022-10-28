@@ -4,6 +4,7 @@ import { initMenuPlugin } from "./menu";
 import { initExercisePlugin } from "./exercise";
 import { initFooterPlugin } from "./footnote";
 import { initParsonsPlugin } from "./parsons";
+import { initCSSPlugin } from "./css-exercise";
 import { initStyle } from "./style";
 
 function onLoad() {
@@ -25,6 +26,7 @@ function onLoad() {
   initMenuPlugin();
   initProgressPlugin(rememberCallbacks);
   initParsonsPlugin(rememberCallbacks);
+  initCSSPlugin(rememberCallbacks);
   initExercisePlugin(rememberCallbacks);
   initFooterPlugin(rememberCallbacks);
 }

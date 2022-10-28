@@ -8,6 +8,7 @@ from .counter import CounterProcessor
 from .video import VideoAdmonition
 from .pdf import PdfAdmonition
 from .parsons import ParsonsExercise
+from .css_exercise import CSSExercise
 
 
 class ActiveHandoutExtension(Extension):
@@ -26,6 +27,7 @@ class ActiveHandoutExtension(Extension):
         exercise_admonitions.register(ChoiceExercise(md), 3)
         exercise_admonitions.register(TextExercise(md), 2)
         exercise_admonitions.register(ParsonsExercise(md), 2)
+        exercise_admonitions.register(CSSExercise(md), 2)
         exercise_admonitions.register(SelfProgressExercise(md), 1)
 
         md.treeprocessors.register(VideoAdmonition(md), 'video-admonition', 15)
