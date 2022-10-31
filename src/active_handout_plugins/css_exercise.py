@@ -31,13 +31,20 @@ class CSSExercise(ExerciseAdmonition):
     def __create_playground(self, files):
         editors = ''
         filenames = ''
-        for language, code in files.items():
-            filenames += f'<li>index.{language}</li>'
-            editors += f'<div class="playground-code-editor" data-language="{ language }">{ code }</div>'
+        for i, (language, code) in enumerate(files.items()):
+            filename = f'index.{language}'
+            tab_classes = 'tab'
+            editor_classes = 'playground-code-editor'
+            if i == 0:
+                tab_classes += ' active'
+                editor_classes += ' active'
+            filenames += f'<li class="{ tab_classes }">{ filename }</li>'
+            editors += f'<div class="{ editor_classes }" data-language="{ language }" data-filename="{ filename }">{ code }</div>'
         return f'''
 <div class="css-playground">
     <ul class="file-tab">{filenames}</ul>
     { editors }
+    <div class="page-preview"><iframe></div>
 </div>
 '''
 

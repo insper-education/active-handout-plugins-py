@@ -561,89 +561,7 @@ function onLoad() {
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC","./footnote":"70ehP","./menu":"5D3Be","./style":"5DGm5","./parsons":"1AI9I","./css-exercise":"a537T"}],"fzxNo":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
-var _clientDb = require("../client-db");
-var _telemetry = require("../telemetry");
-function initProgressPlugin(rememberCallbacks) {
-    rememberCallbacks.push({
-        match: (el)=>el.classList.contains("progress"),
-        callback: (el)=>{
-            (0, _telemetry.saveAndSendData)(el, true);
-        }
-    });
-    queryProgressBtns().forEach((e)=>{
-        if ((0, _clientDb.getValue)(e)) e.click();
-    });
-}
-function queryProgressBtns() {
-    return document.querySelectorAll("button.progress");
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ","../client-db":"j0pff"}],"5oERU":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"kpvgZ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
-var _clientDb = require("./client-db");
-function saveAndSendData(elOrKey, value) {
-    (0, _clientDb.setValue)(elOrKey, value);
-    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
-// TODO: fetch POST with token
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client-db":"j0pff"}],"j0pff":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "setValue", ()=>setValue);
-parcelHelpers.export(exports, "getValue", ()=>getValue);
-function getKey(elOrKey) {
-    if (typeof elOrKey === "string") return elOrKey;
-    const docAddr = document.location.pathname;
-    const slash = docAddr.endsWith("/") ? "" : "/";
-    return `${docAddr}${slash}${elOrKey.id}`;
-}
-function setValue(elOrKey, value) {
-    const key = getKey(elOrKey);
-    localStorage[key] = value;
-}
-function getValue(elOrKey) {
-    const key = getKey(elOrKey);
-    return localStorage.getItem(key);
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"eIlmk":[function(require,module,exports) {
+},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./exercise":"dmczC","./footnote":"70ehP","./menu":"5D3Be","./style":"5DGm5","./parsons":"1AI9I","./css-exercise":"a537T"}],"eIlmk":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initTabbedPlugin", ()=>initTabbedPlugin);
@@ -719,7 +637,89 @@ function initTabbedPlugin() {
     tabScroll();
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"dmczC":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5oERU":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"fzxNo":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
+var _clientDb = require("../client-db");
+var _telemetry = require("../telemetry");
+function initProgressPlugin(rememberCallbacks) {
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains("progress"),
+        callback: (el)=>{
+            (0, _telemetry.saveAndSendData)(el, true);
+        }
+    });
+    queryProgressBtns().forEach((e)=>{
+        if ((0, _clientDb.getValue)(e)) e.click();
+    });
+}
+function queryProgressBtns() {
+    return document.querySelectorAll("button.progress");
+}
+
+},{"../client-db":"j0pff","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"j0pff":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "setValue", ()=>setValue);
+parcelHelpers.export(exports, "getValue", ()=>getValue);
+function getKey(elOrKey) {
+    if (typeof elOrKey === "string") return elOrKey;
+    const docAddr = document.location.pathname;
+    const slash = docAddr.endsWith("/") ? "" : "/";
+    return `${docAddr}${slash}${elOrKey.id}`;
+}
+function setValue(elOrKey, value) {
+    const key = getKey(elOrKey);
+    localStorage[key] = value;
+}
+function getValue(elOrKey) {
+    const key = getKey(elOrKey);
+    return localStorage.getItem(key);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"kpvgZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
+var _clientDb = require("./client-db");
+function saveAndSendData(elOrKey, value) {
+    (0, _clientDb.setValue)(elOrKey, value);
+    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
+// TODO: fetch POST with token
+}
+
+},{"./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"dmczC":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initExercisePlugin", ()=>initExercisePlugin);
@@ -1004,7 +1004,7 @@ function toggleMenu(menuBtn) {
     else openMenu();
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff","../breakpoints":"bXeyp"}],"5DGm5":[function(require,module,exports) {
+},{"../client-db":"j0pff","../breakpoints":"bXeyp","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5DGm5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initStyle", ()=>initStyle);
@@ -1076,7 +1076,7 @@ function registerListeners(exercise) {
     });
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ"}],"6FJZc":[function(require,module,exports) {
+},{"./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"6FJZc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
@@ -1340,7 +1340,7 @@ function hideAnswer(answer) {
     answer.style.display = "none";
 }
 
-},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../dom-utils":"NCBha"}],"NCBha":[function(require,module,exports) {
+},{"../dom-utils":"NCBha","./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"NCBha":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createElementWithClasses", ()=>createElementWithClasses);
@@ -1370,6 +1370,20 @@ var _codejar = require("codejar");
 var _highlightJs = require("highlight.js");
 var _highlightJsDefault = parcelHelpers.interopDefault(_highlightJs);
 var _queries = require("./queries");
+function build_html_file(content) {
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/index.css">
+</head>
+<body>
+${content}
+<script src="/index.js">
+</body>
+</html>`;
+}
 function initCSSPlugin(rememberCallbacks) {
     (0, _highlightJsDefault.default).configure({
         languages: [
@@ -1380,30 +1394,51 @@ function initCSSPlugin(rememberCallbacks) {
     });
     const playgrounds = (0, _queries.queryPlaygrounds)();
     playgrounds.forEach((playground)=>{
-        const editors = (0, _queries.queryEditors)(playground);
-        editors.forEach((editor)=>{
-            const jar = (0, _codejar.CodeJar)(editor, (0, _highlightJsDefault.default).highlightElement);
-        });
-        const sandpack = new (0, _sandpackClient.SandpackClient)(playground, {
-            files: {
-                "/index.html": {
-                    code: `<script src="./index.js"></script><div><p>Blabla</p></div>`
-                },
-                "/index.js": {
-                    code: `console.log(require('uuid'))`
-                }
-            },
-            entry: "/index.js",
+        let sandpack;
+        const files = {};
+        const info = {
+            files,
+            entry: "/index.html",
             dependencies: {
                 uuid: "latest"
             }
-        }, {
+        };
+        const tabs = (0, _queries.queryTabs)(playground);
+        const editors = (0, _queries.queryEditors)(playground);
+        editors.forEach((editor)=>{
+            const filename = editor.getAttribute("data-filename");
+            let content = editor.textContent;
+            if (filename.endsWith("html")) content = build_html_file(content);
+            files[filename] = {
+                code: content
+            };
+            const jar = (0, _codejar.CodeJar)(editor, (0, _highlightJsDefault.default).highlightElement);
+            jar.onUpdate((code)=>{
+                if (filename.endsWith("html")) code = build_html_file(code);
+                files[filename].code = code;
+                sandpack.updatePreview(info);
+            });
+        });
+        setupTabs(tabs, editors);
+        sandpack = new (0, _sandpackClient.SandpackClient)((0, _queries.queryPreview)(playground), info, {
             showOpenInCodeSandbox: false
         });
     });
 }
+function setupTabs(tabs, editors) {
+    tabs.forEach((tab, idx)=>{
+        tab.addEventListener("click", ()=>{
+            tabs.forEach((t)=>t.classList.remove("active"));
+            tab.classList.add("active");
+            editors.forEach((e, editorIdx)=>{
+                if (editorIdx === idx) e.classList.add("active");
+                else e.classList.remove("active");
+            });
+        });
+    });
+}
 
-},{"@codesandbox/sandpack-client":"3TkIg","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"jumEM","codejar":"8oTO2","highlight.js":"ljeYi"}],"3TkIg":[function(require,module,exports) {
+},{"@codesandbox/sandpack-client":"3TkIg","codejar":"8oTO2","highlight.js":"ljeYi","./queries":"jumEM","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"3TkIg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "SandpackClient", ()=>I);
@@ -3178,19 +3213,7 @@ if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map &
 }
 module.exports = isEqual;
 
-},{}],"jumEM":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "queryPlaygrounds", ()=>queryPlaygrounds);
-parcelHelpers.export(exports, "queryEditors", ()=>queryEditors);
-function queryPlaygrounds() {
-    return document.querySelectorAll(".css-playground");
-}
-function queryEditors(playground) {
-    return playground.querySelectorAll(".playground-code-editor");
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"8oTO2":[function(require,module,exports) {
+},{}],"8oTO2":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CodeJar", ()=>CodeJar);
@@ -54931,6 +54954,26 @@ module.exports = xquery;
 }
 module.exports = zephir;
 
-},{}]},["1csOT"], null, "parcelRequirea86e")
+},{}],"jumEM":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "queryPlaygrounds", ()=>queryPlaygrounds);
+parcelHelpers.export(exports, "queryTabs", ()=>queryTabs);
+parcelHelpers.export(exports, "queryEditors", ()=>queryEditors);
+parcelHelpers.export(exports, "queryPreview", ()=>queryPreview);
+function queryPlaygrounds() {
+    return document.querySelectorAll(".css-playground");
+}
+function queryTabs(playground) {
+    return playground.querySelectorAll(".file-tab .tab");
+}
+function queryEditors(playground) {
+    return playground.querySelectorAll(".playground-code-editor");
+}
+function queryPreview(playground) {
+    return playground.querySelector(".page-preview iframe");
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

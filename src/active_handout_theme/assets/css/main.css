@@ -773,9 +773,43 @@ code.hljs {
   border-radius: .2em;
 }
 
+.css-playground .file-tab {
+  border-bottom: 1px solid var(--clr-gray-primary-3);
+  gap: .5rem;
+  padding: .5rem 1rem 0;
+  display: flex;
+}
+
+.css-playground .file-tab .tab {
+  color: var(--clr-text-disabled);
+  cursor: pointer;
+  margin-bottom: -1.5px;
+  list-style: none;
+}
+
+.css-playground .file-tab .tab.active {
+  color: var(--clr-text-default);
+  border-bottom: 3px solid var(--clr-title-default);
+}
+
+.css-playground .file-tab .tab:before {
+  display: none;
+}
+
+.css-playground .page-preview {
+  width: 100%;
+  min-height: 10rem;
+}
+
 .playground-code-editor {
+  height: 30rem;
   border-radius: .2em;
   padding: 1rem;
+  display: none;
+}
+
+.playground-code-editor.active {
+  display: block;
 }
 
 .admonition.exercise {

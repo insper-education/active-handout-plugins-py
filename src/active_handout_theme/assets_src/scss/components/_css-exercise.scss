@@ -5,9 +5,44 @@
 .css-playground {
   background-color: #f7f3f7;
   border-radius: $border-radius;
+
+  .file-tab {
+    display: flex;
+    padding: 0.5rem 1rem 0;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--clr-gray-primary-3);
+
+    .tab {
+      list-style: none;
+      color: var(--clr-text-disabled);
+      margin-bottom: -1.5px;
+      cursor: pointer;
+
+      &.active {
+        color: var(--clr-text-default);
+        border-bottom: 3px solid var(--clr-title-default);
+      }
+
+      &::before {
+        display: none;
+      }
+    }
+  }
+
+  .page-preview {
+    width: 100%;
+    min-height: 10rem;
+  }
 }
 
 .playground-code-editor {
+  display: none;
   padding: 1rem;
   border-radius: $border-radius;
+
+  height: 30rem;
+
+  &.active {
+    display: block;
+  }
 }
