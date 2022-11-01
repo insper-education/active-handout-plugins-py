@@ -9,7 +9,7 @@ $css-preview-height: 200px;
   background-color: #f7f3f7;
   border-radius: $border-radius;
   display: grid;
-  grid-template-columns: 1fr $css-preview-width;
+  grid-template-columns: 1fr auto;
 
   .file-tab {
     display: flex;
@@ -45,6 +45,7 @@ $css-preview-height: 200px;
     border-left: 1px solid var(--clr-gray-primary-3);
 
     iframe {
+      display: block;
       border: none;
       margin: 0;
       padding: 0;

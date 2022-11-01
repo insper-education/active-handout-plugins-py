@@ -771,7 +771,7 @@ code.hljs {
 .css-playground {
   background-color: #f7f3f7;
   border-radius: .2em;
-  grid-template-columns: 1fr 300px;
+  grid-template-columns: 1fr auto;
   display: grid;
 }
 
@@ -814,6 +814,7 @@ code.hljs {
   border: none;
   margin: 0;
   padding: 0;
+  display: block;
 }
 
 .playground-code-editor {

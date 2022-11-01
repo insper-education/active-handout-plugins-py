@@ -11,5 +11,13 @@ export function queryEditors(playground) {
 }
 
 export function queryPreview(playground) {
-  return playground.querySelector(".page-preview iframe");
+  return playground.querySelector(".page-preview .preview");
+}
+
+export function queryExpectedResult(playground) {
+  return playground.querySelector(".page-preview .expected-result");
+}
+
+export function queryAnswerFromPlayground(playground) {
+  return playground.closest(".css-exercise");
 }

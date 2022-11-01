@@ -60,7 +60,7 @@ class CSSExercise(ExerciseAdmonition):
         <ul class="file-tab">{filenames}</ul>
         { editors }
     </div>
-    <div class="page-preview"><iframe></iframe></div>
+    <div class="page-preview"><iframe class="preview"></iframe><iframe class="expected-result"></iframe></div>
 </div>
 '''
 

@@ -1493,6 +1493,13 @@ function initCSSPlugin(rememberCallbacks) {
         sandpack = new (0, _sandpackClient.SandpackClient)((0, _queries.queryPreview)(playground), info, {
             showOpenInCodeSandbox: false
         });
+        buildExpectedResult(playground, info);
+    });
+}
+function buildExpectedResult(playground, info) {
+    const expectedResultInfo = JSON.parse(JSON.stringify(info));
+    new (0, _sandpackClient.SandpackClient)((0, _queries.queryExpectedResult)(playground), expectedResultInfo, {
+        showOpenInCodeSandbox: false
     });
 }
 function setupTabs(tabs, editors) {
@@ -3290,6 +3297,8 @@ parcelHelpers.export(exports, "queryPlaygrounds", ()=>queryPlaygrounds);
 parcelHelpers.export(exports, "queryTabs", ()=>queryTabs);
 parcelHelpers.export(exports, "queryEditors", ()=>queryEditors);
 parcelHelpers.export(exports, "queryPreview", ()=>queryPreview);
+parcelHelpers.export(exports, "queryExpectedResult", ()=>queryExpectedResult);
+parcelHelpers.export(exports, "queryAnswerFromPlayground", ()=>queryAnswerFromPlayground);
 function queryPlaygrounds() {
     return document.querySelectorAll(".css-playground");
 }
@@ -3300,7 +3309,13 @@ function queryEditors(playground) {
     return playground.querySelectorAll(".playground-code-editor");
 }
 function queryPreview(playground) {
-    return playground.querySelector(".page-preview iframe");
+    return playground.querySelector(".page-preview .preview");
+}
+function queryExpectedResult(playground) {
+    return playground.querySelector(".page-preview .expected-result");
+}
+function queryAnswerFromPlayground(playground) {
+    return playground.closest(".css-exercise");
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"8oTO2":[function(require,module,exports) {

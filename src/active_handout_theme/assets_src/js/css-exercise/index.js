@@ -3,6 +3,7 @@ import { CodeJar } from "codejar";
 import hljs from "highlight.js";
 import {
   queryEditors,
+  queryExpectedResult,
   queryPlaygrounds,
   queryPreview,
   queryTabs,
@@ -140,6 +141,14 @@ export function initCSSPlugin(rememberCallbacks) {
     sandpack = new SandpackClient(queryPreview(playground), info, {
       showOpenInCodeSandbox: false,
     });
+    buildExpectedResult(playground, info);
+  });
+}
+
+function buildExpectedResult(playground, info) {
+  const expectedResultInfo = JSON.parse(JSON.stringify(info));
+  new SandpackClient(queryExpectedResult(playground), expectedResultInfo, {
+    showOpenInCodeSandbox: false,
   });
 }
 
