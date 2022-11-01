@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "../abstracts/index" as *;
 @use "../base/index" as *;
 
@@ -5,7 +6,9 @@
   $transition-time: 0.2s;
   $content-width: max(
     300px,
-    calc(50vw - #{$max-content-width / 2} - #{$admonition-extra-inline})
+    calc(
+      50vw - #{math.div($max-content-width, 2)} - #{$admonition-extra-inline}
+    )
   );
 
   position: fixed;
