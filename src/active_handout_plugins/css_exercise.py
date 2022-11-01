@@ -23,28 +23,44 @@ class CSSExercise(ExerciseAdmonition):
         return re.sub('<[^>]+>', '', code_html)
 
     def __extract_language(self, code_html):
-        match = re.match('<div[^>]*language-(\S*)[^>]*>', code_html)
+        match = re.match(r'<div[^>]*language-(\S*)[^>]*>', code_html)
         if match:
             return match.group(1)
         return 'raw'
 
+    def __extract_filename(self, code_html):
+        match = re.match(r'<div[^>]*filename-(\S*)[^>]*>', code_html)
+        if match:
+            return match.group(1)
+        return 'index'
+
+    def __is_hidden(self, code_html):
+        return bool(re.match(r'<div[^>]*hidden-file(\S*)[^>]*>', code_html))
+
     def __create_playground(self, files):
         editors = ''
         filenames = ''
-        for i, (language, code) in enumerate(files.items()):
-            filename = f'index.{language}'
+        is_first = True
+        for filename, file_data in files.items():
             tab_classes = 'tab'
             editor_classes = 'playground-code-editor'
-            if i == 0:
-                tab_classes += ' active'
-                editor_classes += ' active'
-            filenames += f'<li class="{ tab_classes }">{ filename }</li>'
-            editors += f'<div class="{ editor_classes }" data-language="{ language }" data-filename="{ filename }">{ code }</div>'
+            if file_data['is_hidden']:
+                editor_classes += ' hidden-file'
+            else:
+                if is_first:
+                    tab_classes += ' active'
+                    editor_classes += ' active'
+                is_first = False
+
+                filenames += f'<li class="{ tab_classes }">{ filename }</li>'
+            editors += f'<div class="{ editor_classes }" data-language="{ file_data["language"] }" data-filename="{ filename }">{ file_data["code"] }</div>'
         return f'''
 <div class="css-playground">
-    <ul class="file-tab">{filenames}</ul>
-    { editors }
-    <div class="page-preview"><iframe></div>
+    <div class="file-editor">
+        <ul class="file-tab">{filenames}</ul>
+        { editors }
+    </div>
+    <div class="page-preview"><iframe></iframe></div>
 </div>
 '''
 
@@ -55,7 +71,13 @@ class CSSExercise(ExerciseAdmonition):
             if code_html:
                 code = self.__extract_code(code_html)
                 language = self.__extract_language(code_html)
-                files[language] = code
+                filename = f'{self.__extract_filename(code_html)}.{language}'
+                is_hidden = self.__is_hidden(code_html)
+                files[filename] = {
+                    'code': code,
+                    'is_hidden': is_hidden,
+                    'language': language,
+                }
 
                 submission_form.remove(code_element)
 

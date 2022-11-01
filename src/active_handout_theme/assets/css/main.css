@@ -771,20 +771,26 @@ code.hljs {
 .css-playground {
   background-color: #f7f3f7;
   border-radius: .2em;
+  grid-template-columns: 1fr 300px;
+  display: grid;
 }
 
 .css-playground .file-tab {
   border-bottom: 1px solid var(--clr-gray-primary-3);
   gap: .5rem;
-  padding: .5rem 1rem 0;
+  padding: 0 1rem;
   display: flex;
 }
 
 .css-playground .file-tab .tab {
   color: var(--clr-text-disabled);
   cursor: pointer;
-  margin-bottom: -1.5px;
+  margin: .5rem 1rem -1.5px;
   list-style: none;
+}
+
+.css-playground .file-tab .tab:only-child {
+  display: none;
 }
 
 .css-playground .file-tab .tab.active {
@@ -799,6 +805,15 @@ code.hljs {
 .css-playground .page-preview {
   width: 100%;
   min-height: 10rem;
+  border-left: 1px solid var(--clr-gray-primary-3);
+}
+
+.css-playground .page-preview iframe {
+  width: 300px;
+  height: 200px;
+  border: none;
+  margin: 0;
+  padding: 0;
 }
 
 .playground-code-editor {

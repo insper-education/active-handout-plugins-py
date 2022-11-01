@@ -1370,6 +1370,87 @@ var _codejar = require("codejar");
 var _highlightJs = require("highlight.js");
 var _highlightJsDefault = parcelHelpers.interopDefault(_highlightJs);
 var _queries = require("./queries");
+function build_html_file(content) {
+    return `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=300, height=200, initial-scale=1", user-scalable="no">
+</head>
+<body>
+${content}
+</body>
+</html>`;
+}
+function build_main_js(files) {
+    mainjs = "";
+    for(let filename in files)if (!filename.endsWith("html")) mainjs += `import "/${filename}";\n`;
+    return mainjs;
+}
+function initFiles() {
+    return {
+        "reset.css": {
+            code: `
+/* http://meyerweb.com/eric/tools/css/reset/
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+body {
+  line-height: 1;
+}
+ol, ul {
+  list-style: none;
+}
+blockquote, q {
+  quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+/* Active Handout custom iframe reset */
+body {
+  width: 100vw;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 0;
+  font-family: sans-serif;
+  overflow: hidden;
+}
+`
+        }
+    };
+}
 function initCSSPlugin(rememberCallbacks) {
     (0, _highlightJsDefault.default).configure({
         languages: [
@@ -1380,25 +1461,49 @@ function initCSSPlugin(rememberCallbacks) {
     });
     const playgrounds = (0, _queries.queryPlaygrounds)();
     playgrounds.forEach((playground)=>{
-        const editors = (0, _queries.queryEditors)(playground);
-        editors.forEach((editor)=>{
-            const jar = (0, _codejar.CodeJar)(editor, (0, _highlightJsDefault.default).highlightElement);
-        });
-        const sandpack = new (0, _sandpackClient.SandpackClient)(playground, {
-            files: {
-                "/index.html": {
-                    code: `<script src="./index.js"></script><div><p>Blabla</p></div>`
-                },
-                "/index.js": {
-                    code: `console.log(require('uuid'))`
-                }
-            },
-            entry: "/index.js",
+        let sandpack;
+        const files = initFiles();
+        const info = {
+            files,
+            entry: "/main.js",
             dependencies: {
                 uuid: "latest"
             }
-        }, {
+        };
+        const tabs = (0, _queries.queryTabs)(playground);
+        const editors = (0, _queries.queryEditors)(playground);
+        editors.forEach((editor)=>{
+            const filename = editor.getAttribute("data-filename");
+            let content = editor.textContent;
+            if (filename.endsWith("html")) content = build_html_file(content);
+            files[filename] = {
+                code: content
+            };
+            const jar = (0, _codejar.CodeJar)(editor, (0, _highlightJsDefault.default).highlightElement);
+            jar.onUpdate((code)=>{
+                if (filename.endsWith("html")) code = build_html_file(code);
+                files[filename].code = code;
+                sandpack.updatePreview(info);
+            });
+        });
+        files["main.js"] = {
+            code: build_main_js(files)
+        };
+        setupTabs(tabs, editors);
+        sandpack = new (0, _sandpackClient.SandpackClient)((0, _queries.queryPreview)(playground), info, {
             showOpenInCodeSandbox: false
+        });
+    });
+}
+function setupTabs(tabs, editors) {
+    tabs.forEach((tab, idx)=>{
+        tab.addEventListener("click", ()=>{
+            tabs.forEach((t)=>t.classList.remove("active"));
+            tab.classList.add("active");
+            editors.forEach((e, editorIdx)=>{
+                if (editorIdx === idx) e.classList.add("active");
+                else e.classList.remove("active");
+            });
         });
     });
 }
@@ -3182,12 +3287,20 @@ module.exports = isEqual;
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryPlaygrounds", ()=>queryPlaygrounds);
+parcelHelpers.export(exports, "queryTabs", ()=>queryTabs);
 parcelHelpers.export(exports, "queryEditors", ()=>queryEditors);
+parcelHelpers.export(exports, "queryPreview", ()=>queryPreview);
 function queryPlaygrounds() {
     return document.querySelectorAll(".css-playground");
 }
+function queryTabs(playground) {
+    return playground.querySelectorAll(".file-tab .tab");
+}
 function queryEditors(playground) {
     return playground.querySelectorAll(".playground-code-editor");
+}
+function queryPreview(playground) {
+    return playground.querySelector(".page-preview iframe");
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"8oTO2":[function(require,module,exports) {

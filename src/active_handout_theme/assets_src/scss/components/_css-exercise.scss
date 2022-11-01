@@ -2,21 +2,30 @@
 
 @use "highlight.js/styles/base16/atelier-heath-light.css";
 
+$css-preview-width: 300px;
+$css-preview-height: 200px;
+
 .css-playground {
   background-color: #f7f3f7;
   border-radius: $border-radius;
+  display: grid;
+  grid-template-columns: 1fr $css-preview-width;
 
   .file-tab {
     display: flex;
-    padding: 0.5rem 1rem 0;
+    padding: 0 1rem;
     gap: 0.5rem;
     border-bottom: 1px solid var(--clr-gray-primary-3);
 
     .tab {
       list-style: none;
       color: var(--clr-text-disabled);
-      margin-bottom: -1.5px;
+      margin: 0.5rem 1rem -1.5px;
       cursor: pointer;
+
+      &:only-child {
+        display: none;
+      }
 
       &.active {
         color: var(--clr-text-default);
@@ -32,6 +41,16 @@
   .page-preview {
     width: 100%;
     min-height: 10rem;
+
+    border-left: 1px solid var(--clr-gray-primary-3);
+
+    iframe {
+      border: none;
+      margin: 0;
+      padding: 0;
+      width: $css-preview-width;
+      height: $css-preview-height;
+    }
   }
 }
 
