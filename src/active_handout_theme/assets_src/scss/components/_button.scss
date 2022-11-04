@@ -1,0 +1,47 @@
+@use "../abstracts/variables" as *;
+
+.ah-button,
+a.ah-button {
+  background: var(--clr-btn);
+  color: var(--clr-btn-text);
+
+  text-decoration: none;
+  font-weight: normal;
+
+  padding: 0.2em 0.6em;
+
+  border: 1px solid var(--clr-btn-border);
+  border-radius: $border-radius;
+
+  &:hover,
+  &:active,
+  &:focus {
+    cursor: pointer;
+    transform: scale(1.01);
+    color: var(--clr-btn-text-hover);
+  }
+
+  &:disabled {
+    --clr-btn: var(--clr-btn-disabled);
+
+    cursor: default;
+    transform: none;
+  }
+
+  &--primary {
+    --clr-btn: var(--clr-btn-primary);
+    --clr-btn-text: var(--clr-btn-primary-text);
+    --clr-btn-text-hover: var(--clr-btn-primary-text-hover);
+
+    border: none;
+  }
+
+  &--borderless {
+    border: none;
+  }
+}
+
+.ah-btn-group {
+  display: flex;
+  gap: 0.5em;
+}

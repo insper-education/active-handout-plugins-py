@@ -1,0 +1,78 @@
+@use "sass:color";
+@use "sass:list";
+@use "sass:math";
+
+// Original theme colors
+$color1: #21295c;
+$color2: #1b3b6f;
+$color3: #065a82;
+$color4: #1c7293;
+$color5: #9eb3c2;
+
+$colors: (
+  // colors are defined by hue, saturation range, lightness range, number of colors
+  // ranges must go from highest to lowest value
+  "gray":
+    (
+      // hsl(233, 31%, 5%)
+      primary: 233 40% 10% 99% 1% 15
+    ),
+  "blue": (
+    // hsl(232, 47%, 25%)
+    primary: 232 47% 47% 85% 25% 7,
+    // hsl(217, 56%, 53%)
+    highlight: 217 56% 56% 93% 3% 11
+  ),
+  "success": (
+    // hsl(145, 71%, 47%)
+    primary: 145 71% 71% 100% 0% 11
+  ),
+  "fail": (
+    // hsl(15, 100%, 50%)
+    primary: 15 100% 100% 100% 0% 11
+  ),
+  "warn": (
+    // hsl(40, 100%, 67%)
+    primary: 40 100% 100% 100% 0% 11
+  )
+);
+
+:root {
+  @each $color-scheme, $color-names in $colors {
+    @each $color-name, $config in $color-names {
+      $hue: list.nth($config, 1);
+      $saturation-start: list.nth($config, 2);
+      $saturation-end: list.nth($config, 3);
+      $lightness-start: list.nth($config, 4);
+      $lightness-end: list.nth($config, 5);
+      $total: list.nth($config, 6);
+
+      $saturation-step: math.div(
+        ($saturation-end - $saturation-start),
+        ($total - 1)
+      );
+      $lightness-step: math.div(
+        ($lightness-end - $lightness-start),
+        ($total - 1)
+      );
+
+      $saturation: $saturation-start;
+      $lightness: $lightness-start;
+      $shade: 1;
+      @while $saturation >= $saturation-end and $lightness >= $lightness-end {
+        --clr-#{$color-scheme}-#{$color-name}-#{$shade}: hsl(
+          #{$hue},
+          #{$saturation},
+          #{$lightness}
+        );
+        --clr-#{$color-scheme}-#{$color-name}-#{$shade}-hsl: #{$hue}
+          #{$saturation}
+          #{$lightness};
+
+        $saturation: $saturation + $saturation-step;
+        $lightness: $lightness + $lightness-step;
+        $shade: $shade + 1;
+      }
+    }
+  }
+}

@@ -2,7 +2,7 @@ from markdown.treeprocessors import Treeprocessor
 import xml.etree.ElementTree as etree
 import html
 
-from .utils import AdmonitionVisitor
+from .admonition import AdmonitionVisitor
 
 
 class ProgressButtons(AdmonitionVisitor):
@@ -12,19 +12,19 @@ class ProgressButtons(AdmonitionVisitor):
 
     def visit(self, el):
         if not 'progress' in el.attrib['class']:
-            return 
-        
+            return
+
         title_p = el.find("p[@class='admonition-title']")
 
         hs_code = html.escape("""
-on click 
-    add .show to the next <section/> 
-    hide me
+on click
+    add .show to the next <section/>
+    hide closest .ah-progress-container
     send remember(element: me) to window
-    halt 
+    halt
 end""")
 
-        html_button = f'<a href="" id="prog-{self.count}" class="md-button md-button--primary progress" _="{hs_code}"> {title_p.text} </a>'
+        html_button = f'<div class="ah-progress-container"><button id="prog-{self.count}" class="ah-button ah-button--primary progress" _="{hs_code}"> {title_p.text} </button></div>'
         el.clear()
         el.append(etree.fromstring(html_button))
         self.count += 1
@@ -39,7 +39,7 @@ class SplitDocumentInSections(Treeprocessor):
             if 'class' in el.attrib and 'progress' in el.attrib['class']:
                 sections.append(current_section)
                 current_section = []
-        
+
         sections.append(current_section)
         for i, section in enumerate(sections):
             sec_element = etree.SubElement(root, 'section')

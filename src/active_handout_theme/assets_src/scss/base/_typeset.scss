@@ -1,0 +1,143 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&family=Oswald:wght@200;300;400;500;600;700&family=Fira+Mono:wght@400;500;700&display=swap");
+
+$font-highlight: "Oswald", sans-serif;
+$font-regular: "Open Sans", sans-serif;
+$font-mono: "Fira Mono", monospace;
+$font-sizes: (
+  small: 1rem,
+  regular: 1.25rem,
+  mid: 1.563rem,
+  large: 1.953rem,
+  larger: 2.441rem,
+  huge: 3.052rem,
+);
+
+.ah-typeset {
+  color: var(--clr-text);
+  font-family: $font-regular;
+  font-size: map-get($font-sizes, "regular");
+
+  @include smaller-than("medium") {
+    margin-bottom: 1rem;
+    font-size: map-get($font-sizes, "small");
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: $font-highlight;
+    color: var(--clr-title);
+    font-size: map-get($font-sizes, "regular");
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.2;
+
+    @include smaller-than("medium") {
+      margin-bottom: 1rem;
+    }
+  }
+
+  h1 {
+    font-size: map-get($font-sizes, "huge");
+
+    @include smaller-than("medium") {
+      font-size: map-get($font-sizes, "large");
+    }
+  }
+
+  h2 {
+    font-size: map-get($font-sizes, "larger");
+
+    @include smaller-than("medium") {
+      font-size: map-get($font-sizes, "mid");
+    }
+  }
+
+  h3 {
+    font-size: map-get($font-sizes, "large");
+
+    @include smaller-than("medium") {
+      font-size: map-get($font-sizes, "regular");
+    }
+  }
+
+  p,
+  img {
+    margin-bottom: $space-between-block;
+  }
+
+  p {
+    color: var(--clr-text);
+    line-height: 2.2;
+    text-align: justify;
+  }
+
+  a {
+    color: var(--clr-text);
+    text-decoration: none;
+    word-break: break-all;
+    @include animated-underline(var(--clr-link), var(--clr-link), 100%, 0);
+
+    &:hover {
+      color: var(--clr-link);
+    }
+  }
+
+  img {
+    margin-inline: auto;
+  }
+
+  em {
+    --clr-text: var(--clr-text-em);
+
+    color: var(--clr-text);
+    font-weight: 700;
+    font-style: italic;
+  }
+
+  strong {
+    --clr-text: var(--clr-text-strong);
+
+    color: var(--clr-text);
+    font-weight: 900;
+  }
+
+  li {
+    color: var(--clr-text);
+    line-height: 2.2;
+    margin-bottom: 1em;
+
+    &::before {
+      color: var(--clr-bullet);
+    }
+  }
+
+  input {
+    border: 1px solid transparent;
+    border-radius: $border-radius;
+  }
+}
+
+del {
+  background: var(--clr-fail-primary-6);
+  text-decoration-color: hsl(var(--clr-fail-primary-8-hsl) / 0.5);
+}
+
+ins {
+  background: var(--clr-success-primary-4);
+  text-decoration-color: var(--clr-success-primary-7);
+}
+
+mark {
+  background: var(--clr-warn-primary-5);
+}
+
+span.critic.comment {
+  background: var(--clr-gray-primary-3);
+}

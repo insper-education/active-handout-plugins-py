@@ -1,0 +1,57 @@
+@use "../abstracts/mixins" as *;
+@use "../base/typeset" as *;
+
+.ah-title-box {
+  h1 {
+    margin-top: -0.5rem;
+  }
+
+  h2 {
+    margin-top: -1em;
+    color: var(--clr-subtitle);
+    font-size: map-get($font-sizes, "large");
+
+    @include smaller-than("medium") {
+      font-size: map-get($font-sizes, "mid");
+      margin-top: -1rem;
+    }
+  }
+
+  .ah-breadcrumbs {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+    padding-left: 0;
+
+    color: var(--clr-text-disabled);
+
+    @include smaller-than("medium") {
+      display: none;
+    }
+
+    li {
+      --clr-text: var(--clr-text-disabled);
+      line-height: 1;
+      margin-bottom: 0.5rem;
+
+      &::before {
+        content: "";
+        position: static;
+        color: inherit;
+      }
+
+      & + li::before {
+        content: "»";
+        padding-right: 1rem;
+      }
+
+      a {
+        color: var(--clr-text-disabled);
+
+        &:hover {
+          color: var(--clr-text-disabled-hover);
+        }
+      }
+    }
+  }
+}

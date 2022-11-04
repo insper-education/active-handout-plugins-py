@@ -649,7 +649,8 @@ section.progress-section {
 
 .admonition.question .form-elements, .admonition.exercise .form-elements {
   display: flex;
-  flex-direction: column;
+  flex-direction: row-reverse;
+  column-gap: 0.5rem;
 }
 
 .admonition.question .form-elements * {
@@ -660,7 +661,7 @@ section.progress-section {
   border: 1px solid var(--md-primary-fg-color);
 }
 
-.admonition.question input[type="submit"], .admonition.exercise input[type="submit"] {
+.admonition.question input[type="submit"], .admonition.question input[type="button"], .admonition.exercise input[type="submit"] {
   display: flex;
   justify-content: center;
   align-items: center;

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    {% block htmltitle %}
+      {% if page.meta and page.meta.title %}
+        <title>{{ page.meta.title }} - {{ config.site_name }}</title>
+      {% elif page.title and not page.is_homepage %}
+        <title>{{ page.title | striptags }} - {{ config.site_name }}</title>
+      {% else %}
+        <title>{{ config.site_name }}</title>
+      {% endif %}
+    {% endblock %}
+    <link rel="stylesheet" href="{{ 'assets/css/main.css' | url }}">
+    {% block extrahead %}{% endblock %}
+  </head>
+  <body>
+    <div class="ah-main-container">
+      <header class="ah-header">
+        <button class="ah-menu-btn ah-button ah-button--borderless"
+                aria-label="toggle menu">
+          {% include 'icon/menu.svg' %}
+        </button>
+        <a href="{{ config.extra.homepage | d(nav.homepage.url, true) | url }}"
+           title="{{ config.site_name | e }}"
+           class="ah-logo"
+           aria-label="{{ config.site_name }}">
+          {{ config.site_name | e }}
+        </a>
+      </header>
+      <nav class="ah-navigation">
+        <div class="ah-nav-container">
+          <button class="ah-menu-btn ah-button ah-button--borderless close-menu"
+                  aria-label="close menu">
+            {% include 'icon/cross.svg' %}
+          </button>
+          <ul class="ah-nav-body">
+            {% for nav_item in nav %}
+              {% include "nav.html" %}
+            {% endfor %}
+          </ul>
+        </div>
+      </nav>
+      <main class="ah-content ah-typeset">
+        {% block content %}
+          <div class="ah-title-box">
+            <ul class="ah-breadcrumbs">
+              {% if page %}
+                {% for doc in page.ancestors[::-1] %}
+                  {% if doc.link %}
+                    <li>
+                      <a href="{{ doc.link|e }}">{{ doc.title }}</a>
+                    </li>
+                  {% else %}
+                    <li>{{ doc.title }}</li>
+                  {% endif %}
+                {% endfor %}
+                <li>{{ page.title }}</li>
+              {%- endif %}
+            </ul>
+            {% if page.meta and page.meta.title %}<h1>{{ page.meta.title }}</h1>{% endif %}
+            {% if page.meta and page.meta.subtitle %}<h2>{{ page.meta.subtitle }}</h2>{% endif %}
+          </div>
+          {{ page.content }}
+        {% endblock %}
+      </main>
+      <footer class="ah-footer ah-typeset">
+        <div class="ah-footer-nav">
+          {% if page.previous_page %}
+            <a href="{{ page.previous_page.url|url }}"
+               class="ah-prev"
+               title="{{ page.previous_page.title }}">
+              <span class="nav-label">{% trans %}Previous{% endtrans %}</span>
+              <span class="nav-title">{{ page.previous_page.title }}</span>
+            </a>
+          {% endif %}
+          {% if page.next_page %}
+            <a href="{{ page.next_page.url|url }}"
+               class="ah-next"
+               title="{{ page.next_page.title }}">
+              <span class="nav-label">{% trans %}Next{% endtrans %}</span>
+              <span class="nav-title">{{ page.next_page.title }}</span>
+            </a>
+          {% endif %}
+        </div>
+      </footer>
+    </div>
+    {% block scripts %}
+      <script>var base_url = '{{ base_url }}';</script>
+      <script src="{{ 'assets/js/main.js' | url }}"></script>
+      {% for path in config.extra_javascript %}<script src="{{ path | url }}"></script>{% endfor %}
+    {% endblock %}
+  </body>
+</html>

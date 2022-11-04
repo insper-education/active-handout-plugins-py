@@ -1,0 +1,25 @@
+section.progress-section {
+  display: none;
+
+  &:first-child,
+  &.show {
+    display: inherit;
+  }
+}
+
+// First progress section
+.ah-title-box + section.progress-section {
+  :is(h1, h2, h3, h4, h5, h6):first-child {
+    margin-top: 0;
+  }
+}
+
+.ah-progress-container {
+  display: flex;
+  width: 100%;
+  padding: 2rem 0 1rem;
+}
+
+.ah-button.progress {
+  margin: 0 auto;
+}

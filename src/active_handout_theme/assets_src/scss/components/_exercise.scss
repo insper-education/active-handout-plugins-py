@@ -1,0 +1,177 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+.admonition.exercise {
+  --clr-background: var(--clr-admonition-exercise-background);
+  --clr-text: var(--clr-admonition-exercise-text);
+  --clr-title: var(--clr-admonition-exercise-title);
+  --clr-bullet: var(--clr-admonition-exercise-bullet);
+  --clr-text-em: var(--clr-admonition-exercise-text-em);
+  --clr-text-strong: var(--clr-admonition-exercise-text-strong);
+
+  &,
+  & * {
+    transition: background 0.1s ease-in-out;
+  }
+
+  &.done {
+    --clr-background: var(--clr-admonition-disabled-background);
+    --clr-text: var(--clr-admonition-disabled-text);
+    --clr-title: var(--clr-admonition-disabled-title);
+    --clr-bullet: var(--clr-admonition-disabled-bullet);
+    --clr-text-em: var(--clr-admonition-disabled-em);
+    --clr-text-strong: var(--clr-admonition-disabled-strong);
+
+    .alternative {
+      &:hover,
+      &:active,
+      &:focus {
+        cursor: inherit;
+        transform: none;
+      }
+    }
+  }
+
+  form {
+    display: grid;
+  }
+}
+
+.admonition.answer {
+  --clr-background: var(--clr-admonition-answer-background);
+  --clr-text: var(--clr-admonition-answer-text);
+  --clr-title: var(--clr-admonition-answer-title);
+  --clr-bullet: var(--clr-admonition-answer-bullet);
+  --clr-text-em: var(--clr-admonition-answer-text-em);
+  --clr-text-strong: var(--clr-admonition-answer-text-strong);
+
+  margin-top: (2 * $admonition-extra-block);
+  margin-bottom: (-$admonition-extra-block);
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.form-elements {
+  display: flex;
+  flex-direction: column;
+  counter-reset: alternative-counter;
+  margin-bottom: $admonition-extra-block;
+
+  input[type="submit"] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin-top: $admonition-extra-block;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+
+    font-weight: bold;
+  }
+
+  .ah-btn-group,
+  input[type="submit"] {
+    display: flex;
+    align-self: flex-end;
+  }
+
+  .alternative-set {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    max-width: 100%;
+  }
+
+  .alternative {
+    --clr-text: var(--clr-text-default);
+    --selection-color: var(--clr-blue-highlight-2);
+    --clr-code-background: #fefefebb;
+
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    background: var(--clr-admonition-default-background);
+    padding-right: $admonition-extra-inline;
+    counter-increment: alternative-counter;
+    border-radius: $border-radius;
+    transition: transform 0.1s ease-in-out;
+    max-width: 100%;
+
+    &.selected {
+      outline: 0.3rem solid var(--selection-color);
+    }
+
+    &:hover,
+    &:active,
+    &:focus {
+      cursor: pointer;
+      transform: scale(1.01);
+    }
+
+    &.correct {
+      background: var(--clr-success-primary-2);
+
+      &::before {
+        content: "\2713";
+        background: var(--clr-success-primary-5);
+      }
+
+      &.selected {
+        outline-color: var(--clr-success-primary-4);
+      }
+    }
+
+    &.wrong {
+      background: var(--clr-gray-primary-3);
+
+      &::before {
+        content: "\2715";
+        background: var(--clr-gray-primary-6);
+      }
+
+      &.selected {
+        outline-color: var(--clr-gray-primary-8);
+      }
+    }
+
+    input[type="radio"] {
+      display: none;
+    }
+
+    .content {
+      margin-top: 0;
+      padding-block: $admonition-extra-block;
+
+      div.highlight {
+        display: grid;
+        grid-template-columns: 0;
+      }
+    }
+
+    &::before {
+      content: counter(alternative-counter, upper-alpha);
+      display: inline-grid;
+      place-items: center;
+
+      background: var(--clr-blue-highlight-3);
+      padding: $admonition-extra-block;
+      margin-right: $admonition-extra-block;
+      border-radius: $border-radius 0 0 $border-radius;
+      width: calc(2 * $admonition-extra-block + 1em);
+      height: 100%;
+
+      color: white;
+      font-weight: 900;
+    }
+
+    .highlight:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+@include greater-than("medium") {
+  .two-cols .alternative-set {
+    grid-template-columns: 1fr 1fr;
+  }
+}

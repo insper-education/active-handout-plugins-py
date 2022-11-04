@@ -1,0 +1,15 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+
+.ah-content {
+  max-width: $max-content-width;
+  margin: 3em auto 2em;
+
+  @include smaller-than("medium") {
+    padding: $small-extra-block $small-extra-inline;
+  }
+
+  * {
+    scroll-margin-top: $header-height;
+  }
+}

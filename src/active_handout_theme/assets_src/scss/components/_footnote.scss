@@ -1,0 +1,148 @@
+@use "../abstracts/mixins" as *;
+@use "../abstracts/variables" as *;
+@use "../base/typeset" as *;
+
+.footnote {
+  hr {
+    display: none;
+  }
+}
+
+.footnote-backref {
+  display: none;
+}
+
+.footnote-ref {
+  display: none;
+}
+
+.footnote-container {
+  --clr-background: var(--clr-admonition-default-background);
+
+  display: inline-block;
+  position: relative;
+  line-height: 1.7;
+  border-radius: $border-radius;
+
+  a.footnote-anchor {
+    color: var(--clr-text-strong);
+    text-decoration: 5px underline dashed var(--clr-background);
+    background: none;
+  }
+
+  &.opened {
+    border: 2px solid var(--clr-background);
+
+    .footnote-card {
+      height: auto;
+      padding-top: 2 * $admonition-extra-block;
+      padding-bottom: $admonition-extra-block;
+      left: var(--dist-x);
+      z-index: 100;
+
+      @include smaller-than("large") {
+        top: 1.5em;
+        left: calc(var(--offset-x) * (-1));
+        max-width: min(100vw, $max-content-width);
+        margin-left: 0;
+      }
+
+      li.footnote-content::before {
+        width: calc(var(--dist-x) + 1.5 * #{$admonition-extra-inline});
+
+        @include smaller-than("large") {
+          display: none;
+        }
+      }
+    }
+
+    .footnote-close-btn {
+      display: inherit;
+    }
+
+    a.footnote-anchor {
+      text-decoration: none;
+    }
+  }
+}
+
+.footnote-card {
+  $shadow-size: 1rem;
+  $animation-duration: 0.2s;
+
+  background: var(--clr-background);
+  box-shadow: 0 0 #{$shadow-size} var(--clr-shadow-default);
+
+  max-width: calc(
+    50vw - #{$max-content-width / 2} - #{$admonition-extra-inline * 3}
+  );
+  height: 0; // Replaced when container is .opened
+  width: 100vw;
+  margin: 0 0 $admonition-extra-block (1.5 * $admonition-extra-inline);
+  padding: 0 $admonition-extra-inline;
+  border-radius: $border-radius;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  transform: translate(0, -50%);
+
+  transition: all $animation-duration ease-in;
+
+  @include smaller-than("large") {
+    transition: none;
+    transform: none;
+  }
+
+  li.footnote-content {
+    list-style: none;
+    font-size: map-get($font-sizes, "small");
+    margin-bottom: 0;
+    line-height: 1.5;
+    height: 100%;
+    overflow: hidden;
+
+    &::before {
+      content: "";
+      position: absolute;
+      height: 5px;
+      width: 0;
+      left: 0;
+      top: 50%;
+      transform: translate(-100%, -50%);
+
+      background: var(--clr-background);
+
+      transition: all $animation-duration ease-in;
+    }
+
+    pre {
+      margin-inline: 0;
+    }
+
+    p {
+      margin-bottom: 1em;
+      text-align: start;
+
+      img:first-child {
+        margin-bottom: 0;
+      }
+    }
+
+    > *:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.footnote-close-btn {
+  display: none; // Will change when container is .opened
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.5em;
+
+  svg {
+    height: 1.2rem;
+    width: 1.2rem;
+  }
+}

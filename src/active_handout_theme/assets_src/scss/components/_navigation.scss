@@ -1,0 +1,151 @@
+@use "../abstracts/index" as *;
+@use "../base/index" as *;
+
+.ah-navigation {
+  $transition-time: 0.2s;
+  $content-width: max(
+    300px,
+    calc(50vw - #{$max-content-width / 2} - #{$admonition-extra-inline})
+  );
+
+  position: fixed;
+  top: $header-height;
+  font-family: $font-regular;
+  font-size: map-get($font-sizes, "regular");
+  z-index: 1000;
+  isolation: isolate;
+  width: 0%;
+  height: 100%;
+  overflow-y: auto;
+  overflow: hidden;
+  transition: width $transition-time ease-in-out;
+  color: var(--clr-text);
+  @include vh(max-height, 100);
+
+  .close-menu {
+    display: none;
+    width: 1em;
+    height: 1em;
+    margin: 0.25em 0 1em;
+
+    @include smaller-than("large") {
+      display: block;
+    }
+  }
+
+  .ah-nav-container {
+    position: relative;
+    padding: 0.5em 1em;
+    width: $content-width;
+    height: 100%;
+  }
+
+  ::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to right,
+      var(--clr-background),
+      var(--clr-background) 90%,
+      transparent
+    );
+    z-index: -1;
+  }
+
+  @include smaller-than("large") {
+    top: 0;
+
+    &::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      background: transparent;
+      backdrop-filter: blur(0);
+      width: 0%;
+      height: 100%;
+      z-index: -2;
+      transition: background $transition-time ease-in-out,
+        backdrop-filter $transition-time ease-in-out,
+        width 0s linear $transition-time;
+    }
+  }
+
+  &.show {
+    width: $content-width;
+
+    @include smaller-than("large") {
+      &::before {
+        width: 100%;
+        background: #3d3d3d3d;
+        backdrop-filter: blur(1px);
+        transition: background $transition-time ease-in-out,
+          backdrop-filter $transition-time ease-in-out;
+      }
+    }
+  }
+
+  ul {
+    padding: 0;
+    list-style: none;
+
+    li {
+      margin-bottom: 0.5em;
+
+      &.active {
+        font-weight: 700;
+
+        ul {
+          font-weight: normal;
+          border-left: 2px solid var(--clr-link);
+        }
+      }
+    }
+
+    & ul {
+      padding-left: 1.5em;
+    }
+  }
+
+  a:not(.ah-logo) {
+    color: var(--clr-link);
+    text-decoration: none;
+
+    @include animated-underline(var(--clr-link), var(--clr-link), 0, 100%);
+  }
+}
+
+.ah-nav-body {
+  font-size: map-get($font-sizes, "small");
+}
+
+.ah-togglable-item {
+  .ah-togglable-handle {
+    cursor: pointer;
+  }
+
+  &::before {
+    content: "\25B8";
+    display: inline-block;
+    color: var(--clr-link);
+    transition: transform 0.1s linear;
+  }
+
+  &.opened {
+    &::before {
+      transform: rotate(90deg);
+    }
+
+    > ul {
+      @include vh(max-height, 100);
+      overflow: auto;
+    }
+  }
+
+  > ul {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.2s linear;
+  }
+}

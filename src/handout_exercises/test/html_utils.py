@@ -9,10 +9,10 @@ def admonition_title(title):
     return f'<p class="admonition-title">{title}</p>'
 
 
-def text_question(title, question, answer_text, extra_classes=''):
+def text_exercise(title, exercise, answer_text, extra_classes=''):
     return admonition(f'exercise {extra_classes}', [
         admonition_title(title),
-        p(question),
+        p(exercise),
         answer('Answer', answer_text)
     ])
 
@@ -28,7 +28,7 @@ def el(tag, children=None, extra_classes='', data={}):
     children_str = ''
     if children:
         children_str = '\n'.join(children)
-    
+
 
     data_fields = ' '.join(
         [f'data-{key}="{value}"' for (key, value) in data.items() ]

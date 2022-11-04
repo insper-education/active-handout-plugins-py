@@ -1,0 +1,60 @@
+@use "variables" as *;
+
+/// Source: https://sass-guidelin.es/#responsive-web-design-and-breakpoints
+/// Responsive breakpoint manager
+/// @access public
+/// @param {String} $breakpoint - Breakpoint
+@mixin greater-than($breakpoint) {
+  $raw-query: map-get($breakpoints, $breakpoint);
+
+  @if $raw-query {
+    $query: if(
+      type-of($raw-query) == "string",
+      unquote($raw-query),
+      inspect($raw-query)
+    );
+
+    @media (min-width: #{$query}) {
+      @content;
+    }
+  } @else {
+    @error 'No value found for `#{$breakpoint}`. '
+         + 'Please make sure it is defined in `$breakpoints` map.';
+  }
+}
+
+@mixin smaller-than($breakpoint) {
+  $raw-query: map-get($breakpoints, $breakpoint);
+
+  @if $raw-query {
+    $query: if(
+      type-of($raw-query) == "string",
+      unquote($raw-query),
+      inspect($raw-query)
+    );
+
+    @media (max-width: #{$query}) {
+      @content;
+    }
+  } @else {
+    @error 'No value found for `#{$breakpoint}`. '
+         + 'Please make sure it is defined in `$breakpoints` map.';
+  }
+}
+
+@mixin animated-underline($from, $to, $default-width, $hover-width) {
+  background-image: linear-gradient(90deg, $from, $to);
+  background-size: $default-width 2px;
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  transition: color 0.2s ease, background-size 0.2s ease;
+
+  &:hover {
+    background-size: $hover-width 2px;
+  }
+}
+
+@mixin vh($prop, $value) {
+  #{$prop}: #{$value}vh; /* Fallback for browsers that do not support Custom Properties */
+  #{$prop}: calc(var(--vh, 1vh) * $value);
+}

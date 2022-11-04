@@ -2,7 +2,7 @@ from bs4 import BeautifulSoup
 import yaml
 
 from ..exercise import CODE_TYPE, EXTRA_GROUP, HANDOUT_GROUP, QUIZ_TYPE, TEXT_TYPE, CodeExercise, Exercise, build_submission_list_admonition, build_vscode_button, enhance_exercise_md, extract_topic, find_code_exercises, find_exercises_in_handout, get_title, is_exercise_list, replace_exercise_list, sorted_exercise_list
-from .html_utils import admonition, admonition_title, div, el, form, p, task_list, text_question, anchor
+from .html_utils import admonition, admonition_title, div, el, form, p, task_list, text_exercise, anchor
 from xml.etree.ElementTree import canonicalize
 
 
@@ -64,18 +64,18 @@ def test_find_exercises_in_handout():
     html = el('html', [
         el('body', [
             admonition('exercise choice', [
-                admonition_title('Question 1'),
+                admonition_title('Exercise 1'),
                 p('Multiple choice'),
                 form([task_list(['a', 'b', 'c', 'd'], 'c is always right.')])
             ]),
             div([
-                text_question('Short question with id', 'What did the ocean say to the beach?', 'Nothing, it just waved.', 'short id_some_long_and_unique_id')
+                text_exercise('Short exercise with id', 'What did the ocean say to the beach?', 'Nothing, it just waved.', 'short id_some_long_and_unique_id')
             ]),
             div([
-                text_question('Short question', 'What is 1 + 1?', 'A sum', 'short')
+                text_exercise('Short exercise', 'What is 1 + 1?', 'A sum', 'short')
             ]),
             div([div([
-                text_question('Long question', 'What is 12345 + 54321?', 'A longer sum', 'long')
+                text_exercise('Long exercise', 'What is 12345 + 54321?', 'A longer sum', 'long')
             ])])
         ]),
     ])
@@ -89,13 +89,13 @@ def test_find_exercises_in_handout():
     ]
 
     soup = BeautifulSoup(new_html, 'html.parser')
-    html_questions = soup.select('.admonition.exercise')
+    html_exercises = soup.select('.admonition.exercise')
 
-    assert len(html_questions) == len(expected_exercises)
+    assert len(html_exercises) == len(expected_exercises)
     assert len(exercises) == len(expected_exercises)
-    for exercise, html_question, (slug, tp) in zip(exercises, html_questions, expected_exercises):
+    for exercise, html_exercise, (slug, tp) in zip(exercises, html_exercises, expected_exercises):
         assert_exercise(exercise, slug, page_url, tp, 'handouts/python/intro', HANDOUT_GROUP)
-        assert html_question.attrs['id'] == slug
+        assert html_exercise.attrs['id'] == slug
 
 
 def test_get_title():

@@ -1,0 +1,25 @@
+@use "../base/typeset" as *;
+
+.ah-header {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  display: flex;
+  padding: 0.5em 1em;
+  background: linear-gradient(
+    to bottom,
+    var(--clr-background),
+    var(--clr-background) 90%,
+    transparent
+  );
+  z-index: 999;
+
+  font-family: $font-regular;
+  font-size: map-get($font-sizes, "regular");
+}
+
+.ah-logo {
+  color: var(--clr-title);
+  text-decoration: none;
+  font-weight: 700;
+}
