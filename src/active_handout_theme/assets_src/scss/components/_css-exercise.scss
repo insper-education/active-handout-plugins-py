@@ -6,10 +6,14 @@ $css-preview-width: 300px;
 $css-preview-height: 200px;
 
 .css-playground {
-  background-color: #f7f3f7;
-  border-radius: $border-radius;
   display: grid;
   grid-template-columns: 1fr auto;
+  margin-bottom: 1rem;
+
+  .file-editor {
+    background-color: #f7f3f7;
+    border-radius: $border-radius;
+  }
 
   .file-tab {
     display: flex;
@@ -39,19 +43,13 @@ $css-preview-height: 200px;
   }
 
   .page-preview {
-    --clr-text: var(--clr-default-text);
-    --clr-title: var(--clr-default-title);
-    --clr-text-em: var(--clr-text-em);
-    --clr-text-strong: var(--clr-text-strong);
-
     width: 100%;
     min-height: 10rem;
-    padding: 0.5rem;
-
-    border-left: 1px solid var(--clr-gray-primary-3);
+    padding: 0 0 0 0.5rem;
 
     p {
-      margin-bottom: 0;
+      line-height: 1;
+      margin-bottom: 0.5em;
     }
 
     iframe {
@@ -61,6 +59,10 @@ $css-preview-height: 200px;
       padding: 0;
       width: $css-preview-width;
       height: $css-preview-height;
+
+      &.preview {
+        margin-bottom: 1rem;
+      }
     }
   }
 }

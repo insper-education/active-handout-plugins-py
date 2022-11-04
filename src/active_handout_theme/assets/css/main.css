@@ -769,10 +769,14 @@ code.hljs {
 }
 
 .css-playground {
+  grid-template-columns: 1fr auto;
+  margin-bottom: 1rem;
+  display: grid;
+}
+
+.css-playground .file-editor {
   background-color: #f7f3f7;
   border-radius: .2em;
-  grid-template-columns: 1fr auto;
-  display: grid;
 }
 
 .css-playground .file-tab {
@@ -803,18 +807,14 @@ code.hljs {
 }
 
 .css-playground .page-preview {
-  --clr-text: var(--clr-default-text);
-  --clr-title: var(--clr-default-title);
-  --clr-text-em: var(--clr-text-em);
-  --clr-text-strong: var(--clr-text-strong);
   width: 100%;
   min-height: 10rem;
-  border-left: 1px solid var(--clr-gray-primary-3);
-  padding: .5rem;
+  padding: 0 0 0 .5rem;
 }
 
 .css-playground .page-preview p {
-  margin-bottom: 0;
+  margin-bottom: .5em;
+  line-height: 1;
 }
 
 .css-playground .page-preview iframe {
@@ -824,6 +824,10 @@ code.hljs {
   margin: 0;
   padding: 0;
   display: block;
+}
+
+.css-playground .page-preview iframe.preview {
+  margin-bottom: 1rem;
 }
 
 .playground-code-editor {
