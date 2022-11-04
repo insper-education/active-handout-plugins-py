@@ -2,6 +2,9 @@ import { SandpackClient } from "@codesandbox/sandpack-client";
 import { CodeJar } from "codejar";
 import hljs from "highlight.js";
 import {
+  extractFilename,
+  queryAnswerFiles,
+  queryAnswerFromPlayground,
   queryEditors,
   queryExpectedResult,
   queryPlaygrounds,
@@ -147,6 +150,14 @@ export function initCSSPlugin(rememberCallbacks) {
 
 function buildExpectedResult(playground, info) {
   const expectedResultInfo = JSON.parse(JSON.stringify(info));
+  // expectedResultInfo.files
+  const answer = queryAnswerFromPlayground(playground);
+  const answerFiles = queryAnswerFiles(answer);
+  answerFiles.forEach((answerFile) => {
+    const filename = extractFilename(answerFile);
+    expectedResultInfo.files[filename].code = answerFile.textContent;
+  });
+
   new SandpackClient(queryExpectedResult(playground), expectedResultInfo, {
     showOpenInCodeSandbox: false,
   });

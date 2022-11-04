@@ -803,9 +803,18 @@ code.hljs {
 }
 
 .css-playground .page-preview {
+  --clr-text: var(--clr-default-text);
+  --clr-title: var(--clr-default-title);
+  --clr-text-em: var(--clr-text-em);
+  --clr-text-strong: var(--clr-text-strong);
   width: 100%;
   min-height: 10rem;
   border-left: 1px solid var(--clr-gray-primary-3);
+  padding: .5rem;
+}
+
+.css-playground .page-preview p {
+  margin-bottom: 0;
 }
 
 .css-playground .page-preview iframe {

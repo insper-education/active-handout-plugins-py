@@ -21,3 +21,22 @@ export function queryExpectedResult(playground) {
 export function queryAnswerFromPlayground(playground) {
   return playground.closest(".css-exercise");
 }
+
+export function queryAnswerFiles(answer) {
+  return answer.querySelectorAll(".highlight");
+}
+
+export function extractFilename(code) {
+  let baseName = "index";
+  let extension = "css";
+  const filenamePattern = "filename-";
+  const languagePattern = "language-";
+  for (let className of code.classList) {
+    if (className.startsWith(filenamePattern))
+      baseName = className.substring(filenamePattern.length);
+    if (className.startsWith(languagePattern))
+      extension = className.substring(languagePattern.length);
+  }
+
+  return `${baseName}.${extension}`;
+}

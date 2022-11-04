@@ -39,10 +39,20 @@ $css-preview-height: 200px;
   }
 
   .page-preview {
+    --clr-text: var(--clr-default-text);
+    --clr-title: var(--clr-default-title);
+    --clr-text-em: var(--clr-text-em);
+    --clr-text-strong: var(--clr-text-strong);
+
     width: 100%;
     min-height: 10rem;
+    padding: 0.5rem;
 
     border-left: 1px solid var(--clr-gray-primary-3);
+
+    p {
+      margin-bottom: 0;
+    }
 
     iframe {
       display: block;

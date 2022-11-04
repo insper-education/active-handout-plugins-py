@@ -1,4 +1,5 @@
 import re
+from .l10n import gettext as _
 from .exercise import ExerciseAdmonition
 
 
@@ -54,13 +55,22 @@ class CSSExercise(ExerciseAdmonition):
 
                 filenames += f'<li class="{ tab_classes }">{ filename }</li>'
             editors += f'<div class="{ editor_classes }" data-language="{ file_data["language"] }" data-filename="{ filename }">{ file_data["code"] }</div>'
+
+        preview_str = _('Preview')
+        expected_str = _('Expected')
+
         return f'''
 <div class="css-playground">
     <div class="file-editor">
         <ul class="file-tab">{filenames}</ul>
         { editors }
     </div>
-    <div class="page-preview"><iframe class="preview"></iframe><iframe class="expected-result"></iframe></div>
+    <div class="page-preview">
+        <p>{ preview_str }</p>
+        <iframe class="preview"></iframe>
+        <p>{ expected_str }</p>
+        <iframe class="expected-result"></iframe>
+    </div>
 </div>
 '''
 

@@ -1498,6 +1498,13 @@ function initCSSPlugin(rememberCallbacks) {
 }
 function buildExpectedResult(playground, info) {
     const expectedResultInfo = JSON.parse(JSON.stringify(info));
+    // expectedResultInfo.files
+    const answer = (0, _queries.queryAnswerFromPlayground)(playground);
+    const answerFiles = (0, _queries.queryAnswerFiles)(answer);
+    answerFiles.forEach((answerFile)=>{
+        const filename = (0, _queries.extractFilename)(answerFile);
+        expectedResultInfo.files[filename].code = answerFile.textContent;
+    });
     new (0, _sandpackClient.SandpackClient)((0, _queries.queryExpectedResult)(playground), expectedResultInfo, {
         showOpenInCodeSandbox: false
     });
@@ -3299,6 +3306,8 @@ parcelHelpers.export(exports, "queryEditors", ()=>queryEditors);
 parcelHelpers.export(exports, "queryPreview", ()=>queryPreview);
 parcelHelpers.export(exports, "queryExpectedResult", ()=>queryExpectedResult);
 parcelHelpers.export(exports, "queryAnswerFromPlayground", ()=>queryAnswerFromPlayground);
+parcelHelpers.export(exports, "queryAnswerFiles", ()=>queryAnswerFiles);
+parcelHelpers.export(exports, "extractFilename", ()=>extractFilename);
 function queryPlaygrounds() {
     return document.querySelectorAll(".css-playground");
 }
@@ -3316,6 +3325,20 @@ function queryExpectedResult(playground) {
 }
 function queryAnswerFromPlayground(playground) {
     return playground.closest(".css-exercise");
+}
+function queryAnswerFiles(answer) {
+    return answer.querySelectorAll(".highlight");
+}
+function extractFilename(code) {
+    let baseName = "index";
+    let extension = "css";
+    const filenamePattern = "filename-";
+    const languagePattern = "language-";
+    for (let className of code.classList){
+        if (className.startsWith(filenamePattern)) baseName = className.substring(filenamePattern.length);
+        if (className.startsWith(languagePattern)) extension = className.substring(languagePattern.length);
+    }
+    return `${baseName}.${extension}`;
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"8oTO2":[function(require,module,exports) {
