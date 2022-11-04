@@ -9,7 +9,7 @@ DOMAIN = 'messages'
 _language = None
 def init_l10n(lang):
     global _language
-    _language = gt.translation(DOMAIN, localedir=LOCALE_DIR, languages=[lang])
+    _language = gt.translation(DOMAIN, localedir=LOCALE_DIR.resolve(), languages=[lang], fallback=True)
     _language.install()
 
 
