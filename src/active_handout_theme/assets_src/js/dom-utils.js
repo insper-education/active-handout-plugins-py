@@ -17,3 +17,17 @@ export function sendRemember(element, args) {
 export function deepCopy(dict) {
   return JSON.parse(JSON.stringify(dict));
 }
+
+export function listAllElements(parent) {
+  let elements = [];
+  for (let child of parent.childNodes) {
+    elements.push(child);
+    elements = elements.concat(listAllElements(child));
+  }
+  return elements;
+}
+
+export function approximatelyEqual(a, b, epsilon) {
+  if (!epsilon) epsilon = 0.1;
+  return Math.abs(a - b) < epsilon;
+}

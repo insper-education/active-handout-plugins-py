@@ -841,6 +841,26 @@ code.hljs {
   display: block;
 }
 
+@keyframes shakeIt {
+  from {
+    top: 0;
+    left: 0;
+  }
+
+  25% {
+    left: -40px;
+  }
+
+  75% {
+    left: 40px;
+  }
+
+  to {
+    top: 0;
+    left: 0;
+  }
+}
+
 .admonition.exercise {
   --clr-background: var(--clr-admonition-exercise-background);
   --clr-text: var(--clr-admonition-exercise-text);
@@ -848,6 +868,13 @@ code.hljs {
   --clr-bullet: var(--clr-admonition-exercise-bullet);
   --clr-text-em: var(--clr-admonition-exercise-text-em);
   --clr-text-strong: var(--clr-admonition-exercise-text-strong);
+  position: relative;
+}
+
+.admonition.exercise.wrong {
+  animation-name: shakeIt;
+  animation-duration: .25s;
+  animation-iteration-count: 2;
 }
 
 .admonition.exercise, .admonition.exercise * {
@@ -1409,38 +1436,8 @@ code.hljs {
   display: none;
 }
 
-.parsons.correct .correct-answer {
+.parsons.correct .correct-answer, .parsons.wrong .wrong-answer {
   display: inherit;
-}
-
-.parsons.wrong {
-  animation-name: shakeIt;
-  animation-duration: .25s;
-  animation-iteration-count: 2;
-}
-
-.parsons.wrong .wrong-answer {
-  display: inherit;
-}
-
-@keyframes shakeIt {
-  from {
-    top: 0;
-    left: 0;
-  }
-
-  25% {
-    left: -40px;
-  }
-
-  75% {
-    left: 40px;
-  }
-
-  to {
-    top: 0;
-    left: 0;
-  }
 }
 
 .parsons-container pre {

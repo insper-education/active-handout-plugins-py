@@ -1,6 +1,26 @@
 @use "../abstracts/mixins" as *;
 @use "../abstracts/variables" as *;
 
+@keyframes shakeIt {
+  from {
+    top: 0px;
+    left: 0px;
+  }
+
+  25% {
+    left: -40px;
+  }
+
+  75% {
+    left: 40px;
+  }
+
+  to {
+    top: 0px;
+    left: 0px;
+  }
+}
+
 .admonition.exercise {
   --clr-background: var(--clr-admonition-exercise-background);
   --clr-text: var(--clr-admonition-exercise-text);
@@ -8,6 +28,14 @@
   --clr-bullet: var(--clr-admonition-exercise-bullet);
   --clr-text-em: var(--clr-admonition-exercise-text-em);
   --clr-text-strong: var(--clr-admonition-exercise-text-strong);
+
+  position: relative;
+
+  &.wrong {
+    animation-name: shakeIt;
+    animation-duration: 0.25s;
+    animation-iteration-count: 2;
+  }
 
   &,
   & * {

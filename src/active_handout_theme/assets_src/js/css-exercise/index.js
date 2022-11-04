@@ -1,17 +1,19 @@
 import { SandpackClient } from "@codesandbox/sandpack-client";
 import { CodeJar } from "codejar";
 import hljs from "highlight.js";
-import { deepCopy } from "../dom-utils";
+import { approximatelyEqual, deepCopy } from "../dom-utils";
 import {
   extractFilename,
   queryAnswerFiles,
   queryAnswerFromPlayground,
   queryEditors,
+  queryExerciseFromPlayground,
   queryExpectedResult,
   queryPlaygrounds,
   queryPreview,
   queryResetButtonFromPlayground,
   queryTabs,
+  queryTestButtonFromPlayground,
 } from "./queries";
 
 function build_html_file(content) {
@@ -99,12 +101,75 @@ body {
 }
 `,
     },
+    "css-exercise.js": {
+      code: `
+function listAllElements(parent) {
+  let elements = [];
+  for (let child of parent.childNodes) {
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      elements.push(child);
+      elements = elements.concat(listAllElements(child));
+    }
+  }
+  return elements;
+}
+
+function getRect(element) {
+  const rect = element.getBoundingClientRect();
+  return {x: rect.x, y: rect.y, width: rect.width, height: rect.height};
+}
+
+window.addEventListener("message", function(event) {
+  if (event.data?.message !== "computeRects") return;
+
+  const elements = listAllElements(document.querySelector("body"));
+  const rects = elements.map(getRect);
+
+  event.data.rects = rects;
+
+  event.source.postMessage(event.data, "*");
+});
+`,
+    },
   };
 }
 
+function allEqualRects(preview, expected) {
+  if (preview.length !== expected.length) return false;
+
+  for (let i = 0; i < preview.length; i++) {
+    for (let attr of ["x", "y", "width", "height"]) {
+      if (!approximatelyEqual(preview[i][attr], expected[i][attr], 5))
+        return false;
+    }
+  }
+
+  return true;
+}
+
+const allRects = {};
 export function initCSSPlugin(rememberCallbacks) {
   hljs.configure({
     languages: ["html", "js", "css"],
+  });
+
+  window.addEventListener("message", (event) => {
+    if (event.data?.message !== "computeRects") return;
+
+    const { exerciseId, origin, rects } = event.data;
+    allRects[exerciseId][origin] = rects;
+
+    const { preview, expected } = allRects[exerciseId];
+    if (preview && expected) {
+      const exercise = document.getElementById(exerciseId);
+      if (allEqualRects(preview, expected)) {
+        // TODO: TELEMETRY
+        // TODO: (STOPPED HERE) DISABLE EDITORS AND TEST BUTTON
+        exercise.classList.add("done");
+      } else {
+        exercise.classList.add("wrong");
+      }
+    }
   });
 
   const playgrounds = queryPlaygrounds();
@@ -146,6 +211,10 @@ export function initCSSPlugin(rememberCallbacks) {
     const origFiles = deepCopy(files);
     const resetButton = queryResetButtonFromPlayground(playground);
     resetButton.addEventListener("click", () => {
+      const exercise = queryExerciseFromPlayground(playground);
+      exercise.classList.remove("done");
+      exercise.classList.remove("wrong");
+
       for (let filename in origFiles) {
         const code = origFiles[filename].code;
         files[filename].code = code;
@@ -153,6 +222,35 @@ export function initCSSPlugin(rememberCallbacks) {
         jar?.updateCode(code);
         sandpack.updatePreview(info);
       }
+    });
+
+    const testButton = queryTestButtonFromPlayground(playground);
+    testButton.addEventListener("click", () => {
+      const exercise = queryExerciseFromPlayground(playground);
+      const previewIframe = queryPreview(playground);
+      const expectedIframe = queryExpectedResult(playground);
+
+      exercise.classList.remove("done");
+      exercise.classList.remove("wrong");
+
+      allRects[exercise.id] = {};
+
+      previewIframe.contentWindow.postMessage(
+        {
+          message: "computeRects",
+          origin: "preview",
+          exerciseId: exercise.id,
+        },
+        "*"
+      );
+      expectedIframe.contentWindow.postMessage(
+        {
+          message: "computeRects",
+          origin: "expected",
+          exerciseId: exercise.id,
+        },
+        "*"
+      );
     });
 
     setupTabs(tabs, editors);

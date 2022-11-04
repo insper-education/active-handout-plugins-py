@@ -1346,6 +1346,8 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createElementWithClasses", ()=>createElementWithClasses);
 parcelHelpers.export(exports, "sendRemember", ()=>sendRemember);
 parcelHelpers.export(exports, "deepCopy", ()=>deepCopy);
+parcelHelpers.export(exports, "listAllElements", ()=>listAllElements);
+parcelHelpers.export(exports, "approximatelyEqual", ()=>approximatelyEqual);
 function createElementWithClasses(tagName, classList, parent) {
     const el = document.createElement(tagName);
     for (let className of classList)el.classList.add(className);
@@ -1363,6 +1365,18 @@ function sendRemember(element, args) {
 }
 function deepCopy(dict) {
     return JSON.parse(JSON.stringify(dict));
+}
+function listAllElements(parent) {
+    let elements = [];
+    for (let child of parent.childNodes){
+        elements.push(child);
+        elements = elements.concat(listAllElements(child));
+    }
+    return elements;
+}
+function approximatelyEqual(a, b, epsilon) {
+    if (!epsilon) epsilon = 0.1;
+    return Math.abs(a - b) < epsilon;
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"a537T":[function(require,module,exports) {
@@ -1453,9 +1467,52 @@ body {
   overflow: hidden;
 }
 `
+        },
+        "css-exercise.js": {
+            code: `
+function listAllElements(parent) {
+  let elements = [];
+  for (let child of parent.childNodes) {
+    if (child.nodeType === Node.ELEMENT_NODE) {
+      elements.push(child);
+      elements = elements.concat(listAllElements(child));
+    }
+  }
+  return elements;
+}
+
+function getRect(element) {
+  const rect = element.getBoundingClientRect();
+  return {x: rect.x, y: rect.y, width: rect.width, height: rect.height};
+}
+
+window.addEventListener("message", function(event) {
+  if (event.data?.message !== "computeRects") return;
+
+  const elements = listAllElements(document.querySelector("body"));
+  const rects = elements.map(getRect);
+
+  event.data.rects = rects;
+
+  event.source.postMessage(event.data, "*");
+});
+`
         }
     };
 }
+function allEqualRects(preview, expected) {
+    if (preview.length !== expected.length) return false;
+    for(let i = 0; i < preview.length; i++)for (let attr of [
+        "x",
+        "y",
+        "width",
+        "height"
+    ]){
+        if (!(0, _domUtils.approximatelyEqual)(preview[i][attr], expected[i][attr], 5)) return false;
+    }
+    return true;
+}
+const allRects = {};
 function initCSSPlugin(rememberCallbacks) {
     (0, _highlightJsDefault.default).configure({
         languages: [
@@ -1463,6 +1520,20 @@ function initCSSPlugin(rememberCallbacks) {
             "js",
             "css"
         ]
+    });
+    window.addEventListener("message", (event)=>{
+        var ref;
+        if (((ref = event.data) === null || ref === void 0 ? void 0 : ref.message) !== "computeRects") return;
+        const { exerciseId , origin , rects  } = event.data;
+        allRects[exerciseId][origin] = rects;
+        const { preview , expected  } = allRects[exerciseId];
+        if (preview && expected) {
+            const exercise = document.getElementById(exerciseId);
+            if (allEqualRects(preview, expected)) // TODO: TELEMETRY
+            // TODO: (STOPPED HERE) DISABLE EDITORS AND TEST BUTTON
+            exercise.classList.add("done");
+            else exercise.classList.add("wrong");
+        }
     });
     const playgrounds = (0, _queries.queryPlaygrounds)();
     playgrounds.forEach((playground)=>{
@@ -1499,6 +1570,9 @@ function initCSSPlugin(rememberCallbacks) {
         const origFiles = (0, _domUtils.deepCopy)(files);
         const resetButton = (0, _queries.queryResetButtonFromPlayground)(playground);
         resetButton.addEventListener("click", ()=>{
+            const exercise = (0, _queries.queryExerciseFromPlayground)(playground);
+            exercise.classList.remove("done");
+            exercise.classList.remove("wrong");
             for(let filename in origFiles){
                 const code = origFiles[filename].code;
                 files[filename].code = code;
@@ -1506,6 +1580,25 @@ function initCSSPlugin(rememberCallbacks) {
                 jar === null || jar === void 0 ? void 0 : jar.updateCode(code);
                 sandpack.updatePreview(info);
             }
+        });
+        const testButton = (0, _queries.queryTestButtonFromPlayground)(playground);
+        testButton.addEventListener("click", ()=>{
+            const exercise = (0, _queries.queryExerciseFromPlayground)(playground);
+            const previewIframe = (0, _queries.queryPreview)(playground);
+            const expectedIframe = (0, _queries.queryExpectedResult)(playground);
+            exercise.classList.remove("done");
+            exercise.classList.remove("wrong");
+            allRects[exercise.id] = {};
+            previewIframe.contentWindow.postMessage({
+                message: "computeRects",
+                origin: "preview",
+                exerciseId: exercise.id
+            }, "*");
+            expectedIframe.contentWindow.postMessage({
+                message: "computeRects",
+                origin: "expected",
+                exerciseId: exercise.id
+            }, "*");
         });
         setupTabs(tabs, editors);
         sandpack = new (0, _sandpackClient.SandpackClient)((0, _queries.queryPreview)(playground), info, {
