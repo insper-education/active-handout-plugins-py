@@ -1,6 +1,7 @@
 import { SandpackClient } from "@codesandbox/sandpack-client";
 import { CodeJar } from "codejar";
 import hljs from "highlight.js";
+import { deepCopy } from "../dom-utils";
 import {
   extractFilename,
   queryAnswerFiles,
@@ -9,6 +10,7 @@ import {
   queryExpectedResult,
   queryPlaygrounds,
   queryPreview,
+  queryResetButtonFromPlayground,
   queryTabs,
 } from "./queries";
 
@@ -119,6 +121,7 @@ export function initCSSPlugin(rememberCallbacks) {
 
     const tabs = queryTabs(playground);
     const editors = queryEditors(playground);
+    const codeJars = {};
     editors.forEach((editor) => {
       const filename = editor.getAttribute("data-filename");
       let content = editor.textContent;
@@ -129,6 +132,7 @@ export function initCSSPlugin(rememberCallbacks) {
       files[filename] = { code: content };
 
       const jar = CodeJar(editor, hljs.highlightElement);
+      codeJars[filename] = jar;
       jar.onUpdate((code) => {
         if (filename.endsWith("html")) {
           code = build_html_file(code);
@@ -138,6 +142,18 @@ export function initCSSPlugin(rememberCallbacks) {
       });
     });
     files["main.js"] = { code: build_main_js(files) };
+
+    const origFiles = deepCopy(files);
+    const resetButton = queryResetButtonFromPlayground(playground);
+    resetButton.addEventListener("click", () => {
+      for (let filename in origFiles) {
+        const code = origFiles[filename].code;
+        files[filename].code = code;
+        const jar = codeJars[filename];
+        jar?.updateCode(code);
+        sandpack.updatePreview(info);
+      }
+    });
 
     setupTabs(tabs, editors);
 
@@ -149,8 +165,8 @@ export function initCSSPlugin(rememberCallbacks) {
 }
 
 function buildExpectedResult(playground, info) {
-  const expectedResultInfo = JSON.parse(JSON.stringify(info));
-  // expectedResultInfo.files
+  const expectedResultInfo = deepCopy(info);
+
   const answer = queryAnswerFromPlayground(playground);
   const answerFiles = queryAnswerFiles(answer);
   answerFiles.forEach((answerFile) => {

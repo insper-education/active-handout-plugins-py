@@ -13,3 +13,7 @@ export function sendRemember(element, args) {
   const ev = new CustomEvent("remember", { detail: { element, args } });
   window.dispatchEvent(ev);
 }
+
+export function deepCopy(dict) {
+  return JSON.parse(JSON.stringify(dict));
+}

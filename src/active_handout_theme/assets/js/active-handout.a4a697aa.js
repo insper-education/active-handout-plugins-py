@@ -1345,6 +1345,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createElementWithClasses", ()=>createElementWithClasses);
 parcelHelpers.export(exports, "sendRemember", ()=>sendRemember);
+parcelHelpers.export(exports, "deepCopy", ()=>deepCopy);
 function createElementWithClasses(tagName, classList, parent) {
     const el = document.createElement(tagName);
     for (let className of classList)el.classList.add(className);
@@ -1360,6 +1361,9 @@ function sendRemember(element, args) {
     });
     window.dispatchEvent(ev);
 }
+function deepCopy(dict) {
+    return JSON.parse(JSON.stringify(dict));
+}
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"a537T":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
@@ -1369,6 +1373,7 @@ var _sandpackClient = require("@codesandbox/sandpack-client");
 var _codejar = require("codejar");
 var _highlightJs = require("highlight.js");
 var _highlightJsDefault = parcelHelpers.interopDefault(_highlightJs);
+var _domUtils = require("../dom-utils");
 var _queries = require("./queries");
 function build_html_file(content) {
     return `<!DOCTYPE html>
@@ -1472,6 +1477,7 @@ function initCSSPlugin(rememberCallbacks) {
         };
         const tabs = (0, _queries.queryTabs)(playground);
         const editors = (0, _queries.queryEditors)(playground);
+        const codeJars = {};
         editors.forEach((editor)=>{
             const filename = editor.getAttribute("data-filename");
             let content = editor.textContent;
@@ -1480,6 +1486,7 @@ function initCSSPlugin(rememberCallbacks) {
                 code: content
             };
             const jar = (0, _codejar.CodeJar)(editor, (0, _highlightJsDefault.default).highlightElement);
+            codeJars[filename] = jar;
             jar.onUpdate((code)=>{
                 if (filename.endsWith("html")) code = build_html_file(code);
                 files[filename].code = code;
@@ -1489,6 +1496,17 @@ function initCSSPlugin(rememberCallbacks) {
         files["main.js"] = {
             code: build_main_js(files)
         };
+        const origFiles = (0, _domUtils.deepCopy)(files);
+        const resetButton = (0, _queries.queryResetButtonFromPlayground)(playground);
+        resetButton.addEventListener("click", ()=>{
+            for(let filename in origFiles){
+                const code = origFiles[filename].code;
+                files[filename].code = code;
+                const jar = codeJars[filename];
+                jar === null || jar === void 0 ? void 0 : jar.updateCode(code);
+                sandpack.updatePreview(info);
+            }
+        });
         setupTabs(tabs, editors);
         sandpack = new (0, _sandpackClient.SandpackClient)((0, _queries.queryPreview)(playground), info, {
             showOpenInCodeSandbox: false
@@ -1497,8 +1515,7 @@ function initCSSPlugin(rememberCallbacks) {
     });
 }
 function buildExpectedResult(playground, info) {
-    const expectedResultInfo = JSON.parse(JSON.stringify(info));
-    // expectedResultInfo.files
+    const expectedResultInfo = (0, _domUtils.deepCopy)(info);
     const answer = (0, _queries.queryAnswerFromPlayground)(playground);
     const answerFiles = (0, _queries.queryAnswerFiles)(answer);
     answerFiles.forEach((answerFile)=>{
@@ -1522,7 +1539,7 @@ function setupTabs(tabs, editors) {
     });
 }
 
-},{"@codesandbox/sandpack-client":"3TkIg","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"jumEM","codejar":"8oTO2","highlight.js":"ljeYi"}],"3TkIg":[function(require,module,exports) {
+},{"@codesandbox/sandpack-client":"3TkIg","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"jumEM","codejar":"8oTO2","highlight.js":"ljeYi","../dom-utils":"NCBha"}],"3TkIg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "SandpackClient", ()=>I);
@@ -3305,9 +3322,12 @@ parcelHelpers.export(exports, "queryTabs", ()=>queryTabs);
 parcelHelpers.export(exports, "queryEditors", ()=>queryEditors);
 parcelHelpers.export(exports, "queryPreview", ()=>queryPreview);
 parcelHelpers.export(exports, "queryExpectedResult", ()=>queryExpectedResult);
+parcelHelpers.export(exports, "queryExerciseFromPlayground", ()=>queryExerciseFromPlayground);
 parcelHelpers.export(exports, "queryAnswerFromPlayground", ()=>queryAnswerFromPlayground);
 parcelHelpers.export(exports, "queryAnswerFiles", ()=>queryAnswerFiles);
 parcelHelpers.export(exports, "extractFilename", ()=>extractFilename);
+parcelHelpers.export(exports, "queryResetButtonFromPlayground", ()=>queryResetButtonFromPlayground);
+parcelHelpers.export(exports, "queryTestButtonFromPlayground", ()=>queryTestButtonFromPlayground);
 function queryPlaygrounds() {
     return document.querySelectorAll(".css-playground");
 }
@@ -3323,8 +3343,11 @@ function queryPreview(playground) {
 function queryExpectedResult(playground) {
     return playground.querySelector(".page-preview .expected-result");
 }
-function queryAnswerFromPlayground(playground) {
+function queryExerciseFromPlayground(playground) {
     return playground.closest(".css-exercise");
+}
+function queryAnswerFromPlayground(playground) {
+    return queryExerciseFromPlayground(playground).querySelector(".answer");
 }
 function queryAnswerFiles(answer) {
     return answer.querySelectorAll(".highlight");
@@ -3339,6 +3362,12 @@ function extractFilename(code) {
         if (className.startsWith(languagePattern)) extension = className.substring(languagePattern.length);
     }
     return `${baseName}.${extension}`;
+}
+function queryResetButtonFromPlayground(playground) {
+    return queryExerciseFromPlayground(playground).querySelector(".reset-css");
+}
+function queryTestButtonFromPlayground(playground) {
+    return queryExerciseFromPlayground(playground).querySelector(".test-css");
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"8oTO2":[function(require,module,exports) {

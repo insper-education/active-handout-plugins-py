@@ -18,8 +18,12 @@ export function queryExpectedResult(playground) {
   return playground.querySelector(".page-preview .expected-result");
 }
 
-export function queryAnswerFromPlayground(playground) {
+export function queryExerciseFromPlayground(playground) {
   return playground.closest(".css-exercise");
+}
+
+export function queryAnswerFromPlayground(playground) {
+  return queryExerciseFromPlayground(playground).querySelector(".answer");
 }
 
 export function queryAnswerFiles(answer) {
@@ -39,4 +43,12 @@ export function extractFilename(code) {
   }
 
   return `${baseName}.${extension}`;
+}
+
+export function queryResetButtonFromPlayground(playground) {
+  return queryExerciseFromPlayground(playground).querySelector(".reset-css");
+}
+
+export function queryTestButtonFromPlayground(playground) {
+  return queryExerciseFromPlayground(playground).querySelector(".test-css");
 }

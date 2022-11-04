@@ -91,11 +91,14 @@ class CSSExercise(ExerciseAdmonition):
 
                 submission_form.remove(code_element)
 
+        reset_str = _('Reset')
+        test_str = _('Test')
+
         return f'''
         {self.__create_playground(files)}
         <input type="hidden" name="data" value=""/>
         <div class="ah-btn-group">
-            <input type="button" class="ah-button ah-button--primary" name="resetButton" value="Reset"/>
-            <input type="button" class="ah-button ah-button--primary" name="sendButton" value="Testar"/>
+            <input type="button" class="ah-button ah-button--primary reset-css" name="resetButton" value="{ reset_str }"/>
+            <input type="button" class="ah-button ah-button--primary test-css" name="sendButton" value="{ test_str }"/>
         </div>
         '''
