@@ -2,6 +2,7 @@ from markdown.postprocessors import Postprocessor
 from markdown.preprocessors import Preprocessor
 from jinja2 import Environment
 import random
+import string
 
 
 class RandomIntVariable:
@@ -10,7 +11,7 @@ class RandomIntVariable:
 
     def new(self, start=0, end=10):
         self.value = random.randint(start, end)
-        return str(self.value)
+        return self.value
 
     def __str__(self):
         return str(self.value)
@@ -23,7 +24,19 @@ class RandomFloatVariable:
     def new(self, start=0, end=10):
         sz = end - start
         self.value = sz * random.random() + start
+        return self.value
+
+    def __str__(self):
         return str(self.value)
+
+
+class RandomStringVariable:
+    def __init__(self):
+        self.new()
+
+    def new(self, sz=10):
+        self.value = ''.join([random.choice(string.ascii_letters) for i in range(sz)])
+        return self.value
 
     def __str__(self):
         return str(self.value)
@@ -50,6 +63,9 @@ class Jinja2PreProcessor(Preprocessor):
         )
         random_elements.update(
             {f'randfloat{i}': RandomFloatVariable() for i in range(1, 11)}
+        )
+        random_elements.update(
+            {f'randstring{i}': RandomStringVariable() for i in range(1, 11)}
         )
         new_text = e.from_string(text).render(random_elements)
 
