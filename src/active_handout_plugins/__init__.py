@@ -8,6 +8,7 @@ from .counter import CounterProcessor
 from .video import VideoAdmonition
 from .pdf import PdfAdmonition
 from .parsons import ParsonsExercise
+from .templating import Jinja2PreProcessor
 
 
 class ActiveHandoutExtension(Extension):
@@ -34,3 +35,5 @@ class ActiveHandoutExtension(Extension):
         md.treeprocessors.register(ProgressButtons(md), 'progress', 15)
         md.treeprocessors.register(exercise_admonitions, 'exercises', 15)
         md.treeprocessors.register(SplitDocumentInSections(md), 'sections', 16)
+
+        md.preprocessors.register(Jinja2PreProcessor(md), 'templating', 1000000000)
