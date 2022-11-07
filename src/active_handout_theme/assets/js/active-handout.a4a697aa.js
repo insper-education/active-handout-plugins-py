@@ -561,89 +561,7 @@ function onLoad() {
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC","./footnote":"70ehP","./menu":"5D3Be","./style":"5DGm5","./parsons":"1AI9I","./css-exercise":"a537T"}],"fzxNo":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
-var _clientDb = require("../client-db");
-var _telemetry = require("../telemetry");
-function initProgressPlugin(rememberCallbacks) {
-    rememberCallbacks.push({
-        match: (el)=>el.classList.contains("progress"),
-        callback: (el)=>{
-            (0, _telemetry.saveAndSendData)(el, true);
-        }
-    });
-    queryProgressBtns().forEach((e)=>{
-        if ((0, _clientDb.getValue)(e)) e.click();
-    });
-}
-function queryProgressBtns() {
-    return document.querySelectorAll("button.progress");
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ","../client-db":"j0pff"}],"5oERU":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"kpvgZ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
-var _clientDb = require("./client-db");
-function saveAndSendData(elOrKey, value) {
-    (0, _clientDb.setValue)(elOrKey, value);
-    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
-// TODO: fetch POST with token
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client-db":"j0pff"}],"j0pff":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "setValue", ()=>setValue);
-parcelHelpers.export(exports, "getValue", ()=>getValue);
-function getKey(elOrKey) {
-    if (typeof elOrKey === "string") return elOrKey;
-    const docAddr = document.location.pathname;
-    const slash = docAddr.endsWith("/") ? "" : "/";
-    return `${docAddr}${slash}${elOrKey.id}`;
-}
-function setValue(elOrKey, value) {
-    const key = getKey(elOrKey);
-    localStorage[key] = value;
-}
-function getValue(elOrKey) {
-    const key = getKey(elOrKey);
-    return localStorage.getItem(key);
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"eIlmk":[function(require,module,exports) {
+},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./exercise":"dmczC","./footnote":"70ehP","./menu":"5D3Be","./style":"5DGm5","./parsons":"1AI9I","./css-exercise":"a537T"}],"eIlmk":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initTabbedPlugin", ()=>initTabbedPlugin);
@@ -719,7 +637,89 @@ function initTabbedPlugin() {
     tabScroll();
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"dmczC":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5oERU":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"fzxNo":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
+var _clientDb = require("../client-db");
+var _telemetry = require("../telemetry");
+function initProgressPlugin(rememberCallbacks) {
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains("progress"),
+        callback: (el)=>{
+            (0, _telemetry.saveAndSendData)(el, true);
+        }
+    });
+    queryProgressBtns().forEach((e)=>{
+        if ((0, _clientDb.getValue)(e)) e.click();
+    });
+}
+function queryProgressBtns() {
+    return document.querySelectorAll("button.progress");
+}
+
+},{"../client-db":"j0pff","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"j0pff":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "setValue", ()=>setValue);
+parcelHelpers.export(exports, "getValue", ()=>getValue);
+function getKey(elOrKey) {
+    if (typeof elOrKey === "string") return elOrKey;
+    const docAddr = document.location.pathname;
+    const slash = docAddr.endsWith("/") ? "" : "/";
+    return `${docAddr}${slash}${elOrKey.id}`;
+}
+function setValue(elOrKey, value) {
+    const key = getKey(elOrKey);
+    localStorage[key] = value;
+}
+function getValue(elOrKey) {
+    const key = getKey(elOrKey);
+    return localStorage.getItem(key);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"kpvgZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
+var _clientDb = require("./client-db");
+function saveAndSendData(elOrKey, value) {
+    (0, _clientDb.setValue)(elOrKey, value);
+    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
+// TODO: fetch POST with token
+}
+
+},{"./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"dmczC":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initExercisePlugin", ()=>initExercisePlugin);
@@ -1004,7 +1004,7 @@ function toggleMenu(menuBtn) {
     else openMenu();
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff","../breakpoints":"bXeyp"}],"5DGm5":[function(require,module,exports) {
+},{"../client-db":"j0pff","../breakpoints":"bXeyp","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5DGm5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initStyle", ()=>initStyle);
@@ -1076,7 +1076,7 @@ function registerListeners(exercise) {
     });
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ"}],"6FJZc":[function(require,module,exports) {
+},{"./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"6FJZc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
@@ -1340,14 +1340,12 @@ function hideAnswer(answer) {
     answer.style.display = "none";
 }
 
-},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../dom-utils":"NCBha"}],"NCBha":[function(require,module,exports) {
+},{"../dom-utils":"NCBha","./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"NCBha":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createElementWithClasses", ()=>createElementWithClasses);
 parcelHelpers.export(exports, "sendRemember", ()=>sendRemember);
-parcelHelpers.export(exports, "deepCopy", ()=>deepCopy);
 parcelHelpers.export(exports, "listAllElements", ()=>listAllElements);
-parcelHelpers.export(exports, "approximatelyEqual", ()=>approximatelyEqual);
 function createElementWithClasses(tagName, classList, parent) {
     const el = document.createElement(tagName);
     for (let className of classList)el.classList.add(className);
@@ -1363,9 +1361,6 @@ function sendRemember(element, args) {
     });
     window.dispatchEvent(ev);
 }
-function deepCopy(dict) {
-    return JSON.parse(JSON.stringify(dict));
-}
 function listAllElements(parent) {
     let elements = [];
     for (let child of parent.childNodes){
@@ -1373,10 +1368,6 @@ function listAllElements(parent) {
         elements = elements.concat(listAllElements(child));
     }
     return elements;
-}
-function approximatelyEqual(a, b, epsilon) {
-    if (!epsilon) epsilon = 0.1;
-    return Math.abs(a - b) < epsilon;
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"a537T":[function(require,module,exports) {
@@ -1387,133 +1378,59 @@ var _sandpackClient = require("@codesandbox/sandpack-client");
 var _codejar = require("codejar");
 var _highlightJs = require("highlight.js");
 var _highlightJsDefault = parcelHelpers.interopDefault(_highlightJs);
-var _domUtils = require("../dom-utils");
 var _queries = require("./queries");
-function build_html_file(content) {
-    return `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=300, height=200, initial-scale=1", user-scalable="no">
-</head>
-<body>
-${content}
-</body>
-</html>`;
-}
-function build_main_js(files) {
-    mainjs = "";
-    for(let filename in files)if (!filename.endsWith("html")) mainjs += `import "/${filename}";\n`;
-    return mainjs;
-}
-function initFiles() {
-    return {
-        "reset.css": {
-            code: `
-/* http://meyerweb.com/eric/tools/css/reset/
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline;
-}
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-  display: block;
-}
-body {
-  line-height: 1;
-}
-ol, ul {
-  list-style: none;
-}
-blockquote, q {
-  quotes: none;
-}
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
-  content: none;
-}
-table {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-/* Active Handout custom iframe reset */
-body {
-  width: 100vw;
-  height: 100vh;
-  margin: 0 auto;
-  padding: 0;
-  font-family: sans-serif;
-  overflow: hidden;
-}
-`
-        },
-        "css-exercise.js": {
-            code: `
-function listAllElements(parent) {
-  let elements = [];
-  for (let child of parent.childNodes) {
-    if (child.nodeType === Node.ELEMENT_NODE) {
-      elements.push(child);
-      elements = elements.concat(listAllElements(child));
-    }
-  }
-  return elements;
-}
-
-function getRect(element) {
-  const rect = element.getBoundingClientRect();
-  return {x: rect.x, y: rect.y, width: rect.width, height: rect.height};
-}
-
-window.addEventListener("message", function(event) {
-  if (event.data?.message !== "computeRects") return;
-
-  const elements = listAllElements(document.querySelector("body"));
-  const rects = elements.map(getRect);
-
-  event.data.rects = rects;
-
-  event.source.postMessage(event.data, "*");
-});
-`
-        }
-    };
-}
-function allEqualRects(preview, expected) {
-    if (preview.length !== expected.length) return false;
-    for(let i = 0; i < preview.length; i++)for (let attr of [
-        "x",
-        "y",
-        "width",
-        "height"
-    ]){
-        if (!(0, _domUtils.approximatelyEqual)(preview[i][attr], expected[i][attr], 5)) return false;
-    }
-    return true;
-}
+var _domUtils = require("./dom-utils");
+var _files = require("./files");
 const allRects = {};
 function initCSSPlugin(rememberCallbacks) {
+    initHljs();
+    initComputedRectsMessageListener();
+    const playgrounds = (0, _queries.queryPlaygrounds)();
+    playgrounds.forEach(initPlayground);
+}
+function initPlayground(playground) {
+    const editors = (0, _queries.queryEditors)(playground);
+    const tabs = (0, _queries.queryTabs)(playground);
+    const exercise = (0, _queries.queryExerciseFromPlayground)(playground);
+    const resetButton = (0, _queries.queryResetButtonFromPlayground)(playground);
+    const testButton = (0, _queries.queryTestButtonFromPlayground)(playground);
+    const files = (0, _files.initFiles)(editors);
+    const origFiles = (0, _domUtils.deepCopy)(files);
+    const updateSandpack = initSandpack((0, _queries.queryPreview)(playground), files);
+    const codeJars = Object.fromEntries(Array.from(editors).map(buildInitCodeJar(exercise, files, updateSandpack)));
+    resetButton.addEventListener("click", buildResetClickListener(playground, files, origFiles, codeJars, updateSandpack));
+    testButton.addEventListener("click", buildTestClickListener(playground));
+    setupTabs(tabs, editors);
+    buildExpectedResult(playground, files);
+}
+function initSandpack(iframe, files) {
+    const info = {
+        files,
+        entry: "/main.js",
+        dependencies: {
+            uuid: "latest"
+        }
+    };
+    const sandpack = new (0, _sandpackClient.SandpackClient)(iframe, info, {
+        showOpenInCodeSandbox: false
+    });
+    function updateSandpack() {
+        sandpack.updatePreview(info);
+    }
+    return updateSandpack;
+}
+function buildInitCodeJar(exercise, files, updateSandpack) {
+    return (editor)=>{
+        const filename = editor.getAttribute("data-filename");
+        const jar = (0, _codejar.CodeJar)(editor, (0, _highlightJsDefault.default).highlightElement);
+        jar.onUpdate(buildCodeUpdateListener(exercise, files[filename], updateSandpack));
+        return [
+            filename,
+            jar
+        ];
+    };
+}
+function initHljs() {
     (0, _highlightJsDefault.default).configure({
         languages: [
             "html",
@@ -1521,6 +1438,8 @@ function initCSSPlugin(rememberCallbacks) {
             "css"
         ]
     });
+}
+function initComputedRectsMessageListener() {
     window.addEventListener("message", (event)=>{
         var ref;
         if (((ref = event.data) === null || ref === void 0 ? void 0 : ref.message) !== "computeRects") return;
@@ -1529,95 +1448,71 @@ function initCSSPlugin(rememberCallbacks) {
         const { preview , expected  } = allRects[exerciseId];
         if (preview && expected) {
             const exercise = document.getElementById(exerciseId);
-            if (allEqualRects(preview, expected)) // TODO: TELEMETRY
-            // TODO: (STOPPED HERE) DISABLE EDITORS AND TEST BUTTON
-            exercise.classList.add("done");
-            else exercise.classList.add("wrong");
+            if ((0, _domUtils.allEqualRects)(preview, expected)) {
+                // TODO: TELEMETRY
+                exercise.classList.add("done");
+                const testButton = (0, _queries.queryTestButtonFromExercise)(exercise);
+                testButton.disabled = true;
+            } else exercise.classList.add("wrong");
         }
     });
-    const playgrounds = (0, _queries.queryPlaygrounds)();
-    playgrounds.forEach((playground)=>{
-        let sandpack;
-        const files = initFiles();
-        const info = {
-            files,
-            entry: "/main.js",
-            dependencies: {
-                uuid: "latest"
-            }
-        };
-        const tabs = (0, _queries.queryTabs)(playground);
-        const editors = (0, _queries.queryEditors)(playground);
-        const codeJars = {};
-        editors.forEach((editor)=>{
-            const filename = editor.getAttribute("data-filename");
-            let content = editor.textContent;
-            if (filename.endsWith("html")) content = build_html_file(content);
-            files[filename] = {
-                code: content
-            };
-            const jar = (0, _codejar.CodeJar)(editor, (0, _highlightJsDefault.default).highlightElement);
-            codeJars[filename] = jar;
-            jar.onUpdate((code)=>{
-                if (filename.endsWith("html")) code = build_html_file(code);
-                files[filename].code = code;
-                sandpack.updatePreview(info);
-            });
-        });
-        files["main.js"] = {
-            code: build_main_js(files)
-        };
-        const origFiles = (0, _domUtils.deepCopy)(files);
-        const resetButton = (0, _queries.queryResetButtonFromPlayground)(playground);
-        resetButton.addEventListener("click", ()=>{
-            const exercise = (0, _queries.queryExerciseFromPlayground)(playground);
-            exercise.classList.remove("done");
-            exercise.classList.remove("wrong");
-            for(let filename in origFiles){
-                const code = origFiles[filename].code;
-                files[filename].code = code;
-                const jar = codeJars[filename];
-                jar === null || jar === void 0 ? void 0 : jar.updateCode(code);
-                sandpack.updatePreview(info);
-            }
-        });
-        const testButton = (0, _queries.queryTestButtonFromPlayground)(playground);
-        testButton.addEventListener("click", ()=>{
-            const exercise = (0, _queries.queryExerciseFromPlayground)(playground);
-            const previewIframe = (0, _queries.queryPreview)(playground);
-            const expectedIframe = (0, _queries.queryExpectedResult)(playground);
-            exercise.classList.remove("done");
-            exercise.classList.remove("wrong");
-            allRects[exercise.id] = {};
-            previewIframe.contentWindow.postMessage({
-                message: "computeRects",
-                origin: "preview",
-                exerciseId: exercise.id
-            }, "*");
-            expectedIframe.contentWindow.postMessage({
-                message: "computeRects",
-                origin: "expected",
-                exerciseId: exercise.id
-            }, "*");
-        });
-        setupTabs(tabs, editors);
-        sandpack = new (0, _sandpackClient.SandpackClient)((0, _queries.queryPreview)(playground), info, {
-            showOpenInCodeSandbox: false
-        });
-        buildExpectedResult(playground, info);
-    });
 }
-function buildExpectedResult(playground, info) {
-    const expectedResultInfo = (0, _domUtils.deepCopy)(info);
+function buildCodeUpdateListener(exercise, file, updateSandpack) {
+    const testButton = (0, _queries.queryTestButtonFromExercise)(exercise);
+    return (code)=>{
+        file.code = code;
+        updateSandpack();
+        resetExercise(exercise);
+        testButton.disabled = false;
+    };
+}
+function buildResetClickListener(playground, files, origFiles, codeJars, updateSandpack) {
+    const exercise = (0, _queries.queryExerciseFromPlayground)(playground);
+    const testButton = (0, _queries.queryTestButtonFromPlayground)(playground);
+    return ()=>{
+        resetExercise(exercise);
+        testButton.disabled = false;
+        for(let filename in origFiles){
+            const code = origFiles[filename].code;
+            files[filename].code = code;
+            const jar = codeJars[filename];
+            jar === null || jar === void 0 ? void 0 : jar.updateCode(code);
+            updateSandpack();
+        }
+    };
+}
+function buildTestClickListener(playground) {
+    return ()=>{
+        const exercise = (0, _queries.queryExerciseFromPlayground)(playground);
+        const previewIframe = (0, _queries.queryPreview)(playground);
+        const expectedIframe = (0, _queries.queryExpectedResult)(playground);
+        resetExercise(exercise);
+        allRects[exercise.id] = {};
+        previewIframe.contentWindow.postMessage({
+            message: "computeRects",
+            origin: "preview",
+            exerciseId: exercise.id
+        }, "*");
+        expectedIframe.contentWindow.postMessage({
+            message: "computeRects",
+            origin: "expected",
+            exerciseId: exercise.id
+        }, "*");
+    };
+}
+function resetExercise(exercise) {
+    exercise.classList.remove("done");
+    exercise.classList.remove("wrong");
+}
+function buildExpectedResult(playground, files) {
+    files = (0, _domUtils.deepCopy)(files);
     const answer = (0, _queries.queryAnswerFromPlayground)(playground);
     const answerFiles = (0, _queries.queryAnswerFiles)(answer);
     answerFiles.forEach((answerFile)=>{
         const filename = (0, _queries.extractFilename)(answerFile);
-        expectedResultInfo.files[filename].code = answerFile.textContent;
+        files[filename].code = answerFile.textContent;
     });
-    new (0, _sandpackClient.SandpackClient)((0, _queries.queryExpectedResult)(playground), expectedResultInfo, {
-        showOpenInCodeSandbox: false
-    });
+    initSandpack((0, _queries.queryExpectedResult)(playground), files);
 }
 function setupTabs(tabs, editors) {
     tabs.forEach((tab, idx)=>{
@@ -1632,7 +1527,7 @@ function setupTabs(tabs, editors) {
     });
 }
 
-},{"@codesandbox/sandpack-client":"3TkIg","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"jumEM","codejar":"8oTO2","highlight.js":"ljeYi","../dom-utils":"NCBha"}],"3TkIg":[function(require,module,exports) {
+},{"@codesandbox/sandpack-client":"3TkIg","codejar":"8oTO2","highlight.js":"ljeYi","./queries":"jumEM","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./dom-utils":"e9MMc","./files":"3r4Eh"}],"3TkIg":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "SandpackClient", ()=>I);
@@ -3407,63 +3302,7 @@ if (DataView && getTag(new DataView(new ArrayBuffer(1))) != dataViewTag || Map &
 }
 module.exports = isEqual;
 
-},{}],"jumEM":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "queryPlaygrounds", ()=>queryPlaygrounds);
-parcelHelpers.export(exports, "queryTabs", ()=>queryTabs);
-parcelHelpers.export(exports, "queryEditors", ()=>queryEditors);
-parcelHelpers.export(exports, "queryPreview", ()=>queryPreview);
-parcelHelpers.export(exports, "queryExpectedResult", ()=>queryExpectedResult);
-parcelHelpers.export(exports, "queryExerciseFromPlayground", ()=>queryExerciseFromPlayground);
-parcelHelpers.export(exports, "queryAnswerFromPlayground", ()=>queryAnswerFromPlayground);
-parcelHelpers.export(exports, "queryAnswerFiles", ()=>queryAnswerFiles);
-parcelHelpers.export(exports, "extractFilename", ()=>extractFilename);
-parcelHelpers.export(exports, "queryResetButtonFromPlayground", ()=>queryResetButtonFromPlayground);
-parcelHelpers.export(exports, "queryTestButtonFromPlayground", ()=>queryTestButtonFromPlayground);
-function queryPlaygrounds() {
-    return document.querySelectorAll(".css-playground");
-}
-function queryTabs(playground) {
-    return playground.querySelectorAll(".file-tab .tab");
-}
-function queryEditors(playground) {
-    return playground.querySelectorAll(".playground-code-editor");
-}
-function queryPreview(playground) {
-    return playground.querySelector(".page-preview .preview");
-}
-function queryExpectedResult(playground) {
-    return playground.querySelector(".page-preview .expected-result");
-}
-function queryExerciseFromPlayground(playground) {
-    return playground.closest(".css-exercise");
-}
-function queryAnswerFromPlayground(playground) {
-    return queryExerciseFromPlayground(playground).querySelector(".answer");
-}
-function queryAnswerFiles(answer) {
-    return answer.querySelectorAll(".highlight");
-}
-function extractFilename(code) {
-    let baseName = "index";
-    let extension = "css";
-    const filenamePattern = "filename-";
-    const languagePattern = "language-";
-    for (let className of code.classList){
-        if (className.startsWith(filenamePattern)) baseName = className.substring(filenamePattern.length);
-        if (className.startsWith(languagePattern)) extension = className.substring(languagePattern.length);
-    }
-    return `${baseName}.${extension}`;
-}
-function queryResetButtonFromPlayground(playground) {
-    return queryExerciseFromPlayground(playground).querySelector(".reset-css");
-}
-function queryTestButtonFromPlayground(playground) {
-    return queryExerciseFromPlayground(playground).querySelector(".test-css");
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"8oTO2":[function(require,module,exports) {
+},{}],"8oTO2":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CodeJar", ()=>CodeJar);
@@ -55204,6 +55043,214 @@ module.exports = xquery;
 }
 module.exports = zephir;
 
-},{}]},["1csOT"], null, "parcelRequirea86e")
+},{}],"jumEM":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "queryPlaygrounds", ()=>queryPlaygrounds);
+parcelHelpers.export(exports, "queryTabs", ()=>queryTabs);
+parcelHelpers.export(exports, "queryEditors", ()=>queryEditors);
+parcelHelpers.export(exports, "queryPreview", ()=>queryPreview);
+parcelHelpers.export(exports, "queryExpectedResult", ()=>queryExpectedResult);
+parcelHelpers.export(exports, "queryExerciseFromPlayground", ()=>queryExerciseFromPlayground);
+parcelHelpers.export(exports, "queryAnswerFromPlayground", ()=>queryAnswerFromPlayground);
+parcelHelpers.export(exports, "queryAnswerFiles", ()=>queryAnswerFiles);
+parcelHelpers.export(exports, "extractFilename", ()=>extractFilename);
+parcelHelpers.export(exports, "queryResetButtonFromPlayground", ()=>queryResetButtonFromPlayground);
+parcelHelpers.export(exports, "queryTestButtonFromPlayground", ()=>queryTestButtonFromPlayground);
+parcelHelpers.export(exports, "queryTestButtonFromExercise", ()=>queryTestButtonFromExercise);
+function queryPlaygrounds() {
+    return document.querySelectorAll(".css-playground");
+}
+function queryTabs(playground) {
+    return playground.querySelectorAll(".file-tab .tab");
+}
+function queryEditors(playground) {
+    return playground.querySelectorAll(".playground-code-editor");
+}
+function queryPreview(playground) {
+    return playground.querySelector(".page-preview .preview");
+}
+function queryExpectedResult(playground) {
+    return playground.querySelector(".page-preview .expected-result");
+}
+function queryExerciseFromPlayground(playground) {
+    return playground.closest(".css-exercise");
+}
+function queryAnswerFromPlayground(playground) {
+    return queryExerciseFromPlayground(playground).querySelector(".answer");
+}
+function queryAnswerFiles(answer) {
+    return answer.querySelectorAll(".highlight");
+}
+function extractFilename(code) {
+    let baseName = "index";
+    let extension = "css";
+    const filenamePattern = "filename-";
+    const languagePattern = "language-";
+    for (let className of code.classList){
+        if (className.startsWith(filenamePattern)) baseName = className.substring(filenamePattern.length);
+        if (className.startsWith(languagePattern)) extension = className.substring(languagePattern.length);
+    }
+    return `${baseName}.${extension}`;
+}
+function queryResetButtonFromPlayground(playground) {
+    return queryExerciseFromPlayground(playground).querySelector(".reset-css");
+}
+function queryTestButtonFromPlayground(playground) {
+    return queryTestButtonFromExercise(queryExerciseFromPlayground(playground));
+}
+function queryTestButtonFromExercise(exercise) {
+    return exercise.querySelector(".test-css");
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"e9MMc":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "approximatelyEqual", ()=>approximatelyEqual);
+parcelHelpers.export(exports, "allEqualRects", ()=>allEqualRects);
+parcelHelpers.export(exports, "deepCopy", ()=>deepCopy);
+function approximatelyEqual(a, b, epsilon) {
+    if (!epsilon) epsilon = 0.1;
+    return Math.abs(a - b) < epsilon;
+}
+function allEqualRects(preview, expected) {
+    if (preview.length !== expected.length) return false;
+    for(let i = 0; i < preview.length; i++)for (let attr of [
+        "x",
+        "y",
+        "width",
+        "height"
+    ]){
+        if (!approximatelyEqual(preview[i][attr], expected[i][attr], 5)) return false;
+    }
+    return true;
+}
+function deepCopy(dict) {
+    return JSON.parse(JSON.stringify(dict));
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"3r4Eh":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initFiles", ()=>initFiles);
+function initFiles(editors) {
+    const files = {
+        "reset.css": {
+            code: RESET_CSS
+        },
+        "css-exercise.js": {
+            code: CSS_EXERCISE_JS
+        }
+    };
+    editors.forEach((editor)=>{
+        const filename = editor.getAttribute("data-filename");
+        files[filename] = {
+            code: editor.textContent
+        };
+    });
+    files["main.js"] = {
+        code: build_main_js(files)
+    };
+    return files;
+}
+function build_main_js(files) {
+    mainjs = "";
+    for(let filename in files)if (!filename.endsWith("html")) mainjs += `import "/${filename}";\n`;
+    return mainjs;
+}
+function listAllElements(parent) {
+    let elements = [];
+    for (let child of parent.childNodes)if (child.nodeType === Node.ELEMENT_NODE) {
+        elements.push(child);
+        elements = elements.concat(listAllElements(child));
+    }
+    return elements;
+}
+function getRect(element) {
+    const rect = element.getBoundingClientRect();
+    return {
+        x: rect.x,
+        y: rect.y,
+        width: rect.width,
+        height: rect.height
+    };
+}
+function initCSSMessageListener() {
+    window.addEventListener("message", function(event) {
+        var ref;
+        if (((ref = event.data) === null || ref === void 0 ? void 0 : ref.message) !== "computeRects") return;
+        const elements = listAllElements(document.querySelector("body"));
+        const rects = elements.map(getRect);
+        event.data.rects = rects;
+        event.source.postMessage(event.data, "*");
+    });
+}
+const CSS_EXERCISE_JS = `
+${listAllElements.toString()}
+${getRect.toString()}
+${initCSSMessageListener.toString()}
+
+initCSSMessageListener()
+`;
+const RESET_CSS = `
+/* http://meyerweb.com/eric/tools/css/reset/
+v2.0 | 20110126
+License: none (public domain)
+*/
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+margin: 0;
+padding: 0;
+border: 0;
+font-size: 100%;
+font: inherit;
+vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+display: block;
+}
+body {
+line-height: 1;
+}
+ol, ul {
+list-style: none;
+}
+blockquote, q {
+quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+content: '';
+content: none;
+}
+table {
+border-collapse: collapse;
+border-spacing: 0;
+}
+/* Active Handout custom iframe reset */
+body {
+width: 100vw;
+height: 100vh;
+margin: 0 auto;
+padding: 0;
+font-family: sans-serif;
+overflow: hidden;
+}
+`;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

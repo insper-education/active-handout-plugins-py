@@ -9,6 +9,11 @@ $css-preview-height: 200px;
   display: grid;
   grid-template-columns: 1fr auto;
   margin-bottom: 1rem;
+  gap: 1rem;
+
+  @include smaller-than("medium") {
+    grid-template-columns: 1fr;
+  }
 
   .file-editor {
     background-color: #f7f3f7;
@@ -17,7 +22,6 @@ $css-preview-height: 200px;
 
   .file-tab {
     display: flex;
-    padding: 0 1rem;
     gap: 0.5rem;
     border-bottom: 1px solid var(--clr-gray-primary-3);
 
@@ -46,6 +50,13 @@ $css-preview-height: 200px;
     width: 100%;
     min-height: 10rem;
     padding: 0 0 0 0.5rem;
+    display: flex;
+    flex-direction: column;
+
+    @include smaller-than("medium") {
+      grid-row: 1;
+      flex-direction: column-reverse;
+    }
 
     p {
       line-height: 1;
@@ -55,7 +66,7 @@ $css-preview-height: 200px;
     iframe {
       display: block;
       border: none;
-      margin: 0;
+      margin: 0 0 1rem;
       padding: 0;
       width: $css-preview-width;
       height: $css-preview-height;

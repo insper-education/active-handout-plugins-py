@@ -66,10 +66,14 @@ class CSSExercise(ExerciseAdmonition):
         { editors }
     </div>
     <div class="page-preview">
-        <p>{ preview_str }</p>
-        <iframe class="preview"></iframe>
-        <p>{ expected_str }</p>
-        <iframe class="expected-result"></iframe>
+        <div>
+            <p>{ preview_str }</p>
+            <iframe class="preview"></iframe>
+        </div>
+        <div>
+            <p>{ expected_str }</p>
+            <iframe class="expected-result"></iframe>
+        </div>
     </div>
 </div>
 '''

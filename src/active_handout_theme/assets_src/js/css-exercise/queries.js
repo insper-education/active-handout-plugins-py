@@ -50,5 +50,9 @@ export function queryResetButtonFromPlayground(playground) {
 }
 
 export function queryTestButtonFromPlayground(playground) {
-  return queryExerciseFromPlayground(playground).querySelector(".test-css");
+  return queryTestButtonFromExercise(queryExerciseFromPlayground(playground));
+}
+
+export function queryTestButtonFromExercise(exercise) {
+  return exercise.querySelector(".test-css");
 }

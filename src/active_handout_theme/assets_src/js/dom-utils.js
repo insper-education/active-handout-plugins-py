@@ -14,10 +14,6 @@ export function sendRemember(element, args) {
   window.dispatchEvent(ev);
 }
 
-export function deepCopy(dict) {
-  return JSON.parse(JSON.stringify(dict));
-}
-
 export function listAllElements(parent) {
   let elements = [];
   for (let child of parent.childNodes) {
@@ -25,9 +21,4 @@ export function listAllElements(parent) {
     elements = elements.concat(listAllElements(child));
   }
   return elements;
-}
-
-export function approximatelyEqual(a, b, epsilon) {
-  if (!epsilon) epsilon = 0.1;
-  return Math.abs(a - b) < epsilon;
 }
