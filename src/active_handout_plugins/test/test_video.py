@@ -17,7 +17,7 @@ class TestVideoAdmonition(TestCase):
           self.dedent('''
             <section class="progress-section show">
             <div>
-            <video src="aaa.mp4" width="100%"></video>
+            <video controls="true" src="aaa.mp4" width="100%"></video>
             </div>
             </section>
           ''')
