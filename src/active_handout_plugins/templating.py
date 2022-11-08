@@ -51,9 +51,9 @@ class Chooser:
 
 
 class Jinja2PreProcessor(Preprocessor):
-    def __init__(self, md, custom_variables):
+    def __init__(self, md, user_provided_variables):
         super().__init__(md)
-        self.custom_variables = custom_variables
+        self.user_provided_variables = user_provided_variables
 
     def run(self, lines):
         text = '\n'.join(lines)
@@ -71,7 +71,7 @@ class Jinja2PreProcessor(Preprocessor):
         custom_template_values.update(
             {f'randstring{i}': RandomStringVariable() for i in range(1, 11)}
         )
-        custom_template_values.update(self.custom_variables)
+        custom_template_values.update(self.user_provided_variables)
         new_text = e.from_string(text).render(custom_template_values)
 
         return new_text.split('\n')
