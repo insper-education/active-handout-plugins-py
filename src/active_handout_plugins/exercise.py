@@ -1,6 +1,7 @@
 import xml.etree.ElementTree as etree
 from .l10n import gettext as _
 from .admonition import AdmonitionVisitor
+import random
 
 
 class ExerciseAdmonition(AdmonitionVisitor):
@@ -138,6 +139,8 @@ class ChoiceExercise(ExerciseAdmonition):
   </div>
 </label>
 ''')
+
+        random.shuffle(html_alternatives)
         return f'''
 <div class="alternative-set" data-answer-idx="{answer_idx}">
   {"".join(html_alternatives)}
