@@ -35,7 +35,7 @@ class RandomStringVariable:
         self.new()
 
     def new(self, sz=10):
-        self.value = ''.join([random.choice(string.ascii_letters) for i in range(sz)])
+        self.value = ''.join([random.choice(string.ascii_letters) for _ in range(sz)])
         return self.value
 
     def __str__(self):
@@ -51,22 +51,27 @@ class Chooser:
 
 
 class Jinja2PreProcessor(Preprocessor):
+    def __init__(self, md, custom_variables):
+        super().__init__(md)
+        self.custom_variables = custom_variables
+
     def run(self, lines):
         text = '\n'.join(lines)
         e = Environment(extensions=['jinja2.ext.do'])
-        random_elements = {
+        custom_template_values = {
             'choose': Chooser(),
             'seed': random.seed,
         }
-        random_elements.update(
+        custom_template_values.update(
             {f'randint{i}': RandomIntVariable() for i in range(1, 11)}
         )
-        random_elements.update(
+        custom_template_values.update(
             {f'randfloat{i}': RandomFloatVariable() for i in range(1, 11)}
         )
-        random_elements.update(
+        custom_template_values.update(
             {f'randstring{i}': RandomStringVariable() for i in range(1, 11)}
         )
-        new_text = e.from_string(text).render(random_elements)
+        custom_template_values.update(self.custom_variables)
+        new_text = e.from_string(text).render(custom_template_values)
 
         return new_text.split('\n')

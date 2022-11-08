@@ -15,6 +15,7 @@ class ActiveHandoutExtension(Extension):
     """ Admonition extension for Python-Markdown. """
     config = {
         'locale': ['en', 'locale should be the same as for the theme'],
+        'custom_variables': [{}, 'Dictionacy mapping variable names to use in Jinja templating extension'],
     }
 
     def extendMarkdown(self, md):
@@ -36,4 +37,4 @@ class ActiveHandoutExtension(Extension):
         md.treeprocessors.register(exercise_admonitions, 'exercises', 15)
         md.treeprocessors.register(SplitDocumentInSections(md), 'sections', 16)
 
-        md.preprocessors.register(Jinja2PreProcessor(md), 'templating', 1000000000)
+        md.preprocessors.register(Jinja2PreProcessor(md, self.getConfig('custom_variables')), 'templating', 1000000000)
