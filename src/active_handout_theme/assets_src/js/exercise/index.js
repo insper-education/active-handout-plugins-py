@@ -33,7 +33,11 @@ export function initExercisePlugin(rememberCallbacks) {
   initSelfProgressExercises();
 
   document.getElementById("reset").addEventListener("click", function() {
-    alert("sdfkjslfjkds");
+    const exercises = document.querySelectorAll(".admonition.exercise");
+    for (const ex of exercises) {
+        removeValue(ex);
+    }
+    window.refresh();
   });
 }
 
