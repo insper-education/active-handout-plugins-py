@@ -1,4 +1,4 @@
-import { getValue } from "../client-db";
+import { getValue, removeValue } from "../client-db";
 import { saveAndSendData } from "../telemetry";
 import {
   queryChoiceExercises,
@@ -31,6 +31,14 @@ export function initExercisePlugin(rememberCallbacks) {
   initTextExercises();
   initChoiceExercises();
   initSelfProgressExercises();
+
+  document.getElementById("resetHandoutButton").addEventListener("click", function() {
+    const exercises = document.querySelectorAll(".admonition.exercise");
+    for (const ex of exercises) {
+        removeValue(ex);
+    }
+    location.reload();
+  });
 }
 
 function initTextExercises() {

@@ -16,3 +16,7 @@ export function getValue(elOrKey) {
   const key = getKey(elOrKey);
   return localStorage.getItem(key);
 }
+
+export function removeValue(elOrKey) {
+    const key = getKey(elOrKey);
+    localStorage.removeItem(key);
