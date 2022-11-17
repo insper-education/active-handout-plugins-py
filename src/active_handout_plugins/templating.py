@@ -1,9 +1,9 @@
 from markdown.postprocessors import Postprocessor
 from markdown.preprocessors import Preprocessor
-from jinja2 import Environment
+from jinja2 import Environment, FileSystemLoader
 import random
 import string
-
+import os
 
 class RandomIntVariable:
     def __init__(self):
@@ -50,6 +50,15 @@ class Chooser:
         return random.choice(args)
 
 
+class Counter:
+    def __init__(self):
+        self.value = 0
+
+    def __str__(self):
+        self.value += 1
+        return str(self.value)
+
+
 class Jinja2PreProcessor(Preprocessor):
     def __init__(self, md, user_provided_variables):
         super().__init__(md)
@@ -57,10 +66,12 @@ class Jinja2PreProcessor(Preprocessor):
 
     def run(self, lines):
         text = '\n'.join(lines)
-        e = Environment(extensions=['jinja2.ext.do'])
+        loader = FileSystemLoader(os.getcwd())
+        e = Environment(loader=loader, extensions=['jinja2.ext.do'])
         custom_template_values = {
             'choose': Chooser(),
             'seed': random.seed,
+            'count': Counter(),
         }
         custom_template_values.update(
             {f'randint{i}': RandomIntVariable() for i in range(1, 11)}
