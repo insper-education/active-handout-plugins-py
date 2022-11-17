@@ -44,6 +44,7 @@
         </div>
       </nav>
       <main class="ah-content ah-typeset">
+          <button id="resetHandoutButton"> <span class="icon">{% include "icon/reset.svg" %}</span></button>
         {% block content %}
           <div class="ah-title-box">
             <ul class="ah-breadcrumbs">
@@ -84,7 +85,6 @@
               <span class="nav-title">{{ page.next_page.title }}</span>
             </a>
           {% endif %}
-          <button id="reset">RESET</button>
         </div>
       </footer>
     </div>

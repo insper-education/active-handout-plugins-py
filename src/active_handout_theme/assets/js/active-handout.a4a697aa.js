@@ -559,89 +559,7 @@ function onLoad() {
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./progress":"fzxNo","./tabbed-content":"eIlmk","./exercise":"dmczC","./footnote":"70ehP","./menu":"5D3Be","./style":"5DGm5","./parsons":"1AI9I"}],"fzxNo":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
-var _clientDb = require("../client-db");
-var _telemetry = require("../telemetry");
-function initProgressPlugin(rememberCallbacks) {
-    rememberCallbacks.push({
-        match: (el)=>el.classList.contains("progress"),
-        callback: (el)=>{
-            (0, _telemetry.saveAndSendData)(el, true);
-        }
-    });
-    queryProgressBtns().forEach((e)=>{
-        if ((0, _clientDb.getValue)(e)) e.click();
-    });
-}
-function queryProgressBtns() {
-    return document.querySelectorAll("button.progress");
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ","../client-db":"j0pff"}],"5oERU":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"kpvgZ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
-var _clientDb = require("./client-db");
-function saveAndSendData(elOrKey, value) {
-    (0, _clientDb.setValue)(elOrKey, value);
-    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
-// TODO: fetch POST with token
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client-db":"j0pff"}],"j0pff":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "setValue", ()=>setValue);
-parcelHelpers.export(exports, "getValue", ()=>getValue);
-function getKey(elOrKey) {
-    if (typeof elOrKey === "string") return elOrKey;
-    const docAddr = document.location.pathname;
-    const slash = docAddr.endsWith("/") ? "" : "/";
-    return `${docAddr}${slash}${elOrKey.id}`;
-}
-function setValue(elOrKey, value) {
-    const key = getKey(elOrKey);
-    localStorage[key] = value;
-}
-function getValue(elOrKey) {
-    const key = getKey(elOrKey);
-    return localStorage.getItem(key);
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"eIlmk":[function(require,module,exports) {
+},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./menu":"5D3Be","./exercise":"dmczC","./footnote":"70ehP","./parsons":"1AI9I","./style":"5DGm5"}],"eIlmk":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initTabbedPlugin", ()=>initTabbedPlugin);
@@ -717,6 +635,164 @@ function initTabbedPlugin() {
     tabScroll();
 }
 
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5oERU":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
+
+},{}],"fzxNo":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
+var _clientDb = require("../client-db");
+var _telemetry = require("../telemetry");
+function initProgressPlugin(rememberCallbacks) {
+    rememberCallbacks.push({
+        match: (el)=>el.classList.contains("progress"),
+        callback: (el)=>{
+            (0, _telemetry.saveAndSendData)(el, true);
+        }
+    });
+    queryProgressBtns().forEach((e)=>{
+        if ((0, _clientDb.getValue)(e)) e.click();
+    });
+}
+function queryProgressBtns() {
+    return document.querySelectorAll("button.progress");
+}
+
+},{"../client-db":"j0pff","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"j0pff":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "setValue", ()=>setValue);
+parcelHelpers.export(exports, "getValue", ()=>getValue);
+parcelHelpers.export(exports, "removeValue", ()=>removeValue);
+function getKey(elOrKey) {
+    if (typeof elOrKey === "string") return elOrKey;
+    const docAddr = document.location.pathname;
+    const slash = docAddr.endsWith("/") ? "" : "/";
+    return `${docAddr}${slash}${elOrKey.id}`;
+}
+function setValue(elOrKey, value) {
+    const key = getKey(elOrKey);
+    localStorage[key] = value;
+}
+function getValue(elOrKey) {
+    const key = getKey(elOrKey);
+    return localStorage.getItem(key);
+}
+function removeValue(elOrKey) {
+    const key = getKey(elOrKey);
+    localStorage.removeItem(key);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"kpvgZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
+var _clientDb = require("./client-db");
+function saveAndSendData(elOrKey, value) {
+    (0, _clientDb.setValue)(elOrKey, value);
+    let dataCollectionURL = "{{ config.extra.telemetry_url }}";
+// TODO: fetch POST with token
+}
+
+},{"./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5D3Be":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initMenuPlugin", ()=>initMenuPlugin);
+var _clientDb = require("../client-db");
+var _breakpoints = require("../breakpoints");
+const btnClass = "ah-menu-btn";
+const navClass = "ah-navigation";
+const menuOpenedKey = "menu-opened";
+function initMenuPlugin() {
+    const nav = document.getElementsByClassName(navClass)[0];
+    const navContainer = nav.getElementsByClassName("ah-nav-container")[0];
+    const menuBtns = document.getElementsByClassName(btnClass);
+    const closeMenuBtn = document.getElementsByClassName("close-menu")[0];
+    if (prefersOpenMenu() && !menuIsOverContent()) openMenu();
+    for (let menuBtn of menuBtns)menuBtn.addEventListener("click", function(event) {
+        event.stopPropagation();
+        toggleMenu(menuBtn);
+    });
+    const togglableItems = document.getElementsByClassName("ah-togglable-item");
+    for (let item of togglableItems){
+        const handle = item.getElementsByClassName("ah-togglable-handle")[0];
+        handle.addEventListener("click", function(event) {
+            event.stopPropagation();
+            item.classList.toggle("opened");
+        });
+    }
+    const tocItems = document.getElementsByClassName("ah-toc-item");
+    for (let item1 of tocItems)item1.addEventListener("click", function() {
+        if (menuIsOverContent()) closeMenu();
+    });
+    closeMenuBtn.addEventListener("click", closeMenu);
+    document.addEventListener("click", function(event) {
+        if (!nav.classList.contains("show") || !menuIsOverContent()) return;
+        if (!navContainer.contains(event.target)) closeMenu();
+    });
+}
+function isMenuOpened() {
+    return getNav().classList.contains("show");
+}
+function menuIsOverContent() {
+    return window.innerWidth <= (0, _breakpoints.getBreakpoint)("large");
+}
+function getNav() {
+    return document.getElementsByClassName(navClass)[0];
+}
+function openMenu() {
+    getNav().classList.add("show");
+    (0, _clientDb.setValue)(menuOpenedKey, true);
+}
+function closeMenu() {
+    getNav().classList.remove("show");
+    (0, _clientDb.setValue)(menuOpenedKey, false);
+}
+function prefersOpenMenu() {
+    const openedPref = (0, _clientDb.getValue)(menuOpenedKey);
+    return openedPref && openedPref == "true";
+}
+function toggleMenu(menuBtn) {
+    if (isMenuOpened(menuBtn)) closeMenu();
+    else openMenu();
+}
+
+},{"../client-db":"j0pff","../breakpoints":"bXeyp","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"bXeyp":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getBreakpoint", ()=>getBreakpoint);
+function getBreakpoint(name, defaultVal) {
+    return parseInt(window.getComputedStyle(document.documentElement).getPropertyValue(`--breakpoint-${name}`, defaultVal));
+}
+
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"dmczC":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
@@ -738,6 +814,11 @@ function initExercisePlugin(rememberCallbacks) {
     initTextExercises();
     initChoiceExercises();
     initSelfProgressExercises();
+    document.getElementById("resetHandoutButton").addEventListener("click", function() {
+        const exercises = document.querySelectorAll(".admonition.exercise");
+        for (const ex of exercises)(0, _clientDb.removeValue)(ex);
+        location.reload();
+    });
 }
 function initTextExercises() {
     (0, _queries.queryTextExercises)().forEach((el)=>{
@@ -931,103 +1012,7 @@ function setCustomProps(footnoteContainer, footnoteCard, contentRect) {
     footnoteCard.style.setProperty("--offset-x", `${offsetX - contentRect.left}px`);
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../breakpoints":"bXeyp"}],"bXeyp":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "getBreakpoint", ()=>getBreakpoint);
-function getBreakpoint(name, defaultVal) {
-    return parseInt(window.getComputedStyle(document.documentElement).getPropertyValue(`--breakpoint-${name}`, defaultVal));
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5D3Be":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "initMenuPlugin", ()=>initMenuPlugin);
-var _clientDb = require("../client-db");
-var _breakpoints = require("../breakpoints");
-const btnClass = "ah-menu-btn";
-const navClass = "ah-navigation";
-const menuOpenedKey = "menu-opened";
-function initMenuPlugin() {
-    const nav = document.getElementsByClassName(navClass)[0];
-    const navContainer = nav.getElementsByClassName("ah-nav-container")[0];
-    const menuBtns = document.getElementsByClassName(btnClass);
-    const closeMenuBtn = document.getElementsByClassName("close-menu")[0];
-    if (prefersOpenMenu() && !menuIsOverContent()) openMenu();
-    for (let menuBtn of menuBtns)menuBtn.addEventListener("click", function(event) {
-        event.stopPropagation();
-        toggleMenu(menuBtn);
-    });
-    const togglableItems = document.getElementsByClassName("ah-togglable-item");
-    for (let item of togglableItems){
-        const handle = item.getElementsByClassName("ah-togglable-handle")[0];
-        handle.addEventListener("click", function(event) {
-            event.stopPropagation();
-            item.classList.toggle("opened");
-        });
-    }
-    const tocItems = document.getElementsByClassName("ah-toc-item");
-    for (let item1 of tocItems)item1.addEventListener("click", function() {
-        if (menuIsOverContent()) closeMenu();
-    });
-    closeMenuBtn.addEventListener("click", closeMenu);
-    document.addEventListener("click", function(event) {
-        if (!nav.classList.contains("show") || !menuIsOverContent()) return;
-        if (!navContainer.contains(event.target)) closeMenu();
-    });
-}
-function isMenuOpened() {
-    return getNav().classList.contains("show");
-}
-function menuIsOverContent() {
-    return window.innerWidth <= (0, _breakpoints.getBreakpoint)("large");
-}
-function getNav() {
-    return document.getElementsByClassName(navClass)[0];
-}
-function openMenu() {
-    getNav().classList.add("show");
-    (0, _clientDb.setValue)(menuOpenedKey, true);
-}
-function closeMenu() {
-    getNav().classList.remove("show");
-    (0, _clientDb.setValue)(menuOpenedKey, false);
-}
-function prefersOpenMenu() {
-    const openedPref = (0, _clientDb.getValue)(menuOpenedKey);
-    return openedPref && openedPref == "true";
-}
-function toggleMenu(menuBtn) {
-    if (isMenuOpened(menuBtn)) closeMenu();
-    else openMenu();
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff","../breakpoints":"bXeyp"}],"5DGm5":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "initStyle", ()=>initStyle);
-function initStyle() {
-    const header = document.getElementsByClassName("ah-header")[0];
-    document.documentElement.style.setProperty("--header-height", `${header.offsetHeight}px`);
-    // We listen to the resize event
-    window.addEventListener("resize", ()=>{
-        // We execute the same script as before
-        let vh = window.innerHeight * 0.01;
-        document.documentElement.style.setProperty("--vh", `${vh}px`);
-    });
-    initTextArea();
-}
-function initTextArea() {
-    const growers = document.querySelectorAll(".grow-wrap");
-    growers.forEach((grower)=>{
-        const textarea = grower.querySelector("textarea");
-        textarea.addEventListener("input", ()=>{
-            grower.dataset.replicatedValue = textarea.value;
-        });
-    });
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"1AI9I":[function(require,module,exports) {
+},{"../breakpoints":"bXeyp","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"1AI9I":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initParsonsPlugin", ()=>initParsonsPlugin);
@@ -1074,7 +1059,7 @@ function registerListeners(exercise) {
     });
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ"}],"6FJZc":[function(require,module,exports) {
+},{"./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"6FJZc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
@@ -1338,7 +1323,7 @@ function hideAnswer(answer) {
     answer.style.display = "none";
 }
 
-},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../dom-utils":"NCBha"}],"NCBha":[function(require,module,exports) {
+},{"../dom-utils":"NCBha","./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"NCBha":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "createElementWithClasses", ()=>createElementWithClasses);
@@ -1357,6 +1342,31 @@ function sendRemember(element, args) {
         }
     });
     window.dispatchEvent(ev);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5DGm5":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initStyle", ()=>initStyle);
+function initStyle() {
+    const header = document.getElementsByClassName("ah-header")[0];
+    document.documentElement.style.setProperty("--header-height", `${header.offsetHeight}px`);
+    // We listen to the resize event
+    window.addEventListener("resize", ()=>{
+        // We execute the same script as before
+        let vh = window.innerHeight * 0.01;
+        document.documentElement.style.setProperty("--vh", `${vh}px`);
+    });
+    initTextArea();
+}
+function initTextArea() {
+    const growers = document.querySelectorAll(".grow-wrap");
+    growers.forEach((grower)=>{
+        const textarea = grower.querySelector("textarea");
+        textarea.addEventListener("input", ()=>{
+            grower.dataset.replicatedValue = textarea.value;
+        });
+    });
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")

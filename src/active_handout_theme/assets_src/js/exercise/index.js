@@ -32,12 +32,12 @@ export function initExercisePlugin(rememberCallbacks) {
   initChoiceExercises();
   initSelfProgressExercises();
 
-  document.getElementById("reset").addEventListener("click", function() {
+  document.getElementById("resetHandoutButton").addEventListener("click", function() {
     const exercises = document.querySelectorAll(".admonition.exercise");
     for (const ex of exercises) {
         removeValue(ex);
     }
-    window.refresh();
+    location.reload();
   });
 }
 
