@@ -25,14 +25,14 @@
 
 #resetHandoutButton::after {
     content: "Reset";
-    max-width: 0px;
+    max-width: 0ch;
     overflow: hidden;
 
     transition: max-width 0.5s;
 }
 
 #resetHandoutButton:hover::after {
-    max-width: 50px;
+    max-width: 10ch;
     transition: max-width 0.5s;
 }
 
