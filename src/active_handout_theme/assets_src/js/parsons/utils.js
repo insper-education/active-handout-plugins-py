@@ -3,6 +3,7 @@ import {
   queryAnswer,
   queryAreaFromInside,
   queryContainerFromInside,
+  queryCorrectAnswer,
   queryDragArea,
   queryDropArea,
   queryEmptySlot,
@@ -127,7 +128,7 @@ export function submitExercise(exercise) {
   const lines = queryParsonsLines(answerArea);
   let correct = lines.length > 0 && queryParsonsLines(origArea).length === 0;
   
-  let answerCorrect = exercise.querySelector('input[name="answer"]').value;
+  let answerCorrect = queryCorrectAnswer(exercise).innerText;
   let answerText = "";
   lines.forEach((line, idx) => {
     const slot = querySlotFromInside(line);
