@@ -126,17 +126,14 @@ export function submitExercise(exercise) {
 
   const lines = queryParsonsLines(answerArea);
   let correct = lines.length > 0 && queryParsonsLines(origArea).length === 0;
+  
+  let answerCorrect = exercise.querySelector('input[name="answer"]').value;
+  let answerText = "";
   lines.forEach((line, idx) => {
     const slot = querySlotFromInside(line);
-
-    const correctLineNum = getLineNumber(line);
-    const isCorrectLine = correctLineNum === idx + 1;
-
-    const correctIndent = parseInt(line.dataset.indentcount);
-    const isCorrectIndent = correctIndent === getIndentCount(slot);
-
-    correct &&= isCorrectLine && isCorrectIndent;
+    answerText += "    ".repeat(getIndentCount(slot)) + slot.innerText + "\n"; 
   });
+  correct = correct && (answerText === answerCorrect);
 
   // We need this timeout so the browser has time to reset the
   // exercise before animating again
@@ -148,12 +145,7 @@ export function submitExercise(exercise) {
     }
   }, 0);
   showAnswer(queryAnswer(exercise));
-
   sendRemember(exercise, { correct });
-}
-
-function getLineNumber(line) {
-  return parseInt(line.querySelector("a").id.split("-")[2]);
 }
 
 function resetContainers(containers, exceptThis) {
