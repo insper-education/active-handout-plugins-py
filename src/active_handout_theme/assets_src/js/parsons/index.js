@@ -26,8 +26,8 @@ export function initParsonsPlugin(rememberCallbacks) {
 
   rememberCallbacks.push({
     match: (el) => el.classList.contains("parsons"),
-    callback: (el, { correct }) => {
-      saveAndSendData(el, correct);
+    callback: (el, answer) => {
+      saveAndSendData(el, JSON.stringify(answer));
       return true;
     },
   });

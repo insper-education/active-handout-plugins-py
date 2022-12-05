@@ -1,5 +1,7 @@
 from .exercise import ExerciseAdmonition
 import random
+import xml.etree.ElementTree as etree
+import json
 
 class ParsonsExercise(ExerciseAdmonition):
     def __init__(self, *args, **kwargs) -> None:
@@ -42,8 +44,11 @@ class ParsonsExercise(ExerciseAdmonition):
         code.tag = 'div'
         code.text = self.md.htmlStash.store(left_panel + right_panel)
 
-        return '''
+        parse_html = etree.fromstring(processed_code)
+        full_answer = "".join(parse_html.itertext())
+        return f'''
         <input type="hidden" name="data" value=""/>
+        <pre class="parsons-answer">{full_answer}</pre>
         <div class="ah-btn-group">
             <input type="button" class="ah-button ah-button--primary" name="resetButton" value="Reset"/>
             <input type="button" class="ah-button ah-button--primary" name="sendButton" value="Testar"/>

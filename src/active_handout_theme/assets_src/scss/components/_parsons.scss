@@ -11,6 +11,10 @@ $indent-size: 4ch;
     display: none;
   }
 
+  pre.parsons-answer {
+    display: none;
+  }
+
   &.correct {
     .correct-answer {
       display: inherit;

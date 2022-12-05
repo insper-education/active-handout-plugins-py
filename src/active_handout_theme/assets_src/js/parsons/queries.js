@@ -14,6 +14,10 @@ export function queryAnswer(exercise) {
   return exercise.querySelector(".admonition.answer");
 }
 
+export function queryCorrectAnswer(exercise) {
+  return exercise.querySelector(".parsons-answer");
+}
+
 export function queryParsonsContainers(exercise) {
   return exercise.querySelectorAll(".parsons-container");
 }
