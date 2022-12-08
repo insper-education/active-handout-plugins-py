@@ -688,7 +688,7 @@ function queryProgressBtns() {
     return document.querySelectorAll("button.progress");
 }
 
-},{"../client-db":"j0pff","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"j0pff":[function(require,module,exports) {
+},{"../client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ"}],"j0pff":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getKey", ()=>getKey);
@@ -722,7 +722,7 @@ var _apiClient = require("./apiClient");
 var _clientDb = require("./client-db");
 function saveAndSendData(element, value, user, points) {
     const slug = (0, _clientDb.getKey)(element);
-    (0, _clientDb.setValue)(slug, JSON.stringify(value));
+    (0, _clientDb.setValue)(slug, value);
     if (user && telemetryEnabled && backendUrl && courseSlug) (0, _apiClient.postTelemetryData)(user, value, slug, extractTags(element), points);
 }
 function extractTags(element) {

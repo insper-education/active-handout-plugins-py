@@ -183,6 +183,10 @@ p, h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0;
 }
 
+:root {
+  --font-mono: Fira Mono, monospace;
+}
+
 .ah-typeset {
   color: var(--clr-text);
   font-family: Open Sans, sans-serif;
@@ -450,7 +454,7 @@ code {
   background-color: var(--clr-code-error-background);
 }
 
-.highlight .k {
+.highlight .k, .hljs-keyword, .hljs-attribute, .hljs-meta .hljs-keyword {
   color: var(--clr-code-keyword);
 }
 
@@ -462,11 +466,11 @@ code {
   color: var(--clr-code-name);
 }
 
-.highlight .o {
+.highlight .o, .hljs-template-tag, .hljs-section, .hljs-bullet, .hljs-code, .hljs-title.function_.invoke__, .hljs-operator {
   color: var(--clr-code-operator);
 }
 
-.highlight .p {
+.highlight .p, .hljs-punctuation, .hljs-tag {
   color: var(--clr-code-punctuation);
 }
 
@@ -518,7 +522,7 @@ code {
   color: var(--clr-code-string);
 }
 
-.highlight .na {
+.highlight .na, .hljs-selector-id, .hljs-selector-class, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-attr, .hljs-subst {
   color: var(--clr-code-generic);
 }
 
@@ -558,7 +562,7 @@ code {
   color: var(--clr-code-name);
 }
 
-.highlight .nt {
+.highlight .nt, .hljs-name {
   color: var(--clr-code-operator);
 }
 
@@ -1492,6 +1496,10 @@ section.progress-section:first-child, section.progress-section.show {
   width: 1em;
   vertical-align: middle;
   display: inline;
+}
+
+.admonition .tabbed-alternate {
+  margin-inline: 0;
 }
 
 .tabbed-alternate {

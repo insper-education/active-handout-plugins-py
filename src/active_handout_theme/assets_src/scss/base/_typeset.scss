@@ -15,6 +15,10 @@ $font-sizes: (
   huge: 3.052rem,
 );
 
+:root {
+  --font-mono: #{$font-mono};
+}
+
 .ah-typeset {
   color: var(--clr-text);
   font-family: $font-regular;
