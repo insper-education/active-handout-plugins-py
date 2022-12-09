@@ -3,7 +3,7 @@ import { getKey, setValue } from "./client-db";
 
 export function saveAndSendData(element, value, user, points) {
   const slug = getKey(element);
-  setValue(slug, JSON.stringify(value));
+  setValue(slug, value);
 
   if (user && telemetryEnabled && backendUrl && courseSlug) {
     postTelemetryData(
