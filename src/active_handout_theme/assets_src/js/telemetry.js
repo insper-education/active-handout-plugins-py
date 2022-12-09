@@ -1,7 +1,28 @@
-import { setValue } from "./client-db";
+import { postTelemetryData } from "./apiClient";
+import { getKey, setValue } from "./client-db";
 
-export function saveAndSendData(elOrKey, value) {
-  setValue(elOrKey, value);
-  let dataCollectionURL = "{{ config.extra.telemetry_url }}";
-  // TODO: fetch POST with token
+export function saveAndSendData(element, value, user, points) {
+  const slug = getKey(element);
+  setValue(slug, JSON.stringify(value));
+
+  if (user && telemetryEnabled && backendUrl && courseSlug) {
+    postTelemetryData(
+      user,
+      value,
+      slug,
+      extractTags(element),
+      points
+    );
+  }
+}
+
+function extractTags(element) {
+  const tags = [];
+  const tagPrefix = "tag-";
+  for (let className of element.classList) {
+    if (className.startsWith(tagPrefix)) {
+      tags.push(className.substring(tagPrefix.length));
+    }
+  }
+  return tags;
 }

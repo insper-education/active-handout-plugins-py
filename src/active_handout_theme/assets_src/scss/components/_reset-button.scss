@@ -1,0 +1,33 @@
+#resetHandoutButton {
+  float: right;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+
+  border: 0px;
+  background-color: transparent;
+
+  &::after {
+    content: "Reset";
+    max-width: 0ch;
+    overflow: hidden;
+
+    transition: max-width 0.5s;
+  }
+
+  &:hover::after {
+    max-width: 10ch;
+    transition: max-width 0.5s;
+  }
+
+  .icon {
+    display: flex;
+
+    svg {
+      width: 1em;
+      display: inline;
+      vertical-align: middle;
+    }
+  }
+}

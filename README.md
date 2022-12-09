@@ -1,3 +1,10 @@
+## Environment Variables
+
+You can set the following variables to override some settings:
+
+- `BACKEND_URL`: change the backend url (useful for backend development)
+- `BACKEND_USER_MENU_URL`: set the user menu url (default: `BACKEND_URL/api/user-menu`)
+
 ## Compiling SCSS and JS assets
 
 Never modify the `assets/js` or `assets/css` folders. You should change the files under `assets_src` and then compile them.

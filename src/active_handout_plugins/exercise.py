@@ -21,6 +21,12 @@ class ExerciseAdmonition(AdmonitionVisitor):
                 el.set("id", c[3:])
                 el.attrib['class'] = el.attrib['class'].replace(c, '')
 
+    def __set_tags(self, el):
+        tags = self.get_tags(el)
+        for tag in tags:
+            el.attrib['class'] += f' tag-{tag}'
+
+
     def __add_exercise_description(self, el, submission_form):
         title = el.find('p/[@class="admonition-title"]')
         answer = el.find('.//div[@class="admonition answer"]')
@@ -74,6 +80,7 @@ class ExerciseAdmonition(AdmonitionVisitor):
     def visit(self, el):
         cls = self.__match_class(el)
         self.__set_element_id(el, cls)
+        self.__set_tags(el)
         self.add_extra_classes(el)
         submission_form = etree.SubElement(el, 'form')
         self.__add_exercise_description(el, submission_form)
@@ -102,6 +109,9 @@ end
 
     def create_answer(self):
         return ''
+
+    def get_tags(self, el):
+        return []
 
 
 class ChoiceExercise(ExerciseAdmonition):
@@ -148,6 +158,9 @@ class ChoiceExercise(ExerciseAdmonition):
 <input class="ah-button ah-button--primary" type="submit" name="sendButton" value="{submit_str}" disabled />
 '''
 
+    def get_tags(self, el):
+        return ['choice-exercise']
+
 
 class TextExercise(ExerciseAdmonition):
     def __init__(self, *args, **kwargs) -> None:
@@ -158,7 +171,7 @@ class TextExercise(ExerciseAdmonition):
             text_widget = '<input type="text" value="" name="data"/>'
         elif self.has_class(el, 'medium'):
             text_widget = '<div class="grow-wrap"><textarea name="data"></textarea></div>'
-        if self.has_class(el, 'long'):
+        elif self.has_class(el, 'long'):
             text_widget = '<div class="grow-wrap"><textarea name="data"></textarea></div>'
 
         submit_str = _('Submit')
@@ -167,6 +180,18 @@ class TextExercise(ExerciseAdmonition):
 
 <input class="ah-button ah-button--primary" type="submit" value="{submit_str}"/>
 '''
+
+    def get_tags(self, el):
+        tags = ['text-exercise']
+
+        if self.has_class(el, 'short'):
+            tags.append('short-text')
+        elif self.has_class(el, 'medium'):
+            tags.append('medium-text')
+        elif self.has_class(el, 'long'):
+            tags.append('long-text')
+
+        return tags
 
 
 class SelfProgressExercise(ExerciseAdmonition):

@@ -16,6 +16,10 @@
 
   font-family: $font-regular;
   font-size: map-get($font-sizes, "regular");
+
+  &--right {
+    margin-left: auto;
+  }
 }
 
 .ah-logo {

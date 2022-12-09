@@ -1,0 +1,18 @@
+ {% load socialaccount %}
+
+  {% if user.is_authenticated %}
+    <h3>Welcome {{ user.username }} !!!</h3>
+    <br /><br />
+    <a href="{% url 'account_logout' %}" class="btn btn-danger">Logout</a>
+  {% else %}
+    <!-- GitHub button starts here -->
+    <a href="http://127.0.0.1:8080{% provider_login_url 'github' %}" class="btn btn-secondary">
+      <i class="fa fa-github fa-fw"></i>
+      <span>Login with GitHub</span>
+    </a>
+    <!-- GitHub button ends here -->
+  {% endif %}
+
+  <script>
+      localStorage.setItem("sldkfjsdlk", "sdlfjflk");
+</script>
