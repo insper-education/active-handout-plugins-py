@@ -146,7 +146,7 @@ export function submitExercise(exercise) {
     }
   }, 0);
   showAnswer(queryAnswer(exercise));
-  sendRemember(exercise, { "correct": correct, "answer": answerText });
+  sendRemember(exercise, { "correct": correct, "code": answerText });
 }
 
 function resetContainers(containers, exceptThis) {

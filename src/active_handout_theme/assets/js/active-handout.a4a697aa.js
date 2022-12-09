@@ -1361,7 +1361,7 @@ function submitExercise(exercise) {
     showAnswer((0, _queries.queryAnswer)(exercise));
     (0, _domUtils.sendRemember)(exercise, {
         "correct": correct,
-        "answer": answerText
+        "code": answerText
     });
 }
 function resetContainers(containers, exceptThis) {
