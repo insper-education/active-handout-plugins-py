@@ -84,5 +84,7 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
         html = re.sub(r'^(\<div class\=\"admonition exercise.*\" id=)\"(.*)\"\>$', 
                    r'\1"\2_' f'{seed}" data-slug="{page.url}"\>', html, flags=re.MULTILINE)
 
+        if page.meta and page.meta.get('show_answers', True) == False:
+            html = re.sub(f'data-answer-idx=\"\d+\"', '', html)
         html_without_seed = re.sub(r'\<\!\-\-.*REMOVE ME\-\-\>', '', html)
         return html_without_seed
