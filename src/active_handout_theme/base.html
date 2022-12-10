@@ -86,8 +86,8 @@
       </nav>
       <main class="ah-content ah-typeset">
         {% set show_reset_button=True %}
-        {% if page.meta and page.meta.hide_reset_button is defined %}
-        {% set show_reset_button=page.meta.hide_reset_button %}
+        {% if page.meta and page.meta.show_reset_button is defined %}
+        {% set show_reset_button=page.meta.show_reset_button %}
         {%endif%}
         {% if show_reset_button %}
         <button id="resetHandoutButton">
