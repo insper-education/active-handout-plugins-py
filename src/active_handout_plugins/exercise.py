@@ -154,8 +154,9 @@ class ChoiceExercise(ExerciseAdmonition):
 ''')
 
         random.shuffle(html_alternatives)
+        el.set('data-answer-idx', str(answer_idx))
         return f'''
-<div class="alternative-set" data-answer-idx="{answer_idx}">
+<div class="alternative-set">
   {"".join(html_alternatives)}
 </div>
 <input class="ah-button ah-button--primary" type="submit" name="sendButton" value="{submit_str}" disabled />

@@ -983,9 +983,7 @@ function queryOptions(el) {
     return el.querySelectorAll("input[name='data'][type='radio']");
 }
 function queryCorrectOptionIdx(el) {
-    const alternativeSet = el.querySelector(".alternative-set");
-    if (!alternativeSet) return "";
-    return alternativeSet.getAttribute("data-answer-idx");
+    return el.getAttribute("data-answer-idx");
 }
 function queryOption(el, value) {
     return el.querySelector(`input[name='data'][value='${value}']`);
