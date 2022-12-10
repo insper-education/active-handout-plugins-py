@@ -59,6 +59,18 @@ class Counter:
         return str(self.value)
 
 
+class SetSeed:
+    def __init__(self):
+        self(0)
+    
+    def __call__(self, s):
+        self.seed = s
+        random.seed(s)
+
+    def __str__(self):
+        return str(self.seed)
+
+
 class Jinja2PreProcessor(Preprocessor):
     def __init__(self, md, user_provided_variables):
         super().__init__(md)
@@ -69,8 +81,8 @@ class Jinja2PreProcessor(Preprocessor):
         loader = FileSystemLoader(os.getcwd())
         e = Environment(loader=loader, extensions=['jinja2.ext.do'])
         custom_template_values = {
-            'choose': Chooser(),
-            'seed': random.seed,
+            'choice': Chooser(),
+            'seed': SetSeed(),
             'count': Counter(),
         }
         custom_template_values.update(

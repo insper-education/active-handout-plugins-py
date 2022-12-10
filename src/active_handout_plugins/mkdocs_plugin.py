@@ -1,10 +1,10 @@
 import os
 from pathlib import Path
+import re
 
 from dotenv import load_dotenv
 from mkdocs.config import base, config_options as c
 from mkdocs.plugins import BasePlugin
-
 
 CWD = Path.cwd()
 HERE = Path(__file__).parent
@@ -69,3 +69,20 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
         config['active_handout'] = self._setupURLs(active_handout_config)
 
         return config
+    
+    def on_page_markdown(self, markdown, page, config, files):
+        # Saves the used seed on the last line of the page. 
+        # This line is later removed in on_page_content
+        return markdown + "\n<!--{{seed}} REMOVE ME-->"
+
+    def on_page_content(self, html: str, *, page, config, files):
+        seed = 0
+        matches = re.findall(r'\<\!\-\-(\d+) REMOVE ME\-\-\>', html)
+        if len(matches) > 0:
+            seed = int(matches[0])
+        
+        html = re.sub(r'^(\<div class\=\"admonition exercise.*\" id=)\"(.*)\"\>$', 
+                   r'\1"\2_' f'{seed}" data-slug="{page.url}"\>', html, flags=re.MULTILINE)
+
+        html_without_seed = re.sub(r'\<\!\-\-.*REMOVE ME\-\-\>', '', html)
+        return html_without_seed
