@@ -722,7 +722,7 @@ var _apiClient = require("./apiClient");
 var _clientDb = require("./client-db");
 function saveAndSendData(element, value, user, points) {
     const slug = (0, _clientDb.getKey)(element);
-    (0, _clientDb.setValue)(slug, JSON.stringify(value));
+    (0, _clientDb.setValue)(slug, value);
     if (user && telemetryEnabled && backendUrl && courseSlug) (0, _apiClient.postTelemetryData)(user, value, slug, extractTags(element), points);
 }
 function extractTags(element) {
@@ -883,7 +883,8 @@ function initExercisePlugin(rememberCallbacks) {
     initTextExercises();
     initChoiceExercises();
     initSelfProgressExercises();
-    document.getElementById("resetHandoutButton").addEventListener("click", function() {
+    const resetHandoutButton = document.getElementById("resetHandoutButton");
+    if (resetHandoutButton) resetHandoutButton.addEventListener("click", function() {
         const exercises = document.querySelectorAll(".admonition.exercise");
         for (const ex of exercises)(0, _clientDb.removeValue)(ex);
         location.reload();
