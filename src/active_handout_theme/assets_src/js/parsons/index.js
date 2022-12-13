@@ -19,7 +19,8 @@ import {
   resetExercise,
   submitExercise,
 } from "./utils";
-import { saveAndSendData } from "../telemetry";
+import { sendData } from "../telemetry";
+import { setValue } from "../client-db";
 
 export function initParsonsPlugin(rememberCallbacks) {
   queryParsonsExercises().forEach(registerListeners);
@@ -27,7 +28,9 @@ export function initParsonsPlugin(rememberCallbacks) {
   rememberCallbacks.push({
     match: (el) => el.classList.contains("parsons"),
     callback: (el, user, { correct, code }) => {
-      saveAndSendData(el, JSON.stringify({ correct, code }), user, correct ? 1 : 0);
+      const value = JSON.stringify({ correct, code });
+      setValue(el, value);
+      sendData(el, value, correct ? 1 : 0, user);
       return true;
     },
   });

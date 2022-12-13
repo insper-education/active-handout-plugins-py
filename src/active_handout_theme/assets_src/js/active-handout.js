@@ -6,6 +6,9 @@ import { initFooterPlugin } from "./footnote";
 import { initParsonsPlugin } from "./parsons";
 import { initStyle } from "./style";
 import { initAuth } from "./auth";
+import { initCodeEditorPlugin } from "./code-editor";
+import * as clientDB from "./client-db";
+import { sendData } from "./telemetry";
 
 function onLoad() {
   let rememberCallbacks = [];
@@ -20,7 +23,7 @@ function onLoad() {
       }
     }
   });
-  
+
   initTabbedPlugin();
 
   initStyle();
@@ -29,7 +32,18 @@ function onLoad() {
   initExercisePlugin(rememberCallbacks);
   initFooterPlugin(rememberCallbacks);
   initMenuPlugin();
+  initCodeEditorPlugin();
+
+  applyRegisteredInitializers();
 }
+
+function applyRegisteredInitializers() {
+  window.initializers.forEach((initialize) => initialize());
+  window.initialized = true;
+}
+
+window.clientDB = clientDB;
+window.sendData = sendData;
 
 if (document.readyState !== "loading") {
   onLoad();

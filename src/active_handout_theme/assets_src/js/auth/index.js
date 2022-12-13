@@ -1,8 +1,12 @@
 const USER_DATA_KEY = "active-handout--user-data";
 
+export function loadUser() {
+  return localStorage.getItem(USER_DATA_KEY);
+}
+
 export function initAuth() {
   handleRedirects();
-  let user = localStorage.getItem(USER_DATA_KEY);
+  let user = loadUser();
 
   const authMenuContainer = document.getElementById("user-menu");
   document.body.addEventListener("htmx:afterSettle", function (evt) {
@@ -23,7 +27,9 @@ function handleRedirects() {
     const params = new URLSearchParams(location.search);
     const token = params.get("token");
     localStorage.setItem(USER_DATA_KEY, token);
-    window.location.href = window.location.href.replace(window.location.search, "");
+    window.location.href = window.location.href.replace(
+      window.location.search,
+      ""
+    );
   }
 }
-

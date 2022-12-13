@@ -142,11 +142,11 @@
       this[globalName] = mainExports;
     }
   }
-})({"peJOI":[function(require,module,exports) {
+})({"1LnoD":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
-var HMR_PORT = 1234;
+var HMR_PORT = 52732;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "916932b22e4085ab";
 module.bundle.HMR_BUNDLE_ID = "798eea0f2d73b3df";
@@ -532,9 +532,9 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"5Y4Tf":[function(require,module,exports) {
-require("94787ceba95b72d6");
+require("13e078d3b60926d4");
 
-},{"94787ceba95b72d6":"5H0Ul"}],"5H0Ul":[function(require,module,exports) {
+},{"13e078d3b60926d4":"5H0Ul"}],"5H0Ul":[function(require,module,exports) {
 module.exports = require("./helpers/browser/js-loader")(require("./helpers/bundle-url").getBundleURL("ar3cX") + "active-handout.a4a697aa.js" + "?" + Date.now()).catch((err)=>{
     delete module.bundle.cache[module.id];
     throw err;
@@ -636,6 +636,6 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}]},["peJOI","5Y4Tf"], "5Y4Tf", "parcelRequirea86e")
+},{}]},["1LnoD","5Y4Tf"], "5Y4Tf", "parcelRequirea86e")
 
 //# sourceMappingURL=main.js.map

@@ -33,3 +33,7 @@ export function absoluteURL(relative) {
 
   return stack.join("/");
 }
+
+export function deepCopy(dict) {
+  return JSON.parse(JSON.stringify(dict));
+}
