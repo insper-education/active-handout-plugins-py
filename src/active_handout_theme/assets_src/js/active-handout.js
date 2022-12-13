@@ -31,6 +31,13 @@ function onLoad() {
   initFooterPlugin(rememberCallbacks);
   initMenuPlugin();
   initCodeEditorPlugin();
+
+  applyRegisteredInitializers();
+}
+
+function applyRegisteredInitializers() {
+  window.initializers.forEach((initialize) => initialize());
+  window.initialized = true;
 }
 
 if (document.readyState !== "loading") {
