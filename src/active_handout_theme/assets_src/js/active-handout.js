@@ -7,6 +7,7 @@ import { initParsonsPlugin } from "./parsons";
 import { initStyle } from "./style";
 import { initAuth } from "./auth";
 import { initCodeEditorPlugin } from "./code-editor";
+import * as clientDB from "./client-db";
 
 function onLoad() {
   let rememberCallbacks = [];
@@ -45,3 +46,5 @@ if (document.readyState !== "loading") {
 } else {
   document.addEventListener("DOMContentLoaded", onLoad);
 }
+
+window.clientDB = clientDB;
