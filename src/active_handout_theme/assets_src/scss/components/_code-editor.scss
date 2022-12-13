@@ -5,6 +5,7 @@ $editor-border: 1px solid var(--clr-gray-primary-3);
 
 .file-editor {
   display: grid;
+  grid-template-rows: auto 1fr auto;
 
   background-color: #f7f3f7;
   border-radius: $border-radius;
