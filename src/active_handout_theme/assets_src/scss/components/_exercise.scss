@@ -9,6 +9,8 @@
   --clr-text-em: var(--clr-admonition-exercise-text-em);
   --clr-text-strong: var(--clr-admonition-exercise-text-strong);
 
+  position: relative;
+
   &,
   & * {
     transition: background 0.1s ease-in-out;
@@ -32,8 +34,34 @@
     }
   }
 
+  &.wrong {
+    animation-name: shakeIt;
+    animation-duration: 0.25s;
+    animation-iteration-count: 2;
+  }
+
   form {
     display: grid;
+  }
+}
+
+@keyframes shakeIt {
+  from {
+    top: 0px;
+    left: 0px;
+  }
+
+  25% {
+    left: -40px;
+  }
+
+  75% {
+    left: 40px;
+  }
+
+  to {
+    top: 0px;
+    left: 0px;
   }
 }
 

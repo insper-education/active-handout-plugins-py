@@ -701,6 +701,7 @@ body {
   --clr-bullet: var(--clr-admonition-exercise-bullet);
   --clr-text-em: var(--clr-admonition-exercise-text-em);
   --clr-text-strong: var(--clr-admonition-exercise-text-strong);
+  position: relative;
 }
 
 .admonition.exercise, .admonition.exercise * {
@@ -721,8 +722,34 @@ body {
   transform: none;
 }
 
+.admonition.exercise.wrong {
+  animation-name: shakeIt;
+  animation-duration: .25s;
+  animation-iteration-count: 2;
+}
+
 .admonition.exercise form {
   display: grid;
+}
+
+@keyframes shakeIt {
+  from {
+    top: 0;
+    left: 0;
+  }
+
+  25% {
+    left: -40px;
+  }
+
+  75% {
+    left: 40px;
+  }
+
+  to {
+    top: 0;
+    left: 0;
+  }
 }
 
 .admonition.answer {
@@ -1266,38 +1293,8 @@ body {
   display: none;
 }
 
-.parsons.correct .correct-answer {
+.parsons.correct .correct-answer, .parsons.wrong .wrong-answer {
   display: inherit;
-}
-
-.parsons.wrong {
-  animation-name: shakeIt;
-  animation-duration: .25s;
-  animation-iteration-count: 2;
-}
-
-.parsons.wrong .wrong-answer {
-  display: inherit;
-}
-
-@keyframes shakeIt {
-  from {
-    top: 0;
-    left: 0;
-  }
-
-  25% {
-    left: -40px;
-  }
-
-  75% {
-    left: 40px;
-  }
-
-  to {
-    top: 0;
-    left: 0;
-  }
 }
 
 .parsons-container pre {

@@ -142,11 +142,11 @@
       this[globalName] = mainExports;
     }
   }
-})({"1rsYa":[function(require,module,exports) {
+})({"dXQLT":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
-var HMR_PORT = 54044;
+var HMR_PORT = 58094;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "916932b22e4085ab";
 module.bundle.HMR_BUNDLE_ID = "efa96c9ba4a697aa";
@@ -53484,6 +53484,6 @@ function createReadonlyCodeJar(parent, code) {
     };
 }
 
-},{"highlight.js":"ljeYi","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1rsYa"], null, "parcelRequirea86e")
+},{"highlight.js":"ljeYi","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["dXQLT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map
