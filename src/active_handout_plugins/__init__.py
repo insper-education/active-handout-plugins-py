@@ -29,10 +29,11 @@ class ActiveHandoutExtension(Extension):
         init_l10n(self.getConfig('locale'))
 
         exercise_admonitions = AdmonitionVisitorSelector(md)
-        exercise_admonitions.register(ChoiceExercise(md), 3)
-        exercise_admonitions.register(TextExercise(md), 2)
-        exercise_admonitions.register(ParsonsExercise(md), 2)
-        exercise_admonitions.register(SelfProgressExercise(md), 1)
+        register_exercise_visitor_builder(ChoiceExercise, 3)
+        register_exercise_visitor_builder(TextExercise, 2)
+        register_exercise_visitor_builder(ParsonsExercise, 2)
+        register_exercise_visitor_builder(SelfProgressExercise, 1)
+        self._register_exercise_visitors(exercise_admonitions, md)
 
         md.treeprocessors.register(VideoAdmonition(md), 'video-admonition', 15)
         md.treeprocessors.register(PdfAdmonition(md), 'pdf-admonition', 15)
