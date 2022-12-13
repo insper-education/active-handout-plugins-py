@@ -55,7 +55,7 @@ function buildInitSubEditor(editor, files) {
 
         // Dispatch event so others can do whatever they want with the new code
         const event = new CustomEvent("contentchanged", {
-          detail: { filename, code },
+          detail: { filename, code, files },
         });
         editor.dispatchEvent(event);
       });
