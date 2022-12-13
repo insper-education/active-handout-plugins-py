@@ -1,5 +1,6 @@
 import { CodeJar } from "codejar";
 import hljs from "highlight.js";
+import { getKey } from "../client-db";
 import { deepCopy } from "../dom-utils";
 import { initFiles } from "./files";
 import {
@@ -33,11 +34,11 @@ function buildInitSubEditor(editor, files) {
     const filename = fileContent.getAttribute("data-filename");
     const readonly = fileContent.getAttribute("data-readonly") === "true";
     const language = fileContent.getAttribute("data-language");
-    const code = files[filename].code;
+    const initialCode = files[filename].code;
 
     let jar;
     if (readonly) {
-      jar = createReadonlyCodeJar(fileContent, code);
+      jar = createReadonlyCodeJar(fileContent, initialCode);
     } else {
       jar = CodeJar(fileContent, (element) => {
         if (language) {
@@ -50,16 +51,23 @@ function buildInitSubEditor(editor, files) {
       jar.onUpdate((code) => {
         files[filename].code = code;
 
+        saveFileIfInExercise(fileContent, filename, code);
+
         // Dispatch event so others can do whatever they want with the new code
         const event = new CustomEvent("contentchanged", {
           detail: { filename, code },
         });
         editor.dispatchEvent(event);
       });
-      jar.updateCode(code);
+      const prevCode = loadFileFromLocalStorage(fileContent, filename);
+      if (prevCode) {
+        jar.updateCode(prevCode);
+      } else {
+        jar.updateCode(initialCode);
+      }
 
       resetBtn.addEventListener("click", () => {
-        jar.updateCode(code);
+        jar.updateCode(initialCode);
       });
     }
 
@@ -76,4 +84,24 @@ function setupTabs(tabs, editor) {
       tab.classList.add("active");
     });
   });
+}
+
+function saveFileIfInExercise(fileContent, filename, code) {
+  const key = getFilenameKey(fileContent, filename);
+  if (!key) return;
+  localStorage.setItem(key, code);
+}
+
+function loadFileFromLocalStorage(fileContent, filename) {
+  const key = getFilenameKey(fileContent, filename);
+  if (!key) return null;
+  return localStorage.getItem(key);
+}
+
+function getFilenameKey(fileContent, filename) {
+  const exercise = fileContent.closest(".exercise");
+  if (!exercise) return null;
+
+  const exerciseKey = getKey(exercise);
+  return `${exerciseKey}-${filename}`;
 }

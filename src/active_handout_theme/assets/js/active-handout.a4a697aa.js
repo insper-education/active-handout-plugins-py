@@ -142,11 +142,11 @@
       this[globalName] = mainExports;
     }
   }
-})({"1csOT":[function(require,module,exports) {
+})({"1PtpK":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
-var HMR_PORT = 1234;
+var HMR_PORT = 53799;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "916932b22e4085ab";
 module.bundle.HMR_BUNDLE_ID = "efa96c9ba4a697aa";
@@ -1500,6 +1500,7 @@ parcelHelpers.export(exports, "initCodeEditorPlugin", ()=>initCodeEditorPlugin);
 var _codejar = require("codejar");
 var _highlightJs = require("highlight.js");
 var _highlightJsDefault = parcelHelpers.interopDefault(_highlightJs);
+var _clientDb = require("../client-db");
 var _domUtils = require("../dom-utils");
 var _files = require("./files");
 var _queries = require("./queries");
@@ -1521,9 +1522,9 @@ function buildInitSubEditor(editor, files) {
         const filename = fileContent.getAttribute("data-filename");
         const readonly = fileContent.getAttribute("data-readonly") === "true";
         const language = fileContent.getAttribute("data-language");
-        const code = files[filename].code;
+        const initialCode = files[filename].code;
         let jar;
-        if (readonly) jar = (0, _readonlyCodejar.createReadonlyCodeJar)(fileContent, code);
+        if (readonly) jar = (0, _readonlyCodejar.createReadonlyCodeJar)(fileContent, initialCode);
         else {
             jar = (0, _codejar.CodeJar)(fileContent, (element)=>{
                 if (language) (0, _highlightJsDefault.default).configure({
@@ -1535,6 +1536,7 @@ function buildInitSubEditor(editor, files) {
             });
             jar.onUpdate((code)=>{
                 files[filename].code = code;
+                saveFileIfInExercise(fileContent, filename, code);
                 // Dispatch event so others can do whatever they want with the new code
                 const event = new CustomEvent("contentchanged", {
                     detail: {
@@ -1544,9 +1546,11 @@ function buildInitSubEditor(editor, files) {
                 });
                 editor.dispatchEvent(event);
             });
-            jar.updateCode(code);
+            const prevCode = loadFileFromLocalStorage(fileContent, filename);
+            if (prevCode) jar.updateCode(prevCode);
+            else jar.updateCode(initialCode);
             resetBtn.addEventListener("click", ()=>{
-                jar.updateCode(code);
+                jar.updateCode(initialCode);
             });
         }
         return [
@@ -1564,8 +1568,24 @@ function setupTabs(tabs, editor) {
         });
     });
 }
+function saveFileIfInExercise(fileContent, filename, code) {
+    const key = getFilenameKey(fileContent, filename);
+    if (!key) return;
+    localStorage.setItem(key, code);
+}
+function loadFileFromLocalStorage(fileContent, filename) {
+    const key = getFilenameKey(fileContent, filename);
+    if (!key) return null;
+    return localStorage.getItem(key);
+}
+function getFilenameKey(fileContent, filename) {
+    const exercise = fileContent.closest(".exercise");
+    if (!exercise) return null;
+    const exerciseKey = (0, _clientDb.getKey)(exercise);
+    return `${exerciseKey}-${filename}`;
+}
 
-},{"codejar":"8oTO2","highlight.js":"ljeYi","../dom-utils":"NCBha","./files":"jfsgL","./queries":"lCGrt","./readonly-codejar":"cGTt8","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"8oTO2":[function(require,module,exports) {
+},{"codejar":"8oTO2","highlight.js":"ljeYi","../dom-utils":"NCBha","./files":"jfsgL","./queries":"lCGrt","./readonly-codejar":"cGTt8","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff"}],"8oTO2":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CodeJar", ()=>CodeJar);
@@ -53444,6 +53464,6 @@ function createReadonlyCodeJar(parent, code) {
     };
 }
 
-},{"highlight.js":"ljeYi","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")
+},{"highlight.js":"ljeYi","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1PtpK"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

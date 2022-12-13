@@ -4,8 +4,7 @@ $editor-padding: 1rem;
 $editor-border: 1px solid var(--clr-gray-primary-3);
 
 .file-editor {
-  display: flex;
-  flex-direction: column;
+  display: grid;
 
   background-color: #f7f3f7;
   border-radius: $border-radius;

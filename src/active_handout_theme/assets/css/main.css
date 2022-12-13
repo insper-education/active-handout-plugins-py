@@ -1904,8 +1904,7 @@ section.progress-section:first-child, section.progress-section.show {
 .file-editor {
   background-color: #f7f3f7;
   border-radius: .2em;
-  flex-direction: column;
-  display: flex;
+  display: grid;
 }
 
 .file-editor [data-readonly="true"] {
