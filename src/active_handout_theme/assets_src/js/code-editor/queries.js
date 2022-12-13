@@ -9,3 +9,7 @@ export function queryFileContents(container) {
 export function queryFileTabs(container) {
   return container.querySelectorAll(".file-tab .tab");
 }
+
+export function queryResetButton(container) {
+  return container.querySelector(".editor-reset-btn");
+}

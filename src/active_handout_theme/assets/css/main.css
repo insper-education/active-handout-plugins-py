@@ -1976,6 +1976,17 @@ section.progress-section:first-child, section.progress-section.show {
   padding: 1rem;
 }
 
+.editor-controls {
+  border-top: 1px solid var(--clr-gray-primary-3);
+  justify-content: flex-end;
+  display: flex;
+}
+
+.editor-reset-btn svg {
+  width: 1em;
+  height: 1em;
+}
+
 .svg-icon {
   width: 1em;
   height: 1em;

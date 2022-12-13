@@ -2,7 +2,12 @@ import { CodeJar } from "codejar";
 import hljs from "highlight.js";
 import { deepCopy } from "../dom-utils";
 import { initFiles } from "./files";
-import { queryEditors, queryFileContents, queryFileTabs } from "./queries";
+import {
+  queryEditors,
+  queryFileContents,
+  queryFileTabs,
+  queryResetButton,
+} from "./queries";
 import { createReadonlyCodeJar } from "./readonly-codejar";
 
 export function initCodeEditorPlugin() {
@@ -22,8 +27,7 @@ function initEditor(editor) {
 }
 
 function buildInitSubEditor(editor, files) {
-  // TODO: add reset button
-  const origFiles = deepCopy(files);
+  const resetBtn = queryResetButton(editor);
 
   return (fileContent) => {
     const filename = fileContent.getAttribute("data-filename");
@@ -53,6 +57,10 @@ function buildInitSubEditor(editor, files) {
         editor.dispatchEvent(event);
       });
       jar.updateCode(code);
+
+      resetBtn.addEventListener("click", () => {
+        jar.updateCode(code);
+      });
     }
 
     return [filename, jar];

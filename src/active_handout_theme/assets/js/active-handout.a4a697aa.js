@@ -1516,8 +1516,7 @@ function initEditor(editor) {
     setupTabs(tabs, editor);
 }
 function buildInitSubEditor(editor, files) {
-    // TODO: add reset button
-    const origFiles = (0, _domUtils.deepCopy)(files);
+    const resetBtn = (0, _queries.queryResetButton)(editor);
     return (fileContent)=>{
         const filename = fileContent.getAttribute("data-filename");
         const readonly = fileContent.getAttribute("data-readonly") === "true";
@@ -1546,6 +1545,9 @@ function buildInitSubEditor(editor, files) {
                 editor.dispatchEvent(event);
             });
             jar.updateCode(code);
+            resetBtn.addEventListener("click", ()=>{
+                jar.updateCode(code);
+            });
         }
         return [
             filename,
@@ -53402,6 +53404,7 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryEditors", ()=>queryEditors);
 parcelHelpers.export(exports, "queryFileContents", ()=>queryFileContents);
 parcelHelpers.export(exports, "queryFileTabs", ()=>queryFileTabs);
+parcelHelpers.export(exports, "queryResetButton", ()=>queryResetButton);
 function queryEditors() {
     return document.querySelectorAll(".code-editor");
 }
@@ -53410,6 +53413,9 @@ function queryFileContents(container) {
 }
 function queryFileTabs(container) {
     return container.querySelectorAll(".file-tab .tab");
+}
+function queryResetButton(container) {
+    return container.querySelector(".editor-reset-btn");
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"cGTt8":[function(require,module,exports) {

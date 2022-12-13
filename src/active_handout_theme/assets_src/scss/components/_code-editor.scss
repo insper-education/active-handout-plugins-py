@@ -1,6 +1,7 @@
 @use "../abstracts" as *;
 
 $editor-padding: 1rem;
+$editor-border: 1px solid var(--clr-gray-primary-3);
 
 .file-editor {
   display: flex;
@@ -21,7 +22,7 @@ $editor-padding: 1rem;
 .file-tab {
   display: flex;
   gap: 0.5rem;
-  border-bottom: 1px solid var(--clr-gray-primary-3);
+  border-bottom: $editor-border;
   padding-left: $editor-padding;
   padding-right: $editor-padding;
 
@@ -76,5 +77,19 @@ $editor-padding: 1rem;
   pre.readonly-code {
     margin: (-$editor-padding);
     padding: $editor-padding;
+  }
+}
+
+.editor-controls {
+  display: flex;
+  justify-content: flex-end;
+
+  border-top: $editor-border;
+}
+
+.editor-reset-btn {
+  svg {
+    width: 1em;
+    height: 1em;
   }
 }
