@@ -55,10 +55,10 @@ def _extract_language(code_html):
 
 
 def _extract_filename(code_html):
-        match = re.match(r'<div[^>]*filename-(\S*)[^>]*>', code_html)
-        if match:
-            return match.group(1)
-        return 'index'
+    match = re.match(r'<div[^>]*filename-(\S*)[^>]*>', code_html)
+    if match:
+        return match.group(1)
+    return 'index'
 
 
 def _check_hidden(code_html):
