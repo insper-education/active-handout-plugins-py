@@ -5,7 +5,7 @@ div.highlight,
 :not(.highlight) > pre {
   background: var(--clr-code-background);
   padding: $admonition-extra-block $admonition-extra-inline;
-  margin: 0 (-$admonition-extra-inline) $space-between-block;
+  margin: 0 0 $space-between-block;
   border-radius: $border-radius;
   overflow: auto;
 
@@ -147,7 +147,8 @@ code {
 .hljs-subst {
   color: var(--clr-code-generic);
 } /* Name.Attribute */
-.highlight .nb {
+.highlight .nb,
+.hljs-built_in {
   color: var(--clr-code-builtin);
 } /* Name.Builtin */
 .highlight .nc {
@@ -165,7 +166,8 @@ code {
 .highlight .ne {
   color: var(--clr-code-generic);
 } /* Name.Exception */
-.highlight .nf {
+.highlight .nf,
+.hljs-title.function_ {
   color: var(--clr-code-generic);
 } /* Name.Function */
 .highlight .nl {
@@ -181,7 +183,8 @@ code {
   color: var(--clr-code-name);
 } /* Name.Property */
 .highlight .nt,
-.hljs-name {
+.hljs-name,
+.hljs-selector-tag {
   color: var(--clr-code-operator);
 } /* Name.Tag */
 .highlight .nv {
@@ -241,7 +244,8 @@ code {
 .highlight .sr {
   color: var(--clr-code-string);
 } /* Literal.String.Regex */
-.highlight .s1 {
+.highlight .s1,
+.hljs-string {
   color: var(--clr-code-string);
 } /* Literal.String.Single */
 .highlight .ss {

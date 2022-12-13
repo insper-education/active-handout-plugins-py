@@ -6,6 +6,7 @@ import { initFooterPlugin } from "./footnote";
 import { initParsonsPlugin } from "./parsons";
 import { initStyle } from "./style";
 import { initAuth } from "./auth";
+import { initCodeEditorPlugin } from "./code-editor";
 
 function onLoad() {
   let rememberCallbacks = [];
@@ -20,7 +21,7 @@ function onLoad() {
       }
     }
   });
-  
+
   initTabbedPlugin();
 
   initStyle();
@@ -29,6 +30,7 @@ function onLoad() {
   initExercisePlugin(rememberCallbacks);
   initFooterPlugin(rememberCallbacks);
   initMenuPlugin();
+  initCodeEditorPlugin();
 }
 
 if (document.readyState !== "loading") {

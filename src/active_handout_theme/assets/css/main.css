@@ -412,7 +412,7 @@ span.critic.comment {
 div.highlight, :not(.highlight) > pre {
   background: var(--clr-code-background);
   border-radius: .2em;
-  margin: 0 -2rem 1.5rem;
+  margin: 0 0 1.5rem;
   padding: 1rem 2rem;
   overflow: auto;
 }
@@ -526,7 +526,7 @@ code {
   color: var(--clr-code-generic);
 }
 
-.highlight .nb {
+.highlight .nb, .hljs-built_in {
   color: var(--clr-code-builtin);
 }
 
@@ -546,7 +546,7 @@ code {
   color: var(--clr-code-name);
 }
 
-.highlight .ne, .highlight .nf {
+.highlight .ne, .highlight .nf, .hljs-title.function_ {
   color: var(--clr-code-generic);
 }
 
@@ -562,7 +562,7 @@ code {
   color: var(--clr-code-name);
 }
 
-.highlight .nt, .hljs-name {
+.highlight .nt, .hljs-name, .hljs-selector-tag {
   color: var(--clr-code-operator);
 }
 
@@ -590,7 +590,7 @@ code {
   color: var(--clr-code-literal);
 }
 
-.highlight .sh, .highlight .si, .highlight .sx, .highlight .sr, .highlight .s1, .highlight .ss {
+.highlight .sh, .highlight .si, .highlight .sx, .highlight .sr, .highlight .s1, .hljs-string, .highlight .ss {
   color: var(--clr-code-string);
 }
 
@@ -1899,6 +1899,87 @@ section.progress-section:first-child, section.progress-section.show {
 
 .ah-title-box .ah-breadcrumbs li a:hover {
   color: var(--clr-text-disabled-hover);
+}
+
+.file-editor {
+  background-color: #f7f3f7;
+  border-radius: .2em;
+  flex-direction: column;
+  display: flex;
+}
+
+.file-editor [data-readonly="true"] {
+  filter: grayscale(.9);
+}
+
+.file-editor .hidden-file {
+  display: none;
+}
+
+.file-tab {
+  border-bottom: 1px solid var(--clr-gray-primary-3);
+  gap: .5rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+}
+
+.file-tab .tab {
+  color: var(--clr-text-disabled);
+  cursor: pointer;
+  align-items: center;
+  gap: .2rem;
+  margin: .5rem 1rem -1.5px 0;
+  list-style: none;
+  display: flex;
+}
+
+.file-tab .tab ~ .file-tab .tab {
+  margin-left: 1rem;
+}
+
+.file-tab .tab:last-child {
+  margin-right: 0;
+}
+
+.file-tab .tab:only-child {
+  display: none;
+}
+
+.file-tab .tab.active {
+  color: var(--clr-text-default);
+  border-bottom: 3px solid var(--clr-title-default);
+}
+
+.file-tab .tab:before {
+  display: none;
+}
+
+.file-content-container {
+  max-height: 80vh;
+  display: flex;
+  overflow-x: hidden;
+}
+
+.file-content {
+  background-color: var(--clr-code-background);
+  font-family: var(--font-mono);
+  transform: translateX(calc(var(--current-file, 0) * -100%) );
+  width: 100%;
+  min-width: 100%;
+  border-radius: .2em;
+  padding: 1rem;
+}
+
+.file-content pre.readonly-code {
+  margin: -1rem;
+  padding: 1rem;
+}
+
+.svg-icon {
+  width: 1em;
+  height: 1em;
+  display: inline;
 }
 
 /*# sourceMappingURL=main.css.map */
