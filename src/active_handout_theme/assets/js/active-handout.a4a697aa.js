@@ -142,11 +142,11 @@
       this[globalName] = mainExports;
     }
   }
-})({"2cj81":[function(require,module,exports) {
+})({"1rsYa":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
-var HMR_PORT = 63794;
+var HMR_PORT = 54044;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "916932b22e4085ab";
 module.bundle.HMR_BUNDLE_ID = "efa96c9ba4a697aa";
@@ -542,6 +542,7 @@ var _style = require("./style");
 var _auth = require("./auth");
 var _codeEditor = require("./code-editor");
 var _clientDb = require("./client-db");
+var _telemetry = require("./telemetry");
 function onLoad() {
     let rememberCallbacks = [];
     const user = (0, _auth.initAuth)();
@@ -566,11 +567,12 @@ function applyRegisteredInitializers() {
     window.initializers.forEach((initialize)=>initialize());
     window.initialized = true;
 }
+window.clientDB = _clientDb;
+window.sendData = (0, _telemetry.sendData);
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
-window.clientDB = _clientDb;
 
-},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./menu":"5D3Be","./exercise":"dmczC","./footnote":"70ehP","./parsons":"1AI9I","./style":"5DGm5","./auth":"joUbb","./code-editor":"hgDVF","./client-db":"j0pff"}],"eIlmk":[function(require,module,exports) {
+},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./menu":"5D3Be","./exercise":"dmczC","./footnote":"70ehP","./parsons":"1AI9I","./style":"5DGm5","./auth":"joUbb","./code-editor":"hgDVF","./client-db":"j0pff","./telemetry":"kpvgZ"}],"eIlmk":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initTabbedPlugin", ()=>initTabbedPlugin);
@@ -681,12 +683,11 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initProgressPlugin", ()=>initProgressPlugin);
 var _clientDb = require("../client-db");
-var _telemetry = require("../telemetry");
 function initProgressPlugin(rememberCallbacks) {
     rememberCallbacks.push({
         match: (el)=>el.classList.contains("progress"),
         callback: (el)=>{
-            (0, _telemetry.saveAndSendData)(el, true);
+            (0, _clientDb.setValue)(el, true);
         }
     });
     queryProgressBtns().forEach((e)=>{
@@ -697,7 +698,7 @@ function queryProgressBtns() {
     return document.querySelectorAll("button.progress");
 }
 
-},{"../client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ"}],"j0pff":[function(require,module,exports) {
+},{"../client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"j0pff":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getKey", ()=>getKey);
@@ -721,83 +722,6 @@ function getValue(elOrKey) {
 function removeValue(elOrKey) {
     const key = getKey(elOrKey);
     localStorage.removeItem(key);
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"kpvgZ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "saveAndSendData", ()=>saveAndSendData);
-var _apiClient = require("./apiClient");
-var _clientDb = require("./client-db");
-function saveAndSendData(element, value, user, points) {
-    const slug = (0, _clientDb.getKey)(element);
-    (0, _clientDb.setValue)(slug, value);
-    if (user && telemetryEnabled && backendUrl && courseSlug) (0, _apiClient.postTelemetryData)(user, value, slug, extractTags(element), points);
-}
-function extractTags(element) {
-    const tags = [];
-    const tagPrefix = "tag-";
-    for (let className of element.classList)if (className.startsWith(tagPrefix)) tags.push(className.substring(tagPrefix.length));
-    return tags;
-}
-
-},{"./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./apiClient":"emRW9"}],"emRW9":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "postTelemetryData", ()=>postTelemetryData);
-parcelHelpers.export(exports, "getJSON", ()=>getJSON);
-parcelHelpers.export(exports, "postJSON", ()=>postJSON);
-async function postTelemetryData(token, log, exerciseSlug, exerciseTags, points) {
-    if (!telemetryEnabled || !backendUrl || !courseSlug) return;
-    const exercise = {
-        course: courseSlug,
-        slug: exerciseSlug || "",
-        tags: exerciseTags || []
-    };
-    if (!Number.isFinite(points)) points = 0;
-    postJSON("/telemetry", {
-        exercise,
-        points: points,
-        log
-    }, token);
-}
-async function getJSON(endpoint, token) {
-    const url = buildUrl(endpoint);
-    if (!url) return null;
-    const init = createInit(token);
-    return makeJSONRequest(url, init);
-}
-async function postJSON(endpoint, data, token) {
-    const url = buildUrl(endpoint);
-    if (!url) return null;
-    const init = createInit(token);
-    init.method = "POST";
-    if (data) init.body = JSON.stringify(data);
-    return makeJSONRequest(url, init);
-}
-function makeJSONRequest(url, init) {
-    return fetch(url, init).then((response)=>response.json()).catch((reason)=>{
-        console.error(reason);
-        return null;
-    });
-}
-function buildUrl(endpoint) {
-    if (!backendUrl) return "";
-    let url = backendUrl;
-    if (!url.endsWith("/")) url += "/";
-    if (endpoint.startsWith("/")) endpoint = endpoint.substr(1);
-    url += endpoint;
-    return url;
-}
-function createInit(token) {
-    const init = {
-        mode: "cors",
-        headers: {
-            "Content-Type": "application/json"
-        }
-    };
-    if (token) init.headers.Authorization = `Token ${token}`;
-    return init;
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5D3Be":[function(require,module,exports) {
@@ -915,7 +839,8 @@ function matchTextExercises(el) {
 }
 function rememberTextExercise(el, user) {
     const textElement = (0, _queries.queryTextInputs)(el);
-    (0, _telemetry.saveAndSendData)(el, textElement.value, user);
+    (0, _clientDb.setValue)(element, textElement.value);
+    (0, _telemetry.sendData)(element, textElement.value, 0, user);
     return true;
 }
 function initChoiceExercises() {
@@ -944,7 +869,8 @@ function rememberChoiceExercise(el, user) {
         else alternative.classList.add("wrong");
         if (choice.checked) {
             const points = correctIdx === choice.value ? 1 : 0;
-            (0, _telemetry.saveAndSendData)(el, choice.value, user, points);
+            (0, _clientDb.setValue)(el, choice.value);
+            (0, _telemetry.sendData)(el, choice.value, points, user);
         }
     }
     return true;
@@ -959,11 +885,120 @@ function matchSelfProgressExercises(el) {
     return el.classList.contains("self-progress");
 }
 function rememberSelfProgressExercise(el, user) {
-    (0, _telemetry.saveAndSendData)(el, true, user);
+    (0, _clientDb.setValue)(el, true);
+    (0, _telemetry.sendData)(el, true, 0, user);
     return true;
 }
 
-},{"../client-db":"j0pff","../telemetry":"kpvgZ","./queries":"5VMWX","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5VMWX":[function(require,module,exports) {
+},{"../client-db":"j0pff","../telemetry":"kpvgZ","./queries":"5VMWX","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"kpvgZ":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "sendData", ()=>sendData);
+var _apiClient = require("./apiClient");
+var _auth = require("./auth");
+var _clientDb = require("./client-db");
+function sendData(element, value, points, user) {
+    const slug = (0, _clientDb.getKey)(element);
+    if (!user) user = (0, _auth.loadUser)();
+    if (user && telemetryEnabled && backendUrl && courseSlug) (0, _apiClient.postTelemetryData)(user, value, slug, extractTags(element), points);
+}
+function extractTags(element) {
+    const tags = [];
+    const tagPrefix = "tag-";
+    for (let className of element.classList)if (className.startsWith(tagPrefix)) tags.push(className.substring(tagPrefix.length));
+    return tags;
+}
+
+},{"./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./apiClient":"emRW9","./auth":"joUbb"}],"emRW9":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "postTelemetryData", ()=>postTelemetryData);
+parcelHelpers.export(exports, "getJSON", ()=>getJSON);
+parcelHelpers.export(exports, "postJSON", ()=>postJSON);
+async function postTelemetryData(token, log, exerciseSlug, exerciseTags, points) {
+    if (!telemetryEnabled || !backendUrl || !courseSlug) return;
+    const exercise = {
+        course: courseSlug,
+        slug: exerciseSlug || "",
+        tags: exerciseTags || []
+    };
+    if (!Number.isFinite(points)) points = 0;
+    postJSON("/telemetry", {
+        exercise,
+        points: points,
+        log
+    }, token);
+}
+async function getJSON(endpoint, token) {
+    const url = buildUrl(endpoint);
+    if (!url) return null;
+    const init = createInit(token);
+    return makeJSONRequest(url, init);
+}
+async function postJSON(endpoint, data, token) {
+    const url = buildUrl(endpoint);
+    if (!url) return null;
+    const init = createInit(token);
+    init.method = "POST";
+    if (data) init.body = JSON.stringify(data);
+    return makeJSONRequest(url, init);
+}
+function makeJSONRequest(url, init) {
+    return fetch(url, init).then((response)=>response.json()).catch((reason)=>{
+        console.error(reason);
+        return null;
+    });
+}
+function buildUrl(endpoint) {
+    if (!backendUrl) return "";
+    let url = backendUrl;
+    if (!url.endsWith("/")) url += "/";
+    if (endpoint.startsWith("/")) endpoint = endpoint.substr(1);
+    url += endpoint;
+    return url;
+}
+function createInit(token) {
+    const init = {
+        mode: "cors",
+        headers: {
+            "Content-Type": "application/json"
+        }
+    };
+    if (token) init.headers.Authorization = `Token ${token}`;
+    return init;
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"joUbb":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "loadUser", ()=>loadUser);
+parcelHelpers.export(exports, "initAuth", ()=>initAuth);
+const USER_DATA_KEY = "active-handout--user-data";
+function loadUser() {
+    return localStorage.getItem(USER_DATA_KEY);
+}
+function initAuth() {
+    handleRedirects();
+    let user = loadUser();
+    const authMenuContainer = document.getElementById("user-menu");
+    document.body.addEventListener("htmx:afterSettle", function(evt) {
+        if (evt.target == authMenuContainer) {
+            if (user) document.getElementById("logout_btn").classList.remove("hidden");
+            else document.getElementById("login_btn").classList.remove("hidden");
+        }
+    });
+    return user;
+}
+function handleRedirects() {
+    if (location.search.includes("token=")) {
+        const params = new URLSearchParams(location.search);
+        const token = params.get("token");
+        localStorage.setItem(USER_DATA_KEY, token);
+        window.location.href = window.location.href.replace(window.location.search, "");
+    }
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5VMWX":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryTextExercises", ()=>queryTextExercises);
@@ -1100,15 +1135,18 @@ parcelHelpers.export(exports, "initParsonsPlugin", ()=>initParsonsPlugin);
 var _queries = require("./queries");
 var _utils = require("./utils");
 var _telemetry = require("../telemetry");
+var _clientDb = require("../client-db");
 function initParsonsPlugin(rememberCallbacks) {
     (0, _queries.queryParsonsExercises)().forEach(registerListeners);
     rememberCallbacks.push({
         match: (el)=>el.classList.contains("parsons"),
         callback: (el, user, { correct , code  })=>{
-            (0, _telemetry.saveAndSendData)(el, JSON.stringify({
+            const value = JSON.stringify({
                 correct,
                 code
-            }), user, correct ? 1 : 0);
+            });
+            (0, _clientDb.setValue)(el, value);
+            (0, _telemetry.sendData)(el, value, correct ? 1 : 0, user);
             return true;
         }
     });
@@ -1143,7 +1181,7 @@ function registerListeners(exercise) {
     });
 }
 
-},{"./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"6FJZc":[function(require,module,exports) {
+},{"./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff"}],"6FJZc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
@@ -1472,32 +1510,6 @@ function initTextArea() {
             grower.dataset.replicatedValue = textarea.value;
         });
     });
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"joUbb":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "initAuth", ()=>initAuth);
-const USER_DATA_KEY = "active-handout--user-data";
-function initAuth() {
-    handleRedirects();
-    let user = localStorage.getItem(USER_DATA_KEY);
-    const authMenuContainer = document.getElementById("user-menu");
-    document.body.addEventListener("htmx:afterSettle", function(evt) {
-        if (evt.target == authMenuContainer) {
-            if (user) document.getElementById("logout_btn").classList.remove("hidden");
-            else document.getElementById("login_btn").classList.remove("hidden");
-        }
-    });
-    return user;
-}
-function handleRedirects() {
-    if (location.search.includes("token=")) {
-        const params = new URLSearchParams(location.search);
-        const token = params.get("token");
-        localStorage.setItem(USER_DATA_KEY, token);
-        window.location.href = window.location.href.replace(window.location.search, "");
-    }
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"hgDVF":[function(require,module,exports) {
@@ -53472,6 +53484,6 @@ function createReadonlyCodeJar(parent, code) {
     };
 }
 
-},{"highlight.js":"ljeYi","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["2cj81"], null, "parcelRequirea86e")
+},{"highlight.js":"ljeYi","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1rsYa"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map
