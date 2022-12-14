@@ -47,7 +47,7 @@
   background-size: $default-width 2px;
   background-repeat: no-repeat;
   background-position: left bottom;
-  transition: color 0.2s ease, background-size 0.2s ease;
+  transition: color 0.1s ease, background-size 0.1s ease;
 
   &:hover {
     background-size: $hover-width 2px;
@@ -58,7 +58,6 @@
   #{$prop}: #{$value}vh; /* Fallback for browsers that do not support Custom Properties */
   #{$prop}: calc(var(--vh, 1vh) * $value);
 }
-
 
 .hidden {
   display: none;

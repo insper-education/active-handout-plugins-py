@@ -263,7 +263,7 @@ p, h1, h2, h3, h4, h5, h6 {
   background-repeat: no-repeat;
   background-size: 100% 2px;
   text-decoration: none;
-  transition: color .2s, background-size .2s;
+  transition: color .1s, background-size .1s;
 }
 
 .ah-typeset a:hover {
@@ -301,6 +301,7 @@ p, h1, h2, h3, h4, h5, h6 {
 .ah-typeset input {
   border: 1px solid #0000;
   border-radius: .2em;
+  padding: .2em .5em;
 }
 
 del {
@@ -375,10 +376,12 @@ span.critic.comment {
   --clr-admonition-default-background: var(--clr-blue-highlight-1);
   --clr-admonition-default-text: var(--clr-text-default);
   --clr-admonition-default-title: var(--clr-title-default);
+  --clr-admonition-default-link: var(--clr-text-default);
   --clr-admonition-text-em: var(--clr-text-em-default);
   --clr-admonition-text-strong: var(--clr-text-strong-default);
   --clr-admonition-disabled-background: var(--clr-gray-primary-4);
   --clr-admonition-disabled-text: var(--clr-text-default);
+  --clr-admonition-disabled-link: var(--clr-admonition-default-link);
   --clr-admonition-disabled-title: var(--clr-title-default);
   --clr-admonition-disabled-bullet: var(--clr-bullet-default);
   --clr-admonition-disabled-em: var(--clr-text-em-default);
@@ -388,6 +391,7 @@ span.critic.comment {
   --clr-admonition-exercise-title: var(--clr-blue-highlight-1);
   --clr-admonition-exercise-text-em: var(--clr-gray-primary-2);
   --clr-admonition-exercise-text-strong: var(--clr-gray-primary-2);
+  --clr-admonition-exercise-link: var(--clr-gray-primary-2);
   --clr-admonition-exercise-bullet: var(--clr-blue-highlight-2);
   --clr-admonition-answer-background: var(--clr-gray-primary-5);
   --clr-admonition-answer-text: var(--clr-text-default);
@@ -395,6 +399,8 @@ span.critic.comment {
   --clr-admonition-answer-text-em: var(--clr-text-em-default);
   --clr-admonition-answer-text-strong: var(--clr-text-strong-default);
   --clr-admonition-answer-bullet: var(--clr-bullet-default);
+  --clr-table-row-odd: var(--clr-gray-primary-2);
+  --clr-table-row-even: var(--clr-gray-primary-3);
   --clr-code-background: #f0f3ff;
   --clr-code-comment: #8b919c;
   --clr-code-error-background: #ffe0f1;
@@ -426,6 +432,14 @@ div.highlight code, :not(.highlight) > pre code {
 .admonition div.highlight, .admonition :not(.highlight) > pre, .tabbed-content div.highlight, .tabbed-content :not(.highlight) > pre {
   margin: 0 0 1.5rem;
   padding-inline: 1rem;
+}
+
+:not(.highlight) :not(pre) > code {
+  color: inherit;
+  background: none;
+  padding: 0;
+  font-style: italic;
+  font-weight: bold;
 }
 
 code {
@@ -697,6 +711,7 @@ body {
 .admonition.exercise {
   --clr-background: var(--clr-admonition-exercise-background);
   --clr-text: var(--clr-admonition-exercise-text);
+  --clr-link: var(--clr-admonition-exercise-link);
   --clr-title: var(--clr-admonition-exercise-title);
   --clr-bullet: var(--clr-admonition-exercise-bullet);
   --clr-text-em: var(--clr-admonition-exercise-text-em);
@@ -709,12 +724,7 @@ body {
 }
 
 .admonition.exercise.done {
-  --clr-background: var(--clr-admonition-disabled-background);
-  --clr-text: var(--clr-admonition-disabled-text);
-  --clr-title: var(--clr-admonition-disabled-title);
-  --clr-bullet: var(--clr-admonition-disabled-bullet);
-  --clr-text-em: var(--clr-admonition-disabled-em);
-  --clr-text-strong: var(--clr-admonition-disabled-strong);
+  filter: grayscale(.7);
 }
 
 .admonition.exercise.done .alternative:hover, .admonition.exercise.done .alternative:active, .admonition.exercise.done .alternative:focus {
@@ -792,6 +802,10 @@ body {
   grid-template-columns: 1fr;
   gap: .5rem;
   display: grid;
+}
+
+.form-elements .alternative-set:has(.alternative.selected) .alternative:not(.selected) {
+  filter: brightness(.9);
 }
 
 .form-elements .alternative {
@@ -1082,7 +1096,7 @@ body {
 
 .ah-header {
   width: 100%;
-  background: linear-gradient(to bottom, var(--clr-background), var(--clr-background) 90%, transparent);
+  background: var(--clr-background);
   z-index: 999;
   padding: .5em 1em;
   font-family: Open Sans, sans-serif;
@@ -1170,15 +1184,15 @@ body {
 }
 
 .ah-navigation .ah-nav-container {
-  width: max(300px, 50vw - 35ch - 2rem);
+  width: max(300px, 50vw - 35ch - 3rem);
   height: 100%;
-  padding: .5em 1em;
+  padding: .5em 0 .5em 1em;
   position: relative;
 }
 
-.ah-navigation :after {
+.ah-navigation:after {
   content: "";
-  background: linear-gradient(to right, var(--clr-background), var(--clr-background) 100%, transparent);
+  background: var(--clr-background);
   z-index: -1;
   position: absolute;
   inset: 0;
@@ -1197,7 +1211,6 @@ body {
     height: 100%;
     z-index: -2;
     background: none;
-    transition: background .2s ease-in-out, -webkit-backdrop-filter .2s ease-in-out, backdrop-filter .2s ease-in-out, width 0s linear .2s;
     position: fixed;
     top: 0;
     left: 0;
@@ -1205,7 +1218,7 @@ body {
 }
 
 .ah-navigation.show {
-  width: max(300px, 50vw - 35ch - 2rem);
+  width: max(300px, 50vw - 35ch - 3rem);
 }
 
 @media (max-width: 1440px) {
@@ -1216,6 +1229,10 @@ body {
     background: #3d3d3d3d;
     transition: background .2s ease-in-out, -webkit-backdrop-filter .2s ease-in-out, backdrop-filter .2s ease-in-out;
   }
+}
+
+.ah-navigation.preload {
+  transition: none;
 }
 
 .ah-navigation ul {
@@ -1247,15 +1264,18 @@ body {
   background-repeat: no-repeat;
   background-size: 0 2px;
   text-decoration: none;
-  transition: color .2s, background-size .2s;
+  transition: color .1s, background-size .1s;
 }
 
 .ah-navigation a:not(.ah-logo):hover {
   background-size: 100% 2px;
 }
 
-.ah-nav-body {
+ul.ah-nav-body {
+  height: 100%;
+  padding: 0 1em 2em 0;
   font-size: 1rem;
+  overflow-y: auto;
 }
 
 .ah-togglable-item .ah-togglable-handle {
@@ -1274,14 +1294,13 @@ body {
 }
 
 .ah-togglable-item.opened > ul {
-  max-height: 100vh;
-  max-height: calc(var(--vh, 1vh) * 100);
+  max-height: -moz-fit-content;
+  max-height: fit-content;
   overflow: auto;
 }
 
 .ah-togglable-item > ul {
   max-height: 0;
-  transition: max-height .2s linear;
   overflow: hidden;
 }
 
@@ -1988,6 +2007,63 @@ section.progress-section:first-child, section.progress-section.show {
   width: 1em;
   height: 1em;
   display: inline;
+}
+
+h1 .headerlink, h2 .headerlink, h3 .headerlink, h4 .headerlink, h5 .headerlink, h6 .headerlink {
+  display: none;
+}
+
+h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .headerlink, h5:hover .headerlink, h6:hover .headerlink {
+  display: inline;
+}
+
+.ah-main-container {
+  min-height: 100vh;
+  flex-direction: column;
+  display: flex;
+}
+
+.ah-content {
+  flex-grow: 1;
+}
+
+.ah-table-container {
+  margin-bottom: 2rem;
+}
+
+.ah-table-container table {
+  border-collapse: collapse;
+  border-radius: .2em;
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.ah-table-container.full-width {
+  width: 100%;
+}
+
+.ah-table-container.full-width table {
+  min-width: 100%;
+}
+
+.ah-table-container .table-same-width {
+  table-layout: fixed;
+}
+
+.ah-table-container .table-centered td {
+  text-align: center;
+}
+
+.ah-table-container .table-compact td {
+  padding: .5rem;
+}
+
+.ah-table-container .table-alternating-cols td {
+  background-color: var(--clr-table-row-odd);
+}
+
+.ah-table-container .table-alternating-cols td:nth-child(2n) {
+  background-color: var(--clr-table-row-even);
 }
 
 /*# sourceMappingURL=main.css.map */

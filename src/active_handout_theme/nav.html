@@ -7,6 +7,11 @@
           <li class="ah-toc-item">
             <a href="{{ toc_item.url }}">{{ toc_item.title }}</a>
           </li>
+          {% for toc_subitem in toc_item.children %}
+          <li class="ah-toc-item">
+            <a href="{{ toc_subitem.url }}">{{ toc_subitem.title }}</a>
+          </li>
+          {% endfor %}
         {% endfor %}
       </ul>
     </li>
@@ -16,7 +21,7 @@
     </li>
   {% endif %}
 {% else %}
-  <li class="ah-togglable-item opened">
+  <li class="ah-togglable-item{% if nav_item.active %} opened{% endif %}">
     <span class="ah-togglable-handle">{{ nav_item.title }}</span>
     <ul>
       {% for nav_item in nav_item.children %}

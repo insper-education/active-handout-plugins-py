@@ -46,11 +46,13 @@
   --clr-admonition-default-background: var(--clr-blue-highlight-1);
   --clr-admonition-default-text: var(--clr-text-default);
   --clr-admonition-default-title: var(--clr-title-default);
+  --clr-admonition-default-link: var(--clr-text-default);
   --clr-admonition-text-em: var(--clr-text-em-default);
   --clr-admonition-text-strong: var(--clr-text-strong-default);
   // Admonition disabled
   --clr-admonition-disabled-background: var(--clr-gray-primary-4);
   --clr-admonition-disabled-text: var(--clr-text-default);
+  --clr-admonition-disabled-link: var(--clr-admonition-default-link);
   --clr-admonition-disabled-title: var(--clr-title-default);
   --clr-admonition-disabled-bullet: var(--clr-bullet-default);
   --clr-admonition-disabled-em: var(--clr-text-em-default);
@@ -61,6 +63,7 @@
   --clr-admonition-exercise-title: var(--clr-blue-highlight-1);
   --clr-admonition-exercise-text-em: var(--clr-gray-primary-2);
   --clr-admonition-exercise-text-strong: var(--clr-gray-primary-2);
+  --clr-admonition-exercise-link: var(--clr-gray-primary-2);
   --clr-admonition-exercise-bullet: var(--clr-blue-highlight-2);
   // Answer
   --clr-admonition-answer-background: var(--clr-gray-primary-5);
@@ -69,6 +72,9 @@
   --clr-admonition-answer-text-em: var(--clr-text-em-default);
   --clr-admonition-answer-text-strong: var(--clr-text-strong-default);
   --clr-admonition-answer-bullet: var(--clr-bullet-default);
+  // Table
+  --clr-table-row-odd: var(--clr-gray-primary-2);
+  --clr-table-row-even: var(--clr-gray-primary-3);
   // Code
   --clr-code-background: hsl(229, 100%, 97%);
   --clr-code-comment: hsl(219, 8%, 58%);

@@ -4,6 +4,7 @@
 .admonition.exercise {
   --clr-background: var(--clr-admonition-exercise-background);
   --clr-text: var(--clr-admonition-exercise-text);
+  --clr-link: var(--clr-admonition-exercise-link);
   --clr-title: var(--clr-admonition-exercise-title);
   --clr-bullet: var(--clr-admonition-exercise-bullet);
   --clr-text-em: var(--clr-admonition-exercise-text-em);
@@ -17,12 +18,7 @@
   }
 
   &.done {
-    --clr-background: var(--clr-admonition-disabled-background);
-    --clr-text: var(--clr-admonition-disabled-text);
-    --clr-title: var(--clr-admonition-disabled-title);
-    --clr-bullet: var(--clr-admonition-disabled-bullet);
-    --clr-text-em: var(--clr-admonition-disabled-em);
-    --clr-text-strong: var(--clr-admonition-disabled-strong);
+    filter: grayscale(0.7);
 
     .alternative {
       &:hover,
@@ -108,6 +104,10 @@
     grid-template-columns: 1fr;
     gap: 0.5rem;
     max-width: 100%;
+
+    &:has(.alternative.selected) .alternative:not(.selected) {
+      filter: brightness(0.9);
+    }
   }
 
   .alternative {

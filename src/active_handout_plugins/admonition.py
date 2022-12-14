@@ -1,5 +1,7 @@
 from markdown.treeprocessors import Treeprocessor
 
+from .l10n import gettext as _
+
 
 class AdmonitionVisitor(Treeprocessor):
     def has_class(self, el, classes_to_search):
@@ -15,6 +17,9 @@ class AdmonitionVisitor(Treeprocessor):
 
     def run(self, root):
         for el in root.findall(".//p[@class='admonition-title']/.."):
+            title = el.find("p[@class='admonition-title']")
+            if title.text:
+                title.text = _(title.text)
             self.visit(el)
 
     def visit(self, el):
