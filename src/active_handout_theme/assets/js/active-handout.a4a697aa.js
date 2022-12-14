@@ -697,6 +697,7 @@ parcelHelpers.export(exports, "getValue", ()=>getValue);
 parcelHelpers.export(exports, "removeValue", ()=>removeValue);
 function getKey(elOrKey) {
     if (typeof elOrKey === "string") return elOrKey;
+    if (elOrKey.dataset.slug) return elOrKey.dataset.slug + elOrKey.id;
     const docAddr = document.location.pathname;
     const slash = docAddr.endsWith("/") ? "" : "/";
     return `${docAddr}${slash}${elOrKey.id}`;

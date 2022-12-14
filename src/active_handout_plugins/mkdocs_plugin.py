@@ -87,7 +87,7 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
             seed = int(matches[0])
         
         html = re.sub(r'^(<div class\=\"admonition exercise.*\" id=)\"(.*)\">$', 
-                   r'\1"\2_' f'{seed}" data-slug="{page.url}">', html, flags=re.MULTILINE)
+                   r'\1"\2_' f'{seed}" data-slug="/{page.url}">', html, flags=re.MULTILINE)
 
         matches = re.findall(r'^(<div class\=\"admonition exercise choice.*\" +id=\"([\d\w\-]+)\".*>)$', html, flags=re.MULTILINE)
         for m in matches:
