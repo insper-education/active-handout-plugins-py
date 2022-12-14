@@ -15,7 +15,7 @@ class ExerciseAdmonition(AdmonitionVisitor):
 
     def __set_element_id(self, el, cls):
         self.counter += 1
-        self.id = f"{cls}-{self.counter}"
+        self.id = f"{cls}_{self.counter}"
         classes = el.attrib['class'].split()
         for c in classes:
             if c.startswith('id_'):
