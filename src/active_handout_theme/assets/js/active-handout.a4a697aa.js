@@ -142,11 +142,11 @@
       this[globalName] = mainExports;
     }
   }
-})({"12ysg":[function(require,module,exports) {
+})({"g7K05":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
-var HMR_PORT = 52732;
+var HMR_PORT = 52000;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "916932b22e4085ab";
 module.bundle.HMR_BUNDLE_ID = "efa96c9ba4a697aa";
@@ -1520,7 +1520,6 @@ var _codejar = require("codejar");
 var _highlightJs = require("highlight.js");
 var _highlightJsDefault = parcelHelpers.interopDefault(_highlightJs);
 var _clientDb = require("../client-db");
-var _domUtils = require("../dom-utils");
 var _files = require("./files");
 var _queries = require("./queries");
 var _readonlyCodejar = require("./readonly-codejar");
@@ -1543,34 +1542,22 @@ function buildInitSubEditor(editor, files) {
         const language = fileContent.getAttribute("data-language");
         const initialCode = files[filename].code;
         let jar;
-        if (readonly) jar = (0, _readonlyCodejar.createReadonlyCodeJar)(fileContent, initialCode);
+        if (readonly) jar = (0, _readonlyCodejar.buildReadonlyCodeJar)(fileContent, initialCode);
         else {
-            jar = (0, _codejar.CodeJar)(fileContent, (element)=>{
-                if (language) (0, _highlightJsDefault.default).configure({
-                    languages: [
-                        language
-                    ]
-                });
-                (0, _highlightJsDefault.default).highlightElement(element);
-            });
-            jar.onUpdate((code)=>{
-                files[filename].code = code;
-                saveFileIfInExercise(fileContent, filename, code);
-                // Dispatch event so others can do whatever they want with the new code
-                const event = new CustomEvent("contentchanged", {
-                    detail: {
-                        filename,
-                        code,
-                        files
-                    }
-                });
-                editor.dispatchEvent(event);
-            });
+            jar = buildCodeJar(fileContent, language);
+            const onUpdate = buildOnUpdateCallback(files, filename, fileContent, editor);
+            jar.onUpdate(onUpdate);
             const prevCode = loadFileFromLocalStorage(fileContent, filename);
-            if (prevCode) jar.updateCode(prevCode);
-            else jar.updateCode(initialCode);
+            if (prevCode) {
+                jar.updateCode(prevCode);
+                onUpdate(prevCode);
+            } else {
+                jar.updateCode(initialCode);
+                onUpdate(initialCode);
+            }
             resetBtn.addEventListener("click", ()=>{
                 jar.updateCode(initialCode);
+                onUpdate(initialCode);
             });
         }
         return [
@@ -1578,6 +1565,31 @@ function buildInitSubEditor(editor, files) {
             jar
         ];
     };
+}
+function buildOnUpdateCallback(files, filename, fileContent, editor) {
+    return (code)=>{
+        files[filename].code = code;
+        saveFileIfInExercise(fileContent, filename, code);
+        // Dispatch event so others can do whatever they want with the new code
+        const event = new CustomEvent("contentchanged", {
+            detail: {
+                filename,
+                code,
+                files
+            }
+        });
+        editor.dispatchEvent(event);
+    };
+}
+function buildCodeJar(fileContent, language) {
+    return (0, _codejar.CodeJar)(fileContent, (element)=>{
+        if (language) (0, _highlightJsDefault.default).configure({
+            languages: [
+                language
+            ]
+        });
+        (0, _highlightJsDefault.default).highlightElement(element);
+    });
 }
 function setupTabs(tabs, editor) {
     tabs.forEach((tab, idx)=>{
@@ -1605,7 +1617,7 @@ function getFilenameKey(fileContent, filename) {
     return `${exerciseKey}-${filename}`;
 }
 
-},{"codejar":"8oTO2","highlight.js":"ljeYi","../dom-utils":"NCBha","./files":"jfsgL","./queries":"lCGrt","./readonly-codejar":"cGTt8","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff"}],"8oTO2":[function(require,module,exports) {
+},{"codejar":"8oTO2","highlight.js":"ljeYi","./files":"jfsgL","./queries":"lCGrt","./readonly-codejar":"cGTt8","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff"}],"8oTO2":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CodeJar", ()=>CodeJar);
@@ -53461,10 +53473,10 @@ function queryResetButton(container) {
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"cGTt8":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "createReadonlyCodeJar", ()=>createReadonlyCodeJar);
+parcelHelpers.export(exports, "buildReadonlyCodeJar", ()=>buildReadonlyCodeJar);
 var _highlightJs = require("highlight.js");
 var _highlightJsDefault = parcelHelpers.interopDefault(_highlightJs);
-function createReadonlyCodeJar(parent, code) {
+function buildReadonlyCodeJar(parent, code) {
     const language = parent.getAttribute("data-language");
     parent.textContent = "";
     const preElement = document.createElement("pre");
@@ -53484,6 +53496,6 @@ function createReadonlyCodeJar(parent, code) {
     };
 }
 
-},{"highlight.js":"ljeYi","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["12ysg"], null, "parcelRequirea86e")
+},{"highlight.js":"ljeYi","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["g7K05"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map
