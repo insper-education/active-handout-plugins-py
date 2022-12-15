@@ -1178,7 +1178,7 @@ body {
 
 .ah-navigation :after {
   content: "";
-  background: linear-gradient(to right, var(--clr-background), var(--clr-background) 90%, transparent);
+  background: linear-gradient(to right, var(--clr-background), var(--clr-background) 100%, transparent);
   z-index: -1;
   position: absolute;
   inset: 0;
