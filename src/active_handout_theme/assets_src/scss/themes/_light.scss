@@ -1,6 +1,8 @@
 :root {
   --clr-white: var(--clr-gray-primary-1);
   --clr-black: var(--clr-gray-primary-15);
+  --clr-primary: var(--clr-blue-primary-6);
+  --clr-highlight: var(--clr-blue-highlight-5);
 
   // Shadows
   --clr-shadow-1: var(--clr-gray-primary-2);
@@ -19,18 +21,18 @@
   // Text
   --clr-text-default: var(--clr-black);
   --clr-text-default-hover: var(--clr-gray-primary-8);
-  --clr-text-em-default: var(--clr-blue-primary-6);
-  --clr-text-strong-default: var(--clr-blue-primary-6);
+  --clr-text-em-default: var(--clr-primary);
+  --clr-text-strong-default: var(--clr-primary);
   --clr-text-disabled: var(--clr-gray-primary-5);
   --clr-text-disabled-hover: var(--clr-gray-primary-4);
   // Title
-  --clr-title-default: var(--clr-blue-primary-6);
-  --clr-subtitle-default: var(--clr-blue-highlight-5);
+  --clr-title-default: var(--clr-primary);
+  --clr-subtitle-default: var(--clr-highlight);
   // Link
-  --clr-link-default: var(--clr-blue-highlight-5);
+  --clr-link-default: var(--clr-highlight);
   --clr-link-default-hover: var(--clr-blue-highlight-4);
   // Bullet points
-  --clr-bullet-default: var(--clr-blue-highlight-5);
+  --clr-bullet-default: var(--clr-highlight);
   // Button default
   --clr-btn-default: transparent;
   --clr-btn-default-border: var(--clr-blue-primary-5);
@@ -39,7 +41,7 @@
   // Button disabled
   --clr-btn-disabled: var(--clr-gray-primary-3);
   // Button primary
-  --clr-btn-primary: var(--clr-blue-highlight-5);
+  --clr-btn-primary: var(--clr-highlight);
   --clr-btn-primary-text: var(--clr-white);
   --clr-btn-primary-text-hover: var(--clr-white);
   // Admonition

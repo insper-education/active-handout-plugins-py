@@ -1,18 +1,5 @@
 # Active Handout Backend
 
-## Setting up Auth0
-
-We delegate authentication to [Auth0](https://auth0.com/). You will need to create an account for you and pick the social connections you want to support.
-
-In your Auth0 application settings, add the following:
-
-- On **Allowed Callback URLs** add: `http://localhost:8080/api/callback,https://YOUR_URL_HERE/api/callback`
-- On **Allowed Logout URLs** add: `http://localhost:8080/api/user-menu,https://YOUR_URL_HERE/api/user-menu`
-
-**Important:** replace `YOUR_URL_HERE` by your domain and the port to whatever port you are using in your local Django server.
-
-In your Auth0 application settings page, set "Application Type" to `Single Page Application`. In the "Advanced Settings" at the bottom of the settings page, make sure "JSON Web Token (JWT) Signature Algorithm" is set to `RS256` and "OIDC Conformant" is checked.
-
 ## Setting up a server on AWS
 
 **Important:** to complete the deploy you need a domain (or subdomain) so we can setup the Let's Encrypt certificate.

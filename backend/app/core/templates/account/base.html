@@ -1,0 +1,36 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block head_title %}{% endblock %}</title>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:700|Oxygen+Mono|Source+Sans+Pro:700|Source+Serif+Pro&amp;display=swap">
+    <link rel="stylesheet" href="{% static 'core/assets/css/main.css' %}">
+    {% block extra_head %}
+    {% endblock %}
+  </head>
+  <body class="fullscreen ah-typeset">
+    {% block body %}
+
+    {% if messages %}
+    <div>
+      <strong>Messages:</strong>
+      <ul>
+        {% for message in messages %}
+        <li>{{message}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+
+    {% block content %}
+    {% endblock %}
+    
+    {% endblock %}
+
+    <script src="{% static 'core/assets/js/main.js' %}"></script>
+    {% block extra_body %}
+    {% endblock %}
+  </body>
+</html>
