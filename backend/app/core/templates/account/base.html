@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{% block head_title %}{% endblock %}</title>
     <link rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Fira+Sans+Extra+Condensed:700|Oxygen+Mono|Source+Sans+Pro:700|Source+Serif+Pro&amp;display=swap">
@@ -14,7 +15,7 @@
     {% block body %}
 
     {% if messages %}
-    <div>
+    <div class="django-messages">
       <strong>Messages:</strong>
       <ul>
         {% for message in messages %}
@@ -24,9 +25,11 @@
     </div>
     {% endif %}
 
-    {% block content %}
-    {% endblock %}
-    
+    <section class="fullpage-form">
+      {% block content %}
+      {% endblock %}
+    </section>
+
     {% endblock %}
 
     <script src="{% static 'core/assets/js/main.js' %}"></script>

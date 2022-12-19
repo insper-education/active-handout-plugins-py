@@ -1766,6 +1766,104 @@ body.fullscreen {
   margin-top: 0;
 }
 
+.fullpage-form form input[type="text"], .fullpage-form form input[type="password"], .fullpage-form form input[type="email"] {
+  border-color: var(--clr-gray-primary-2);
+  width: 100%;
+  display: block;
+}
+
+.fullpage-form form [type="submit"] {
+  --clr-btn: var(--clr-btn-primary);
+  --clr-btn-text: var(--clr-btn-primary-text);
+  --clr-btn-text-hover: var(--clr-btn-primary-text-hover);
+  background: var(--clr-btn);
+  color: var(--clr-btn-text);
+  border: none;
+  border-radius: .2em;
+  padding: .2em .6em;
+  font-weight: normal;
+  text-decoration: none;
+}
+
+.fullpage-form form [type="submit"]:hover, .fullpage-form form [type="submit"]:active, .fullpage-form form [type="submit"]:focus {
+  cursor: pointer;
+  color: var(--clr-btn-text-hover);
+  transform: scale(1.01);
+}
+
+.login-or {
+  width: 100%;
+  text-transform: uppercase;
+  justify-content: center;
+  align-items: center;
+  margin: 2em 0 1em;
+  font-weight: bold;
+  display: flex;
+}
+
+.login-or:before, .login-or:after {
+  content: "";
+  width: 100%;
+  height: .1em;
+  background-color: var(--clr-gray-primary-3);
+}
+
+.login-or:before {
+  margin-right: 1em;
+}
+
+.login-or:after {
+  margin-left: 1em;
+}
+
+.socialaccount_ballot {
+  padding: 0;
+}
+
+.socialaccount_ballot .socialaccount_providers {
+  padding-left: 0;
+}
+
+.socialaccount_ballot .socialaccount_providers li:before {
+  display: none;
+}
+
+.socialaccount_ballot .socialaccount_providers .socialaccount_provider {
+  background: none;
+  border-radius: .2em;
+  align-items: center;
+  padding: .5em 1em;
+  font-weight: bold;
+  display: flex;
+}
+
+.socialaccount_ballot .socialaccount_providers .socialaccount_provider.github {
+  color: #fafafa;
+  background-color: #333;
+}
+
+.socialaccount_ballot .socialaccount_providers .socialaccount_provider.github:before {
+  content: "";
+  width: 1.5em;
+  height: 1.5em;
+  background: url("github-mark-white.ad223937.png") center / cover no-repeat;
+  margin-right: 1em;
+}
+
+ul.errorlist li {
+  color: var(--clr-fail-primary-5, red);
+  font-size: medium;
+  line-height: 1.5;
+}
+
+ul.errorlist li:before {
+  color: var(--clr-fail-primary-5, red);
+}
+
+.django-messages {
+  display: none;
+}
+
 .ah-content {
   max-width: 70ch;
   margin: 3em auto 2em;
