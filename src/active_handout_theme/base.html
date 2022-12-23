@@ -70,6 +70,9 @@
           <div id="user-menu" hx-get="{{ config.active_handout.backend_user_menu_url}}" hx-trigger="load"> </div>
           {% endif %}
         </div>
+        <button id="resetHandoutButton">
+          <span class="icon">{% include "icon/trash.svg" %}</span>
+        </button>
       </header>
       <nav class="ah-navigation">
         <div class="ah-nav-container">
@@ -85,9 +88,6 @@
         </div>
       </nav>
       <main class="ah-content ah-typeset">
-        <button id="resetHandoutButton">
-          <span class="icon">{% include "icon/reset.svg" %}</span>
-        </button>
         {% block content %}
           <div class="ah-title-box">
             <ul class="ah-breadcrumbs">
