@@ -82,6 +82,7 @@ class TelemetryData(models.Model):
     points = models.FloatField()
     submission_date = models.DateTimeField(default=timezone.now)
     log = models.JSONField()
+    last = models.BooleanField(default=True)
 
     def __str__(self) -> str:
         return f"{self.exercise} -> {self.author.username} ({self.submission_date})"

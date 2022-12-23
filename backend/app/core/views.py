@@ -1,26 +1,28 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
 from django.utils.http import urlencode
 from django.contrib.auth import logout
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.authtoken.models import Token
 
 from core.models import User, Course, ExerciseTag, Exercise, TelemetryData
 from core.serializers import TelemetryDataSerializer
+from django.db.models import Max
 
 
 def login_request(request):
     next_url = request.GET.get("next", None)
     if not next_url:
         next_url = request.session.get("next", None)
-    
+
     request.session['next'] = next_url
 
     if request.user.is_authenticated:
         token, _ = Token.objects.get_or_create(user=request.user)
-        return redirect(next_url + '?' + urlencode({"token": token.key} ) )
+        return redirect(next_url + '?' + urlencode({"token": token.key}))
     else:
         request.session["next"] = next_url
         return redirect("account_login")
@@ -31,7 +33,7 @@ def logout_request(request):
     if request.user.is_authenticated:
         logout(request)
     return redirect(next_url + '?token=')
-    
+
 
 def user_menu(request):
     login_url = request.build_absolute_uri('/api/login')
@@ -61,7 +63,9 @@ def telemetry_data(request):
     course, _ = Course.objects.get_or_create(name=course_name)
     exercise, _ = Exercise.objects.get_or_create(course=course, slug=slug)
     ensure_tags_equal(exercise, tags)
-    telemetry_data = TelemetryData.objects.create(author=user, exercise=exercise, points=points, log=log)
+    TelemetryData.objects.filter(author=user, exercise=exercise, last=True).update(last=False)
+    telemetry_data = TelemetryData.objects.create(
+        author=user, exercise=exercise, points=points, log=log)
 
     return Response(TelemetryDataSerializer(telemetry_data).data)
 
@@ -78,5 +82,16 @@ def ensure_tags_equal(exercise, tags):
 
     # Add new tags
     for tag_name in tags:
-        tag, _ = ExerciseTag.objects.get_or_create(course=exercise.course, name=tag_name)
+        tag, _ = ExerciseTag.objects.get_or_create(
+            course=exercise.course, name=tag_name)
         exercise.tags.add(tag)
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+@login_required
+def get_all_answers(request, course_name, exercise_slug):
+    course = get_object_or_404(Course, name=course_name)
+    exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
+    data = TelemetryData.objects.filter(exercise=exercise, last=True)
+    return Response(TelemetryDataSerializer(data, many=True).data)

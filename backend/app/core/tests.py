@@ -2,8 +2,8 @@ from django.utils.translation import gettext as _
 from django.test import TestCase
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from core.models import Instructor, User, Exercise, Course, ExerciseTag
-from core.views import ensure_tags_equal, telemetry_data
+from core.models import Instructor, User, Exercise, Course, ExerciseTag, Student, TelemetryData
+from core.views import ensure_tags_equal, telemetry_data, get_all_answers
 
 
 class StudentAndInstructorTests(TestCase):
@@ -66,3 +66,48 @@ class TelemetryDataTests(TestCase):
         assert response.status_code == 200, f'Wrong status code. Expected 200, got {response.status_code}'
         assert Course.objects.filter(name=data['exercise']['course']).exists()
         assert Exercise.objects.filter(slug=data['exercise']['slug']).exists()
+
+
+class AnswerEndPointTest(TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.factory = APIRequestFactory()
+
+    def setUp(self):
+        self.course = Course.objects.create(name='Awesome Course 2022')
+        self.exercises = [
+            Exercise.objects.create(course=self.course, slug=f'ex{i}')
+            for i in range(10)
+        ]
+        self.instructor = Instructor.objects.create_user(username='igor', password='igorigor', is_staff=True)
+        self.students = [
+            Student.objects.create_user(f'student{i}', password=f'oi{i}')
+            for i in range(3)
+        ]
+
+        for st in self.students:
+            for ex in self.exercises:
+                TelemetryData.objects.create(author=st, exercise=ex, points=0, log="NO")
+                TelemetryData.objects.create(author=st, exercise=ex, points=1, log="OK")
+
+
+    def test_student_cant_get_answers(self):
+        request = self.factory.get(f'/api/telemetry/answers/{self.course.name}/{self.exercises[0].slug}')
+        force_authenticate(request, user=self.students[0])
+        response = get_all_answers(request, self.course.name, self.exercises[0].slug)
+        assert response.status_code == 403
+    
+    def test_instructors_can_get_answers(self):
+        request = self.factory.get(f'/api/telemetry/answers/{self.course.name}/{self.exercises[0].slug}')
+        force_authenticate(request, user=self.instructor)
+        response = get_all_answers(request, self.course.name, self.exercises[0].slug)
+        assert response.status_code == 200
+    
+    def test_adding_new_exercise_updates_last(self):
+        st = self.students[0]
+        ex = self.exercises[0]
+        last_student0 = TelemetryData.objects.get(author=st, exercise=ex, last=True)
+        new_last_student0 = TelemetryData.objects.create(author=st, exercise=ex, points=0, log="NEW")
+        assert new_last_student0.last == True
+        last_student0.refresh_from_db()
+        assert last_student0.last == False
