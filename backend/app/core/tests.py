@@ -107,8 +107,20 @@ class AnswerEndPointTest(TestCase):
         st = self.students[0]
         ex = self.exercises[0]
         last_student0 = TelemetryData.objects.get(author=st, exercise=ex, last=True)
-        new_last_student0 = TelemetryData.objects.create(author=st, exercise=ex, points=0, log="NEW")
+        new_last_student0 = TelemetryData.objects.create(author=st, exercise=ex, points=1, log="NEW")
         assert new_last_student0.last == True
         assert new_last_student0.log == "NEW"
         last_student0.refresh_from_db()
         assert last_student0.last == False
+
+    def test_get_all_last_answers(self):
+        request = self.factory.get(f'/api/telemetry/answers/{self.course.name}/{self.exercises[0].slug}')
+        force_authenticate(request, user=self.instructor)
+        response = get_all_answers(request, self.course.name, self.exercises[0].slug)
+        assert response.status_code == 200
+        author_exercise_pairs = set()
+        for it in response.data:
+            assert it["points"] == 1 and it["log"] != "NO"
+            pair = (it["author"]["username"], it["exercise"]["course"], it["exercise"]["slug"])
+            assert pair not in author_exercise_pairs
+            author_exercise_pairs.add(pair)
