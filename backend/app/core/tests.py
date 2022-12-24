@@ -109,5 +109,6 @@ class AnswerEndPointTest(TestCase):
         last_student0 = TelemetryData.objects.get(author=st, exercise=ex, last=True)
         new_last_student0 = TelemetryData.objects.create(author=st, exercise=ex, points=0, log="NEW")
         assert new_last_student0.last == True
+        assert new_last_student0.log == "NEW"
         last_student0.refresh_from_db()
         assert last_student0.last == False
