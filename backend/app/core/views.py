@@ -1,26 +1,26 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.utils.http import urlencode
 from django.contrib.auth import logout
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.authtoken.models import Token
 
-from core.models import User, Course, ExerciseTag, Exercise, TelemetryData
-from core.serializers import TelemetryDataSerializer
+from core.models import Course, ExerciseTag, Exercise, TelemetryData
+from core.serializers import TelemetryDataSerializer, UserSerializer
+from core.shortcuts import redirect
 
 
 def login_request(request):
     next_url = request.GET.get("next", None)
     if not next_url:
         next_url = request.session.get("next", None)
-    
+
     request.session['next'] = next_url
 
     if request.user.is_authenticated:
         token, _ = Token.objects.get_or_create(user=request.user)
-        return redirect(next_url + '?' + urlencode({"token": token.key} ) )
+        return redirect(next_url + '?' + urlencode({"token": token.key}))
     else:
         request.session["next"] = next_url
         return redirect("account_login")
@@ -31,7 +31,7 @@ def logout_request(request):
     if request.user.is_authenticated:
         logout(request)
     return redirect(next_url + '?token=')
-    
+
 
 def user_menu(request):
     login_url = request.build_absolute_uri('/api/login')
@@ -45,6 +45,13 @@ def user_menu(request):
         logout_url += '?' + urlencode({'next': next_param})
 
     return render(request, "user_menu.html", {'login_url': login_url, 'logout_url': logout_url})
+
+
+@api_view(['GET'])
+@login_required
+def user_info(request):
+    user = request.user
+    return Response(UserSerializer(user).data)
 
 
 @api_view(['POST'])
