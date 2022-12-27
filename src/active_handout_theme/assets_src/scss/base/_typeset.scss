@@ -95,6 +95,12 @@ $font-sizes: (
 
   img {
     margin-inline: auto;
+
+    &.ah-inline-img {
+      display: inline;
+      margin: 0;
+      max-height: 1.5rem;
+    }
   }
 
   em {
