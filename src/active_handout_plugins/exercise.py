@@ -141,10 +141,28 @@ class ChoiceExercise(ExerciseAdmonition):
             if text.startswith('*'):
                 text = text[1:]
             content = text + ''.join(etree.tostring(e, 'unicode') for e in choice if e.tag != 'label')
+            script = '''
+            on click
+                set alternative to closest .alternative
+                if alternative matches <:not(.selected)/> then
+                    set selected to false
+                else
+                    set selected to true
+                end
+                remove .selected from .alternative in closest .alternative-set
+                if selected then
+                    remove .selected from alternative
+                    add @disabled to <input[type='submit']/> in closest .form-elements
+                else
+                    add .selected to alternative
+                    remove @disabled from <input[type='submit']/> in closest .form-elements
+                end
+            end
+            '''.replace('\n', '').replace('    ', ' ')
             html_alternatives.append(f'''
 <label class="alternative">
   <div class="content">
-    <input type="radio" name="data" value="{i}" _="on click remove .selected from .alternative in closest .alternative-set add .selected to the closest .alternative remove @disabled from <input[type='submit']/> in closest .form-elements end">
+    <input type="radio" name="data" value="{i}" _="{script}">
     {content}
   </div>
 </label>

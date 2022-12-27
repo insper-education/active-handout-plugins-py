@@ -25,6 +25,14 @@ div.highlight,
   }
 }
 
+:not(.highlight) :not(pre) > code {
+  padding: 0;
+  color: inherit;
+  font-weight: bold;
+  font-style: italic;
+  background: none;
+}
+
 code {
   font-family: $font-mono;
   $extra-block: 0.2em;

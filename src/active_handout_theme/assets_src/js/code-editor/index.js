@@ -1,7 +1,6 @@
 import { CodeJar } from "codejar";
 import hljs from "highlight.js";
 import { getKey } from "../client-db";
-import { deepCopy } from "../dom-utils";
 import { initFiles } from "./files";
 import {
   queryEditors,
@@ -9,7 +8,7 @@ import {
   queryFileTabs,
   queryResetButton,
 } from "./queries";
-import { createReadonlyCodeJar } from "./readonly-codejar";
+import { buildReadonlyCodeJar } from "./readonly-codejar";
 
 export function initCodeEditorPlugin() {
   const editors = queryEditors();
@@ -38,41 +37,58 @@ function buildInitSubEditor(editor, files) {
 
     let jar;
     if (readonly) {
-      jar = createReadonlyCodeJar(fileContent, initialCode);
+      jar = buildReadonlyCodeJar(fileContent, initialCode);
     } else {
-      jar = CodeJar(fileContent, (element) => {
-        if (language) {
-          hljs.configure({
-            languages: [language],
-          });
-        }
-        hljs.highlightElement(element);
-      });
-      jar.onUpdate((code) => {
-        files[filename].code = code;
-
-        saveFileIfInExercise(fileContent, filename, code);
-
-        // Dispatch event so others can do whatever they want with the new code
-        const event = new CustomEvent("contentchanged", {
-          detail: { filename, code, files },
-        });
-        editor.dispatchEvent(event);
-      });
+      jar = buildCodeJar(fileContent, language);
+      const onUpdate = buildOnUpdateCallback(
+        files,
+        filename,
+        fileContent,
+        editor
+      );
+      jar.onUpdate(onUpdate);
       const prevCode = loadFileFromLocalStorage(fileContent, filename);
       if (prevCode) {
         jar.updateCode(prevCode);
+        onUpdate(prevCode);
       } else {
         jar.updateCode(initialCode);
+        onUpdate(initialCode);
       }
 
       resetBtn.addEventListener("click", () => {
         jar.updateCode(initialCode);
+        onUpdate(initialCode);
       });
     }
 
     return [filename, jar];
   };
+}
+
+function buildOnUpdateCallback(files, filename, fileContent, editor) {
+  return (code) => {
+    files[filename].code = code;
+
+    saveFileIfInExercise(fileContent, filename, code);
+
+    // Dispatch event so others can do whatever they want with the new code
+    const event = new CustomEvent("contentchanged", {
+      detail: { filename, code, files },
+    });
+    editor.dispatchEvent(event);
+  };
+}
+
+function buildCodeJar(fileContent, language) {
+  return CodeJar(fileContent, (element) => {
+    if (language) {
+      hljs.configure({
+        languages: [language],
+      });
+    }
+    hljs.highlightElement(element);
+  });
 }
 
 function setupTabs(tabs, editor) {

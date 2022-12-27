@@ -1,0 +1,38 @@
+@use "../abstracts/index.scss" as *;
+
+.socialaccount_ballot {
+  padding: 0;
+
+  .socialaccount_providers {
+    padding-left: 0;
+
+    li {
+      &::before {
+        display: none;
+      }
+    }
+
+    .socialaccount_provider {
+      display: flex;
+      align-items: center;
+      background: none;
+      padding: 0.5em 1em;
+      border-radius: $border-radius;
+      font-weight: bold;
+
+      &.github {
+        background-color: #333;
+        color: #fafafa;
+
+        &::before {
+          content: "";
+          width: 1.5em;
+          height: 1.5em;
+          background: url("../img/github-mark-white.png") no-repeat center;
+          background-size: cover;
+          margin-right: 1em;
+        }
+      }
+    }
+  }
+}

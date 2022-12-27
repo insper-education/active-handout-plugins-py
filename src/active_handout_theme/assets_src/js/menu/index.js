@@ -48,6 +48,8 @@ export function initMenuPlugin() {
       closeMenu();
     }
   });
+
+  removePreload();
 }
 
 function isMenuOpened() {
@@ -83,4 +85,10 @@ function toggleMenu(menuBtn) {
   } else {
     openMenu();
   }
+}
+
+function removePreload() {
+  setTimeout(() => {
+    getNav().classList.remove("preload");
+  }, 0);
 }

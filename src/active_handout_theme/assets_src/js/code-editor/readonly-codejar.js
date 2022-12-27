@@ -1,6 +1,6 @@
 import hljs from "highlight.js";
 
-export function createReadonlyCodeJar(parent, code) {
+export function buildReadonlyCodeJar(parent, code) {
   const language = parent.getAttribute("data-language");
   parent.textContent = "";
 

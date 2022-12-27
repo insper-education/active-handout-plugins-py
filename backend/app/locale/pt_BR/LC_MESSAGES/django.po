@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-28 13:53-0300\n"
+"POT-Creation-Date: 2022-12-16 11:14-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,55 +15,70 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: core/templates/registration/password_reset_email.txt:3
-msgid "Hello,"
-msgstr "Olá,"
+#: core/templates/account/login.html:6 core/templates/account/login.html:11
+#: core/templates/account/login.html:40
+msgid "Sign In"
+msgstr "Entrar"
 
-#: core/templates/registration/password_reset_email.txt:6
+#: core/templates/account/login.html:16
+msgid "Please sign in with one of your existing third party accounts."
+msgstr "Por favor, entre com alguma de suas contas externas."
+
+#: core/templates/account/login.html:24
+msgid "or"
+msgstr "ou"
+
+#: core/templates/account/login.html:29
+#, python-format
 msgid ""
-"An account on the Developer Life server has been created for this email "
-"address. Click the link below to complete the registration."
+"If you have not created an account yet, then please\n"
+"  <a href=\"%(signup_url)s\">sign up</a> first."
 msgstr ""
-"Criamos uma conta no servidor de Developer Life para este e-mail. Clique no "
-"link abaixo para completar o cadastro."
 
-#: core/templates/registration/password_reset_email.txt:8
-msgid ""
-"We have received a request to reset the password for your account for this "
-"email address. Click the link below to initiate the password reset process."
-msgstr ""
-"Recebemos um pedido de redefinição de senha para a conta cadastrada neste e-"
-"mail. Clique no link abaixo para redefinir sua senha."
+#: core/templates/account/login.html:39
+msgid "Forgot Password?"
+msgstr "Esqueceu sua senha?"
 
-#: core/templates/registration/password_reset_email.txt:11
-msgid ""
-"This link can only be used once. If you need to reset your password again, "
-"please request another reset."
-msgstr ""
-"Este link pode ser utilizado apenas uma vez. Se você precisar redefinir sua "
-"senha novamente, por favor, faça uma nova solicitação."
+#~ msgid "Hello,"
+#~ msgstr "Olá,"
 
-#: core/templates/registration/password_reset_email.txt:15
-msgid "Your username:"
-msgstr "Seu usuário:"
+#~ msgid ""
+#~ "An account on the Developer Life server has been created for this email "
+#~ "address. Click the link below to complete the registration."
+#~ msgstr ""
+#~ "Criamos uma conta no servidor de Developer Life para este e-mail. Clique "
+#~ "no link abaixo para completar o cadastro."
 
-#: core/templates/registration/password_reset_email.txt:17
-msgid "If you did not make this request, you can simply ignore this email."
-msgstr "Caso você não tenha feito este pedido, por favor, ignore este e-mail."
+#~ msgid ""
+#~ "We have received a request to reset the password for your account for "
+#~ "this email address. Click the link below to initiate the password reset "
+#~ "process."
+#~ msgstr ""
+#~ "Recebemos um pedido de redefinição de senha para a conta cadastrada neste "
+#~ "e-mail. Clique no link abaixo para redefinir sua senha."
 
-#: core/templates/registration/password_reset_email.txt:19
-msgid "Sincerely,"
-msgstr "Atenciosamente,"
+#~ msgid ""
+#~ "This link can only be used once. If you need to reset your password "
+#~ "again, please request another reset."
+#~ msgstr ""
+#~ "Este link pode ser utilizado apenas uma vez. Se você precisar redefinir "
+#~ "sua senha novamente, por favor, faça uma nova solicitação."
 
-#: core/templates/registration/password_reset_email.txt:20
-msgid "Developer Life Team"
-msgstr "Equipe Developer Life"
+#~ msgid "Your username:"
+#~ msgstr "Seu usuário:"
 
-#: core/templates/registration/password_reset_subject.txt:2 core/tests.py:290
-#: core/tests.py:311 core/tests.py:348
-msgid "[DevLife] Set password"
-msgstr "[DevLife] Definição de senha"
+#~ msgid "If you did not make this request, you can simply ignore this email."
+#~ msgstr ""
+#~ "Caso você não tenha feito este pedido, por favor, ignore este e-mail."
 
-#: core/templates/registration/password_reset_subject.txt:2 core/tests.py:291
-msgid "[DevLife] Password reset"
-msgstr "[DevLife] Redefinição de senha"
+#~ msgid "Sincerely,"
+#~ msgstr "Atenciosamente,"
+
+#~ msgid "Developer Life Team"
+#~ msgstr "Equipe Developer Life"
+
+#~ msgid "[DevLife] Set password"
+#~ msgstr "[DevLife] Definição de senha"
+
+#~ msgid "[DevLife] Password reset"
+#~ msgstr "[DevLife] Redefinição de senha"
