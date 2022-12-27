@@ -1,0 +1,5 @@
+@use "../abstracts" as *;
+
+video {
+  margin: $space-between-block 0 (2 * $space-between-block);
+}

@@ -1,0 +1,25 @@
+@use "../abstracts" as *;
+
+details {
+  margin: 0 (-$admonition-extra-inline) (2 * $admonition-extra-block);
+  padding: $admonition-extra-block $admonition-extra-inline;
+  border: 2px solid var(--clr-admonition-default-background);
+  border-radius: $border-radius;
+
+  summary {
+    margin: (-$admonition-extra-block) (-$admonition-extra-inline);
+    padding: $admonition-extra-block $admonition-extra-inline;
+    background-color: var(--clr-admonition-default-background);
+    color: var(--clr-admonition-default-title);
+
+    cursor: pointer;
+
+    > * {
+      display: inline;
+    }
+
+    + * {
+      margin-top: (2 * $admonition-extra-block);
+    }
+  }
+}
