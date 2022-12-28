@@ -111,8 +111,6 @@
   a:not(.ah-logo) {
     color: var(--clr-link);
     text-decoration: none;
-
-    @include animated-underline(var(--clr-link), var(--clr-link), 0, 100%);
   }
 }
 

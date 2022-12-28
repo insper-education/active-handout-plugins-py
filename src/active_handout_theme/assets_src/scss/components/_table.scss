@@ -10,6 +10,12 @@
     overflow: hidden;
   }
 
+  thead {
+    td {
+      font-weight: bold;
+    }
+  }
+
   &.full-width {
     width: 100%;
 
