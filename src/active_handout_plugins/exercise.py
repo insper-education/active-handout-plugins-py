@@ -19,7 +19,7 @@ class ExerciseAdmonition(AdmonitionVisitor):
         classes = el.attrib['class'].split()
         for c in classes:
             if c.startswith('id_'):
-                self.id = f'{c[3:]}_{self.counter}'
+                self.id = f'{c[3:]}'
                 el.attrib['class'] = el.attrib['class'].replace(c, '')
         
         el.set("id", self.id)

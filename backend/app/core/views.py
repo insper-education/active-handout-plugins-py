@@ -1,5 +1,5 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils.http import urlencode
 from django.contrib.auth import logout
 from rest_framework.decorators import api_view, permission_classes
@@ -10,7 +10,6 @@ from rest_framework.authtoken.models import Token
 
 from core.models import User, Course, ExerciseTag, Exercise, TelemetryData
 from core.serializers import TelemetryDataSerializer
-from django.db.models import Max
 
 
 def login_request(request):
@@ -63,7 +62,6 @@ def telemetry_data(request):
     course, _ = Course.objects.get_or_create(name=course_name)
     exercise, _ = Exercise.objects.get_or_create(course=course, slug=slug)
     ensure_tags_equal(exercise, tags)
-    TelemetryData.objects.filter(author=user, exercise=exercise, last=True).update(last=False)
     telemetry_data = TelemetryData.objects.create(
         author=user, exercise=exercise, points=points, log=log)
 
