@@ -5,7 +5,7 @@ div.highlight,
 :not(.highlight) > pre {
   background: var(--clr-code-background);
   padding: $admonition-extra-block $admonition-extra-inline;
-  margin: 0 (-$admonition-extra-inline) $space-between-block;
+  margin: 0 0 $space-between-block;
   border-radius: $border-radius;
   overflow: auto;
 
@@ -23,6 +23,14 @@ div.highlight,
     padding-inline: calc($admonition-extra-inline / 2);
     margin: 0 0 $space-between-block;
   }
+}
+
+:not(.highlight) :not(pre) > code {
+  padding: 0;
+  color: inherit;
+  font-weight: bold;
+  font-style: italic;
+  background: none;
 }
 
 code {
@@ -52,7 +60,10 @@ code {
   color: var(--clr-code-error-text);
   background-color: var(--clr-code-error-background);
 } /* Error */
-.highlight .k {
+.highlight .k,
+.hljs-keyword,
+.hljs-attribute,
+.hljs-meta .hljs-keyword {
   color: var(--clr-code-keyword);
 } /* Keyword */
 .highlight .l {
@@ -61,10 +72,18 @@ code {
 .highlight .n {
   color: var(--clr-code-name);
 } /* Name */
-.highlight .o {
+.highlight .o,
+.hljs-template-tag,
+.hljs-section,
+.hljs-bullet,
+.hljs-code,
+.hljs-title.function_.invoke__,
+.hljs-operator {
   color: var(--clr-code-operator);
 } /* Operator */
-.highlight .p {
+.highlight .p,
+.hljs-punctuation,
+.hljs-tag {
   color: var(--clr-code-punctuation);
 } /* Punctuation */
 .highlight .ch {
@@ -127,10 +146,17 @@ code {
 .highlight .s {
   color: var(--clr-code-string);
 } /* Literal.String */
-.highlight .na {
+.highlight .na,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-selector-attr,
+.hljs-selector-pseudo,
+.hljs-attr,
+.hljs-subst {
   color: var(--clr-code-generic);
 } /* Name.Attribute */
-.highlight .nb {
+.highlight .nb,
+.hljs-built_in {
   color: var(--clr-code-builtin);
 } /* Name.Builtin */
 .highlight .nc {
@@ -148,7 +174,8 @@ code {
 .highlight .ne {
   color: var(--clr-code-generic);
 } /* Name.Exception */
-.highlight .nf {
+.highlight .nf,
+.hljs-title.function_ {
   color: var(--clr-code-generic);
 } /* Name.Function */
 .highlight .nl {
@@ -163,7 +190,9 @@ code {
 .highlight .py {
   color: var(--clr-code-name);
 } /* Name.Property */
-.highlight .nt {
+.highlight .nt,
+.hljs-name,
+.hljs-selector-tag {
   color: var(--clr-code-operator);
 } /* Name.Tag */
 .highlight .nv {
@@ -223,7 +252,8 @@ code {
 .highlight .sr {
   color: var(--clr-code-string);
 } /* Literal.String.Regex */
-.highlight .s1 {
+.highlight .s1,
+.hljs-string {
   color: var(--clr-code-string);
 } /* Literal.String.Single */
 .highlight .ss {

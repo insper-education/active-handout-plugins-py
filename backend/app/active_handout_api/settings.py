@@ -202,8 +202,3 @@ if EMAIL_HOST_USER != DEFAULT_DUMMY_EMAIL and AWS_ACCESS_KEY_ID and AWS_SECRET_A
     AWS_SES_REGION_ENDPOINT = 'email.sa-east-1.amazonaws.com'
 else:
     EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-
-# Setup Auth0
-AUTH0_DOMAIN = os.environ.get("AUTH0_DOMAIN")
-AUTH0_CLIENT_ID = os.environ.get("AUTH0_CLIENT_ID")
-AUTH0_CLIENT_SECRET = os.environ.get("AUTH0_CLIENT_SECRET")

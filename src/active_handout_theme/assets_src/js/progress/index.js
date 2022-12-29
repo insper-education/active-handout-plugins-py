@@ -1,11 +1,10 @@
-import { getValue } from "../client-db";
-import { saveAndSendData } from "../telemetry";
+import { getValue, setValue } from "../client-db";
 
 export function initProgressPlugin(rememberCallbacks) {
   rememberCallbacks.push({
     match: (el) => el.classList.contains("progress"),
     callback: (el) => {
-      saveAndSendData(el, true);
+      setValue(el, true);
     },
   });
 

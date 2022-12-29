@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Active-Handout 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-22 17:27-0300\n"
+"POT-Creation-Date: 2022-12-14 15:22-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,6 +39,18 @@ msgstr ""
 msgid "Answer"
 msgstr ""
 
+#: src/active_handout_plugins/l10n.py:26
+msgid "Progress"
+msgstr ""
+
+#: src/active_handout_plugins/l10n.py:26
+msgid "Warning"
+msgstr ""
+
+#: src/active_handout_plugins/l10n.py:26
+msgid "Danger"
+msgstr ""
+
 #: src/active_handout_theme/404.html:4
 msgid "Page not found"
 msgstr ""
@@ -55,15 +67,11 @@ msgstr ""
 msgid "If you've copied this address or clicked a link, please email the instructor to let them know. Don't forget to include the address!"
 msgstr ""
 
-#: src/active_handout_theme/base.html:34
-msgid "Loading"
-msgstr ""
-
-#: src/active_handout_theme/base.html:83
+#: src/active_handout_theme/base.html:119
 msgid "Previous"
 msgstr ""
 
-#: src/active_handout_theme/base.html:91
+#: src/active_handout_theme/base.html:127
 msgid "Next"
 msgstr ""
 

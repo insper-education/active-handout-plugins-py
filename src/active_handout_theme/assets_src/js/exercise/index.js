@@ -1,5 +1,5 @@
-import { getValue, removeValue } from "../client-db";
-import { saveAndSendData } from "../telemetry";
+import { getValue, removeValue, setValue } from "../client-db";
+import { sendData } from "../telemetry";
 import {
   queryChoiceExercises,
   querySelfProgressExercises,
@@ -71,7 +71,8 @@ function matchTextExercises(el) {
 
 function rememberTextExercise(el, user) {
   const textElement = queryTextInputs(el);
-  saveAndSendData(el, textElement.value, user);
+  setValue(element, textElement.value);
+  sendData(element, textElement.value, 0, user);
   return true;
 }
 
@@ -107,7 +108,8 @@ function rememberChoiceExercise(el, user) {
 
     if (choice.checked) {
       const points = correctIdx === choice.value ? 1 : 0;
-      saveAndSendData(el, choice.value, user, points);
+      setValue(el, choice.value);
+      sendData(el, choice.value, points, user);
     }
   }
 
@@ -128,6 +130,7 @@ function matchSelfProgressExercises(el) {
 }
 
 function rememberSelfProgressExercise(el, user) {
-  saveAndSendData(el, true, user);
+  setValue(el, true);
+  sendData(el, true, 0, user);
   return true;
 }

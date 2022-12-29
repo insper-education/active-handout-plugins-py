@@ -48,20 +48,11 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
 
         config['markdown_extensions'].append('active-handout-plugins')
 
-        auth0_client_id = os.getenv('AUTH0_CLIENT_ID')
-        auth0_domain = os.getenv('AUTH0_DOMAIN')
         if self.config.telemetry:
-            if not auth0_client_id or not auth0_domain:
-                print('Disabling telemetry. Environment variables AUTH0_CLIENT_ID and/or AUTH0_DOMAIN are not set.')
-                self.config.telemetry = False
-            elif not self.config.course_slug:
+            if not self.config.course_slug:
                 print('Disabling telemetry. The variable course_slug is not set. You must set it at your mkdocs.yml.')
                 self.config.telemetry = False
             else:
-                config['auth0'] = {
-                    'AUTH0_CLIENT_ID': auth0_client_id,
-                    'AUTH0_DOMAIN': auth0_domain,
-                }
                 config['COURSE_SLUG'] = self.config.course_slug
 
         active_handout_config = {

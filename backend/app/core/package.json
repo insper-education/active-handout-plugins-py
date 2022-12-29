@@ -1,0 +1,24 @@
+{
+  "name": "active-handout-backend",
+  "version": "1.0.0",
+  "license": "MIT",
+  "browserslist": "> 0.5%, last 2 versions, not dead",
+  "targets": {
+    "javascript": {
+      "source": "./static/core/src/js/main.js",
+      "distDir": "./static/core/assets/js"
+    },
+    "css": {
+      "source": "./static/core/src/scss/main.scss",
+      "distDir": "./static/core/assets/css"
+    }
+  },
+  "scripts": {
+    "start": "parcel watch",
+    "build": "parcel build"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "2.8.2",
+    "parcel": "^2.8.2"
+  }
+}

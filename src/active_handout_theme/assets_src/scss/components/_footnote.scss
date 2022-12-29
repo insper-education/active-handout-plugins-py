@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "../abstracts/mixins" as *;
 @use "../abstracts/variables" as *;
 @use "../base/typeset" as *;
@@ -38,7 +39,7 @@
       padding-top: 2 * $admonition-extra-block;
       padding-bottom: $admonition-extra-block;
       left: var(--dist-x);
-      z-index: 100;
+      z-index: 1000;
 
       @include smaller-than("large") {
         top: 1.5em;
@@ -74,7 +75,7 @@
   box-shadow: 0 0 #{$shadow-size} var(--clr-shadow-default);
 
   max-width: calc(
-    50vw - #{$max-content-width / 2} - #{$admonition-extra-inline * 3}
+    50vw - #{math.div($max-content-width, 2)} - #{$admonition-extra-inline * 3}
   );
   height: 0; // Replaced when container is .opened
   width: 100vw;

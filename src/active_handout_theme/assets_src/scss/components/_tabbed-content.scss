@@ -3,6 +3,12 @@
 $max-tabs: 20;
 $arrow-size: 0.9em;
 
+.admonition {
+  .tabbed-alternate {
+    margin-inline: 0;
+  }
+}
+
 .tabbed-alternate {
   position: relative;
   display: flex;

@@ -67,11 +67,14 @@
         </a>
         <div class="ah-header--right">
           {% if config.active_handout.telemetry %}
-          <div id="user-menu" hx-get="{{ config.active_handout.backend_user_menu_url}}" hx-trigger="load"> </div>
+          <div id="user-menu" hx-get="{{ config.active_handout.backend_user_menu_url }}" hx-trigger="load"> </div>
           {% endif %}
         </div>
+        <button id="resetHandoutButton">
+          <span class="icon">{% include "icon/trash.svg" %}</span>
+        </button>
       </header>
-      <nav class="ah-navigation">
+      <nav class="ah-navigation preload">
         <div class="ah-nav-container">
           <button class="ah-menu-btn ah-button ah-button--borderless close-menu"
                   aria-label="close menu">

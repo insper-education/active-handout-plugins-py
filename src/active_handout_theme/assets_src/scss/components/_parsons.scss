@@ -22,33 +22,9 @@ $indent-size: 4ch;
   }
 
   &.wrong {
-    animation-name: shakeIt;
-    animation-duration: 0.25s;
-    animation-iteration-count: 2;
-
     .wrong-answer {
       display: inherit;
     }
-  }
-}
-
-@keyframes shakeIt {
-  from {
-    top: 0px;
-    left: 0px;
-  }
-
-  25% {
-    left: -40px;
-  }
-
-  75% {
-    left: 40px;
-  }
-
-  to {
-    top: 0px;
-    left: 0px;
   }
 }
 

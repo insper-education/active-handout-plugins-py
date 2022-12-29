@@ -1,8 +1,10 @@
+.twemoji,
 .emojione {
   max-height: 1em;
   display: inline;
 }
 
-.ah-typeset img.emojione {
+.ah-typeset img.emojione,
+.ah-typeset img.twemoji {
   margin-bottom: 0;
 }

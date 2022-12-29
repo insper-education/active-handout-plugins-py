@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Active-Handout 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-11-22 17:27-0300\n"
+"POT-Creation-Date: 2022-12-14 15:22-0300\n"
 "PO-Revision-Date: 2022-10-15 11:00-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
@@ -41,6 +41,18 @@ msgstr "Exercício"
 msgid "Answer"
 msgstr "Resposta"
 
+#: src/active_handout_plugins/l10n.py:26
+msgid "Progress"
+msgstr "Continuar"
+
+#: src/active_handout_plugins/l10n.py:26
+msgid "Warning"
+msgstr "Atenção"
+
+#: src/active_handout_plugins/l10n.py:26
+msgid "Danger"
+msgstr "Cuidado"
+
 #: src/active_handout_theme/404.html:4
 msgid "Page not found"
 msgstr "Página não encontrada"
@@ -51,25 +63,23 @@ msgstr "A página que você tentou acessar não existe."
 
 #: src/active_handout_theme/404.html:9
 msgid "If you have typed this address, check if you have mistyped it."
-msgstr "Se você digitou este endereço, verifique se não ocorreu um erro de digitação."
+msgstr ""
+"Se você digitou este endereço, verifique se não ocorreu um erro de "
+"digitação."
 
 #: src/active_handout_theme/404.html:11
 msgid ""
 "If you've copied this address or clicked a link, please email the "
 "instructor to let them know. Don't forget to include the address!"
 msgstr ""
-"Se você copiou este endereço ou clicou em um link, por favor, "
-"avise o professor. Não se esqueça de informar o endereço!"
+"Se você copiou este endereço ou clicou em um link, por favor, avise o "
+"professor. Não se esqueça de informar o endereço!"
 
-#: src/active_handout_theme/base.html:34
-msgid "Loading"
-msgstr "Carregando"
-
-#: src/active_handout_theme/base.html:83
+#: src/active_handout_theme/base.html:119
 msgid "Previous"
 msgstr "Anterior"
 
-#: src/active_handout_theme/base.html:91
+#: src/active_handout_theme/base.html:127
 msgid "Next"
 msgstr "Próximo"
 

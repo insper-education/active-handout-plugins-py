@@ -1,18 +1,16 @@
 import { postTelemetryData } from "./apiClient";
-import { getKey, setValue } from "./client-db";
+import { loadUser } from "./auth";
+import { getKey } from "./client-db";
 
-export function saveAndSendData(element, value, user, points) {
+export function sendData(element, value, points, user) {
   const slug = getKey(element);
-  setValue(slug, value);
+
+  if (!user) {
+    user = loadUser();
+  }
 
   if (user && telemetryEnabled && backendUrl && courseSlug) {
-    postTelemetryData(
-      user,
-      value,
-      slug,
-      extractTags(element),
-      points
-    );
+    postTelemetryData(user, value, slug, extractTags(element), points);
   }
 }
 

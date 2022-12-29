@@ -1,15 +1,15 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, get_object_or_404
 from django.utils.http import urlencode
 from django.contrib.auth import logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied
 from rest_framework.authtoken.models import Token
 
-from core.models import User, Course, ExerciseTag, Exercise, TelemetryData
-from core.serializers import TelemetryDataSerializer
+from core.models import Course, ExerciseTag, Exercise, TelemetryData
+from core.serializers import TelemetryDataSerializer, UserSerializer
+from core.shortcuts import redirect
 
 
 def login_request(request):
@@ -46,6 +46,13 @@ def user_menu(request):
         logout_url += '?' + urlencode({'next': next_param})
 
     return render(request, "user_menu.html", {'login_url': login_url, 'logout_url': logout_url})
+
+
+@api_view(['GET'])
+@login_required
+def user_info(request):
+    user = request.user
+    return Response(UserSerializer(user).data)
 
 
 @api_view(['POST'])
