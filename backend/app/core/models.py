@@ -64,6 +64,7 @@ class Exercise(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     slug = models.CharField(max_length=255)
     tags = models.ManyToManyField(ExerciseTag)
+    enabled = models.BooleanField(default=True)
 
     class Meta:
         constraints = [
