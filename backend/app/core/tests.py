@@ -5,7 +5,7 @@ from rest_framework.authtoken.models import Token
 from django.core.exceptions import DisallowedRedirect
 
 from core.models import Instructor, User, Exercise, Course, ExerciseTag, Student, TelemetryData
-from core.views import ensure_tags_equal, telemetry_data, login_request, get_all_answers
+from core.views import ensure_tags_equal, telemetry_data, login_request, get_all_answers, enable_exercise, disable_exercise
 from core.shortcuts import redirect
 
 
@@ -160,3 +160,63 @@ class RedirectTests(TestCase):
 
     def test_redirect_disallows_other_schemes(self):
         self.assertRaises(DisallowedRedirect, redirect, 'wrong://domain.extension')
+
+
+class EnableDisableExercise(TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.factory = APIRequestFactory()
+
+    def setUp(self):
+        self.course = Course.objects.create(name='Awesome Course 2022')
+        self.exercise_enabled = Exercise.objects.create(course=self.course, slug='ex1')
+        self.exercise_disabled = Exercise.objects.create(course=self.course, slug='ex2', enabled=False)
+        self.instructor = Instructor.objects.create_user(username='igor', password='igorigor', is_staff=True)
+        self.student = Student.objects.create_user('student', password='oi')
+
+    def test_enable_exercise(self):
+        request = self.factory.get(f'/api/exercises/{self.course.name}/{self.exercise_disabled.slug}/enable')
+        force_authenticate(request, user=self.instructor)
+        response = enable_exercise(request, self.course.name, self.exercise_disabled.slug)
+        assert response.status_code == 200
+        self.exercise_disabled.refresh_from_db()
+        assert self.exercise_disabled.enabled == True
+
+    def test_disable_exercise(self):
+        request = self.factory.get(f'/api/exercises/{self.course.name}/{self.exercise_enabled.slug}/disable')
+        force_authenticate(request, user=self.instructor)
+        response = disable_exercise(request, self.course.name, self.exercise_enabled.slug)
+        assert response.status_code == 200
+        self.exercise_enabled.refresh_from_db()
+        assert self.exercise_enabled.enabled == False
+
+    def test_student_cant_enable_disable_exercise(self):
+        request = self.factory.get(f'/api/exercises/{self.course.name}/{self.exercise_enabled.slug}/disable')
+        force_authenticate(request, user=self.student)
+        response = disable_exercise(request, self.course.name, self.exercise_enabled.slug)
+        assert response.status_code == 403
+        self.exercise_enabled.refresh_from_db()
+        assert self.exercise_enabled.enabled == True
+
+        request = self.factory.get(f'/api/exercises/{self.course.name}/{self.exercise_disabled.slug}/enable')
+        force_authenticate(request, user=self.student)
+        response = enable_exercise(request, self.course.name, self.exercise_disabled.slug)
+        assert response.status_code == 403
+        self.exercise_disabled.refresh_from_db()
+        assert self.exercise_disabled.enabled == False
+
+    def test_submitting_to_disabled_exercise_fails(self):
+        data = {
+            "exercise": {
+                "course": self.course.name,
+                "slug": self.exercise_disabled.slug,
+                "tags": [],
+            },
+            "points": 0.5,
+            "log": "OK"
+        }
+
+        request = self.factory.post('/api/telemetry/', data, format='json')
+        force_authenticate(request, user=self.student)
+        response = telemetry_data(request)
+        assert response.status_code == 403

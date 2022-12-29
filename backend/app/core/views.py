@@ -4,6 +4,7 @@ from django.utils.http import urlencode
 from django.contrib.auth import logout
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
@@ -68,6 +69,8 @@ def telemetry_data(request):
 
     course, _ = Course.objects.get_or_create(name=course_name)
     exercise, _ = Exercise.objects.get_or_create(course=course, slug=slug)
+    if not exercise.enabled:
+        raise PermissionDenied("Disabled exercise")
     ensure_tags_equal(exercise, tags)
     telemetry_data = TelemetryData.objects.create(
         author=user, exercise=exercise, points=points, log=log)
@@ -100,3 +103,25 @@ def get_all_answers(request, course_name, exercise_slug):
     exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
     data = TelemetryData.objects.filter(exercise=exercise, last=True)
     return Response(TelemetryDataSerializer(data, many=True).data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+@login_required
+def enable_exercise(request, course_name, exercise_slug):
+    course = get_object_or_404(Course, name=course_name)
+    exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
+    exercise.enabled = True
+    exercise.save()
+    return Response("OK")
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+@login_required
+def disable_exercise(request, course_name, exercise_slug):
+    course = get_object_or_404(Course, name=course_name)
+    exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
+    exercise.enabled = False
+    exercise.save()
+    return Response("OK")
