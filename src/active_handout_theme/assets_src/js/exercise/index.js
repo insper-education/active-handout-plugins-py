@@ -95,7 +95,7 @@ function matchChoiceExercises(el) {
   return el.classList.contains("choice");
 }
 
-function rememberChoiceExercise(el, user) {
+function rememberChoiceExercise(el, token) {
   const choices = queryOptions(el);
   const correctIdx = queryCorrectOptionIdx(el);
   for (let choice of choices) {
@@ -109,7 +109,7 @@ function rememberChoiceExercise(el, user) {
     if (choice.checked) {
       const points = correctIdx === choice.value ? 1 : 0;
       setValue(el, choice.value);
-      sendData(el, choice.value, points, user);
+      sendData(el, choice.value, points, token);
     }
   }
 
@@ -129,8 +129,8 @@ function matchSelfProgressExercises(el) {
   return el.classList.contains("self-progress");
 }
 
-function rememberSelfProgressExercise(el, user) {
+function rememberSelfProgressExercise(el, token) {
   setValue(el, true);
-  sendData(el, true, 0, user);
+  sendData(el, true, 1, token);
   return true;
 }

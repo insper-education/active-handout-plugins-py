@@ -18,6 +18,10 @@ export async function postTelemetryData(
   postJSON("/telemetry", { exercise, points: points, log }, token);
 }
 
+export async function getUserInfo(token) {
+  return getJSON("/user-info", token);
+}
+
 export async function getJSON(endpoint, token) {
   const url = buildUrl(endpoint);
   if (!url) return null;

@@ -543,18 +543,20 @@ var _auth = require("./auth");
 var _codeEditor = require("./code-editor");
 var _clientDb = require("./client-db");
 var _telemetry = require("./telemetry");
+var _dashboard = require("./dashboard");
 function onLoad() {
     let rememberCallbacks = [];
-    const user = (0, _auth.initAuth)();
+    const token = (0, _auth.initAuth)();
     window.addEventListener("remember", function(e) {
         const element = e.detail.element;
         for (let remember of rememberCallbacks)if (remember.match(element)) {
-            const stop = remember.callback(element, user, e.detail.args);
+            const stop = remember.callback(element, token, e.detail.args);
             if (stop) break;
         }
     });
     (0, _tabbedContent.initTabbedPlugin)();
     (0, _style.initStyle)();
+    (0, _dashboard.initDashboard)();
     (0, _progress.initProgressPlugin)(rememberCallbacks);
     (0, _parsons.initParsonsPlugin)(rememberCallbacks);
     (0, _exercise.initExercisePlugin)(rememberCallbacks);
@@ -572,7 +574,7 @@ window.sendData = (0, _telemetry.sendData);
 if (document.readyState !== "loading") onLoad();
 else document.addEventListener("DOMContentLoaded", onLoad);
 
-},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./menu":"5D3Be","./exercise":"dmczC","./footnote":"70ehP","./parsons":"1AI9I","./style":"5DGm5","./auth":"joUbb","./code-editor":"hgDVF","./client-db":"j0pff","./telemetry":"kpvgZ"}],"eIlmk":[function(require,module,exports) {
+},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./menu":"5D3Be","./exercise":"dmczC","./footnote":"70ehP","./parsons":"1AI9I","./style":"5DGm5","./auth":"joUbb","./code-editor":"hgDVF","./client-db":"j0pff","./telemetry":"kpvgZ","./dashboard":"iQNV1"}],"eIlmk":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initTabbedPlugin", ()=>initTabbedPlugin);
@@ -707,6 +709,7 @@ parcelHelpers.export(exports, "getValue", ()=>getValue);
 parcelHelpers.export(exports, "removeValue", ()=>removeValue);
 function getKey(elOrKey) {
     if (typeof elOrKey === "string") return elOrKey;
+    if (elOrKey.dataset.slug) return elOrKey.dataset.slug + elOrKey.id;
     const docAddr = document.location.pathname;
     const slash = docAddr.endsWith("/") ? "" : "/";
     return `${docAddr}${slash}${elOrKey.id}`;
@@ -822,7 +825,8 @@ function initExercisePlugin(rememberCallbacks) {
     initTextExercises();
     initChoiceExercises();
     initSelfProgressExercises();
-    document.getElementById("resetHandoutButton").addEventListener("click", function() {
+    const resetHandoutButton = document.getElementById("resetHandoutButton");
+    if (resetHandoutButton) resetHandoutButton.addEventListener("click", function() {
         const exercises = document.querySelectorAll(".admonition.exercise");
         for (const ex of exercises)(0, _clientDb.removeValue)(ex);
         location.reload();
@@ -843,10 +847,10 @@ function initTextExercises() {
 function matchTextExercises(el) {
     return el.classList.contains("short") || el.classList.contains("medium") || el.classList.contains("long");
 }
-function rememberTextExercise(el, user) {
-    const textElement = (0, _queries.queryTextInputs)(el);
+function rememberTextExercise(element, token) {
+    const textElement = (0, _queries.queryTextInputs)(element);
     (0, _clientDb.setValue)(element, textElement.value);
-    (0, _telemetry.sendData)(element, textElement.value, 0, user);
+    (0, _telemetry.sendData)(element, textElement.value, 1, token);
     return true;
 }
 function initChoiceExercises() {
@@ -866,7 +870,7 @@ function initChoiceExercises() {
 function matchChoiceExercises(el) {
     return el.classList.contains("choice");
 }
-function rememberChoiceExercise(el, user) {
+function rememberChoiceExercise(el, token) {
     const choices = (0, _queries.queryOptions)(el);
     const correctIdx = (0, _queries.queryCorrectOptionIdx)(el);
     for (let choice of choices){
@@ -876,7 +880,7 @@ function rememberChoiceExercise(el, user) {
         if (choice.checked) {
             const points = correctIdx === choice.value ? 1 : 0;
             (0, _clientDb.setValue)(el, choice.value);
-            (0, _telemetry.sendData)(el, choice.value, points, user);
+            (0, _telemetry.sendData)(el, choice.value, points, token);
         }
     }
     return true;
@@ -890,9 +894,9 @@ function initSelfProgressExercises() {
 function matchSelfProgressExercises(el) {
     return el.classList.contains("self-progress");
 }
-function rememberSelfProgressExercise(el, user) {
+function rememberSelfProgressExercise(el, token) {
     (0, _clientDb.setValue)(el, true);
-    (0, _telemetry.sendData)(el, true, 0, user);
+    (0, _telemetry.sendData)(el, true, 1, token);
     return true;
 }
 
@@ -903,10 +907,10 @@ parcelHelpers.export(exports, "sendData", ()=>sendData);
 var _apiClient = require("./apiClient");
 var _auth = require("./auth");
 var _clientDb = require("./client-db");
-function sendData(element, value, points, user) {
+function sendData(element, value, points, token) {
     const slug = (0, _clientDb.getKey)(element);
-    if (!user) user = (0, _auth.loadUser)();
-    if (user && telemetryEnabled && backendUrl && courseSlug) (0, _apiClient.postTelemetryData)(user, value, slug, extractTags(element), points);
+    if (!token) token = (0, _auth.loadToken)();
+    if (token && telemetryEnabled && backendUrl && courseSlug) (0, _apiClient.postTelemetryData)(token, value, slug, extractTags(element), points);
 }
 function extractTags(element) {
     const tags = [];
@@ -919,6 +923,7 @@ function extractTags(element) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "postTelemetryData", ()=>postTelemetryData);
+parcelHelpers.export(exports, "getUserInfo", ()=>getUserInfo);
 parcelHelpers.export(exports, "getJSON", ()=>getJSON);
 parcelHelpers.export(exports, "postJSON", ()=>postJSON);
 async function postTelemetryData(token, log, exerciseSlug, exerciseTags, points) {
@@ -934,6 +939,9 @@ async function postTelemetryData(token, log, exerciseSlug, exerciseTags, points)
         points: points,
         log
     }, token);
+}
+async function getUserInfo(token) {
+    return getJSON("/user-info", token);
 }
 async function getJSON(endpoint, token) {
     const url = buildUrl(endpoint);
@@ -977,34 +985,53 @@ function createInit(token) {
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"joUbb":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "loadUser", ()=>loadUser);
+parcelHelpers.export(exports, "loadToken", ()=>loadToken);
+parcelHelpers.export(exports, "loadUserInfo", ()=>loadUserInfo);
 parcelHelpers.export(exports, "initAuth", ()=>initAuth);
-const USER_DATA_KEY = "active-handout--user-data";
-function loadUser() {
-    return localStorage.getItem(USER_DATA_KEY);
+var _apiClient = require("../apiClient");
+const USER_TOKEN_KEY = "active-handout--user-token";
+const USER_INFO_KEY = "active-handout--user-data";
+function loadToken() {
+    return localStorage.getItem(USER_TOKEN_KEY);
+}
+function loadUserInfo() {
+    const infoStr = localStorage.getItem(USER_INFO_KEY);
+    if (infoStr) try {
+        return JSON.parse(infoStr);
+    } catch  {
+        return null;
+    }
 }
 function initAuth() {
     handleRedirects();
-    let user = loadUser();
+    let token = loadToken();
     const authMenuContainer = document.getElementById("user-menu");
     document.body.addEventListener("htmx:afterSettle", function(evt) {
         if (evt.target == authMenuContainer) {
-            if (user) document.getElementById("logout_btn").classList.remove("hidden");
+            if (token) document.getElementById("logout_btn").classList.remove("hidden");
             else document.getElementById("login_btn").classList.remove("hidden");
         }
     });
-    return user;
+    return token;
 }
 function handleRedirects() {
     if (location.search.includes("token=")) {
         const params = new URLSearchParams(location.search);
         const token = params.get("token");
-        localStorage.setItem(USER_DATA_KEY, token);
-        window.location.href = window.location.href.replace(window.location.search, "");
+        localStorage.setItem(USER_TOKEN_KEY, token);
+        if (token) (0, _apiClient.getUserInfo)(token).then((userInfo)=>{
+            if (userInfo) localStorage.setItem(USER_INFO_KEY, JSON.stringify(userInfo));
+        }).finally(()=>{
+            window.location.href = window.location.href.replace(window.location.search, "");
+        });
+        else {
+            localStorage.removeItem(USER_INFO_KEY);
+            window.location.href = window.location.href.replace(window.location.search, "");
+        }
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5VMWX":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../apiClient":"emRW9"}],"5VMWX":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryTextExercises", ()=>queryTextExercises);
@@ -1146,13 +1173,13 @@ function initParsonsPlugin(rememberCallbacks) {
     (0, _queries.queryParsonsExercises)().forEach(registerListeners);
     rememberCallbacks.push({
         match: (el)=>el.classList.contains("parsons"),
-        callback: (el, user, { correct , code  })=>{
+        callback: (el, token, { correct , code  })=>{
             const value = JSON.stringify({
                 correct,
                 code
             });
             (0, _clientDb.setValue)(el, value);
-            (0, _telemetry.sendData)(el, value, correct ? 1 : 0, user);
+            (0, _telemetry.sendData)(el, value, correct ? 1 : 0, token);
             return true;
         }
     });
@@ -53502,6 +53529,32 @@ function buildReadonlyCodeJar(parent, code) {
     };
 }
 
-},{"highlight.js":"ljeYi","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")
+},{"highlight.js":"ljeYi","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"iQNV1":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initDashboard", ()=>initDashboard);
+var _auth = require("../auth");
+function initDashboard() {
+    if (!dashboardEnabled) return;
+    const container = document.querySelector(".dashboard-container");
+    if (!container) return;
+    // container.setAttribute("hx-post", "");
+    // container.setAttribute("hx-trigger", "load");
+    const userInfo = (0, _auth.loadUserInfo)();
+    if (!userInfo) {
+        console.error("No user info found. Container was found, but dashboard can't loaded.");
+        return;
+    }
+    if (!tagTree) {
+        console.error("No tag tree found. Container was found, but dashboard can't loaded.");
+        return;
+    }
+    const safeTagTree = JSON.stringify(tagTree);
+    const unencodedUrl = `${dashboardUrl}${userInfo.id}?tag-tree=${safeTagTree}`;
+    const url = encodeURI(unencodedUrl);
+    console.log(url);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../auth":"joUbb"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

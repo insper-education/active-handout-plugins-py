@@ -1,0 +1,21 @@
+{% load dashboard_extras %}
+
+{% with children=sub_tree|get_value:"children" new_group=tag_group|add_to_group:tag_name %}
+{% with stats=tag_stats|get_value:new_group %}
+
+{% if not children %}
+{% include 'dashboard/fragments/sub-tree-title.html' with tree_title=sub_tree level=level %}
+{% else %}
+{% include 'dashboard/fragments/sub-tree-title.html' with tree_title=sub_tree|get_value:"name" level=level %}
+{% endif %}
+
+{{ new_group }} {{stats.points}}/{{stats.total_exercises}}
+
+{% if children %}
+  {% for sub_tag_name, sub_sub_tree in children.items %}
+    {% include 'dashboard/fragments/tag-subtree.html' with tag_name=sub_tag_name sub_tree=sub_sub_tree level=level|add:1 tag_group=new_group %}
+  {% endfor %}
+{% endif %}
+
+{% endwith %}
+{% endwith %}

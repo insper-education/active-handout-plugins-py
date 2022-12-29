@@ -1,5 +1,4 @@
 from markdown import Extension
-from collections import namedtuple
 
 from .l10n import init_l10n
 # Keep AdmonitionVisitor here so it's easier to import it in other project
@@ -13,6 +12,7 @@ from .pdf import PdfAdmonition
 from .parsons import ParsonsExercise
 from .templating import Jinja2PreProcessor
 from .code_editor.editor import CodeEditorAdmonition
+from .dashboard import DashboardAdmonition
 
 
 class ActiveHandoutExtension(Extension):
@@ -46,6 +46,7 @@ class ActiveHandoutExtension(Extension):
         register_treeprocessor_builder(CounterProcessor, 'counter', 15)
         register_treeprocessor_builder(ProgressButtons, 'progress', 15)
         register_treeprocessor_builder(CodeEditorAdmonition, 'code-editor', 20)
+        register_treeprocessor_builder(DashboardAdmonition, 'dashboard', 15)
         self._register_treeprocessors(md)
 
         md.preprocessors.register(Jinja2PreProcessor(md, self.getConfig('custom_variables')), 'templating', 1000000000)

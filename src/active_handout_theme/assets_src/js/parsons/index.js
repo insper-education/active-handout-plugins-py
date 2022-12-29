@@ -27,10 +27,10 @@ export function initParsonsPlugin(rememberCallbacks) {
 
   rememberCallbacks.push({
     match: (el) => el.classList.contains("parsons"),
-    callback: (el, user, { correct, code }) => {
+    callback: (el, token, { correct, code }) => {
       const value = JSON.stringify({ correct, code });
       setValue(el, value);
-      sendData(el, value, correct ? 1 : 0, user);
+      sendData(el, value, correct ? 1 : 0, token);
       return true;
     },
   });

@@ -28,6 +28,15 @@
       var backendUrl = "";
       var courseSlug = "";
       {% endif %}
+      {% if config.active_handout.tag_tree %}
+      var dashboardEnabled = true;
+      var dashboardUrl = "{{ config.active_handout.backend_dashboard_url }}"
+      var tagTree = {{ config.active_handout.tag_tree }};
+      {% else %}
+      var dashboardEnabled = false;
+      var dashboardUrl = "";
+      var tagTree = {};
+      {% endif %}
 
       // SETUP PLUGIN
       window.initialized = false;

@@ -1,4 +1,7 @@
 """
+Must also add "DJANGO_SETTINGS_MODULE=active_handout_api.settings" to .env file
+SOURCE: https://github.com/Microsoft/vscode-python/issues/73
+
 Hacks to make unittest work desirably.
 
 VSCode + Python + Django + unittest integration is currently broken.

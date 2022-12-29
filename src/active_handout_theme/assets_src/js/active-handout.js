@@ -9,16 +9,17 @@ import { initAuth } from "./auth";
 import { initCodeEditorPlugin } from "./code-editor";
 import * as clientDB from "./client-db";
 import { sendData } from "./telemetry";
+import { initDashboard } from "./dashboard";
 
 function onLoad() {
   let rememberCallbacks = [];
 
-  const user = initAuth();
+  const token = initAuth();
   window.addEventListener("remember", function (e) {
     const element = e.detail.element;
     for (let remember of rememberCallbacks) {
       if (remember.match(element)) {
-        const stop = remember.callback(element, user, e.detail.args);
+        const stop = remember.callback(element, token, e.detail.args);
         if (stop) break;
       }
     }
@@ -27,6 +28,7 @@ function onLoad() {
   initTabbedPlugin();
 
   initStyle();
+  initDashboard();
   initProgressPlugin(rememberCallbacks);
   initParsonsPlugin(rememberCallbacks);
   initExercisePlugin(rememberCallbacks);
