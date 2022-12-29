@@ -11,15 +11,18 @@ class ExerciseAdmonition(AdmonitionVisitor):
         self.base_class = base_class
         self.subclasses = subclasses
         self.counter = 0
+        self.id = ''
 
     def __set_element_id(self, el, cls):
         self.counter += 1
-        el.set("id", f"{cls}-{self.counter}")
+        self.id = f"{cls}_{self.counter}"
         classes = el.attrib['class'].split()
         for c in classes:
             if c.startswith('id_'):
-                el.set("id", c[3:])
+                self.id = f'{c[3:]}'
                 el.attrib['class'] = el.attrib['class'].replace(c, '')
+        
+        el.set("id", self.id)
 
     def __set_tags(self, el):
         tags = self.get_tags(el)
@@ -169,8 +172,9 @@ class ChoiceExercise(ExerciseAdmonition):
 ''')
 
         random.shuffle(html_alternatives)
+        el.set('data-answer-idx', str(answer_idx))
         return f'''
-<div class="alternative-set" data-answer-idx="{answer_idx}">
+<div class="alternative-set">
   {"".join(html_alternatives)}
 </div>
 <input class="ah-button ah-button--primary" type="submit" name="sendButton" value="{submit_str}" disabled />

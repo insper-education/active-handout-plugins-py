@@ -32,15 +32,17 @@ export function initExercisePlugin(rememberCallbacks) {
   initChoiceExercises();
   initSelfProgressExercises();
 
-  document
-    .getElementById("resetHandoutButton")
-    .addEventListener("click", function () {
+  const resetHandoutButton = document.getElementById("resetHandoutButton");
+
+  if (resetHandoutButton) {
+    resetHandoutButton.addEventListener("click", function () {
       const exercises = document.querySelectorAll(".admonition.exercise");
       for (const ex of exercises) {
         removeValue(ex);
       }
       location.reload();
     });
+  }
 }
 
 function initTextExercises() {

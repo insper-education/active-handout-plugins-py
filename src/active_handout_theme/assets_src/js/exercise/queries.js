@@ -23,9 +23,7 @@ export function queryOptions(el) {
 }
 
 export function queryCorrectOptionIdx(el) {
-  const alternativeSet = el.querySelector(".alternative-set");
-  if (!alternativeSet) return "";
-  return alternativeSet.getAttribute("data-answer-idx");
+  return el.getAttribute("data-answer-idx");
 }
 
 export function queryOption(el, value) {
