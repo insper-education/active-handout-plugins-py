@@ -63,9 +63,13 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
         self.choice_exercise_answers = {}
 
         return config
-    
+
     def on_page_markdown(self, markdown, page, config, files):
-        # Saves the used seed on the last line of the page. 
+        active_handout_config = config['mdx_configs'].setdefault('active-handout-plugins', {})
+        active_handout_config['page'] = page
+        active_handout_config['mkdocs_config'] = config
+
+        # Saves the used seed on the last line of the page.
         # This line is later removed in on_page_content
         return markdown + "\n<!--{{seed}} REMOVE ME-->"
 
@@ -76,8 +80,8 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
         matches = re.findall(r'\<\!\-\-(\d+) REMOVE ME\-\-\>', html)
         if len(matches) > 0:
             seed = int(matches[0])
-        
-        html = re.sub(r'^(<div class\=\"admonition exercise.*\" id=)\"(.*)\">$', 
+
+        html = re.sub(r'^(<div class\=\"admonition exercise.*\" id=)\"(.*)\">$',
                    r'\1"\2_' f'{seed}" data-slug="/{page.url}">', html, flags=re.MULTILINE)
 
         matches = re.findall(r'^(<div class\=\"admonition exercise choice.*\" +id=\"([\d\w\-]+)\".*>)$', html, flags=re.MULTILINE)

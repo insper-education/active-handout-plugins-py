@@ -12,7 +12,7 @@ class ProgressButtons(AdmonitionVisitor):
         self.count = 0
 
     def visit(self, el):
-        if not 'progress' in el.attrib['class']:
+        if not 'progress' in el.attrib['class'].split():
             return
 
         title_p = el.find("p[@class='admonition-title']")

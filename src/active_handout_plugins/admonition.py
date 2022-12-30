@@ -4,6 +4,12 @@ from .l10n import gettext as _
 
 
 class AdmonitionVisitor(Treeprocessor):
+    def __init__(self, *args, **kwargs):
+        self.page = kwargs.pop('page', None)
+        self.mkdocs_config = kwargs.pop('mkdocs_config', None)
+
+        super().__init__(*args, **kwargs)
+
     def has_class(self, el, classes_to_search):
         el_classes = el.get("class", "").split()
         classes_found = [cls for cls in el_classes if cls in classes_to_search]
