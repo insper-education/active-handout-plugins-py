@@ -14,6 +14,7 @@ urlpatterns = [
     path("user-menu", views.user_menu, name='user-menu'),
 
     # Update/Retrieve exercise data
+    path("exercises/<str:course_name>", views.exercise_list),
     path("exercises/<str:course_name>/<str:exercise_slug>/enable", views.enable_exercise),
     path("exercises/<str:course_name>/<str:exercise_slug>/disable", views.disable_exercise),
 ]

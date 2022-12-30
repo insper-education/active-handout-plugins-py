@@ -1,3 +1,4 @@
+from urllib.parse import unquote_plus
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils.http import urlencode
@@ -103,6 +104,33 @@ def get_all_answers(request, course_name, exercise_slug):
     exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
     data = TelemetryData.objects.filter(exercise=exercise, last=True)
     return Response(TelemetryDataSerializer(data, many=True).data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAdminUser])
+@login_required
+def exercise_list(request, course_name):
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    exercise_list = request.data
+
+    tags_by_slug = {
+        exercise_data['slug']: exercise_data['tags']
+        for page in exercise_list.values()
+        for exercise_data in page.values()
+    }
+    total_created = 0
+    total_updated = 0
+    for slug, tags in tags_by_slug.items():
+        exercise, created = Exercise.objects.get_or_create(course=course, slug=slug)
+        ensure_tags_equal(exercise, tags)
+
+        if created:
+            total_created += 1
+        else:
+            total_updated += 1
+
+    return Response({"created": total_created, "updated": total_updated})
 
 
 @api_view(["GET"])

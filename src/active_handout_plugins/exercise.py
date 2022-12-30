@@ -12,6 +12,8 @@ class ExerciseAdmonition(AdmonitionVisitor):
         self.subclasses = subclasses
         self.counter = 0
         self.id = ''
+        self.__tags = []
+        self.exercise_manager = self.mkdocs_config['active_handout']['exercise_manager']
 
     def __set_element_id(self, el, cls):
         self.counter += 1
@@ -26,32 +28,16 @@ class ExerciseAdmonition(AdmonitionVisitor):
 
     def __set_tags(self, el):
         tags = self.get_tags(el)
-        auto_tags = self.__extract_tags()
-        all_tags = list(set(auto_tags) | set(tags))
-        for tag in all_tags:
+
+        tag_tree = self.mkdocs_config.get('active_handout', {}).get('tag_tree')
+        if self.page and tag_tree:
+            auto_tags = self.exercise_manager.extract_tags(self.page.url, tag_tree)
+        else:
+            auto_tags = []
+
+        self.__tags = list(set(auto_tags) | set(tags))
+        for tag in self.__tags:
             el.attrib['class'] += f' tag-{tag}'
-
-    def __extract_tags(self):
-        if not self.page:
-            return []
-
-        available_tags = self.__get_available_tags()
-        return [
-            part for part in self.page.url.split('/') if part in available_tags
-        ]
-
-    def __get_available_tags(self, tag_tree=None):
-        if not tag_tree:
-            tag_tree = self.mkdocs_config.get('active_handout', {}).get('tag_tree')
-            if not tag_tree:
-                return []
-
-        tags = []
-        for tag, value in tag_tree.items():
-            tags.append(tag)
-            if isinstance(value, dict):
-                tags += self.__get_available_tags(value)
-        return tags
 
     def __add_exercise_description(self, el, submission_form):
         title = el.find('p/[@class="admonition-title"]')
@@ -126,6 +112,8 @@ end
         submission_form.set('_', hs_code)
         self.__add_exercise_form_elements(el, submission_form)
 
+        slug = self.exercise_manager.add_exercise(self.page.url, self.id, self.__tags, self.get_meta())
+        el.set('data-slug', slug)
 
     def create_exercise_form(self, el, submission_form):
         return ''
@@ -139,10 +127,15 @@ end
     def get_tags(self, el):
         return []
 
+    def get_meta(self):
+        '''Overwrite this method to add meta data to the exercise JSON.'''
+        return None
+
 
 class ChoiceExercise(ExerciseAdmonition):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__('exercise', ['choice'], *args, **kwargs)
+        self.answer_idx = -1
 
     def __is_answer(self, stash_key):
         key = int(stash_key[stash_key.index(':')+1:])
@@ -154,7 +147,7 @@ class ChoiceExercise(ExerciseAdmonition):
         submission_form.remove(choice_list)
 
         html_alternatives = []
-        answer_idx = -1
+        self.answer_idx = -1
 
         submit_str = _('Submit')
 
@@ -162,7 +155,7 @@ class ChoiceExercise(ExerciseAdmonition):
             end = choice.text.find('\x03') + 1
             is_answer = self.__is_answer(choice.text[:end-1])
             if is_answer:
-                answer_idx = i
+                self.answer_idx = i
             text = choice.text[end:]
             if text.startswith('*'):
                 text = text[1:]
@@ -195,7 +188,11 @@ class ChoiceExercise(ExerciseAdmonition):
 ''')
 
         random.shuffle(html_alternatives)
-        el.set('data-answer-idx', str(answer_idx))
+
+        hide_answers = self.page and self.page.meta and self.page.meta.get('show_answers', True) == False
+        if not hide_answers:
+            el.set('data-answer-idx', str(self.answer_idx))
+
         return f'''
 <div class="alternative-set">
   {"".join(html_alternatives)}
@@ -205,6 +202,11 @@ class ChoiceExercise(ExerciseAdmonition):
 
     def get_tags(self, el):
         return ['choice-exercise']
+
+    def get_meta(self):
+        return {
+            'answer_idx': self.answer_idx,
+        }
 
 
 class TextExercise(ExerciseAdmonition):
