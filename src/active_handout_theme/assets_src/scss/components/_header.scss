@@ -13,6 +13,7 @@
   font-size: map-get($font-sizes, "regular");
 
   &--right {
+    display: flex;
     margin-left: auto;
   }
 }

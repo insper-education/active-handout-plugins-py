@@ -66,19 +66,20 @@
           {{ config.site_name | e }}
         </a>
         <div class="ah-header--right">
+          {% set show_reset_button=True %}
+          {% if page.meta and page.meta.show_reset_button is defined %}
+          {% set show_reset_button=page.meta.show_reset_button %}
+          {%endif%}
+          {% if show_reset_button %}
+          <button id="resetHandoutButton">
+            <span class="icon">{% include "icon/trash.svg" %}</span>
+          </button>
+          {% endif %}
+
           {% if config.active_handout.telemetry %}
           <div id="user-menu" hx-get="{{ config.active_handout.backend_user_menu_url }}" hx-trigger="load"> </div>
           {% endif %}
         </div>
-        {% set show_reset_button=True %}
-        {% if page.meta and page.meta.show_reset_button is defined %}
-        {% set show_reset_button=page.meta.show_reset_button %}
-        {%endif%}
-        {% if show_reset_button %}
-        <button id="resetHandoutButton">
-          <span class="icon">{% include "icon/trash.svg" %}</span>
-        </button>
-        {% endif %}
       </header>
       <nav class="ah-navigation preload">
         <div class="ah-nav-container">
