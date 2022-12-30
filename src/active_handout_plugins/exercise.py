@@ -26,9 +26,32 @@ class ExerciseAdmonition(AdmonitionVisitor):
 
     def __set_tags(self, el):
         tags = self.get_tags(el)
-        for tag in tags:
+        auto_tags = self.__extract_tags()
+        all_tags = list(set(auto_tags) | set(tags))
+        for tag in all_tags:
             el.attrib['class'] += f' tag-{tag}'
 
+    def __extract_tags(self):
+        if not self.page:
+            return []
+
+        available_tags = self.__get_available_tags()
+        return [
+            part for part in self.page.url.split('/') if part in available_tags
+        ]
+
+    def __get_available_tags(self, tag_tree=None):
+        if not tag_tree:
+            tag_tree = self.mkdocs_config.get('active_handout', {}).get('tag_tree')
+            if not tag_tree:
+                return []
+
+        tags = []
+        for tag, value in tag_tree.items():
+            tags.append(tag)
+            if isinstance(value, dict):
+                tags += self.__get_available_tags(value)
+        return tags
 
     def __add_exercise_description(self, el, submission_form):
         title = el.find('p/[@class="admonition-title"]')
