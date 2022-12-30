@@ -71,8 +71,8 @@ function matchTextExercises(el) {
 
 function rememberTextExercise(el, user) {
   const textElement = queryTextInputs(el);
-  setValue(element, textElement.value);
-  sendData(element, textElement.value, 0, user);
+  setValue(el, textElement.value);
+  sendData(el, textElement.value, 0, user);
   return true;
 }
 

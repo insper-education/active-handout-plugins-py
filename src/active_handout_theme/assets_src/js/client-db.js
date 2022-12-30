@@ -4,7 +4,7 @@ export function getKey(elOrKey) {
   }
 
   if (elOrKey.dataset.slug) {
-    return elOrKey.dataset.slug + elOrKey.id;
+    return elOrKey.dataset.slug;
   }
 
   const docAddr = document.location.pathname;
