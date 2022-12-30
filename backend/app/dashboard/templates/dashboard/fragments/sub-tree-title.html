@@ -1,11 +1,9 @@
 {% if level == 1 %}
-  <h2>{{ tree_title }}</h2>
+  <h3>{{ tree_title }}<span class="ah-dashboard--subtitle">Total exercises: {{ total }}</span></h3>
 {% elif level == 2 %}
-  <h3>{{ tree_title }}</h3>
+  <h4>{{ tree_title }}<span class="ah-dashboard--subtitle">Total exercises: {{ total }}</span></h4>
 {% elif level == 3 %}
-  <h4>{{ tree_title }}</h4>
-{% elif level == 4 %}
-  <h5>{{ tree_title }}</h5>
+  <h5>{{ tree_title }}<span class="ah-dashboard--subtitle">Total exercises: {{ total }}</span></h5>
 {% else %}
-  <h6>{{ tree_title }}</h6>
+  <h6>{{ tree_title }}<span class="ah-dashboard--subtitle">Total exercises: {{ total }}</span></h6>
 {% endif %}

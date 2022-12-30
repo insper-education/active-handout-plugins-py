@@ -22,6 +22,20 @@ export async function getUserInfo(token) {
   return getJSON("/user-info", token);
 }
 
+export async function getHTML(endpoint, token) {
+  const url = buildUrl(endpoint);
+  if (!url) return null;
+
+  const init = createInit(token, "text/html; charset=utf-8");
+
+  return fetch(url, init)
+    .then((response) => response.text())
+    .catch((reason) => {
+      console.error(reason);
+      return "";
+    });
+}
+
 export async function getJSON(endpoint, token) {
   const url = buildUrl(endpoint);
   if (!url) return null;
@@ -61,14 +75,17 @@ function buildUrl(endpoint) {
   if (endpoint.startsWith("/")) endpoint = endpoint.substr(1);
   url += endpoint;
 
-  return url;
+  return new URL(url).href;
 }
 
-function createInit(token) {
+function createInit(token, contentType) {
+  if (!contentType) {
+    contentType = "application/json";
+  }
   const init = {
     mode: "cors",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": contentType,
     },
   };
 

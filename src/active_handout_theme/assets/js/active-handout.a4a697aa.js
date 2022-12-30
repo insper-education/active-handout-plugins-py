@@ -919,11 +919,12 @@ function extractTags(element) {
     return tags;
 }
 
-},{"./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./apiClient":"emRW9","./auth":"joUbb"}],"emRW9":[function(require,module,exports) {
+},{"./apiClient":"emRW9","./auth":"joUbb","./client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"emRW9":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "postTelemetryData", ()=>postTelemetryData);
 parcelHelpers.export(exports, "getUserInfo", ()=>getUserInfo);
+parcelHelpers.export(exports, "getHTML", ()=>getHTML);
 parcelHelpers.export(exports, "getJSON", ()=>getJSON);
 parcelHelpers.export(exports, "postJSON", ()=>postJSON);
 async function postTelemetryData(token, log, exerciseSlug, exerciseTags, points) {
@@ -942,6 +943,15 @@ async function postTelemetryData(token, log, exerciseSlug, exerciseTags, points)
 }
 async function getUserInfo(token) {
     return getJSON("/user-info", token);
+}
+async function getHTML(endpoint, token) {
+    const url = buildUrl(endpoint);
+    if (!url) return null;
+    const init = createInit(token, "text/html; charset=utf-8");
+    return fetch(url, init).then((response)=>response.text()).catch((reason)=>{
+        console.error(reason);
+        return "";
+    });
 }
 async function getJSON(endpoint, token) {
     const url = buildUrl(endpoint);
@@ -969,13 +979,14 @@ function buildUrl(endpoint) {
     if (!url.endsWith("/")) url += "/";
     if (endpoint.startsWith("/")) endpoint = endpoint.substr(1);
     url += endpoint;
-    return url;
+    return new URL(url).href;
 }
-function createInit(token) {
+function createInit(token, contentType) {
+    if (!contentType) contentType = "application/json";
     const init = {
         mode: "cors",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": contentType
         }
     };
     if (token) init.headers.Authorization = `Token ${token}`;
@@ -1031,7 +1042,7 @@ function handleRedirects() {
     }
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../apiClient":"emRW9"}],"5VMWX":[function(require,module,exports) {
+},{"../apiClient":"emRW9","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5VMWX":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryTextExercises", ()=>queryTextExercises);
@@ -1059,9 +1070,7 @@ function queryOptions(el) {
     return el.querySelectorAll("input[name='data'][type='radio']");
 }
 function queryCorrectOptionIdx(el) {
-    const alternativeSet = el.querySelector(".alternative-set");
-    if (!alternativeSet) return "";
-    return alternativeSet.getAttribute("data-answer-idx");
+    return el.getAttribute("data-answer-idx");
 }
 function queryOption(el, value) {
     return el.querySelector(`input[name='data'][value='${value}']`);
@@ -1214,7 +1223,7 @@ function registerListeners(exercise) {
     });
 }
 
-},{"./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff"}],"6FJZc":[function(require,module,exports) {
+},{"./queries":"6FJZc","./utils":"lDj3O","../telemetry":"kpvgZ","../client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"6FJZc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
@@ -1650,7 +1659,7 @@ function getFilenameKey(fileContent, filename) {
     return `${exerciseKey}-${filename}`;
 }
 
-},{"codejar":"8oTO2","highlight.js":"ljeYi","./files":"jfsgL","./queries":"lCGrt","./readonly-codejar":"cGTt8","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../client-db":"j0pff"}],"8oTO2":[function(require,module,exports) {
+},{"codejar":"8oTO2","highlight.js":"ljeYi","../client-db":"j0pff","./files":"jfsgL","./queries":"lCGrt","./readonly-codejar":"cGTt8","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"8oTO2":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "CodeJar", ()=>CodeJar);
@@ -53534,27 +53543,40 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initDashboard", ()=>initDashboard);
 var _auth = require("../auth");
+var _client = require("./client");
 function initDashboard() {
     if (!dashboardEnabled) return;
     const container = document.querySelector(".dashboard-container");
     if (!container) return;
-    // container.setAttribute("hx-post", "");
-    // container.setAttribute("hx-trigger", "load");
     const userInfo = (0, _auth.loadUserInfo)();
-    if (!userInfo) {
-        console.error("No user info found. Container was found, but dashboard can't loaded.");
+    const token = (0, _auth.loadToken)();
+    if (!userInfo || !token) {
+        console.error("No user info or token found. Container was found, but dashboard can't loaded.");
         return;
     }
     if (!tagTree) {
         console.error("No tag tree found. Container was found, but dashboard can't loaded.");
         return;
     }
-    const safeTagTree = JSON.stringify(tagTree);
-    const unencodedUrl = `${dashboardUrl}${userInfo.id}?tag-tree=${safeTagTree}`;
-    const url = encodeURI(unencodedUrl);
-    console.log(url);
+    (0, _client.loadDashboard)(container, userInfo, token, tagTree);
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../auth":"joUbb"}]},["1csOT"], null, "parcelRequirea86e")
+},{"../auth":"joUbb","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client":"77dGl"}],"77dGl":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "loadDashboard", ()=>loadDashboard);
+var _apiClient = require("../apiClient");
+async function loadDashboard(container, userInfo, token, tagTree) {
+    if (!courseSlug) return;
+    const safeTagTree = encodeURI(JSON.stringify(tagTree));
+    const safeCourseSlug = encodeURI(courseSlug);
+    const endpoint = `../dashboard/fragments/${safeCourseSlug}/student/${userInfo.id}?tag-tree=${safeTagTree}`;
+    (0, _apiClient.getHTML)(endpoint, token).then((html)=>{
+        if (!html) container.innerHTML = "<p>Sorry, the dashboard couldn't be loaded...</p>";
+        container.innerHTML = html;
+    });
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../apiClient":"emRW9"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

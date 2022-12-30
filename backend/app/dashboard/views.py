@@ -4,11 +4,13 @@ import json
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
+from rest_framework.decorators import api_view
 
 from core.models import Course, User
 from dashboard.query import get_stats_by_tag_group
 
 
+@api_view(['GET'])
 @login_required
 def student_dashboard_fragment(request, course_name, student_id):
     student = get_object_or_404(User, pk=student_id)

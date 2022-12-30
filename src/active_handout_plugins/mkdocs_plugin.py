@@ -1,5 +1,4 @@
 import os
-from urllib.parse import quote
 from pathlib import Path
 import re
 
@@ -38,8 +37,6 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
         if not backend_url.endswith('/'):
             slash = '/'
 
-        safe_course_slug = quote(self.config.course_slug)
-        config['backend_dashboard_url'] = os.getenv('BACKEND_DASHBOARD_URL', f'{backend_url}{slash}../dashboard/fragments/{safe_course_slug}/student/')
         config['backend_user_menu_url'] = os.getenv('BACKEND_USER_MENU_URL', f'{backend_url}{slash}user-menu')
 
         return config

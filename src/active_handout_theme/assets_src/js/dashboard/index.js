@@ -1,4 +1,5 @@
-import { loadUserInfo } from "../auth";
+import { loadToken, loadUserInfo } from "../auth";
+import { loadDashboard } from "./client";
 
 export function initDashboard() {
   if (!dashboardEnabled) return;
@@ -6,12 +7,11 @@ export function initDashboard() {
   const container = document.querySelector(".dashboard-container");
   if (!container) return;
 
-  // container.setAttribute("hx-post", "");
-  // container.setAttribute("hx-trigger", "load");
   const userInfo = loadUserInfo();
-  if (!userInfo) {
+  const token = loadToken();
+  if (!userInfo || !token) {
     console.error(
-      "No user info found. Container was found, but dashboard can't loaded."
+      "No user info or token found. Container was found, but dashboard can't loaded."
     );
     return;
   }
@@ -23,8 +23,5 @@ export function initDashboard() {
     return;
   }
 
-  const safeTagTree = JSON.stringify(tagTree);
-  const unencodedUrl = `${dashboardUrl}${userInfo.id}?tag-tree=${safeTagTree}`;
-  const url = encodeURI(unencodedUrl);
-  console.log(url);
+  loadDashboard(container, userInfo, token, tagTree);
 }

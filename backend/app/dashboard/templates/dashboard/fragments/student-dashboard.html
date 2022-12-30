@@ -1,4 +1,4 @@
-<h2>{{ user.first_name }}</h2>
+<h2 class="ah-dashboard--user-name">{{ user.first_name }}</h2>
 
 {% for tag_name, sub_tree in tag_tree.items %}
 {% include 'dashboard/fragments/tag-subtree.html' with tag_name=tag_name sub_tree=sub_tree level=1 tag_group="" %}

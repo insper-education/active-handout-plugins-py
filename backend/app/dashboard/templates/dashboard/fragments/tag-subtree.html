@@ -4,9 +4,9 @@
 {% with stats=tag_stats|get_value:new_group %}
 
 {% if not children %}
-{% include 'dashboard/fragments/sub-tree-title.html' with tree_title=sub_tree level=level %}
+{% include 'dashboard/fragments/sub-tree-title.html' with tree_title=sub_tree level=level total=stats.total_exercises %}
 {% else %}
-{% include 'dashboard/fragments/sub-tree-title.html' with tree_title=sub_tree|get_value:"name" level=level %}
+{% include 'dashboard/fragments/sub-tree-title.html' with tree_title=sub_tree|get_value:"name" level=level total=stats.total_exercises %}
 {% endif %}
 
 {{ new_group }} {{stats.points}}/{{stats.total_exercises}}
