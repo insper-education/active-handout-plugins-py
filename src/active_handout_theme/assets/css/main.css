@@ -710,15 +710,11 @@ body {
   display: flex;
 }
 
-.dashboard-container h1, .dashboard-container h2, .dashboard-container h3, .dashboard-container h4, .dashboard-container h5, .dashboard-container h6, .dashboard-container p, .dashboard-container li {
-  line-height: 1.1;
-}
-
-.dashboard-container .ah-dashboard--subtitle {
-  font-family: Open Sans, sans-serif;
-  font-size: .6em;
-  font-weight: 400;
-  display: block;
+.ah-dashboard {
+  width: 100%;
+  border: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
 }
 
 .admonition.exercise {

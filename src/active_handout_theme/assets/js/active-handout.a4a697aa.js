@@ -709,7 +709,7 @@ parcelHelpers.export(exports, "getValue", ()=>getValue);
 parcelHelpers.export(exports, "removeValue", ()=>removeValue);
 function getKey(elOrKey) {
     if (typeof elOrKey === "string") return elOrKey;
-    if (elOrKey.dataset.slug) return elOrKey.dataset.slug + elOrKey.id;
+    if (elOrKey.dataset.slug) return elOrKey.dataset.slug;
     const docAddr = document.location.pathname;
     const slash = docAddr.endsWith("/") ? "" : "/";
     return `${docAddr}${slash}${elOrKey.id}`;
@@ -847,10 +847,10 @@ function initTextExercises() {
 function matchTextExercises(el) {
     return el.classList.contains("short") || el.classList.contains("medium") || el.classList.contains("long");
 }
-function rememberTextExercise(element, token) {
-    const textElement = (0, _queries.queryTextInputs)(element);
-    (0, _clientDb.setValue)(element, textElement.value);
-    (0, _telemetry.sendData)(element, textElement.value, 1, token);
+function rememberTextExercise(el, user) {
+    const textElement = (0, _queries.queryTextInputs)(el);
+    (0, _clientDb.setValue)(el, textElement.value);
+    (0, _telemetry.sendData)(el, textElement.value, 0, user);
     return true;
 }
 function initChoiceExercises() {
@@ -924,9 +924,9 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "postTelemetryData", ()=>postTelemetryData);
 parcelHelpers.export(exports, "getUserInfo", ()=>getUserInfo);
-parcelHelpers.export(exports, "getHTML", ()=>getHTML);
 parcelHelpers.export(exports, "getJSON", ()=>getJSON);
 parcelHelpers.export(exports, "postJSON", ()=>postJSON);
+parcelHelpers.export(exports, "buildUrl", ()=>buildUrl);
 async function postTelemetryData(token, log, exerciseSlug, exerciseTags, points) {
     if (!telemetryEnabled || !backendUrl || !courseSlug) return;
     const exercise = {
@@ -943,15 +943,6 @@ async function postTelemetryData(token, log, exerciseSlug, exerciseTags, points)
 }
 async function getUserInfo(token) {
     return getJSON("/user-info", token);
-}
-async function getHTML(endpoint, token) {
-    const url = buildUrl(endpoint);
-    if (!url) return null;
-    const init = createInit(token, "text/html; charset=utf-8");
-    return fetch(url, init).then((response)=>response.text()).catch((reason)=>{
-        console.error(reason);
-        return "";
-    });
 }
 async function getJSON(endpoint, token) {
     const url = buildUrl(endpoint);
@@ -53566,17 +53557,31 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "loadDashboard", ()=>loadDashboard);
 var _apiClient = require("../apiClient");
+var _domUtils = require("../dom-utils");
 async function loadDashboard(container, userInfo, token, tagTree) {
     if (!courseSlug) return;
     const safeTagTree = encodeURI(JSON.stringify(tagTree));
     const safeCourseSlug = encodeURI(courseSlug);
-    const endpoint = `../dashboard/fragments/${safeCourseSlug}/student/${userInfo.id}?tag-tree=${safeTagTree}`;
-    (0, _apiClient.getHTML)(endpoint, token).then((html)=>{
-        if (!html) container.innerHTML = "<p>Sorry, the dashboard couldn't be loaded...</p>";
-        container.innerHTML = html;
-    });
+    const endpoint = `../dashboard/${safeCourseSlug}/student/${userInfo.id}?tag-tree=${safeTagTree}`;
+    const iframe = (0, _domUtils.createElementWithClasses)("iframe", [
+        "ah-dashboard"
+    ], container);
+    let prevHeight = 0;
+    window.addEventListener("message", (event)=>{
+        if (!backendUrl || !backendUrl.includes(event.origin)) return;
+        var { event: receivedEvent , height: iframeHeight  } = JSON.parse(event.data);
+        if (receivedEvent !== "resize") return;
+        // A few extra pixels to make sure there will be no scrollbar
+        const extra = 10;
+        const newHeight = iframeHeight + extra;
+        if (prevHeight !== newHeight - extra) {
+            iframe.style.height = newHeight + "px";
+            prevHeight = newHeight;
+        }
+    }, false);
+    iframe.src = (0, _apiClient.buildUrl)(endpoint);
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../apiClient":"emRW9"}]},["1csOT"], null, "parcelRequirea86e")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../apiClient":"emRW9","../dom-utils":"NCBha"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

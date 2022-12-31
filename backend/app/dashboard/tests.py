@@ -7,7 +7,7 @@ from dashboard.query import (count_total_exercises_by_tag_group, get_all_tags,
                              get_exercise_ids_by_tag_group,
                              get_exercise_ids_by_tag_name, list_tags_from_tree,
                              sum_points_by_tag_group)
-from dashboard.views import student_dashboard_fragment
+from dashboard.views import student_dashboard
 
 
 class DashboardTests(TestCase):
@@ -23,25 +23,25 @@ class DashboardTests(TestCase):
         request = self.factory.get(f'/dashboard/fragments/{self.course.name}/student/{self.student.id}')
         request.user = self.other_student
 
-        self.assertRaises(PermissionDenied, student_dashboard_fragment, request, self.course.name, self.student.id)
+        self.assertRaises(PermissionDenied, student_dashboard, request, self.course.name, self.student.id)
 
     def test_student_can_get_own_dashboard(self):
         request = self.factory.get(f'/dashboard/fragments/{self.course.name}/student/{self.student.id}')
         request.user = self.student
 
-        assert student_dashboard_fragment(request, self.course.name, self.student.id) is not None
+        assert student_dashboard(request, self.course.name, self.student.id) is not None
 
     def test_instructor_can_get_other_students_dashboard(self):
         request = self.factory.get(f'/dashboard/{self.course.name}/fragments/student/{self.student.id}')
         request.user = self.instructor
 
-        assert student_dashboard_fragment(request, self.course.name, self.student.id) is not None
+        assert student_dashboard(request, self.course.name, self.student.id) is not None
 
     def test_instructor_can_get_own_dashboard(self):
         request = self.factory.get(f'/dashboard/{self.course.name}/fragments/student/{self.instructor.id}')
         request.user = self.instructor
 
-        assert student_dashboard_fragment(request, self.course.name, self.instructor.id) is not None
+        assert student_dashboard(request, self.course.name, self.instructor.id) is not None
 
 
 class QueryTests(TestCase):

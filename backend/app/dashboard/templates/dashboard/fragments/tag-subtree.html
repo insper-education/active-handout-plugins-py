@@ -1,19 +1,101 @@
 {% load dashboard_extras %}
 
-{% with children=sub_tree|get_value:"children" new_group=tag_group|add_to_group:tag_name %}
-{% with stats=tag_stats|get_value:new_group %}
+{% with new_group=tag_group|add_to_group:tag %}
+{% with stats=tag_stats|get_value:new_group chart_id="dashboard-progress-chart-"|add:new_group %}
 
-{% if not children %}
-{% include 'dashboard/fragments/sub-tree-title.html' with tree_title=sub_tree level=level total=stats.total_exercises %}
-{% else %}
-{% include 'dashboard/fragments/sub-tree-title.html' with tree_title=sub_tree|get_value:"name" level=level total=stats.total_exercises %}
+{% if tag_name and stats %}
+<div class="ah-dashboard--tree--title-container ah-dashboard--tree--{{ level }}">
+  <span class="ah-dashboard--tree--title">{{ tag_name }}</span>
+  <span class="ah-dashboard--tree--subtitle">Total exercises: {{ stats.total_exercises }}</span>
+  <span class="ah-dashboard--tree--progress">{{ stats.percent|floatformat:1 }}%</span>
+</div>
 {% endif %}
 
-{{ new_group }} {{stats.points}}/{{stats.total_exercises}}
+{% if tag_tree|is_last_level %}
+<div class="ah-dashboard--tree--chart-container">
+  <canvas id="{{ chart_id }}"></canvas>
+</div>
 
-{% if children %}
-  {% for sub_tag_name, sub_sub_tree in children.items %}
-    {% include 'dashboard/fragments/tag-subtree.html' with tag_name=sub_tag_name sub_tree=sub_sub_tree level=level|add:1 tag_group=new_group %}
+<script>
+  function initChart() {
+    const ctx = document.getElementById('{{ chart_id }}');
+    
+    const labels = [{% create_labels tag_tree tag_stats new_group %}];
+    const data = [{% create_data tag_tree tag_stats new_group %}];
+    const backgroundData = [{% create_background_data tag_tree %}];
+    const backgroundColor = [{% create_colors tag_tree %}];
+
+    ctx.parentNode.style.height = `${45 * {{ tag_tree|length }}}px`;
+
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data,
+          backgroundColor,
+          borderWidth: 1,
+          barThickness: 25,
+          barPercentage: 1,
+          categoryPercentage: 0.9,
+        },
+        {
+          data: backgroundData,
+          borderWidth: 1,
+          barThickness: 25,
+          barPercentage: 1,
+          categoryPercentage: 0.9,
+        }]
+      },
+      options: {
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        plugins: {
+          tooltip: {
+            enabled: false,
+          },
+          legend: {
+            display: false,
+          },
+        },
+        scales: {
+          x: {
+            display: false,
+            max: 100,
+            stacked: false,
+            beginAtZero: true,
+          },
+          y: {
+            stacked: true,
+            beginAtZero: true,
+            includeBounds: false,
+            grid: {
+              display: false,
+              drawTicks: false,
+            },
+            ticks: {
+              padding: 0,
+              z: 1000,
+              mirror: true,
+              color: "black",
+              font: {
+                size: 16,
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+  initChart();
+</script>
+{% else %}
+  {% for sub_tag, sub_tag_data in tag_tree.items %}
+    {% if sub_tag_data|is_leaf %}
+      {% include 'dashboard/fragments/tag-subtree.html' with tag=sub_tag tag_name=sub_tag_data tag_tree='' level=level|add:1 tag_group=new_group %}
+    {% else %}
+      {% include 'dashboard/fragments/tag-subtree.html' with tag=sub_tag tag_name=sub_tag_data|get_value:"name" tag_tree=sub_tag_data|get_value:"children" level=level|add:1 tag_group=new_group %}
+    {% endif %}
   {% endfor %}
 {% endif %}
 

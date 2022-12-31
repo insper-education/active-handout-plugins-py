@@ -1,18 +1,18 @@
 from urllib.parse import unquote
 import json
 
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
-from rest_framework.decorators import api_view
 
 from core.models import Course, User
 from dashboard.query import get_stats_by_tag_group
 
 
-@api_view(['GET'])
+@xframe_options_exempt
 @login_required
-def student_dashboard_fragment(request, course_name, student_id):
+def student_dashboard(request, course_name, student_id):
     student = get_object_or_404(User, pk=student_id)
     if request.user != student and not request.user.is_staff:
         raise PermissionDenied("Can't get dashboard for another user, except if user is admin")
@@ -24,7 +24,8 @@ def student_dashboard_fragment(request, course_name, student_id):
 
     tag_stats = get_stats_by_tag_group(tag_tree, course, student)
 
-    return render(request, 'dashboard/fragments/student-dashboard.html', {
+    return render(request, 'dashboard/student-dashboard.html', {
         'tag_tree': tag_tree,
         'tag_stats': tag_stats,
+        'referer': request.META.get('HTTP_REFERER', ''),
     })

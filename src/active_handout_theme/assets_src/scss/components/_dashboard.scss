@@ -1,23 +1,8 @@
-@use "../base" as *;
+@use "../abstracts" as *;
 
-.dashboard-container {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  p,
-  li {
-    line-height: 1.1;
-  }
-
-  .ah-dashboard {
-    &--subtitle {
-      display: block;
-      font-family: $font-regular;
-      font-weight: 400;
-      font-size: 0.6em;
-    }
-  }
+.ah-dashboard {
+  margin: 0 0 $space-between-block;
+  padding: 0;
+  border: none;
+  width: 100%;
 }

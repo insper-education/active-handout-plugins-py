@@ -8,6 +8,12 @@ class TagGroupStats:
     total_exercises: int
     points: float = 0
 
+    @property
+    def percent(self):
+        if self.total_exercises == 0:
+            return 0
+        return 100 * self.points / self.total_exercises
+
 
 def get_stats_by_tag_group(tag_tree, course, author):
     tags = get_all_tags(course, tag_tree)

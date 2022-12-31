@@ -1,0 +1,68 @@
+@use "sass:math";
+@use "../abstracts" as *;
+@use "../base" as *;
+
+.ah-dashboard {
+  &--body {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    p,
+    li {
+      margin: 0 0 0.5rem;
+      line-height: 1.1;
+    }
+  }
+
+  &--tree {
+    $max-levels: 6;
+    @for $i from 0 through $max-levels {
+      &--#{$i + 1} {
+        filter: hue-rotate(#{math.div($i * 180, $max-levels)}deg);
+      }
+    }
+
+    &--title-container {
+      display: grid;
+      grid-template-areas:
+        "title percent"
+        "subtitle percent";
+      align-items: center;
+      font-family: $font-highlight;
+      line-height: 1;
+      margin-top: $space-between-block;
+    }
+
+    &--title {
+      grid-area: title;
+      font-family: $font-highlight;
+      color: var(--clr-title);
+    }
+
+    &--subtitle {
+      grid-area: subtitle;
+      display: block;
+      font-family: $font-regular;
+      color: var(--clr-subtitle-default);
+      font-weight: 400;
+      font-size: 0.8em;
+    }
+
+    &--progress {
+      grid-area: percent;
+      justify-self: end;
+      font-family: $font-highlight;
+      color: var(--clr-subtitle-default);
+      font-weight: bold;
+      margin-left: 0.5em;
+      font-size: 2em;
+    }
+
+    &--chart-container {
+      margin-bottom: $space-between-block;
+    }
+  }
+}

@@ -22,20 +22,6 @@ export async function getUserInfo(token) {
   return getJSON("/user-info", token);
 }
 
-export async function getHTML(endpoint, token) {
-  const url = buildUrl(endpoint);
-  if (!url) return null;
-
-  const init = createInit(token, "text/html; charset=utf-8");
-
-  return fetch(url, init)
-    .then((response) => response.text())
-    .catch((reason) => {
-      console.error(reason);
-      return "";
-    });
-}
-
 export async function getJSON(endpoint, token) {
   const url = buildUrl(endpoint);
   if (!url) return null;
@@ -67,7 +53,7 @@ function makeJSONRequest(url, init) {
     });
 }
 
-function buildUrl(endpoint) {
+export function buildUrl(endpoint) {
   if (!backendUrl) return "";
 
   let url = backendUrl;

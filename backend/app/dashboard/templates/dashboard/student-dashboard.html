@@ -1,0 +1,26 @@
+{% extends "dashboard/base.html" %}
+
+{% block content %}
+
+<h2 class="ah-dashboard--user-name">{{ user.first_name }}</h2>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% include 'dashboard/fragments/tag-subtree.html' with tag='' tag_name='' tag_tree=tag_tree level=0 tag_group="" %}
+
+<script>
+  function resize() {
+    const parent = window.parent;
+    if (parent && parent != window) {
+      parent.postMessage(JSON.stringify({
+        event: 'resize',
+        height: document.documentElement.scrollHeight,
+        width: document.documentElement.scrollWidth,
+      }), '{{ referer }}')
+    }
+  }
+  window.addEventListener('resize', resize);
+  resize();
+</script>
+
+{% endblock %}
