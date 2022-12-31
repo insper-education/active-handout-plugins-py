@@ -35,7 +35,7 @@ def create_labels(tag_tree, tag_stats, group):
     for tag, tag_name in tag_tree.items():
         tag_group = add_to_group(group, tag)
         stats = tag_stats[tag_group]
-        data.append(f'"  {tag_name}: {stats.percent:.1f}%"')
+        data.append(f'"  {tag_name}: ({int(stats.points)}/{stats.total_exercises})"')
     return mark_safe(','.join(data))
 
 

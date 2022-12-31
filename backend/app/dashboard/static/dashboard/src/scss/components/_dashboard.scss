@@ -18,10 +18,11 @@
   }
 
   &--tree {
-    $max-levels: 6;
+    $max-levels: 10;
     @for $i from 0 through $max-levels {
       &--#{$i + 1} {
-        filter: hue-rotate(#{math.div($i * 180, $max-levels)}deg);
+        font-size: #{max(2 - $i * 0.2, 1)}rem;
+        filter: Opacity(#{max(1 - $i * 0.2, 0.4)});
       }
     }
 
@@ -34,6 +35,7 @@
       font-family: $font-highlight;
       line-height: 1;
       margin-top: $space-between-block;
+      border-bottom: 3px dotted var(--clr-gray-primary-3);
     }
 
     &--title {
@@ -58,7 +60,7 @@
       color: var(--clr-subtitle-default);
       font-weight: bold;
       margin-left: 0.5em;
-      font-size: 2em;
+      font-size: 1.5em;
     }
 
     &--chart-container {

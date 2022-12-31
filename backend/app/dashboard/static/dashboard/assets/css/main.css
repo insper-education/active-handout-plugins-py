@@ -1760,34 +1760,37 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
 }
 
 .ah-dashboard--tree--1 {
-  filter: hue-rotate();
+  filter: opacity();
+  font-size: 2rem;
 }
 
 .ah-dashboard--tree--2 {
-  filter: hue-rotate(30deg);
+  filter: opacity(.8);
+  font-size: 1.8rem;
 }
 
 .ah-dashboard--tree--3 {
-  filter: hue-rotate(60deg);
+  filter: opacity(.6);
+  font-size: 1.6rem;
 }
 
 .ah-dashboard--tree--4 {
-  filter: hue-rotate(90deg);
+  filter: opacity(.4);
+  font-size: 1.4rem;
 }
 
 .ah-dashboard--tree--5 {
-  filter: hue-rotate(120deg);
+  filter: opacity(.4);
+  font-size: 1.2rem;
 }
 
-.ah-dashboard--tree--6 {
-  filter: hue-rotate(150deg);
-}
-
-.ah-dashboard--tree--7 {
-  filter: hue-rotate(180deg);
+.ah-dashboard--tree--6, .ah-dashboard--tree--7, .ah-dashboard--tree--8, .ah-dashboard--tree--9, .ah-dashboard--tree--10, .ah-dashboard--tree--11 {
+  filter: opacity(.4);
+  font-size: 1rem;
 }
 
 .ah-dashboard--tree--title-container {
+  border-bottom: 3px dotted var(--clr-gray-primary-3);
   grid-template-areas: "title percent"
                        "subtitle percent";
   align-items: center;
@@ -1818,7 +1821,7 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
   justify-self: end;
   margin-left: .5em;
   font-family: Oswald, sans-serif;
-  font-size: 2em;
+  font-size: 1.5em;
   font-weight: bold;
 }
 
