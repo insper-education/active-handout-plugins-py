@@ -17,13 +17,13 @@ class TestExerciseManager(TestCase):
         url = '/page/with/exercises/'
         el_id = 'text-exercise-1'
         slug = self.manager.add_exercise(url, el_id, [])
-        self.assertEquals(f'{url}{el_id}', slug)
+        self.assertEqual(f'{url}{el_id}', slug)
 
     def test_create_slug_from_url_without_slug(self):
         url = '/page/with/exercises'
         el_id = 'text-exercise-1'
         slug = self.manager.add_exercise(url, el_id, [])
-        self.assertEquals(f'{url}/{el_id}', slug)
+        self.assertEqual(f'{url}/{el_id}', slug)
 
     def test_create_json(self):
         url1 = '/page/with/exercises/'
@@ -80,4 +80,4 @@ class TestExerciseManager(TestCase):
             }
         }
         received = json.loads(self.manager.exercise_json())
-        self.assertEquals(expected, received)
+        self.assertEqual(expected, received)

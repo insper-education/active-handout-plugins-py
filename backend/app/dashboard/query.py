@@ -15,14 +15,21 @@ class TagGroupStats:
         return 100 * self.points / self.total_exercises
 
 
+class StudentStats:
+    def __init__(self, student, course):
+        self.student = student
+        self.course = course
+
+
 def get_stats_by_tag_group(tag_tree, course, author):
     tags = get_all_tags(course, tag_tree)
     exercise_ids_and_tags = get_exercise_ids_and_tags(course)
     exercise_ids_by_tag_name = get_exercise_ids_by_tag_name(exercise_ids_and_tags, tags)
     exercise_ids_by_tag_group = get_exercise_ids_by_tag_group(tag_tree, exercise_ids_by_tag_name)
+    points_by_exercise_id = get_points_by_exercise_id(author, course)
 
     total_exercises_by_tag_group = count_total_exercises_by_tag_group(exercise_ids_by_tag_group)
-    points_by_tag_group = sum_points_by_tag_group(author, course, exercise_ids_by_tag_group)
+    points_by_tag_group = sum_points_by_tag_group(points_by_exercise_id, exercise_ids_by_tag_group)
 
     return {
         tag_group: TagGroupStats(
@@ -38,8 +45,11 @@ def count_total_exercises_by_tag_group(exercise_ids_by_tag_group):
     return counts
 
 
-def sum_points_by_tag_group(user, course, exercise_ids_by_tag_group):
-    points_by_exercise_id = dict(TelemetryData.objects.filter(author=user, exercise__course=course, last=True).values_list('exercise_id', 'points'))
+def get_points_by_exercise_id(user, course):
+    return dict(TelemetryData.objects.filter(author=user, exercise__course=course, last=True).values_list('exercise_id', 'points'))
+
+
+def sum_points_by_tag_group(points_by_exercise_id, exercise_ids_by_tag_group):
     points = {
         tag_group: sum(points_by_exercise_id.get(eid, 0) for eid in exercise_ids)
         for tag_group, exercise_ids in exercise_ids_by_tag_group.items()
