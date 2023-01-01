@@ -41,19 +41,19 @@ msgstr "Esqueceu sua senha?"
 
 #: dashboard/templates/dashboard/fragments/tag-subtree.html:10
 msgid "Exercises"
-msgstr ""
+msgstr "Exercícios"
 
 #: dashboard/templates/dashboard/student-dashboard.html:16
 msgid "You have already submitted"
-msgstr ""
+msgstr "Você já enviou"
 
 #: dashboard/templates/dashboard/student-dashboard.html:17
 msgid "exercises"
-msgstr ""
+msgstr "exercícios"
 
 #: dashboard/templates/dashboard/student-dashboard.html:21
 msgid "Exercises submitted throughout the term"
-msgstr ""
+msgstr "Exercícios enviados durante o semestre"
 
 #~ msgid "Hello,"
 #~ msgstr "Olá,"
