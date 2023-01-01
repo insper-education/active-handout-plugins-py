@@ -32,7 +32,7 @@ export async function loadDashboard(container, userInfo, token, tagTree) {
       }
 
       // A few extra pixels to make sure there will be no scrollbar
-      const extra = 10;
+      const extra = 5;
       const newHeight = iframeHeight + extra;
       if (prevHeight !== newHeight - extra) {
         iframe.style.height = newHeight + "px";

@@ -142,11 +142,11 @@
       this[globalName] = mainExports;
     }
   }
-})({"1csOT":[function(require,module,exports) {
+})({"kTa33":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
-var HMR_PORT = 1234;
+var HMR_PORT = 51706;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "916932b22e4085ab";
 module.bundle.HMR_BUNDLE_ID = "efa96c9ba4a697aa";
@@ -53572,7 +53572,7 @@ async function loadDashboard(container, userInfo, token, tagTree) {
         var { event: receivedEvent , height: iframeHeight  } = JSON.parse(event.data);
         if (receivedEvent !== "resize") return;
         // A few extra pixels to make sure there will be no scrollbar
-        const extra = 10;
+        const extra = 5;
         const newHeight = iframeHeight + extra;
         if (prevHeight !== newHeight - extra) {
             iframe.style.height = newHeight + "px";
@@ -53582,6 +53582,6 @@ async function loadDashboard(container, userInfo, token, tagTree) {
     iframe.src = (0, _apiClient.buildUrl)(endpoint);
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../apiClient":"emRW9","../dom-utils":"NCBha"}]},["1csOT"], null, "parcelRequirea86e")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../apiClient":"emRW9","../dom-utils":"NCBha"}]},["kTa33"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load dashboard_extras %}
 
 {% with new_group=tag_group|add_to_group:tag %}
@@ -6,7 +7,7 @@
 {% if tag_name and stats %}
 <div class="ah-dashboard--tree--title-container ah-dashboard--tree--{{ level }}">
   <span class="ah-dashboard--tree--title">{{ tag_name }}</span>
-  <span class="ah-dashboard--tree--subtitle">Exercises: {{ stats.total_exercises }}</span>
+  <span class="ah-dashboard--tree--subtitle">{% trans "Exercises" %}: {{ stats.total_exercises }}</span>
   <span class="ah-dashboard--tree--progress">{{ stats.percent|floatformat:1 }}%</span>
 </div>
 {% endif %}
@@ -20,10 +21,10 @@
   function initChart() {
     const ctx = document.getElementById('{{ chart_id }}');
     
-    const labels = [{% create_labels tag_tree tag_stats new_group %}];
-    const data = [{% create_data tag_tree tag_stats new_group %}];
-    const backgroundData = [{% create_background_data tag_tree %}];
-    const backgroundColor = [{% create_colors tag_tree %}];
+    const labels = [{% create_progress_labels tag_tree tag_stats new_group %}];
+    const data = [{% create_progress_data tag_tree tag_stats new_group %}];
+    const backgroundData = [{% create_background_progress_data tag_tree %}];
+    const backgroundColor = [{% create_progress_colors tag_tree %}];
 
     ctx.parentNode.style.height = `${45 * {{ tag_tree|length }}}px`;
 

@@ -1,25 +1,91 @@
-{% extends "dashboard/base.html" %}
+{% extends "dashboard/base.html" %} 
+
+{% load i18n %}
+{% load dashboard_extras %}
 
 {% block content %}
 
 <h2 class="ah-dashboard--user-name">{{ user.first_name }}</h2>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
-{% include 'dashboard/fragments/tag-subtree.html' with tag='' tag_name='' tag_tree=tag_tree level=0 tag_group="" %}
+<div class="ah-dashboard--container">
+
+  <div class="ah-dashboard--summary">
+    <p>{% trans "You have already submitted" %}</p>
+    <span class="ah-dashboard--summary--total">{{ total_exercises }} {% trans "exercises" %}</span>
+  </div>
+
+  <div class="ah-dashboard--timeline">
+    <p>{% trans "Exercises submitted throughout the term" %}</p>
+
+    <div class="ah-dashboard--timeline--chart-container">
+      <canvas id="timeline-chart"></canvas>
+    </div>
+
+    <script>
+      function initChart() {
+        const ctx = document.getElementById('timeline-chart');
+
+        const labels = [{% create_timeline_labels course %}];
+        const datasets = [{% create_timeline_datasets course tags exercise_count_by_tag_name_and_date %}];
+
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets,
+          },
+          options: {
+            scales: {
+              x: {
+                type: 'time',
+              }
+            }
+          },
+        });
+      }
+      initChart();
+    </script>
+  </div>
+
+  <div class="ah-dashboard--tree">
+    {% include 'dashboard/fragments/tag-subtree.html' with tag='' tag_name='' tag_tree=tag_tree level=0 tag_group="" %}
+  </div>
+
+</div>
 
 <script>
-  function resize() {
+  function postResize(width, height) {
     const parent = window.parent;
     if (parent && parent != window) {
-      parent.postMessage(JSON.stringify({
-        event: 'resize',
-        height: document.documentElement.scrollHeight,
-        width: document.documentElement.scrollWidth,
-      }), '{{ referer }}')
+      parent.postMessage(
+        JSON.stringify({
+          event: "resize",
+          height,
+          width,
+        }),
+        "{{ referer }}"
+      );
     }
   }
-  window.addEventListener('resize', resize);
+
+  const resizeObserver = new ResizeObserver(function(entries) {
+    const { width, height } = entries[0].contentRect;
+    if (document.documentElement.scrollHeight > height + 5) {
+      postResize(width, height)
+    }
+  });
+  resizeObserver.observe(document.querySelector("body"));
+
+  function resize() {
+    postResize(
+      document.documentElement.scrollWidth, 
+      document.documentElement.scrollHeight
+    );
+  }
+  window.addEventListener("resize", resize);
   resize();
 </script>
 

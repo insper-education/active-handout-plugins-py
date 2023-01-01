@@ -1,3 +1,4 @@
+import datetime
 from itertools import count
 
 from core.models import (Course, Exercise, ExerciseTag, Instructor, Student,
@@ -14,7 +15,7 @@ class Builder:
 
     def build(self):
         for field in self.__required_fields:
-            assert getattr(self, field), f'Field {field} is required for builder {self.getClass()}'
+            assert getattr(self, field) is not None, f'Field {field} is required for builder {self.__who_am_i()}'
 
         return self.do_build()
 
@@ -44,13 +45,22 @@ class Builder:
                 return self
             return with_field
 
+    def __who_am_i(self):
+        return type(self).__name__
+
 
 class BuildACourse(Builder):
     def __init__(self):
-        super().__init__('name')
+        super().__init__('name', optional=['start_date', 'end_date'])
+
+    def starting_at(self, year: int, month: int, day: int):
+        return self.with_start_date(build_datetime(year, month, day))
+
+    def ending_at(self, year: int, month: int, day: int):
+        return self.with_end_date(build_datetime(year, month, day))
 
     def do_build(self) -> Course:
-        return Course.objects.create(name=self.name)
+        return Course.objects.create(**self._field_dict())
 
 
 class BuildAUser(Builder):
@@ -140,14 +150,16 @@ class BuildAnExercise(Builder):
 
 class BuildExercises(Builder):
     def __init__(self):
-        super().__init__('course', 'tag_groups')
+        super().__init__('course')
+        self.__tag_groups = [None]
         self.__exercises_per_group = 1
 
     def for_course(self, course):
         return self.with_course(course)
 
     def for_tag_groups(self, tag_groups):
-        return self.with_tag_groups(tag_groups)
+        self.__tag_groups = tag_groups
+        return self
 
     def each_group_with(self, exercises_per_group):
         self.__exercises_per_group = exercises_per_group
@@ -155,8 +167,10 @@ class BuildExercises(Builder):
 
     def do_build(self):
         exercises = []
-        for tag_group in self.tag_groups:
-            tags = tag_group.split('/')
+        for tag_group in self.__tag_groups:
+            tags = []
+            if tag_group:
+                tags = tag_group.split('/')
             for _ in range(self.__exercises_per_group):
                 exercises.append(
                     BuildAnExercise()
@@ -171,6 +185,7 @@ class BuildATelemetryData(Builder):
     def __init__(self):
         super().__init__('author', 'exercise', 'points', 'log', optional=['submission_date', 'last'])
         self.log = '{}'
+        self.points = 0
 
     def by_author(self, author):
         return self.with_author(author)
@@ -178,14 +193,20 @@ class BuildATelemetryData(Builder):
     def for_exercise(self, exercise):
         return self.with_exercise(exercise)
 
+    def submitted_on(self, year: int, month: int, day: int, hour: int=0, minute: int=0, second: int=0, microsecond: int=0):
+        submission_date = build_datetime(year, month, day, hour, minute, second, microsecond)
+        return self.with_submission_date(submission_date)
+
     def do_build(self) -> TelemetryData:
         return TelemetryData.objects.create(**self._field_dict())
 
 
-# DATAS... ARGH :(
+# dataS... ARGH :(
 class BuildTelemetryDatas(Builder):
     def __init__(self):
-        super().__init__('author', 'exercises', 'points')
+        super().__init__('author', 'exercises', 'points', optional=['submission_date'])
+        self.submission_date = datetime.datetime.now()
+        self.points = 0
 
     def by_author(self, author):
         return self.with_author(author)
@@ -195,6 +216,10 @@ class BuildTelemetryDatas(Builder):
 
     def for_all_exercises_of(self, course):
         return self.with_exercises(Exercise.objects.filter(course=course))
+
+    def submitted_on(self, year: int, month: int, day: int, hour: int=0, minute: int=0, second: int=0, microsecond: int=0):
+        submission_date = build_datetime(year, month, day, hour, minute, second, microsecond)
+        return self.with_submission_date(submission_date)
 
     def except_those_in_the_tag_groups(self, tag_groups):
         for tag_group in tag_groups:
@@ -212,6 +237,11 @@ class BuildTelemetryDatas(Builder):
                 .for_exercise(exercise)
                 .by_author(self.author)
                 .with_points(self.points)
+                .with_submission_date(self.submission_date)
                 .build()
             for exercise in self.exercises
         ]
+
+
+def build_datetime(year: int, month: int, day: int, hour: int=0, minute: int=0, second: int=0, microsecond: int=0):
+    return datetime.datetime(year, month, day, hour, minute, second, microsecond, tzinfo=datetime.timezone.utc)

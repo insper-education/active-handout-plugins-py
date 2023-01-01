@@ -7,7 +7,7 @@ from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
 
 from core.models import Course, User
-from dashboard.query import get_stats_by_tag_group
+from dashboard.query import StudentStats
 
 
 @xframe_options_exempt
@@ -22,10 +22,14 @@ def student_dashboard(request, course_name, student_id):
 
     tag_tree = json.loads(request.GET.get('tag-tree', '{}'))
 
-    tag_stats = get_stats_by_tag_group(tag_tree, course, student)
+    student_stats = StudentStats(student, course, tag_tree)
 
     return render(request, 'dashboard/student-dashboard.html', {
-        'tag_tree': tag_tree,
-        'tag_stats': tag_stats,
         'referer': request.META.get('HTTP_REFERER', ''),
+        'course': course,
+        'tags': student_stats.tags,
+        'tag_tree': tag_tree,
+        'tag_stats': student_stats.stats_by_tag_group,
+        'total_exercises': student_stats.total_exercises,
+        'exercise_count_by_tag_name_and_date': student_stats.exercise_count_by_tag_name_and_date,
     })

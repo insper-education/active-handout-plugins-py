@@ -1759,6 +1759,47 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
   line-height: 1.1;
 }
 
+.ah-dashboard--container {
+  grid-template-rows: auto 1fr;
+  grid-template-areas: "tree summary"
+                       "tree timeline";
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+  display: grid;
+}
+
+.ah-dashboard--summary {
+  background-color: var(--clr-shadow-1);
+  border-radius: .2em;
+  flex-direction: column;
+  grid-area: summary;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+  font-weight: bold;
+  display: flex;
+}
+
+.ah-dashboard--summary--total {
+  color: var(--clr-subtitle-default);
+  font-family: Oswald, sans-serif;
+  font-size: 3rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.ah-dashboard--timeline {
+  grid-area: timeline;
+}
+
+.ah-dashboard--timeline--chart-container {
+  min-height: 5rem;
+}
+
+.ah-dashboard--tree {
+  grid-area: tree;
+}
+
 .ah-dashboard--tree--1 {
   filter: opacity();
   font-size: 2rem;
@@ -1794,7 +1835,7 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
   grid-template-areas: "title percent"
                        "subtitle percent";
   align-items: center;
-  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
   font-family: Oswald, sans-serif;
   line-height: 1;
   display: grid;
@@ -1827,6 +1868,10 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
 
 .ah-dashboard--tree--chart-container {
   margin-bottom: 1.5rem;
+}
+
+.ah-dashboard--tree--chart-container:not(:first-child) {
+  margin-top: -1.5rem;
 }
 
 .ah-content {

@@ -40,6 +40,8 @@ class Instructor(User):
 
 class Course(models.Model):
     name = models.CharField(max_length=30, unique=True, db_index=True)
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
 
     def __str__(self) -> str:
         return self.name

@@ -1,3 +1,5 @@
+from django.utils import timezone
+
 from django import template
 from django.utils.safestring import mark_safe
 
@@ -30,7 +32,53 @@ def is_leaf(sub_tree):
 
 
 @register.simple_tag
-def create_labels(tag_tree, tag_stats, group):
+def create_timeline_labels(course):
+    start_date, end_date = get_start_end_date(course.start_date, course.end_date)
+    if not start_date or not end_date:
+        return ''
+    return mark_safe(f'"{start_date}", "{end_date}"')
+
+
+@register.simple_tag
+def create_timeline_datasets(course, tags, exercise_count_by_tag_name_and_date):
+    all_tag_names = set(tag.name for tag in tags)
+    dataset_dicts = {}
+    one_day = timezone.timedelta(days=1)
+    start_date, end_date = get_start_end_date(course.start_date, course.end_date)
+
+    for tag_name, counts_by_date in exercise_count_by_tag_name_and_date.items():
+        if tag_name not in all_tag_names:
+            continue
+
+        updated_counts = {}
+        for date, total in counts_by_date.items():
+            updated_counts[date] = total
+            yesterday = date - one_day
+            tomorrow = date + one_day
+            if yesterday not in updated_counts and yesterday > start_date:
+                updated_counts[yesterday] = 0
+            if tomorrow not in counts_by_date and tomorrow < end_date:
+                updated_counts[tomorrow] = 0
+
+        if start_date not in updated_counts:
+            updated_counts[start_date] = 0
+        if end_date not in updated_counts:
+            updated_counts[end_date] = 0
+
+        dataset_dicts[tag_name] = []
+        for date in sorted(updated_counts):
+            dataset_dicts[tag_name].append(f'{{x: "{date}", y: {updated_counts[date]}}}')
+
+    datasets = [
+        f'{{label: "{tag_name}", data: [{",".join(counts_by_date)}]}}'
+        for tag_name, counts_by_date in dataset_dicts.items()
+    ]
+
+    return mark_safe(','.join(datasets))
+
+
+@register.simple_tag
+def create_progress_labels(tag_tree, tag_stats, group):
     data = []
     for tag, tag_name in tag_tree.items():
         tag_group = add_to_group(group, tag)
@@ -40,7 +88,7 @@ def create_labels(tag_tree, tag_stats, group):
 
 
 @register.simple_tag
-def create_data(tag_tree, tag_stats, group):
+def create_progress_data(tag_tree, tag_stats, group):
     data = []
     for sub_tag in tag_tree:
         sub_tag_group = add_to_group(group, sub_tag)
@@ -50,12 +98,12 @@ def create_data(tag_tree, tag_stats, group):
 
 
 @register.simple_tag
-def create_background_data(tag_tree):
+def create_background_progress_data(tag_tree):
     return mark_safe(','.join('100' for _ in tag_tree))
 
 
 @register.simple_tag
-def create_colors(tag_tree):
+def create_progress_colors(tag_tree):
     colors = [
       '#4dc9f6',
       '#f67019',
@@ -68,3 +116,9 @@ def create_colors(tag_tree):
       '#8549ba'
     ]
     return mark_safe(','.join(f'"{colors[i % len(colors)]}"' for i in range(len(tag_tree))))
+
+
+def get_start_end_date(start_date, end_date):
+    if not start_date or not end_date:
+        return start_date, end_date
+    return start_date, min(end_date, timezone.now().date())
