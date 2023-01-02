@@ -1,5 +1,6 @@
 import datetime
 from itertools import count
+from typing import Union
 
 from core.models import (Course, Exercise, ExerciseTag, Instructor, Student,
                          TelemetryData, User)
@@ -132,7 +133,7 @@ class BuildAnExercise(Builder):
     def slug(self, new_slug):
         self._slug = new_slug
 
-    def with_tags(self, tags: list[str | ExerciseTag]):
+    def with_tags(self, tags: list[Union([str, ExerciseTag])]):
         self.tags = tags
         return self
 
