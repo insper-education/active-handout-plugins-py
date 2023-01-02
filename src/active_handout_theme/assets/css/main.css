@@ -710,6 +710,14 @@ body {
   display: flex;
 }
 
+.dashboard-container {
+  display: none;
+}
+
+.dashboard-container.ready {
+  display: inherit;
+}
+
 .ah-dashboard {
   width: 70ch;
   max-width: 100%;

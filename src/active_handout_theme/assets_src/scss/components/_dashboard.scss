@@ -1,5 +1,13 @@
 @use "../abstracts" as *;
 
+.dashboard-container {
+  display: none;
+
+  &.ready {
+    display: inherit;
+  }
+}
+
 .ah-dashboard {
   margin: 0 0 $space-between-block;
   padding: 0;

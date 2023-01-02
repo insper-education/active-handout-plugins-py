@@ -13,6 +13,7 @@ export function initDashboard() {
     console.error(
       "No user info or token found. Container was found, but dashboard can't loaded."
     );
+    showDashboardContainer(container);
     return;
   }
 
@@ -20,8 +21,14 @@ export function initDashboard() {
     console.error(
       "No tag tree found. Container was found, but dashboard can't loaded."
     );
+    showDashboardContainer(container);
     return;
   }
 
   loadDashboard(container, userInfo, token, tagTree);
+  showDashboardContainer(container);
+}
+
+function showDashboardContainer(container) {
+  container.classList.add("ready");
 }

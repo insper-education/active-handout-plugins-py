@@ -53543,13 +53543,19 @@ function initDashboard() {
     const token = (0, _auth.loadToken)();
     if (!userInfo || !token) {
         console.error("No user info or token found. Container was found, but dashboard can't loaded.");
+        showDashboardContainer(container);
         return;
     }
     if (!tagTree) {
         console.error("No tag tree found. Container was found, but dashboard can't loaded.");
+        showDashboardContainer(container);
         return;
     }
     (0, _client.loadDashboard)(container, userInfo, token, tagTree);
+    showDashboardContainer(container);
+}
+function showDashboardContainer(container) {
+    container.classList.add("ready");
 }
 
 },{"../auth":"joUbb","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client":"77dGl"}],"77dGl":[function(require,module,exports) {
