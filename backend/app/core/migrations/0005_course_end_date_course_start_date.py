@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0003_exercise_enabled'),
+        ('core', '0004_remove_exercisetag_unique_course_tag_and_more'),
     ]
 
     operations = [

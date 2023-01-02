@@ -31,5 +31,5 @@ def student_dashboard(request, course_name, student_id):
         'tag_tree': tag_tree,
         'tag_stats': student_stats.stats_by_tag_group,
         'total_exercises': student_stats.total_exercises,
-        'exercise_count_by_tag_name_and_date': student_stats.exercise_count_by_tag_name_and_date,
+        'exercise_count_by_tag_slug_and_date': student_stats.exercise_count_by_tag_slug_and_date,
     })

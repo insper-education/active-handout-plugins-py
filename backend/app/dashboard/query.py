@@ -26,8 +26,8 @@ class StudentStats:
 
         self.tags = get_all_tags(course, tag_tree)
         self.exercise_ids_and_tags = get_exercise_ids_and_tags(course)
-        self.exercise_ids_by_tag_name = get_exercise_ids_by_tag_name(self.exercise_ids_and_tags, self.tags)
-        self.exercise_ids_by_tag_group = get_exercise_ids_by_tag_group(tag_tree, self.exercise_ids_by_tag_name)
+        self.exercise_ids_by_tag_slug = get_exercise_ids_by_tag_slug(self.exercise_ids_and_tags, self.tags)
+        self.exercise_ids_by_tag_group = get_exercise_ids_by_tag_group(tag_tree, self.exercise_ids_by_tag_slug)
         self.points_by_exercise_id = get_points_by_exercise_id(student, course)
 
         self.total_exercises_by_tag_group = count_total_exercises_by_tag_group(self.exercise_ids_by_tag_group)
@@ -45,7 +45,7 @@ class StudentStats:
 
         self.execise_ids_by_date = get_exercise_ids_by_date(student, course)
         self.exercises_by_id = get_exercises_by_id(course)
-        self.exercise_count_by_tag_name_and_date = get_exercise_count_by_tag_name_and_date(self.execise_ids_by_date, self.exercises_by_id)
+        self.exercise_count_by_tag_slug_and_date = get_exercise_count_by_tag_slug_and_date(self.execise_ids_by_date, self.exercises_by_id)
 
 
 def count_total_exercises_by_tag_group(exercise_ids_by_tag_group):
@@ -80,22 +80,22 @@ def list_tags_from_tree(tag_tree):
 
 def get_all_tags(course, tag_tree):
     tags = list_tags_from_tree(tag_tree)
-    return ExerciseTag.objects.filter(course=course, name__in=tags)
+    return ExerciseTag.objects.filter(course=course, slug__in=tags)
 
 
-def get_exercise_ids_by_tag_name(exercise_ids_and_tags, tags):
+def get_exercise_ids_by_tag_slug(exercise_ids_and_tags, tags):
     tags_by_id = {t.id: t for t in tags}
     exercise_ids_by_tag = {}
     for exercise_id, tag_id in exercise_ids_and_tags:
         tag = tags_by_id.get(tag_id)
         if tag is not None:
-            exercise_ids_by_tag.setdefault(tag.name, set()).add(exercise_id)
+            exercise_ids_by_tag.setdefault(tag.slug, set()).add(exercise_id)
     return exercise_ids_by_tag
 
 
-def get_exercise_ids_by_tag_group(tag_tree, exercise_ids_by_tag_name):
+def get_exercise_ids_by_tag_group(tag_tree, exercise_ids_by_tag_slug):
     by_tag_group = {}
-    _get_exercise_ids_by_tag_group_rec(by_tag_group, {'children': tag_tree}, exercise_ids_by_tag_name)
+    _get_exercise_ids_by_tag_group_rec(by_tag_group, {'children': tag_tree}, exercise_ids_by_tag_slug)
     return by_tag_group
 
 
@@ -126,14 +126,14 @@ def get_exercise_ids_by_date(student, course):
     return ids_by_date
 
 
-def get_exercise_count_by_tag_name_and_date(exercise_ids_by_date, exercises_by_id):
+def get_exercise_count_by_tag_slug_and_date(exercise_ids_by_date, exercises_by_id):
     counts = {}
     for date, exercise_ids in exercise_ids_by_date.items():
         for exercise_id in exercise_ids:
             exercise = exercises_by_id[exercise_id]
             for tag in exercise.tags.all():
-                tag_name = tag.name
-                tag_counts = counts.setdefault(tag_name, {})
+                tag_slug = tag.slug
+                tag_counts = counts.setdefault(tag_slug, {})
                 tag_counts[date] = tag_counts.get(date, 0) + 1
     return counts
 
@@ -142,12 +142,12 @@ def get_exercises_by_id(course):
     return {exercise.id: exercise for exercise in Exercise.objects.filter(course=course).prefetch_related('tags')}
 
 
-def _get_exercise_ids_by_tag_group_rec(by_tag_group, tag_tree, exercise_ids_by_tag_name, cur_group='', cur_set=None):
-    for tag_name, subtree in tag_tree['children'].items():
-        new_group = f'{cur_group}/{tag_name}' if cur_group else tag_name
-        exercise_ids = exercise_ids_by_tag_name.get(tag_name, set())
+def _get_exercise_ids_by_tag_group_rec(by_tag_group, tag_tree, exercise_ids_by_tag_slug, cur_group='', cur_set=None):
+    for tag_slug, subtree in tag_tree['children'].items():
+        new_group = f'{cur_group}/{tag_slug}' if cur_group else tag_slug
+        exercise_ids = exercise_ids_by_tag_slug.get(tag_slug, set())
         new_set = exercise_ids if cur_set is None else cur_set & exercise_ids
         by_tag_group[new_group] = new_set
 
         if isinstance(subtree, dict):
-            _get_exercise_ids_by_tag_group_rec(by_tag_group, subtree, exercise_ids_by_tag_name, new_group, new_set)
+            _get_exercise_ids_by_tag_group_rec(by_tag_group, subtree, exercise_ids_by_tag_slug, new_group, new_set)

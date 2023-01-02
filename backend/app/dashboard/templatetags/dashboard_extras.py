@@ -40,14 +40,14 @@ def create_timeline_labels(course):
 
 
 @register.simple_tag
-def create_timeline_datasets(course, tags, exercise_count_by_tag_name_and_date):
-    all_tag_names = set(tag.name for tag in tags)
+def create_timeline_datasets(course, tags, exercise_count_by_tag_slug_and_date):
+    all_tag_slugs = set(tag.slug for tag in tags)
     dataset_dicts = {}
     one_day = timezone.timedelta(days=1)
     start_date, end_date = get_start_end_date(course.start_date, course.end_date)
 
-    for tag_name, counts_by_date in exercise_count_by_tag_name_and_date.items():
-        if tag_name not in all_tag_names:
+    for tag_slug, counts_by_date in exercise_count_by_tag_slug_and_date.items():
+        if tag_slug not in all_tag_slugs:
             continue
 
         updated_counts = {}
@@ -65,13 +65,13 @@ def create_timeline_datasets(course, tags, exercise_count_by_tag_name_and_date):
         if end_date not in updated_counts:
             updated_counts[end_date] = 0
 
-        dataset_dicts[tag_name] = []
+        dataset_dicts[tag_slug] = []
         for date in sorted(updated_counts):
-            dataset_dicts[tag_name].append(f'{{x: "{date}", y: {updated_counts[date]}}}')
+            dataset_dicts[tag_slug].append(f'{{x: "{date}", y: {updated_counts[date]}}}')
 
     datasets = [
-        f'{{label: "{tag_name}", data: [{",".join(counts_by_date)}]}}'
-        for tag_name, counts_by_date in dataset_dicts.items()
+        f'{{label: "{tag_slug}", data: [{",".join(counts_by_date)}]}}'
+        for tag_slug, counts_by_date in dataset_dicts.items()
     ]
 
     return mark_safe(','.join(datasets))
@@ -80,10 +80,10 @@ def create_timeline_datasets(course, tags, exercise_count_by_tag_name_and_date):
 @register.simple_tag
 def create_progress_labels(tag_tree, tag_stats, group):
     data = []
-    for tag, tag_name in tag_tree.items():
+    for tag, tag_slug in tag_tree.items():
         tag_group = add_to_group(group, tag)
         stats = tag_stats[tag_group]
-        data.append(f'"  {tag_name}: ({int(stats.points)}/{stats.total_exercises})"')
+        data.append(f'"  {tag_slug}: ({int(stats.points)}/{stats.total_exercises})"')
     return mark_safe(','.join(data))
 
 

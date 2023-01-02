@@ -4,9 +4,9 @@
 {% with new_group=tag_group|add_to_group:tag %}
 {% with stats=tag_stats|get_value:new_group chart_id="dashboard-progress-chart-"|add:new_group %}
 
-{% if tag_name and stats %}
+{% if tag_slug and stats %}
 <div class="ah-dashboard--tree--title-container ah-dashboard--tree--{{ level }}">
-  <span class="ah-dashboard--tree--title">{{ tag_name }}</span>
+  <span class="ah-dashboard--tree--title">{{ tag_slug }}</span>
   <span class="ah-dashboard--tree--subtitle">{% trans "Exercises" %}: {{ stats.total_exercises }}</span>
   <span class="ah-dashboard--tree--progress">{{ stats.percent|floatformat:1 }}%</span>
 </div>
@@ -93,9 +93,9 @@
 {% else %}
   {% for sub_tag, sub_tag_data in tag_tree.items %}
     {% if sub_tag_data|is_leaf %}
-      {% include 'dashboard/fragments/tag-subtree.html' with tag=sub_tag tag_name=sub_tag_data tag_tree='' level=level|add:1 tag_group=new_group %}
+      {% include 'dashboard/fragments/tag-subtree.html' with tag=sub_tag tag_slug=sub_tag_data tag_tree='' level=level|add:1 tag_group=new_group %}
     {% else %}
-      {% include 'dashboard/fragments/tag-subtree.html' with tag=sub_tag tag_name=sub_tag_data|get_value:"name" tag_tree=sub_tag_data|get_value:"children" level=level|add:1 tag_group=new_group %}
+      {% include 'dashboard/fragments/tag-subtree.html' with tag=sub_tag tag_slug=sub_tag_data|get_value:"name" tag_tree=sub_tag_data|get_value:"children" level=level|add:1 tag_group=new_group %}
     {% endif %}
   {% endfor %}
 {% endif %}

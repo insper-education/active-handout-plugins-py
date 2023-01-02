@@ -93,17 +93,18 @@ class BuildTags(Builder):
     def for_course(self, course):
         return self.with_course(course)
 
-    def with_names(self, *tag_names):
-        self.tag_names = tag_names
+    def with_slugs(self, *tag_slugs):
+        self.tag_slugs = tag_slugs
         return self
 
     def do_build(self) -> list[ExerciseTag]:
-        assert self.tag_names
+        assert self.tag_slugs
 
         tags = [
-            ExerciseTag(name=tag_name, course=self.course)
-            for tag_name in self.tag_names
+            ExerciseTag(slug=tag_slug, course=self.course)
+            for tag_slug in self.tag_slugs
         ]
+        print(tags)
         return ExerciseTag.objects.bulk_create(tags)
 
 
@@ -141,7 +142,7 @@ class BuildAnExercise(Builder):
 
         for tag in self.tags:
             if isinstance(tag, str):
-                tag, _ = ExerciseTag.objects.get_or_create(course=self.course, name=tag)
+                tag, _ = ExerciseTag.objects.get_or_create(course=self.course, slug=tag)
             exercise.tags.add(tag)
         exercise.save()
 
@@ -227,7 +228,7 @@ class BuildTelemetryDatas(Builder):
             self.exercises = [
                 exercise
                 for exercise in self.exercises
-                if not all(tag.name in tags for tag in exercise.tags.all())
+                if not all(tag.slug in tags for tag in exercise.tags.all())
             ]
         return self
 
