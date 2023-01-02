@@ -58,7 +58,7 @@ class ExerciseTag(models.Model):
         ]
 
     def __str__(self):
-        return f'[{self.slug}] {self.safe_name} ({self.course})'
+        return f'[{self.slug}] {self.safe_name()} ({self.course})'
 
     def safe_name(self):
         if self.name:
