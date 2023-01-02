@@ -133,7 +133,7 @@ class BuildAnExercise(Builder):
     def slug(self, new_slug):
         self._slug = new_slug
 
-    def with_tags(self, tags: list[Union([str, ExerciseTag])]):
+    def with_tags(self, tags: list[Union[str, ExerciseTag]]):
         self.tags = tags
         return self
 
