@@ -3,6 +3,7 @@ from dataclasses import dataclass
 from django.db.models import F
 
 from core.models import Exercise, ExerciseTag, TelemetryData
+from dashboard.tag_tree import TagTree
 
 
 @dataclass
@@ -19,15 +20,16 @@ class TagGroupStats:
 
 
 class StudentStats:
-    def __init__(self, student, course, tag_tree):
+    def __init__(self, student, course, tag_tree_yaml):
         self.student = student
         self.course = course
-        self.tag_tree = tag_tree
+        self.tag_tree = TagTree.from_yaml_repr(tag_tree_yaml)
 
-        self.tags = get_all_tags(course, tag_tree)
+        self.tags = get_all_tags(course, self.tag_tree.get_tags())
+        setup_tag_names(self.tag_tree, self.tags)
         self.exercise_ids_and_tags = get_exercise_ids_and_tags(course)
         self.exercise_ids_by_tag_slug = get_exercise_ids_by_tag_slug(self.exercise_ids_and_tags, self.tags)
-        self.exercise_ids_by_tag_group = get_exercise_ids_by_tag_group(tag_tree, self.exercise_ids_by_tag_slug)
+        self.exercise_ids_by_tag_group = get_exercise_ids_by_tag_group(self.tag_tree, self.exercise_ids_by_tag_slug)
         self.points_by_exercise_id = get_points_by_exercise_id(student, course)
 
         self.total_exercises_by_tag_group = count_total_exercises_by_tag_group(self.exercise_ids_by_tag_group)
@@ -65,22 +67,8 @@ def sum_points_by_tag_group(points_by_exercise_id, exercise_ids_by_tag_group):
     return points
 
 
-def list_tags_from_tree(tag_tree):
-    tags = set()
-    tree_queue = [{'children': tag_tree}]
-    while tree_queue:
-        tree = tree_queue.pop(0)
-        children = tree['children']
-        for tag, subtree in children.items():
-            if isinstance(subtree, dict):
-                tree_queue.append(subtree)
-            tags.add(tag)
-    return list(tags)
-
-
-def get_all_tags(course, tag_tree):
-    tags = list_tags_from_tree(tag_tree)
-    return ExerciseTag.objects.filter(course=course, slug__in=tags)
+def get_all_tags(course: str, slugs: list[str]):
+    return ExerciseTag.objects.filter(course=course, slug__in=slugs)
 
 
 def get_exercise_ids_by_tag_slug(exercise_ids_and_tags, tags):
@@ -95,7 +83,7 @@ def get_exercise_ids_by_tag_slug(exercise_ids_and_tags, tags):
 
 def get_exercise_ids_by_tag_group(tag_tree, exercise_ids_by_tag_slug):
     by_tag_group = {}
-    _get_exercise_ids_by_tag_group_rec(by_tag_group, {'children': tag_tree}, exercise_ids_by_tag_slug)
+    _get_exercise_ids_by_tag_group_rec(by_tag_group, tag_tree.root, exercise_ids_by_tag_slug)
     return by_tag_group
 
 
@@ -138,16 +126,31 @@ def get_exercise_count_by_tag_slug_and_date(exercise_ids_by_date, exercises_by_i
     return counts
 
 
+def setup_tag_names(tag_tree, tags):
+    tags_by_slug = {tag.slug: tag for tag in tags}
+    _setup_tag_names_rec(tag_tree.root, tags_by_slug)
+
+
 def get_exercises_by_id(course):
     return {exercise.id: exercise for exercise in Exercise.objects.filter(course=course).prefetch_related('tags')}
 
 
-def _get_exercise_ids_by_tag_group_rec(by_tag_group, tag_tree, exercise_ids_by_tag_slug, cur_group='', cur_set=None):
-    for tag_slug, subtree in tag_tree['children'].items():
-        new_group = f'{cur_group}/{tag_slug}' if cur_group else tag_slug
-        exercise_ids = exercise_ids_by_tag_slug.get(tag_slug, set())
-        new_set = exercise_ids if cur_set is None else cur_set & exercise_ids
-        by_tag_group[new_group] = new_set
+def _get_exercise_ids_by_tag_group_rec(by_tag_group, root, exercise_ids_by_tag_slug, cur_set=None):
+    for child in root.children:
+        tag_slug = child.slug
+        tag_group = child.group
+        new_set = cur_set
+        if tag_slug:
+            exercise_ids = exercise_ids_by_tag_slug.get(tag_slug, set())
+            new_set = exercise_ids if cur_set is None else cur_set & exercise_ids
+            by_tag_group[tag_group] = new_set
 
-        if isinstance(subtree, dict):
-            _get_exercise_ids_by_tag_group_rec(by_tag_group, subtree, exercise_ids_by_tag_slug, new_group, new_set)
+        _get_exercise_ids_by_tag_group_rec(by_tag_group, child, exercise_ids_by_tag_slug, new_set)
+
+
+def _setup_tag_names_rec(root, tags_by_slug):
+    tag = tags_by_slug.get(root.slug)
+    if tag:
+        root.name = tag.safe_name()
+    for child in root.children:
+        _setup_tag_names_rec(child, tags_by_slug)

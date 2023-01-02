@@ -18,7 +18,7 @@ class ActiveHandoutPluginConfig(base.Config):
     telemetry = c.Type(bool, default=False)
     backend_url = c.Type(str, default='')
     course_slug = c.Type(str, default='')
-    tag_tree = c.Type(dict, default={})
+    tag_tree = c.Type(list, default=[])
 
 
 class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):

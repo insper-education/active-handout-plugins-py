@@ -37,10 +37,13 @@ class ExerciseManager:
             'exercises': self.__exercises,
         }, indent=2)
 
-    def __get_available_tags(self, tag_tree: dict):
+    def __get_available_tags(self, tag_tree: list):
         tags = []
-        for tag, value in tag_tree.items():
-            tags.append(tag)
-            if isinstance(value, dict):
-                tags += self.__get_available_tags(value)
+        for tag in tag_tree:
+            if isinstance(tag, dict):
+                for slug, children in tag.items():
+                    tags.append(slug)
+                    tags += self.__get_available_tags(children)
+            else:
+                tags.append(tag)
         return tags

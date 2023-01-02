@@ -20,15 +20,15 @@ def student_dashboard(request, course_name, student_id):
     course_name = unquote(course_name)
     course = get_object_or_404(Course, name=course_name)
 
-    tag_tree = json.loads(request.GET.get('tag-tree', '{}'))
+    tag_tree_yaml = json.loads(request.GET.get('tag-tree', '{}'))
 
-    student_stats = StudentStats(student, course, tag_tree)
+    student_stats = StudentStats(student, course, tag_tree_yaml)
 
     return render(request, 'dashboard/student-dashboard.html', {
         'referer': request.META.get('HTTP_REFERER', ''),
         'course': course,
         'tags': student_stats.tags,
-        'tag_tree': tag_tree,
+        'tag_tree': student_stats.tag_tree,
         'tag_stats': student_stats.stats_by_tag_group,
         'total_exercises': student_stats.total_exercises,
         'exercise_count_by_tag_slug_and_date': student_stats.exercise_count_by_tag_slug_and_date,

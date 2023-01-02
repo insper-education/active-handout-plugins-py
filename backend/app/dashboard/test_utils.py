@@ -104,7 +104,6 @@ class BuildTags(Builder):
             ExerciseTag(slug=tag_slug, course=self.course)
             for tag_slug in self.tag_slugs
         ]
-        print(tags)
         return ExerciseTag.objects.bulk_create(tags)
 
 

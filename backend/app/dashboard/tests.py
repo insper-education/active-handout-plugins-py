@@ -9,8 +9,9 @@ from dashboard.query import (count_total_exercises_by_tag_group, get_all_tags,
                              get_exercise_ids_by_date,
                              get_exercise_ids_by_tag_group,
                              get_exercise_ids_by_tag_slug, get_exercises_by_id,
-                             get_points_by_exercise_id, list_tags_from_tree,
+                             get_points_by_exercise_id, setup_tag_names,
                              sum_points_by_tag_group)
+from dashboard.tag_tree import TagTree, TagTreeNode
 from dashboard.test_utils import (BuildACourse, BuildAnInstructor,
                                   BuildAStudent, BuildExercises, BuildTags,
                                   BuildTelemetryDatas)
@@ -91,34 +92,24 @@ class QueryTests(TestCase):
         )
         self.course = BuildACourse().called('Awesome Course').build()
         self.other_course = BuildACourse().called('Not So Awesome Course').build()
-        self.tag_tree = {
-            'python': {
-                'name': 'Python',
-                'children': {
-                    'if': 'If',
-                    'while': 'While',
-                }
+        self.tag_tree = TagTree.from_yaml_repr([
+            {
+                'python': ['if', 'while']
             },
-            'design': 'Design',
-        }
-        self.tag_slugs = ['python', 'if', 'while', 'design']
-
-    def test_list_tags_from_tree(self):
-        expected = sorted(
-            ['python', 'if', 'while', 'design']
-        )
-        self.assertListEqual(expected, sorted(list_tags_from_tree(self.tag_tree)))
+            'design',
+        ])
+        self.tag_slugs = self.tag_tree.get_tags()
 
     def test_get_all_tags(self):
         BuildTags().for_course(self.other_course).with_slugs(*self.tag_slugs).build()
-        # course_tags = BuildTags().for_course(self.course).with_slugs(*self.tag_slugs).build()
-        # course_tags = sorted(course_tags, key=lambda t: t.slug)
+        course_tags = BuildTags().for_course(self.course).with_slugs(*self.tag_slugs).build()
+        course_tags = sorted(course_tags, key=lambda t: t.slug)
 
-        # with self.assertNumQueries(1):
-        #     self.assertQuerysetEqual(
-        #         get_all_tags(self.course, self.tag_tree).order_by('slug'),
-        #         course_tags
-        #     )
+        with self.assertNumQueries(1):
+            self.assertQuerysetEqual(
+                get_all_tags(self.course, self.tag_slugs).order_by('slug'),
+                course_tags
+            )
 
     def test_get_exercise_ids_and_tags(self):
         BuildTags().for_course(self.other_course).with_slugs(*self.tag_slugs).build()
@@ -406,6 +397,18 @@ class QueryTests(TestCase):
         with self.assertNumQueries(0):
             self.assertDictEqual({}, exercise_ids_by_date)
 
+    def test_setup_tag_names(self):
+        tags = BuildTags().for_course(self.course).with_slugs(*self.tag_tree.get_tags()).build()
+        for tag in tags:
+            tag.name = tag.slug.title()
+            tag.save()
+
+        setup_tag_names(self.tag_tree, tags)
+
+        for node in self.tag_tree.get_nodes():
+            self.assertEqual(node.slug.title(), node.name)
+            self.assertNotEqual(node.slug, node.name)
+
     def test_get_exercises_by_id(self):
         tag_groups = ['python', 'java', 'c', 'c++']
         BuildExercises().for_course(self.other_course).for_tag_groups(tag_groups).each_group_with(5).build()
@@ -428,3 +431,177 @@ class QueryTests(TestCase):
         for key in d1:
             self.assertTrue(key in d2, msg)
             self.assertAlmostEqual(d1[key], d2[key], places, msg, delta)
+
+
+class TagTreeTest(TestCase):
+    def test_create_from_yaml_repr(self):
+        yaml_repr = [
+            {
+                'python': [
+                    'if',
+                    {
+                        'while': ['intro', 'algorithms'],
+                    },
+                ]
+            },
+            'design',
+        ]
+
+        tree_from_repr = TagTree.from_yaml_repr(yaml_repr)
+        expected = TagTree()
+        expected.root.children = [
+            TagTreeNode('python', 'python', [
+                TagTreeNode('if', 'python/if'),
+                TagTreeNode('while', 'python/while', [
+                    TagTreeNode('intro', 'python/while/intro'),
+                    TagTreeNode('algorithms', 'python/while/algorithms'),
+                ]),
+            ]),
+            TagTreeNode('design', 'design'),
+        ]
+
+        self.assertEqual(expected, tree_from_repr)
+
+    def test_tag_trees_equal(self):
+        tree1 = TagTree()
+        tree1.root.children=[
+            TagTreeNode('python', 'python', [
+                TagTreeNode('if', 'python/if'),
+                TagTreeNode('while', 'python/while', [
+                    TagTreeNode('intro', 'python/while/intro'),
+                    TagTreeNode('algorithms', 'python/while/algorithms'),
+                ]),
+            ]),
+            TagTreeNode('design', 'design'),
+        ]
+
+        tree2 = TagTree()
+        tree2.root.children = [
+            TagTreeNode('python', 'python', [
+                TagTreeNode('if', 'python/if'),
+                TagTreeNode('while', 'python/while', [
+                    TagTreeNode('intro', 'python/while/intro'),
+                    TagTreeNode('algorithms', 'python/while/algorithms'),
+                ]),
+            ]),
+            TagTreeNode('design', 'design'),
+        ]
+
+        self.assertEqual(tree1, tree2)
+
+    def test_tag_trees_different_if_not_same_groups(self):
+        tree1 = TagTree()
+        tree1.root.children = [
+            TagTreeNode('python', 'python', [
+                TagTreeNode('if', 'python/if'),
+                TagTreeNode('while', 'python/while', [
+                    TagTreeNode('intro', 'python/while/intro'),
+                    TagTreeNode('algorithms', 'python/while/algorithms'),
+                ]),
+            ]),
+            TagTreeNode('design', 'design'),
+        ]
+
+        tree2 = TagTree()
+        tree2.root.children = [
+            TagTreeNode('python', 'python', [
+                TagTreeNode('if', 'if'),
+                TagTreeNode('while', 'python/while', [
+                    TagTreeNode('intro', 'python/while/intro'),
+                    TagTreeNode('algorithms', 'python/while/algorithms'),
+                ]),
+            ]),
+            TagTreeNode('design', 'design'),
+        ]
+
+        self.assertNotEqual(tree1, tree2)
+
+    def test_tag_trees_different_if_missing_sub_tree(self):
+        tree1 = TagTree()
+        tree1.root.children = [
+            TagTreeNode('python', 'python', [
+                TagTreeNode('if', 'python/if'),
+                TagTreeNode('while', 'python/while', [
+                    TagTreeNode('intro', 'python/while/intro'),
+                    TagTreeNode('algorithms', 'python/while/algorithms'),
+                ]),
+            ]),
+            TagTreeNode('design', 'design'),
+        ]
+
+        tree2 = TagTree()
+        tree2.root.children = [
+            TagTreeNode('python', 'python', [
+                TagTreeNode('if', 'python/if'),
+            ]),
+            TagTreeNode('design', 'design'),
+        ]
+
+        self.assertNotEqual(tree1, tree2)
+
+    def test_tag_trees_different_if_not_same_order(self):
+        tree1 = TagTree()
+        tree1.root.children = [
+            TagTreeNode('python', 'python', [
+                TagTreeNode('if', 'python/if'),
+                TagTreeNode('while', 'python/while', [
+                    TagTreeNode('intro', 'python/while/intro'),
+                    TagTreeNode('algorithms', 'python/while/algorithms'),
+                ]),
+            ]),
+            TagTreeNode('design', 'design'),
+        ]
+
+        tree2 = TagTree()
+        tree2.root.children = [
+            TagTreeNode('python', 'python', [
+                TagTreeNode('while', 'python/while', [
+                    TagTreeNode('intro', 'python/while/intro'),
+                    TagTreeNode('algorithms', 'python/while/algorithms'),
+                ]),
+                TagTreeNode('if', 'python/if'),
+            ]),
+            TagTreeNode('design', 'design'),
+        ]
+
+        self.assertNotEqual(tree1, tree2)
+
+    def test_get_tags_from_tree(self):
+        tree = TagTree()
+        tree.root.children = [
+            TagTreeNode('python', 'python', [
+                TagTreeNode('if', 'python/if'),
+                TagTreeNode('while', 'python/while', [
+                    TagTreeNode('intro', 'python/while/intro'),
+                    TagTreeNode('algorithms', 'python/while/algorithms'),
+                ]),
+            ]),
+            TagTreeNode('design', 'design'),
+        ]
+
+        expected = ['algorithms', 'design', 'if', 'intro', 'python', 'while']
+        self.assertListEqual(expected, sorted(tree.get_tags()))
+
+    def test_get_nodes(self):
+        intro_node = TagTreeNode('intro', 'python/while/intro')
+        algorithms_node = TagTreeNode('algorithms', 'python/while/algorithms')
+        if_node = TagTreeNode('if', 'python/if')
+        while_node = TagTreeNode('while', 'python/while', [
+            intro_node,
+            algorithms_node,
+        ])
+        python_node = TagTreeNode('python', 'python', [
+            if_node,
+            while_node,
+        ])
+        design_node = TagTreeNode('design', 'design')
+
+        tree = TagTree()
+        tree.root.children = [
+            python_node,
+            design_node,
+        ]
+
+        expected = [python_node, if_node, while_node, intro_node, algorithms_node, design_node]
+        self.assertListEqual(expected, tree.get_nodes())
+

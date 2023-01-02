@@ -51,7 +51,9 @@
   </div>
 
   <div class="ah-dashboard--tree">
-    {% include 'dashboard/fragments/tag-subtree.html' with tag='' tag_slug='' tag_tree=tag_tree level=0 tag_group="" %}
+    {% for child in tag_tree.root.children %}
+      {% include 'dashboard/fragments/tag-subtree.html' with root_tag=child level=0 %}
+    {% endfor %}
   </div>
 
 </div>

@@ -13,22 +13,13 @@ def get_value(dict_like, key):
 
 
 @register.filter
-def add_to_group(tag_group, new_tag):
-    if not tag_group:
-        return new_tag
-    return f'{tag_group}/{new_tag}'
+def is_last_level(root_tag):
+    return root_tag.children and all(is_leaf(child) for child in root_tag.children)
 
 
 @register.filter
-def is_last_level(tag_group):
-    if is_leaf(tag_group):
-        return False
-    return all(is_leaf(child) for child in tag_group.values())
-
-
-@register.filter
-def is_leaf(sub_tree):
-    return not isinstance(sub_tree, dict)
+def is_leaf(root_tag):
+    return not root_tag.children
 
 
 @register.simple_tag
@@ -41,13 +32,13 @@ def create_timeline_labels(course):
 
 @register.simple_tag
 def create_timeline_datasets(course, tags, exercise_count_by_tag_slug_and_date):
-    all_tag_slugs = set(tag.slug for tag in tags)
+    tag_names_by_slug = {tag.slug: tag.safe_name() for tag in tags}
     dataset_dicts = {}
     one_day = timezone.timedelta(days=1)
     start_date, end_date = get_start_end_date(course.start_date, course.end_date)
 
     for tag_slug, counts_by_date in exercise_count_by_tag_slug_and_date.items():
-        if tag_slug not in all_tag_slugs:
+        if tag_slug not in tag_names_by_slug:
             continue
 
         updated_counts = {}
@@ -70,7 +61,7 @@ def create_timeline_datasets(course, tags, exercise_count_by_tag_slug_and_date):
             dataset_dicts[tag_slug].append(f'{{x: "{date}", y: {updated_counts[date]}}}')
 
     datasets = [
-        f'{{label: "{tag_slug}", data: [{",".join(counts_by_date)}]}}'
+        f'{{label: "{tag_names_by_slug[tag_slug]}", data: [{",".join(counts_by_date)}]}}'
         for tag_slug, counts_by_date in dataset_dicts.items()
     ]
 
@@ -78,32 +69,30 @@ def create_timeline_datasets(course, tags, exercise_count_by_tag_slug_and_date):
 
 
 @register.simple_tag
-def create_progress_labels(tag_tree, tag_stats, group):
+def create_progress_labels(root_tag, tag_stats):
     data = []
-    for tag, tag_slug in tag_tree.items():
-        tag_group = add_to_group(group, tag)
-        stats = tag_stats[tag_group]
-        data.append(f'"  {tag_slug}: ({int(stats.points)}/{stats.total_exercises})"')
+    for child in root_tag.children:
+        stats = tag_stats[child.group]
+        data.append(f'"  {child.name}: ({int(stats.points)}/{stats.total_exercises})"')
     return mark_safe(','.join(data))
 
 
 @register.simple_tag
-def create_progress_data(tag_tree, tag_stats, group):
+def create_progress_data(root_tag, tag_stats):
     data = []
-    for sub_tag in tag_tree:
-        sub_tag_group = add_to_group(group, sub_tag)
-        sub_tag_stats = tag_stats[sub_tag_group]
+    for child in root_tag.children:
+        sub_tag_stats = tag_stats[child.group]
         data.append(str(sub_tag_stats.percent))
     return mark_safe(','.join(data))
 
 
 @register.simple_tag
-def create_background_progress_data(tag_tree):
-    return mark_safe(','.join('100' for _ in tag_tree))
+def create_background_progress_data(root_tag):
+    return mark_safe(','.join('100' for _ in root_tag.children))
 
 
 @register.simple_tag
-def create_progress_colors(tag_tree):
+def create_progress_colors(root_tag):
     colors = [
       '#4dc9f6',
       '#f67019',
@@ -115,7 +104,7 @@ def create_progress_colors(tag_tree):
       '#58595b',
       '#8549ba'
     ]
-    return mark_safe(','.join(f'"{colors[i % len(colors)]}"' for i in range(len(tag_tree))))
+    return mark_safe(','.join(f'"{colors[i % len(colors)]}"' for i in range(len(root_tag.children))))
 
 
 def get_start_end_date(start_date, end_date):
