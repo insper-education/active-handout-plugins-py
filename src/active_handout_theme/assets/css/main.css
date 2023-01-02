@@ -711,7 +711,8 @@ body {
 }
 
 .ah-dashboard {
-  width: 100%;
+  width: 70ch;
+  max-width: 100%;
   border: none;
   margin: 0 0 1.5rem;
   padding: 0;

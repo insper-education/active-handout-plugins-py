@@ -142,11 +142,11 @@
       this[globalName] = mainExports;
     }
   }
-})({"95syw":[function(require,module,exports) {
+})({"1csOT":[function(require,module,exports) {
 "use strict";
 var global = arguments[3];
 var HMR_HOST = null;
-var HMR_PORT = 65473;
+var HMR_PORT = 1234;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "916932b22e4085ab";
 module.bundle.HMR_BUNDLE_ID = "efa96c9ba4a697aa";
@@ -53534,7 +53534,6 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initDashboard", ()=>initDashboard);
 var _auth = require("../auth");
-var _domUtils = require("../dom-utils");
 var _client = require("./client");
 function initDashboard() {
     if (!dashboardEnabled) return;
@@ -53544,8 +53543,6 @@ function initDashboard() {
     const token = (0, _auth.loadToken)();
     if (!userInfo || !token) {
         console.error("No user info or token found. Container was found, but dashboard can't loaded.");
-        const p = (0, _domUtils.createElementWithClasses)("p", [], container);
-        p.innerText = "No dashboard available. Please, log in.";
         return;
     }
     if (!tagTree) {
@@ -53555,7 +53552,7 @@ function initDashboard() {
     (0, _client.loadDashboard)(container, userInfo, token, tagTree);
 }
 
-},{"../auth":"joUbb","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client":"77dGl","../dom-utils":"NCBha"}],"77dGl":[function(require,module,exports) {
+},{"../auth":"joUbb","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client":"77dGl"}],"77dGl":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "loadDashboard", ()=>loadDashboard);
@@ -53563,6 +53560,7 @@ var _apiClient = require("../apiClient");
 var _domUtils = require("../dom-utils");
 async function loadDashboard(container, userInfo, token, tagTree) {
     if (!courseSlug) return;
+    container.innerHTML = "";
     const safeTagTree = encodeURI(JSON.stringify(tagTree));
     const safeCourseSlug = encodeURI(courseSlug);
     const endpoint = `../dashboard/${safeCourseSlug}/student/${userInfo.id}?tag-tree=${safeTagTree}`;
@@ -53585,6 +53583,6 @@ async function loadDashboard(container, userInfo, token, tagTree) {
     iframe.src = (0, _apiClient.buildUrl)(endpoint);
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../apiClient":"emRW9","../dom-utils":"NCBha"}]},["95syw"], null, "parcelRequirea86e")
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../apiClient":"emRW9","../dom-utils":"NCBha"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map

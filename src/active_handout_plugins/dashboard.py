@@ -7,6 +7,7 @@ class DashboardAdmonition(AdmonitionVisitor):
         if not 'dashboard' in el.attrib['class']:
             return
 
-        el.clear()
+        title = el.find('p/[@class="admonition-title"]')
+        el.remove(title)
 
         el.attrib['class'] = 'dashboard-container'

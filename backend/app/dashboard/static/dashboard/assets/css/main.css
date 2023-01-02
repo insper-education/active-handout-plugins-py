@@ -389,7 +389,8 @@ span.critic.comment {
 }
 
 .ah-dashboard {
-  width: 100%;
+  width: 70ch;
+  max-width: 100%;
   border: none;
   margin: 0 0 1.5rem;
   padding: 0;
@@ -1766,6 +1767,15 @@ h1:hover .headerlink, h2:hover .headerlink, h3:hover .headerlink, h4:hover .head
   gap: 1.5rem;
   margin-top: 1.5rem;
   display: grid;
+}
+
+@media (max-width: 800px) {
+  .ah-dashboard--container {
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas: "summary"
+                         "timeline"
+                         "tree";
+  }
 }
 
 .ah-dashboard--summary {

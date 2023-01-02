@@ -25,6 +25,14 @@
       "tree timeline";
     gap: $space-between-block;
     margin-top: $space-between-block;
+
+    @include smaller-than("medium") {
+      grid-template-rows: auto auto 1fr;
+      grid-template-areas:
+        "summary"
+        "timeline"
+        "tree";
+    }
   }
 
   &--summary {

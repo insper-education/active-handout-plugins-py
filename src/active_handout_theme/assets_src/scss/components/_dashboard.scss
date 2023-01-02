@@ -4,5 +4,6 @@
   margin: 0 0 $space-between-block;
   padding: 0;
   border: none;
-  width: 100%;
+  width: $max-content-width;
+  max-width: 100%;
 }

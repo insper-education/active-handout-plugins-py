@@ -6,6 +6,8 @@ export async function loadDashboard(container, userInfo, token, tagTree) {
     return;
   }
 
+  container.innerHTML = "";
+
   const safeTagTree = encodeURI(JSON.stringify(tagTree));
   const safeCourseSlug = encodeURI(courseSlug);
   const endpoint = `../dashboard/${safeCourseSlug}/student/${userInfo.id}?tag-tree=${safeTagTree}`;
