@@ -84,15 +84,15 @@ def ensure_tags_equal(exercise, tags):
 
     # Remove tags that no longer belong to the exercise
     for tag in exercise.tags.all():
-        if tag.name in tags:
-            tags.remove(tag.name)
+        if tag.slug in tags:
+            tags.remove(tag.slug)
         else:
             exercise.tags.remove(tag)
 
     # Add new tags
-    for tag_name in tags:
+    for tag_slug in tags:
         tag, _ = ExerciseTag.objects.get_or_create(
-            course=exercise.course, name=tag_name)
+            course=exercise.course, slug=tag_slug)
         exercise.tags.add(tag)
 
 

@@ -47,17 +47,23 @@ class Course(models.Model):
 
 class ExerciseTag(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.SlugField()
 
     class Meta:
         constraints = [
             models.UniqueConstraint(
-                fields=["course", "name"], name="unique_course_tag"
+                fields=["course", "slug"], name="unique_course_tag"
             ),
         ]
 
     def __str__(self):
-        return f'{self.name} ({self.course})'
+        return f'[{self.slug}] {self.safe_name} ({self.course})'
+
+    def safe_name(self):
+        if self.name:
+            return self.name
+        return self.slug
 
 
 class Exercise(models.Model):

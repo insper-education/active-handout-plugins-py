@@ -57,7 +57,7 @@ class TelemetryDataTests(TestCase):
         ensure_tags_equal(exercise, expected_tags)
 
         expected_tags = sorted(expected_tags)
-        tags = sorted([tag.name for tag in exercise.tags.all()])
+        tags = sorted([tag.slug for tag in exercise.tags.all()])
         assert tags == expected_tags, f'Tags are different than expected. Expected {expected_tags}. Got {tags}.'
 
     def test_ensure_tags_for_existing_exercise(self):
@@ -65,14 +65,14 @@ class TelemetryDataTests(TestCase):
         expected_tags = ['code', 'recursion', 'impossible']
 
         exercise = Exercise.objects.create(course=self.course, slug='very-hard-challenge')
-        for tag_name in old_tags:
-            tag = ExerciseTag.objects.create(course=self.course, name=tag_name)
+        for tag_slug in old_tags:
+            tag = ExerciseTag.objects.create(course=self.course, slug=tag_slug)
             exercise.tags.add(tag)
 
         ensure_tags_equal(exercise, expected_tags)
 
         expected_tags = sorted(expected_tags)
-        tags = sorted([tag.name for tag in exercise.tags.all()])
+        tags = sorted([tag.slug for tag in exercise.tags.all()])
         assert tags == expected_tags, f'Tags are different than expected. Expected {expected_tags}. Got {tags}.'
 
     def test_new_telemetry_data_creates_course_and_exercise(self):
@@ -123,13 +123,13 @@ class AnswerEndPointTest(TestCase):
         force_authenticate(request, user=self.students[0])
         response = get_all_answers(request, self.course.name, self.exercises[0].slug)
         assert response.status_code == 403
-    
+
     def test_instructors_can_get_answers(self):
         request = self.factory.get(f'/api/telemetry/answers/{self.course.name}/{self.exercises[0].slug}')
         force_authenticate(request, user=self.instructor)
         response = get_all_answers(request, self.course.name, self.exercises[0].slug)
         assert response.status_code == 200
-    
+
     def test_adding_new_exercise_updates_last(self):
         st = self.students[0]
         ex = self.exercises[0]
