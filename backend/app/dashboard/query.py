@@ -110,7 +110,7 @@ def get_exercise_ids_by_date(student, course):
     )
     ids_by_date = {}
     for date, exercise_id in dates_and_ids:
-        ids_by_date.setdefault(date.date(), []).append(exercise_id)
+        ids_by_date.setdefault(date.date(), set()).add(exercise_id)
     return ids_by_date
 
 

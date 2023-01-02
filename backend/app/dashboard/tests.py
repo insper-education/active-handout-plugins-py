@@ -316,12 +316,12 @@ class QueryTests(TestCase):
         for student, exercises_by_date in exercises_by_date_and_student.items():
             for date, exercises in exercises_by_date.items():
                 # Create 3 submissions per exercise
-                for _ in range(3):
+                for i in range(3):
                     (
                         BuildTelemetryDatas()
                             .by_author(student)
                             .for_exercises(exercises)
-                            .submitted_on(*date)
+                            .submitted_on(*date, i)
                             .build()
                     )
 
