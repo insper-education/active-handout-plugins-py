@@ -30,12 +30,33 @@ class ExerciseManager:
 
         return slug
 
-    def exercise_json(self):
-        '''Returns json string with all exercise data.'''
+    def exercise_json(self, prev_mappings: dict = None):
+        '''Returns json string with all exercise and tag data.
+
+        If a prev_mappings dict is given, updates it with the new mappings
+        and removes the tags that no longer exist.
+        '''
+        if not prev_mappings:
+            prev_mappings = {}
+
+        all_tags = self.__get_all_registered_tags()
+        slug_to_name = {
+            slug: prev_mappings.get(slug, slug) for slug in all_tags
+        }
+
         return json.dumps({
             'course': self.__course_slug,
             'exercises': self.__exercises,
+            'tags': slug_to_name,
         }, indent=2)
+
+    def __get_all_registered_tags(self):
+        tags = set()
+        for exercises in self.__exercises.values():
+            for exercise in exercises.values():
+                for tag in exercise['tags']:
+                    tags.add(tag)
+        return tags
 
     def __get_available_tags(self, tag_tree: list):
         tags = []

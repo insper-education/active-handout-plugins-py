@@ -1,9 +1,11 @@
+import json
 import os
-from pathlib import Path
 import re
+from pathlib import Path
 
 from dotenv import load_dotenv
-from mkdocs.config import base, config_options as c
+from mkdocs.config import base
+from mkdocs.config import config_options as c
 from mkdocs.plugins import BasePlugin
 
 from .exercise_manager import ExerciseManager
@@ -90,5 +92,13 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
         return html_without_seed
 
     def on_post_build(self, *, config) -> None:
+        tag_mappings = {}
+        try:
+            with open('exercise_data.json') as f:
+                prev_data = json.load(f)
+                tag_mappings = prev_data.get('tags', {})
+        except FileNotFoundError:
+            pass
+
         with open('exercise_data.json', 'w') as f:
-            f.write(self.exercise_manager.exercise_json())
+            f.write(self.exercise_manager.exercise_json(tag_mappings))

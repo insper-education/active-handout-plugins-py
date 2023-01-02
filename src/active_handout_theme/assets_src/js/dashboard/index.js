@@ -1,4 +1,5 @@
 import { loadToken, loadUserInfo } from "../auth";
+import { createElementWithClasses } from "../dom-utils";
 import { loadDashboard } from "./client";
 
 export function initDashboard() {
@@ -13,6 +14,8 @@ export function initDashboard() {
     console.error(
       "No user info or token found. Container was found, but dashboard can't loaded."
     );
+    const p = createElementWithClasses("p", [], container);
+    p.innerText = "No dashboard available. Please, log in.";
     return;
   }
 

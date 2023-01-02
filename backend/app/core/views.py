@@ -153,3 +153,23 @@ def disable_exercise(request, course_name, exercise_slug):
     exercise.enabled = False
     exercise.save()
     return Response("OK")
+
+
+@api_view(["POST"])
+@permission_classes([IsAdminUser])
+@login_required
+def update_tag_names(request, course_name):
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    slug_to_name = request.data
+    tag_slugs = slug_to_name.keys()
+    tags = ExerciseTag.objects.filter(course=course, slug__in=tag_slugs)
+    to_update = []
+    for tag in tags:
+        name = slug_to_name.get(tag.slug)
+        if name:
+            tag.name = name
+            to_update.append(tag)
+    if to_update:
+        ExerciseTag.objects.bulk_update(to_update, ['name'])
+    return Response({"updated": len(to_update)})

@@ -28,16 +28,13 @@ def load_backend_from_config(root_dir):
     return backend_url
 
 
-def load_exercise_data_str(root_dir):
+def load_data(root_dir):
     if not (root_dir / EXERCISE_DATA).is_file():
         print(f"File {EXERCISE_DATA} does not exist. Can't post data.")
         sys.exit()
 
     with open(EXERCISE_DATA) as f:
-        # JSON may be indented, but we don't need it for the request
-        data = json.load(f)
-
-    return quote_plus(data['course']), data['exercises']
+        return json.load(f)
 
 
 def post_data(url, token, exercise_list):
@@ -67,6 +64,10 @@ root_dir = Path(args.dir)
 backend_url = args.backend or load_backend_from_config(root_dir)
 if not backend_url.endswith('/'):
     backend_url += '/'
-course_slug, exercise_list = load_exercise_data_str(root_dir)
+data = load_data(root_dir)
+course_slug = quote_plus(data['course'])
+exercise_list = data['exercises']
+tag_mappings = data['tags']
 
 post_data(f'{backend_url}exercises/{course_slug}', token, exercise_list)
+post_data(f'{backend_url}tags/{course_slug}/names', token, tag_mappings)

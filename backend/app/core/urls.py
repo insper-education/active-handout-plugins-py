@@ -17,4 +17,7 @@ urlpatterns = [
     path("exercises/<str:course_name>", views.exercise_list),
     path("exercises/<str:course_name>/<str:exercise_slug>/enable", views.enable_exercise),
     path("exercises/<str:course_name>/<str:exercise_slug>/disable", views.disable_exercise),
+
+    # Tag data
+    path("tags/<str:course_name>/names", views.update_tag_names),
 ]
