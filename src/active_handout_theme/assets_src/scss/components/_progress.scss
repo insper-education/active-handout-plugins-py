@@ -18,6 +18,10 @@ section.progress-section {
   display: flex;
   width: 100%;
   padding: 2rem 0 1rem;
+
+  &.hide {
+    display: none;
+  }
 }
 
 .ah-button.progress {

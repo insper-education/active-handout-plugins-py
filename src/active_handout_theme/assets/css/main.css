@@ -249,6 +249,10 @@ p, h1, h2, h3, h4, h5, h6 {
   margin-bottom: 1.5rem;
 }
 
+.ah-typeset span {
+  color: var(--clr-text);
+}
+
 .ah-typeset p {
   color: var(--clr-text);
   text-align: justify;
@@ -325,7 +329,8 @@ span.critic.comment {
 }
 
 .ah-content {
-  max-width: 70ch;
+  width: 70ch;
+  max-width: 100%;
   margin: 3em auto 2em;
 }
 
@@ -878,6 +883,10 @@ body {
   transform: none;
 }
 
+.admonition.exercise.done .admonition.answer {
+  display: inherit;
+}
+
 .admonition.exercise.wrong {
   animation-name: shakeIt;
   animation-duration: .25s;
@@ -919,6 +928,7 @@ body {
   border-top-right-radius: 0;
   margin-top: 2rem;
   margin-bottom: -1rem;
+  display: none;
 }
 
 .form-elements {
@@ -1463,6 +1473,11 @@ ul.ah-nav-body {
   display: inherit;
 }
 
+.parsons-outer-container {
+  grid-template-rows: auto 1fr;
+  display: grid;
+}
+
 .parsons-container pre {
   white-space: inherit;
 }
@@ -1623,6 +1638,10 @@ section.progress-section:first-child, section.progress-section.show {
   width: 100%;
   padding: 2rem 0 1rem;
   display: flex;
+}
+
+.ah-progress-container.hide {
+  display: none;
 }
 
 .ah-button.progress {

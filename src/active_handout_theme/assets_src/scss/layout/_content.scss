@@ -2,7 +2,8 @@
 @use "../abstracts/variables" as *;
 
 .ah-content {
-  max-width: $max-content-width;
+  width: $max-content-width;
+  max-width: 100%;
   margin: 3em auto 2em;
 
   @include smaller-than("medium") {

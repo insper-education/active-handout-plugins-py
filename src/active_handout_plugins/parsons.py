@@ -1,7 +1,8 @@
 from .exercise import ExerciseAdmonition
+from .l10n import gettext as _
 import random
 import xml.etree.ElementTree as etree
-import json
+
 
 class ParsonsExercise(ExerciseAdmonition):
     def __init__(self, *args, **kwargs) -> None:
@@ -18,26 +19,34 @@ class ParsonsExercise(ExerciseAdmonition):
         lines = processed_code.split("\n")[:-1]
         lines[0] = lines[0][start_index:]
 
+        drag_blocks_str = _('Drag blocks from here')
+        drop_blocks_str = _('Drop blocks here')
+
         random.shuffle(lines)
-        left_panel = '''
-<div class="parsons-container highlight original-code">
-    <pre><code class="parsons-area parsons-drag-area">
+        left_panel = f'''
+<div class="parsons-outer-container">
+    <span>{drag_blocks_str}</span>
+    <div class="parsons-container highlight original-code">
+        <pre><code class="parsons-area parsons-drag-area">
 '''
         for l in lines:
             indent_count = l.count('    ')
             l_no_indent = l.replace('    ', '')
             left_panel += f'''
-<div class="line-slot with-line">
-    <div class="subslot cur-indent single-subslot"></div>
-    <div class="line-placeholder"></div>
-    <div class="parsons-line" draggable="true" data-indentCount={indent_count}>{l_no_indent}</div>
-</div>
+    <div class="line-slot with-line">
+        <div class="subslot cur-indent single-subslot"></div>
+        <div class="line-placeholder"></div>
+        <div class="parsons-line" draggable="true" data-indentCount={indent_count}>{l_no_indent}</div>
+    </div>
 '''
-        left_panel += '</code></pre></div>'
+        left_panel += '</code></pre></div></div>'
 
-        right_panel = '''
-<div class="parsons-container highlight parsons-drop-div">
-    <pre><code class="parsons-area parsons-drop-area"></code></pre>
+        right_panel = f'''
+<div class="parsons-outer-container">
+    <span>{drop_blocks_str}</span>
+    <div class="parsons-container highlight parsons-drop-div">
+        <pre><code class="parsons-area parsons-drop-area"></code></pre>
+    </div>
 </div>
 '''
         code.set("class", "parsons-code")
@@ -46,20 +55,28 @@ class ParsonsExercise(ExerciseAdmonition):
 
         parse_html = etree.fromstring(processed_code)
         full_answer = "".join(parse_html.itertext())
+
+        reset_str = _('Reset')
+        test_str = _('Test')
+
         return f'''
         <input type="hidden" name="data" value=""/>
         <pre class="parsons-answer">{full_answer}</pre>
         <div class="ah-btn-group">
-            <input type="button" class="ah-button ah-button--primary" name="resetButton" value="Reset"/>
-            <input type="button" class="ah-button ah-button--primary" name="sendButton" value="Testar"/>
+            <input type="button" class="ah-button ah-button--primary" name="resetButton" value="{reset_str}"/>
+            <input type="button" class="ah-button ah-button--primary" name="sendButton" value="{test_str}"/>
         </div>
         '''
 
     def create_answer(self):
+        answer_str = _('Answer')
+        wrong_str = _('Wrong answer')
+        correct_str = _('Correct answer')
+
         return f'''
-<p class="admonition-title">Resposta</p>
-<p class="wrong-answer">Wrong answer</p>
-<p class="correct-answer">Correct answer</p>
+<p class="admonition-title">{answer_str}</p>
+<p class="wrong-answer">{wrong_str}</p>
+<p class="correct-answer">{correct_str}</p>
 '''
 
     def get_tags(self, el):

@@ -5,7 +5,7 @@ export async function postTelemetryData(
   exerciseTags,
   points
 ) {
-  if (!telemetryEnabled || !backendUrl || !courseSlug) return;
+  if (!telemetryEnabled || !backendUrl || !courseSlug) return false;
 
   const exercise = {
     course: courseSlug,
@@ -15,7 +15,7 @@ export async function postTelemetryData(
   if (!Number.isFinite(points)) {
     points = 0;
   }
-  postJSON("/telemetry", { exercise, points: points, log }, token);
+  return postJSON("/telemetry", { exercise, points: points, log }, token);
 }
 
 export async function getUserInfo(token) {

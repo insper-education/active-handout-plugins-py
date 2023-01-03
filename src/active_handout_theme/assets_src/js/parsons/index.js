@@ -1,3 +1,5 @@
+import { markNotDone } from "../exercise/utils";
+import { getSubmissionCache, sendAndCacheData } from "../telemetry";
 import {
   queryDragArea,
   queryDropArea,
@@ -19,20 +21,15 @@ import {
   resetExercise,
   submitExercise,
 } from "./utils";
-import { sendData } from "../telemetry";
-import { setValue } from "../client-db";
 
-export function initParsonsPlugin(rememberCallbacks) {
-  queryParsonsExercises().forEach(registerListeners);
+export function initParsonsPlugin() {
+  queryParsonsExercises().forEach((exercise) => {
+    registerListeners(exercise);
 
-  rememberCallbacks.push({
-    match: (el) => el.classList.contains("parsons"),
-    callback: (el, token, { correct, code }) => {
-      const value = JSON.stringify({ correct, code });
-      setValue(el, value);
-      sendData(el, value, correct ? 1 : 0, token);
-      return true;
-    },
+    const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
+    if (prevAnswer !== null && !submitted) {
+      sendAndCacheData(exercise, prevAnswer, prevAnswer.correct ? 1 : 0);
+    }
   });
 }
 
@@ -41,16 +38,19 @@ function registerListeners(exercise) {
   const origArea = queryDragArea(exercise);
   let draggedLine = null;
 
-  queryResetButton(exercise).addEventListener("click", () =>
-    resetExercise(exercise)
-  );
-
-  querySubmitButton(exercise).addEventListener("click", () =>
-    submitExercise(exercise)
-  );
+  queryResetButton(exercise).addEventListener("click", (event) => {
+    event.preventDefault();
+    resetExercise(exercise);
+  });
+  querySubmitButton(exercise).addEventListener("click", (event) => {
+    event.preventDefault();
+    submitExercise(exercise);
+  });
 
   function onDrag(ev) {
     ev.preventDefault();
+    markNotDone(exercise);
+
     if (!eventIsInsideExercise(ev, exercise)) return;
     setCurrentSubslot(selectSubslotUnderCursor(ev, exercise), exercise);
   }

@@ -28,6 +28,11 @@ $indent-size: 4ch;
   }
 }
 
+.parsons-outer-container {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
 .parsons-container {
   pre {
     white-space: inherit;

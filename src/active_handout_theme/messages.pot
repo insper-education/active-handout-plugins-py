@@ -1,14 +1,14 @@
 # Translations template for Active-Handout.
-# Copyright (C) 2022 Active-Handout
+# Copyright (C) 2023 Active-Handout
 # This file is distributed under the same license as the Active-Handout project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Active-Handout 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-12-14 15:22-0300\n"
+"POT-Creation-Date: 2023-01-03 18:57-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: src/active_handout_plugins/exercise.py:133
-#: src/active_handout_plugins/exercise.py:177
-#: src/active_handout_plugins/exercise.py:202
+#: src/active_handout_plugins/exercise.py:136
+#: src/active_handout_plugins/exercise.py:208
+#: src/active_handout_plugins/exercise.py:233
 msgid "Submit"
 msgstr ""
 
-#: src/active_handout_plugins/exercise.py:203
+#: src/active_handout_plugins/exercise.py:234
 msgid "Mark as done"
 msgstr ""
 
@@ -36,6 +36,7 @@ msgid "Exercise"
 msgstr ""
 
 #: src/active_handout_plugins/l10n.py:26
+#: src/active_handout_plugins/parsons.py:72
 msgid "Answer"
 msgstr ""
 
@@ -49,6 +50,30 @@ msgstr ""
 
 #: src/active_handout_plugins/l10n.py:26
 msgid "Danger"
+msgstr ""
+
+#: src/active_handout_plugins/parsons.py:22
+msgid "Drag blocks from here"
+msgstr ""
+
+#: src/active_handout_plugins/parsons.py:23
+msgid "Drop blocks here"
+msgstr ""
+
+#: src/active_handout_plugins/parsons.py:59
+msgid "Reset"
+msgstr ""
+
+#: src/active_handout_plugins/parsons.py:60
+msgid "Test"
+msgstr ""
+
+#: src/active_handout_plugins/parsons.py:73
+msgid "Wrong answer"
+msgstr ""
+
+#: src/active_handout_plugins/parsons.py:74
+msgid "Correct answer"
 msgstr ""
 
 #: src/active_handout_theme/404.html:4
@@ -67,11 +92,11 @@ msgstr ""
 msgid "If you've copied this address or clicked a link, please email the instructor to let them know. Don't forget to include the address!"
 msgstr ""
 
-#: src/active_handout_theme/base.html:119
+#: src/active_handout_theme/base.html:133
 msgid "Previous"
 msgstr ""
 
-#: src/active_handout_theme/base.html:127
+#: src/active_handout_theme/base.html:141
 msgid "Next"
 msgstr ""
 

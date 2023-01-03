@@ -28,6 +28,10 @@
         transform: none;
       }
     }
+
+    .admonition.answer {
+      display: inherit;
+    }
   }
 
   &.wrong {
@@ -69,6 +73,7 @@
   --clr-text-em: var(--clr-admonition-answer-text-em);
   --clr-text-strong: var(--clr-admonition-answer-text-strong);
 
+  display: none;
   margin-top: (2 * $admonition-extra-block);
   margin-bottom: (-$admonition-extra-block);
   border-top-left-radius: 0;

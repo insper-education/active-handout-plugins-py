@@ -76,6 +76,10 @@ $font-sizes: (
     margin-bottom: $space-between-block;
   }
 
+  span {
+    color: var(--clr-text);
+  }
+
   p {
     color: var(--clr-text);
     line-height: 2.2;

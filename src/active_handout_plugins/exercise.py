@@ -43,7 +43,6 @@ class ExerciseAdmonition(AdmonitionVisitor):
         title = el.find('p/[@class="admonition-title"]')
         answer = el.find('.//div[@class="admonition answer"]')
         if answer:
-            answer.attrib['style'] = 'display: none;'
             answer_title = answer.find('p/[@class="admonition-title"]')
             answer_title.text = _(answer_title.text)
 
@@ -73,7 +72,6 @@ class ExerciseAdmonition(AdmonitionVisitor):
             if answer_content:
                 answer = etree.SubElement(submission_form, 'div')
                 answer.set("class", "admonition answer")
-                answer.set("style", "display: none;")
                 answer.text = self.md.htmlStash.store(answer_content)
 
     def __match_class(self, el):
@@ -94,22 +92,8 @@ class ExerciseAdmonition(AdmonitionVisitor):
         self.__set_element_id(el, cls)
         self.__set_tags(el)
         self.add_extra_classes(el)
-        submission_form = etree.SubElement(el, 'form')
+        submission_form = etree.SubElement(el, 'form', {'class': 'exercise-form'})
         self.__add_exercise_description(el, submission_form)
-        hs_code = '''
-on submit
-    halt the event
-    if <.answer/>
-        show the <.answer/> in me
-    end
-    add @disabled to <input/> in me
-    add @disabled to <textarea/> in me
-    add .done to closest .exercise
-    hide the <input[type="submit"]/> in me
-    send remember(element: my parentElement) to window
-end
-        '''
-        submission_form.set('_', hs_code)
         self.__add_exercise_form_elements(el, submission_form)
 
         slug = self.exercise_manager.add_exercise(self.page.url, self.id, self.__tags, self.get_meta())
