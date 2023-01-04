@@ -1990,4 +1990,19 @@ section.progress-section:first-child, section.progress-section.show {
   display: inline;
 }
 
+table{
+  table-layout: fixed;
+  padding: 2rem;
+  border-collapse:collapse;
+}
+
+ th, td {
+  padding: 1rem;
+  border-bottom: .1rem solid var(--clr-gray-primary-3);
+}
+
+thead {
+  border-bottom: .3rem solid var(--clr-gray-primary-5);
+}
+
 /*# sourceMappingURL=main.css.map */
