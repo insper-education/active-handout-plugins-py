@@ -845,7 +845,7 @@ function initChoiceExercises() {
                 else alternative.classList.add("wrong");
                 if (shouldSubmit && choice.checked) {
                     const points = correctIdx === choice.value ? 1 : 0;
-                    (0, _telemetry.sendAndCacheData)(el, choice.value, points);
+                    (0, _telemetry.sendAndCacheData)(exercise, choice.value, points);
                 }
             }
         }
@@ -866,14 +866,17 @@ function initChoiceExercises() {
 }
 function initSelfProgressExercises() {
     (0, _queries.querySelfProgressExercises)().forEach((exercise)=>{
-        function remember() {
+        exercise.addEventListener("remember", ()=>{
             (0, _utils.disableInputs)(exercise);
             (0, _utils.markDone)(exercise);
             (0, _telemetry.sendAndCacheData)(exercise, true, 1);
-        }
-        exercise.addEventListener("remember", remember);
+        });
         const { value: prevAnswer , submitted  } = (0, _telemetry.getSubmissionCache)(exercise);
-        if (prevAnswer !== null && !submitted) remember();
+        if (prevAnswer !== null) {
+            (0, _utils.disableInputs)(exercise);
+            (0, _utils.markDone)(exercise);
+            if (!submitted) (0, _telemetry.sendAndCacheData)(exercise, true, 1);
+        }
     });
 }
 

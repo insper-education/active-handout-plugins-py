@@ -25,7 +25,7 @@ class ParsonsExercise(ExerciseAdmonition):
         random.shuffle(lines)
         left_panel = f'''
 <div class="parsons-outer-container">
-    <span>{drag_blocks_str}</span>
+    <span class="parsons-block-description">{drag_blocks_str}</span>
     <div class="parsons-container highlight original-code">
         <pre><code class="parsons-area parsons-drag-area">
 '''
@@ -43,7 +43,7 @@ class ParsonsExercise(ExerciseAdmonition):
 
         right_panel = f'''
 <div class="parsons-outer-container">
-    <span>{drop_blocks_str}</span>
+    <span class="parsons-block-description">{drop_blocks_str}</span>
     <div class="parsons-container highlight parsons-drop-div">
         <pre><code class="parsons-area parsons-drop-area"></code></pre>
     </div>

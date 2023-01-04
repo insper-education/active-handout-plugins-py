@@ -92,7 +92,7 @@ function initChoiceExercises() {
 
         if (shouldSubmit && choice.checked) {
           const points = correctIdx === choice.value ? 1 : 0;
-          sendAndCacheData(el, choice.value, points);
+          sendAndCacheData(exercise, choice.value, points);
         }
       }
     }
@@ -118,17 +118,20 @@ function initChoiceExercises() {
 
 function initSelfProgressExercises() {
   querySelfProgressExercises().forEach((exercise) => {
-    function remember() {
+    exercise.addEventListener("remember", () => {
       disableInputs(exercise);
       markDone(exercise);
       sendAndCacheData(exercise, true, 1);
-    }
-
-    exercise.addEventListener("remember", remember);
+    });
 
     const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
-    if (prevAnswer !== null && !submitted) {
-      remember();
+    if (prevAnswer !== null) {
+      disableInputs(exercise);
+      markDone(exercise);
+
+      if (!submitted) {
+        sendAndCacheData(exercise, true, 1);
+      }
     }
   });
 }
