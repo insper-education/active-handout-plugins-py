@@ -33,6 +33,7 @@
   --clr-link-default-hover: var(--clr-blue-highlight-4);
   // Bullet points
   --clr-bullet-default: var(--clr-highlight);
+  --clr-bullet-secondary-default: var(--clr-blue-highlight-2);
   // Button default
   --clr-btn-default: transparent;
   --clr-btn-default-border: var(--clr-blue-primary-5);
@@ -60,7 +61,7 @@
   --clr-admonition-disabled-em: var(--clr-text-em-default);
   --clr-admonition-disabled-strong: var(--clr-text-strong-default);
   // Exercise
-  --clr-admonition-exercise-background: var(--clr-blue-highlight-7);
+  --clr-admonition-exercise-background: var(--clr-blue-highlight-1);
   --clr-admonition-exercise-text: var(--clr-white);
   --clr-admonition-exercise-title: var(--clr-blue-highlight-1);
   --clr-admonition-exercise-text-em: var(--clr-gray-primary-2);

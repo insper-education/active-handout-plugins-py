@@ -11,7 +11,7 @@
 
   background: var(--clr-background);
   margin: 0 (-$admonition-extra-inline) (2 * $admonition-extra-block);
-  padding: $admonition-extra-block $admonition-extra-inline;
+  padding: 0.5 * $admonition-extra-block $admonition-extra-inline;
   border-radius: $border-radius;
 
   .admonition-title {

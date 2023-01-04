@@ -1,35 +1,39 @@
 @use "../base/typeset" as *;
 
 .ah-typeset {
-  $left: 1.5rem;
-
   ol,
   ul {
+    color: var(--clr-text);
+    line-height: 1.5;
+    margin-bottom: 0.5em;
+
     counter-reset: ah-item-counter;
     list-style: none;
-    padding-left: $left;
+    padding-left: 1em;
 
     li {
+      padding-left: 0.5em;
       counter-increment: ah-item-counter;
-      position: relative;
 
-      &::before {
-        position: absolute;
-        top: 0;
-        left: (-$left);
-
+      &::marker {
         color: var(--clr-bullet);
         font-weight: bold;
         font-family: $font-highlight;
       }
+
+      li {
+        &::marker {
+          color: var(--clr-bullet-secondary);
+        }
+      }
     }
   }
 
-  ol li::before {
+  ol li::marker {
     content: counter(ah-item-counter) ".";
   }
 
-  ul li::before {
+  ul li::marker {
     content: "\2726";
   }
 }

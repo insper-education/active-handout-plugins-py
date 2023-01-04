@@ -1,5 +1,24 @@
 @use "../abstracts" as *;
 
+.ah-typeset {
+  table {
+    margin-inline: auto;
+    margin-bottom: $space-between-block;
+    border-radius: $border-radius;
+    border-collapse: collapse;
+    overflow: hidden;
+  }
+
+  thead {
+    border-bottom: 2px solid var(--clr-blue-primary-3);
+  }
+
+  td,
+  th {
+    padding-right: 1em;
+  }
+}
+
 .ah-table-container {
   margin-bottom: 2rem;
 
@@ -8,6 +27,10 @@
     border-radius: $border-radius;
     border-collapse: collapse;
     overflow: hidden;
+  }
+
+  thead {
+    border-bottom: none;
   }
 
   &.full-width {

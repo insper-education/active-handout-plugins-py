@@ -112,16 +112,6 @@ $font-sizes: (
     font-weight: 900;
   }
 
-  li {
-    color: var(--clr-text);
-    line-height: 2.2;
-    margin-bottom: 1em;
-
-    &::before {
-      color: var(--clr-bullet);
-    }
-  }
-
   input {
     border: 1px solid transparent;
     border-radius: $border-radius;
