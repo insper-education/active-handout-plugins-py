@@ -532,6 +532,113 @@ function hmrAcceptRun(bundle, id) {
 }
 
 },{}],"5Y4Tf":[function(require,module,exports) {
+var _activeHandout = require("./active-handout");
+(0, _activeHandout.initActiveHandout)();
+
+},{"./active-handout":"ecP4v"}],"ecP4v":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initActiveHandout", ()=>initActiveHandout);
+var _tabbedContent = require("./tabbed-content");
+var _progress = require("./progress");
+var _menu = require("./menu");
+var _exercise = require("./exercise");
+var _footnote = require("./footnote");
+var _parsons = require("./parsons");
+var _style = require("./style");
+var _auth = require("./auth");
+var _codeEditor = require("./code-editor");
+var _clientDb = require("./client-db");
+var _telemetry = require("./telemetry");
+var _dashboard = require("./dashboard");
+function onLoad() {
+    (0, _auth.initAuth)();
+    (0, _tabbedContent.initTabbedPlugin)();
+    (0, _style.initStyle)();
+    (0, _dashboard.initDashboard)();
+    (0, _progress.initProgressPlugin)();
+    (0, _exercise.initExercisePlugin)();
+    (0, _parsons.initParsonsPlugin)();
+    (0, _footnote.initFooterPlugin)();
+    (0, _menu.initMenuPlugin)();
+    (0, _codeEditor.initCodeEditorPlugin)();
+    applyRegisteredInitializers();
+}
+function applyRegisteredInitializers() {
+    window.initializers.forEach((initialize)=>initialize());
+    window.initialized = true;
+}
+function initActiveHandout() {
+    window.clientDB = _clientDb;
+    window.sendAndCacheData = (0, _telemetry.sendAndCacheData);
+    window.getSubmissionCache = (0, _telemetry.getSubmissionCache);
+    if (document.readyState !== "loading") onLoad();
+    else document.addEventListener("DOMContentLoaded", onLoad);
+}
+
+},{"./tabbed-content":"eIlmk","./progress":"fzxNo","./menu":"5D3Be","./exercise":"dmczC","./footnote":"70ehP","./parsons":"1AI9I","./style":"5DGm5","./auth":"joUbb","./code-editor":"hgDVF","./client-db":"j0pff","./telemetry":"kpvgZ","./dashboard":"iQNV1","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"eIlmk":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "initTabbedPlugin", ()=>initTabbedPlugin);
+// Source: https://facelessuser.github.io/pymdown-extensions/extensions/tabbed/
+// Identify whether a tab bar can be scrolled left or right and apply indicator classes
+const tabOverflow = ()=>{
+    const checkScroll = (e)=>{
+        // Use a margin as we just don't always align exactly on the right.
+        const margin = 3;
+        const target = e.target;
+        if (!e.target.matches(".tabbed-labels")) return;
+        const scrollWidth = target.scrollWidth - target.clientWidth;
+        target.classList.remove("tabbed-scroll", "tabbed-scroll-left", "tabbed-scroll-right");
+        if (e.type === "resize" || e.type === "scroll") {
+            if (scrollWidth === 0) return;
+            target.classList.add("tabbed-scroll");
+            if (!target.scrollLeft) target.classList.add("tabbed-scroll-right");
+            else if (target.scrollLeft < scrollWidth - margin) target.classList.add("tabbed-scroll-left", "tabbed-scroll-right");
+            else target.classList.add("tabbed-scroll-left");
+        }
+    };
+    // Change the tab to either the previous or next input - depending on which indicator was clicked.
+    // Make sure the current, selected input is scrolled into view.
+    const tabChange = (e)=>{
+        const target = e.target;
+        const selected = target.closest(".tabbed-set").querySelector("input:checked");
+        let updated = null;
+        if (target.classList.contains("tabbed-scroll-right") && e.offsetX >= e.target.offsetWidth - 15) {
+            const sib = selected.nextSibling;
+            updated = selected;
+            if (sib && sib.tagName === "INPUT") updated = sib;
+        } else if (target.classList.contains("tabbed-scroll-left") && e.offsetX <= 15) {
+            const sib1 = selected.previousSibling;
+            updated = selected;
+            if (sib1 && sib1.tagName === "INPUT") updated = sib1;
+        }
+        if (updated) updated.click();
+    };
+    const onResize = new ResizeObserver((entries)=>{
+        entries.forEach((entry)=>{
+            checkScroll({
+                target: entry.target,
+                type: "resize"
+            });
+        });
+    });
+    const labels = document.querySelectorAll(".tabbed-alternate > .tabbed-labels");
+    labels.forEach((el)=>{
+        checkScroll({
+            target: el,
+            type: "resize"
+        });
+        onResize.observe(el);
+        el.addEventListener("resize", checkScroll);
+        el.addEventListener("scroll", checkScroll);
+        el.addEventListener("click", tabChange);
+    });
+};
+// Smooth scroll tab into view when changed
+const tabScroll = ()=>{
+    const tabs = document.querySelectorAll(".tabbed-alternate > input");
+    for (const tab of tabs)tab.addEventListener("change", ()=>{
         const label = document.querySelector(`label[for=${tab.id}]`);
         label.scrollIntoView({
             block: "nearest",
@@ -603,7 +710,7 @@ function initProgressPlugin() {
     });
 }
 
-},{"../client-db":"j0pff","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./queries":"egWlm","../dom-utils":"NCBha"}],"j0pff":[function(require,module,exports) {
+},{"../client-db":"j0pff","../dom-utils":"NCBha","./queries":"egWlm","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"j0pff":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "getKey", ()=>getKey);
@@ -638,29 +745,6 @@ function getJSONValue(elOrKey) {
     const value = getValue(elOrKey);
     if (!value) return value;
     return JSON.parse(value);
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"egWlm":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "queryProgressBtns", ()=>queryProgressBtns);
-parcelHelpers.export(exports, "queryNextSection", ()=>queryNextSection);
-parcelHelpers.export(exports, "queryProgressContainer", ()=>queryProgressContainer);
-function queryProgressBtns() {
-    return document.querySelectorAll("button.progress");
-}
-function queryNextSection(element) {
-    const allSections = document.querySelectorAll(".progress-section");
-    const currentSection = element.closest(".progress-section");
-    let foundCurrent = false;
-    for (let section of allSections){
-        if (foundCurrent) return section;
-        if (section === currentSection) foundCurrent = true;
-    }
-    return null;
-}
-function queryProgressContainer(progressBtn) {
-    return progressBtn.closest(".ah-progress-container");
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"NCBha":[function(require,module,exports) {
@@ -704,6 +788,29 @@ function absoluteURL(relative) {
 }
 function deepCopy(dict) {
     return JSON.parse(JSON.stringify(dict));
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"egWlm":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "queryProgressBtns", ()=>queryProgressBtns);
+parcelHelpers.export(exports, "queryNextSection", ()=>queryNextSection);
+parcelHelpers.export(exports, "queryProgressContainer", ()=>queryProgressContainer);
+function queryProgressBtns() {
+    return document.querySelectorAll("button.progress");
+}
+function queryNextSection(element) {
+    const allSections = document.querySelectorAll(".progress-section");
+    const currentSection = element.closest(".progress-section");
+    let foundCurrent = false;
+    for (let section of allSections){
+        if (foundCurrent) return section;
+        if (section === currentSection) foundCurrent = true;
+    }
+    return null;
+}
+function queryProgressContainer(progressBtn) {
+    return progressBtn.closest(".ah-progress-container");
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5D3Be":[function(require,module,exports) {
@@ -1235,7 +1342,7 @@ function registerListeners(exercise) {
     });
 }
 
-},{"./queries":"6FJZc","./utils":"lDj3O","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ","../exercise/utils":"acvpC"}],"6FJZc":[function(require,module,exports) {
+},{"../exercise/utils":"acvpC","../telemetry":"kpvgZ","./queries":"6FJZc","./utils":"lDj3O","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"6FJZc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
@@ -1496,7 +1603,7 @@ function getIndentCount(slot) {
     return 0;
 }
 
-},{"../dom-utils":"NCBha","./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ","../exercise/utils":"acvpC"}],"5DGm5":[function(require,module,exports) {
+},{"../dom-utils":"NCBha","../exercise/utils":"acvpC","../telemetry":"kpvgZ","./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"5DGm5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initStyle", ()=>initStyle);
@@ -53510,11 +53617,15 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initDashboard", ()=>initDashboard);
 var _auth = require("../auth");
-var _client = require("./client");
 function initDashboard() {
     if (!dashboardEnabled) return;
     const container = document.querySelector(".dashboard-container");
     if (!container) return;
+    if (!(htmx === null || htmx === void 0 ? void 0 : htmx.trigger)) {
+        console.error("htmx is not loaded. Can't init dashboard.");
+        showDashboardContainer(container);
+        return;
+    }
     const userInfo = (0, _auth.loadUserInfo)();
     const token = (0, _auth.loadToken)();
     if (!userInfo || !token) {
@@ -53527,44 +53638,14 @@ function initDashboard() {
         showDashboardContainer(container);
         return;
     }
-    (0, _client.loadDashboard)(container, userInfo, token, tagTree);
+    container.setAttribute("hx-headers", `{"Authorization": "Token ${token}"}`);
+    htmx.trigger(container, "token-ready");
     showDashboardContainer(container);
 }
 function showDashboardContainer(container) {
     container.classList.add("ready");
 }
 
-},{"../auth":"joUbb","./client":"77dGl","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"77dGl":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "loadDashboard", ()=>loadDashboard);
-var _apiClient = require("../apiClient");
-var _domUtils = require("../dom-utils");
-async function loadDashboard(container, userInfo, token, tagTree) {
-    if (!courseSlug) return;
-    container.innerHTML = "";
-    const safeTagTree = encodeURI(JSON.stringify(tagTree));
-    const safeCourseSlug = encodeURI(courseSlug);
-    const endpoint = `../dashboard/${safeCourseSlug}/student/${userInfo.id}?tag-tree=${safeTagTree}`;
-    const iframe = (0, _domUtils.createElementWithClasses)("iframe", [
-        "ah-dashboard"
-    ], container);
-    let prevHeight = 0;
-    window.addEventListener("message", (event)=>{
-        if (!backendUrl || !backendUrl.includes(event.origin)) return;
-        var { event: receivedEvent , height: iframeHeight  } = JSON.parse(event.data);
-        if (receivedEvent !== "resize") return;
-        // A few extra pixels to make sure there will be no scrollbar
-        const extra = 5;
-        const newHeight = iframeHeight + extra;
-        if (prevHeight !== newHeight - extra) {
-            iframe.style.height = newHeight + "px";
-            prevHeight = newHeight;
-        }
-    }, false);
-    iframe.src = (0, _apiClient.buildUrl)(endpoint);
-}
-
-},{"../apiClient":"emRW9","../dom-utils":"NCBha","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["peJOI","5Y4Tf"], "5Y4Tf", "parcelRequirea86e")
+},{"../auth":"joUbb","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["peJOI","5Y4Tf"], "5Y4Tf", "parcelRequirea86e")
 
 //# sourceMappingURL=main.js.map
