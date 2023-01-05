@@ -21,7 +21,7 @@ class ExerciseAdmonition(AdmonitionVisitor):
             if c.startswith('id_'):
                 self.id = c[3:]
                 el.attrib['class'] = el.attrib['class'].replace(c, '')
-        
+
         el.set("id", self.id)
 
     def __set_tags(self, el):

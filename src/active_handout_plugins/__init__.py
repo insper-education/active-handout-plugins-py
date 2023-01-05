@@ -18,6 +18,8 @@ from .code_editor.editor import CodeEditorAdmonition
 class ActiveHandoutExtension(Extension):
     """ Admonition extension for Python-Markdown. """
     config = {
+        'page': ['', 'This setting is filled automatically by our mkdocs extension. Do not modify.'],
+        'mkdocs_config': ['', 'This setting is filled automatically by our mkdocs extension. Do not modify.'],
         'locale': ['en', 'locale should be the same as for the theme'],
         'custom_variables': [{}, 'Dictionary mapping variable names to use in Jinja templating extension'],
     }
@@ -26,22 +28,24 @@ class ActiveHandoutExtension(Extension):
         """ Add Admonition to Markdown instance. """
         md.registerExtension(self)
 
+        self.page = self.getConfig('page', None)
+        self.mkdocs_config = self.getConfig('mkdocs_config', None)
         init_l10n(self.getConfig('locale'))
 
-        exercise_admonitions = AdmonitionVisitorSelector(md)
+        exercise_admonitions = AdmonitionVisitorSelector(md, page=self.page, mkdocs_config=self.mkdocs_config)
         register_exercise_visitor_builder(ChoiceExercise, 3)
         register_exercise_visitor_builder(TextExercise, 2)
         register_exercise_visitor_builder(ParsonsExercise, 2)
         register_exercise_visitor_builder(SelfProgressExercise, 1)
         self._register_exercise_visitors(exercise_admonitions, md)
 
-        md.treeprocessors.register(VideoAdmonition(md), 'video-admonition', 15)
-        md.treeprocessors.register(PdfAdmonition(md), 'pdf-admonition', 15)
-        md.treeprocessors.register(CounterProcessor(md), 'counter', 15)
-        md.treeprocessors.register(ProgressButtons(md), 'progress', 15)
-        md.treeprocessors.register(exercise_admonitions, 'exercises', 15)
         md.treeprocessors.register(SplitDocumentInSections(md), 'sections', 16)
-        md.treeprocessors.register(CodeEditorAdmonition(md), 'code-editor', 20)
+        md.treeprocessors.register(exercise_admonitions, 'exercises', 15)
+        register_treeprocessor_builder(VideoAdmonition, 'video-admonition', 15)
+        register_treeprocessor_builder(PdfAdmonition, 'pdf-admonition', 15)
+        register_treeprocessor_builder(CounterProcessor, 'counter', 15)
+        register_treeprocessor_builder(ProgressButtons, 'progress', 15)
+        register_treeprocessor_builder(CodeEditorAdmonition, 'code-editor', 20)
         self._register_treeprocessors(md)
 
         md.preprocessors.register(Jinja2PreProcessor(md, self.getConfig('custom_variables')), 'templating', 1000000000)
@@ -49,11 +53,11 @@ class ActiveHandoutExtension(Extension):
     def _register_exercise_visitors(self, exercise_admonitions, md):
         for weight, visitor_builders in _registered_visitors.items():
             for visitor_builder in visitor_builders:
-                exercise_admonitions.register(visitor_builder(md), weight)
+                exercise_admonitions.register(visitor_builder(md, page=self.page, mkdocs_config=self.mkdocs_config), weight)
 
     def _register_treeprocessors(self, md):
         for builder, name, priority in _registered_processors:
-            md.treeprocessors.register(builder(md), name, priority)
+            md.treeprocessors.register(builder(md, page=self.page, mkdocs_config=self.mkdocs_config), name, priority)
 
 
 _registered_visitors = {}
