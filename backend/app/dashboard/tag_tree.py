@@ -1,5 +1,5 @@
 class TagTreeNode:
-    def __init__(self, slug=None, group=None, children=None):
+    def __init__(self, slug=None, group='root', children=None):
         self.slug = slug
         self.name = slug
         self.group = group

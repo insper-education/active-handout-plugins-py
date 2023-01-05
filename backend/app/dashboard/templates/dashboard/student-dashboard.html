@@ -2,6 +2,7 @@
 {% load dashboard_extras %}
 
 {% block content %}
+<div class="ah-dashboard">
 
 <h2 class="ah-dashboard--user-name">{{ user.first_name }}</h2>
 
@@ -49,11 +50,9 @@
   </div>
 
   <div class="ah-dashboard--tree">
-    {% for child in tag_tree.root.children %}
-      {% include 'dashboard/fragments/tag-subtree.html' with root_tag=child level=0 %}
-    {% endfor %}
+    {% include 'dashboard/fragments/tag-subtree.html' with root_tag=tag_tree.root level=0 %}
   </div>
 
 </div>
-
+</div>
 {% endblock %}

@@ -46,7 +46,7 @@
 
   &--summary {
     grid-area: summary;
-    background-color: var(--clr-shadow-1);
+    background-color: var(--clr-admonition-background);
     padding: $space-between-block;
     border-radius: $border-radius;
     display: flex;
@@ -60,7 +60,7 @@
       font-size: 3rem;
       font-weight: bold;
       line-height: 1;
-      color: var(--clr-subtitle-default);
+      color: var(--clr-subtitle);
     }
   }
 
@@ -76,7 +76,7 @@
     grid-area: tree;
     $max-levels: 10;
     @for $i from 0 through $max-levels {
-      &--#{$i + 1} {
+      &--#{$i} {
         font-size: #{max(2 - $i * 0.2, 1)}rem;
         filter: Opacity(#{max(1 - $i * 0.2, 0.4)});
       }
@@ -91,7 +91,7 @@
       font-family: $font-highlight;
       line-height: 1;
       margin-bottom: $space-between-block;
-      border-bottom: 3px dotted var(--clr-gray-primary-3);
+      border-bottom: 3px dotted var(--clr-highlight);
       gap: 0.5rem;
     }
 
@@ -105,7 +105,7 @@
       grid-area: subtitle;
       display: block;
       font-family: $font-regular;
-      color: var(--clr-subtitle-default);
+      color: var(--clr-subtitle);
       font-weight: 400;
       font-size: 0.8em;
     }
@@ -114,7 +114,7 @@
       grid-area: percent;
       justify-self: end;
       font-family: $font-highlight;
-      color: var(--clr-subtitle-default);
+      color: var(--clr-subtitle);
       font-weight: bold;
       margin-left: 0.5em;
       font-size: 1.5em;
