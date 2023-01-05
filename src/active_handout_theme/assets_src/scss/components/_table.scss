@@ -10,7 +10,7 @@
   }
 
   thead {
-    border-bottom: 2px solid var(--clr-blue-primary-3);
+    border-bottom: 2px solid var(--clr-table-head-border);
   }
 
   td,
@@ -59,10 +59,10 @@
 
   .table-alternating-cols {
     td {
-      background-color: var(--clr-table-row-odd);
+      background-color: var(--clr-table-background-1);
 
       &:nth-child(even) {
-        background-color: var(--clr-table-row-even);
+        background-color: var(--clr-table-background-2);
       }
     }
   }

@@ -2,6 +2,9 @@
 @use "sass:color";
 
 :root {
+  // Register colors
+  --clr-primary: #{$clr-primary};
+  --clr-highlight: #{$clr-highlight};
   // Background
   --clr-background: #{lighten($clr-gray, 14%)};
   // Details
@@ -13,6 +16,7 @@
   --clr-text-em: #{darken($clr-highlight, 10%)};
   --clr-text-strong: #{darken($clr-highlight, 10%)};
   // Text variations
+  --clr-text-error: #{color.adjust($clr-fail, $lightness: -10%)};
   --clr-text-del-background: #{color.adjust($clr-fail, $lightness: 30%)};
   --clr-text-del-decoration: #{color.adjust(
       $clr-fail,
@@ -31,7 +35,7 @@
       $lightness: -10%
     )};
   // Title
-  --clr-title: #{$clr-primary};
+  --clr-title: #{color.adjust($clr-primary, $lightness: 10%)};
   --clr-subtitle: #{$clr-highlight};
   // Link
   --clr-link: #{$clr-highlight};
@@ -124,6 +128,29 @@
     )};
   // Form
   --clr-input-background: #{color.adjust($clr-gray, $lightness: 100%)};
+  --clr-input-optional-border: #{color.adjust(
+      $clr-gray,
+      $lightness: -30%,
+      $saturation: -30%
+    )};
+  // Table
+  --clr-table-head-border: #{color.adjust($clr-primary, $lightness: 30%)};
+  --clr-table-background-1: #{color.adjust($clr-gray, $lightness: 5%)};
+  --clr-table-background-2: #{color.adjust($clr-gray, $lightness: 10%)};
+  // Footnote
+  --clr-footnote-background: #{color.adjust(
+      $clr-highlight,
+      $lightness: 42%,
+      $saturation: -10%
+    )};
+  --clr-footnote-shadow: #{color.adjust(
+      $clr-highlight,
+      $lightness: 20%,
+      $saturation: -30%,
+      $alpha: -0.3
+    )};
+  // Code editor
+  --clr-editor-border: #{color.adjust($clr-gray, $lightness: -10%)};
   // Code
   --clr-code-background: hsl(229, 100%, 97%);
   --clr-code-comment: hsl(219, 8%, 58%);
@@ -138,98 +165,3 @@
   --clr-code-generic: hsl(120, 100%, 30%);
   --clr-code-string: hsl(33, 87%, 46%);
 }
-
-// :root {
-//   --clr-white: var(--clr-gray-primary-1);
-//   --clr-black: var(--clr-gray-primary-15);
-//   --clr-primary: var(--clr-blue-primary-6);
-//   --clr-highlight: var(--clr-blue-highlight-5);
-
-//   // Shadows
-//   --clr-shadow-1: var(--clr-gray-primary-2);
-//   --clr-shadow-2: var(--clr-gray-primary-3);
-//   --clr-shadow-3: var(--clr-gray-primary-4);
-//   --clr-shadow-4: var(--clr-gray-primary-5);
-//   --clr-shadow-5: var(--clr-gray-primary-6);
-//   --clr-shadow-6: var(--clr-gray-primary-7);
-//   --clr-shadow-7: var(--clr-gray-primary-8);
-//   --clr-shadow-8: var(--clr-gray-primary-9);
-//   --clr-shadow-9: var(--clr-gray-primary-10);
-//   --clr-shadow-10: var(--clr-gray-primary-11);
-//   // Background
-//   --clr-background-default: var(--clr-white);
-//   --clr-shadow-default: var(--clr-gray-primary-5);
-//   // Text
-//   --clr-text-default: var(--clr-black);
-//   --clr-text-default-hover: var(--clr-gray-primary-8);
-//   --clr-text-em-default: var(--clr-primary);
-//   --clr-text-strong-default: var(--clr-primary);
-//   --clr-text-disabled: var(--clr-gray-primary-5);
-//   --clr-text-disabled-hover: var(--clr-gray-primary-4);
-//   // Title
-//   --clr-title-default: var(--clr-primary);
-//   --clr-subtitle-default: var(--clr-highlight);
-//   // Link
-//   --clr-link-default: var(--clr-highlight);
-//   --clr-link-default-hover: var(--clr-blue-highlight-4);
-//   // Bullet points
-//   --clr-bullet-default: var(--clr-highlight);
-//   --clr-bullet-secondary-default: var(--clr-blue-highlight-2);
-//   // Button default
-//   --clr-btn-default: transparent;
-//   --clr-btn-default-border: var(--clr-blue-primary-5);
-//   --clr-btn-default-text: var(--clr-blue-primary-5);
-//   --clr-btn-default-text-hover: var(--clr-blue-primary-4);
-//   // Button disabled
-//   --clr-btn-disabled: var(--clr-gray-primary-3);
-//   // Button primary
-//   --clr-btn-primary: var(--clr-highlight);
-//   --clr-btn-primary-text: var(--clr-white);
-//   --clr-btn-primary-text-hover: var(--clr-white);
-//   // Admonition
-//   --clr-admonition-default-background: var(--clr-blue-highlight-1);
-//   --clr-admonition-default-text: var(--clr-text-default);
-//   --clr-admonition-default-title: var(--clr-title-default);
-//   --clr-admonition-default-link: var(--clr-text-default);
-//   --clr-admonition-text-em: var(--clr-text-em-default);
-//   --clr-admonition-text-strong: var(--clr-text-strong-default);
-//   // Admonition disabled
-//   --clr-admonition-disabled-background: var(--clr-gray-primary-4);
-//   --clr-admonition-disabled-text: var(--clr-text-default);
-//   --clr-admonition-disabled-link: var(--clr-admonition-default-link);
-//   --clr-admonition-disabled-title: var(--clr-title-default);
-//   --clr-admonition-disabled-bullet: var(--clr-bullet-default);
-//   --clr-admonition-disabled-em: var(--clr-text-em-default);
-//   --clr-admonition-disabled-strong: var(--clr-text-strong-default);
-//   // Exercise
-//   --clr-admonition-exercise-background: var(--clr-blue-highlight-1);
-//   --clr-admonition-exercise-text: var(--clr-white);
-//   --clr-admonition-exercise-title: var(--clr-blue-highlight-1);
-//   --clr-admonition-exercise-text-em: var(--clr-gray-primary-2);
-//   --clr-admonition-exercise-text-strong: var(--clr-gray-primary-2);
-//   --clr-admonition-exercise-link: var(--clr-gray-primary-2);
-//   --clr-admonition-exercise-bullet: var(--clr-blue-highlight-2);
-//   // Answer
-//   --clr-admonition-answer-background: var(--clr-gray-primary-5);
-//   --clr-admonition-answer-text: var(--clr-text-default);
-//   --clr-admonition-answer-title: var(--clr-title-default);
-//   --clr-admonition-answer-text-em: var(--clr-text-em-default);
-//   --clr-admonition-answer-text-strong: var(--clr-text-strong-default);
-//   --clr-admonition-answer-bullet: var(--clr-bullet-default);
-//   // Table
-//   --clr-table-row-odd: var(--clr-gray-primary-2);
-//   --clr-table-row-even: var(--clr-gray-primary-3);
-//   // Code
-//   --clr-code-background: hsl(229, 100%, 97%);
-//   --clr-code-comment: hsl(219, 8%, 58%);
-//   --clr-code-error-background: hsl(328, 100%, 94%);
-//   --clr-code-error-text: hsl(328, 100%, 29%);
-//   --clr-code-keyword: hsl(211, 100%, 44%);
-//   --clr-code-literal: hsl(261, 48%, 55%);
-//   --clr-code-name: hsl(60, 30%, 4%);
-//   --clr-code-punctuation: hsl(210, 17%, 45%);
-//   --clr-code-builtin: hsl(338, 95%, 56%);
-//   --clr-code-operator: hsl(338, 95%, 56%);
-//   --clr-code-generic: hsl(120, 100%, 30%);
-//   --clr-code-string: hsl(33, 87%, 46%);
-// }

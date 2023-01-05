@@ -18,7 +18,7 @@
 }
 
 .footnote-container {
-  --clr-background: var(--clr-admonition-default-background);
+  --clr-background: var(--clr-footnote-background);
 
   display: inline-block;
   position: relative;
@@ -72,7 +72,7 @@
   $animation-duration: 0.2s;
 
   background: var(--clr-background);
-  box-shadow: 0 0 #{$shadow-size} var(--clr-shadow-default);
+  box-shadow: 0 0 #{$shadow-size} var(--clr-footnote-shadow);
 
   max-width: calc(
     50vw - #{math.div($max-content-width, 2)} - #{$admonition-extra-inline * 3}

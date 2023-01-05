@@ -60,4 +60,8 @@ a.ah-button {
 .ah-btn-group {
   display: flex;
   gap: 0.5em;
+
+  &--right {
+    justify-content: flex-end;
+  }
 }

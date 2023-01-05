@@ -15,33 +15,9 @@
     input[type="text"],
     input[type="password"],
     input[type="email"] {
-      border-color: var(--clr-gray-primary-2);
+      border-color: var(--clr-input-optional-border);
       display: block;
       width: 100%;
-    }
-
-    [type="submit"] {
-      --clr-btn: var(--clr-btn-primary);
-      --clr-btn-text: var(--clr-btn-primary-text);
-      --clr-btn-text-hover: var(--clr-btn-primary-text-hover);
-
-      border: none;
-      border-radius: $border-radius;
-      background: var(--clr-btn);
-      color: var(--clr-btn-text);
-
-      text-decoration: none;
-      font-weight: normal;
-
-      padding: 0.2em 0.6em;
-
-      &:hover,
-      &:active,
-      &:focus {
-        cursor: pointer;
-        transform: scale(1.01);
-        color: var(--clr-btn-text-hover);
-      }
     }
   }
 }
