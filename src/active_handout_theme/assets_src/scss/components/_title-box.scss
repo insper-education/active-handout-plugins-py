@@ -20,15 +20,15 @@
   .ah-breadcrumbs {
     list-style: none;
     padding-left: 0;
+    margin-bottom: 0;
 
-    color: var(--clr-text-disabled);
+    color: var(--clr-text-dim);
 
     @include smaller-than("medium") {
       display: none;
     }
 
     li {
-      --clr-text: var(--clr-text-disabled);
       display: inline;
       line-height: 1;
       margin-bottom: 0.5rem;
@@ -48,10 +48,10 @@
       }
 
       a {
-        color: var(--clr-text-disabled);
+        color: var(--clr-text-dim);
 
         &:hover {
-          color: var(--clr-text-disabled-hover);
+          color: var(--clr-text-dim-hover);
         }
       }
     }

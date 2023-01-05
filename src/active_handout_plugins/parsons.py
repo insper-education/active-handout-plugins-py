@@ -63,7 +63,7 @@ class ParsonsExercise(ExerciseAdmonition):
         <input type="hidden" name="data" value=""/>
         <pre class="parsons-answer">{full_answer}</pre>
         <div class="ah-btn-group">
-            <input type="button" class="ah-button ah-button--primary" name="resetButton" value="{reset_str}"/>
+            <input type="button" class="ah-button ah-button--borderless" name="resetButton" value="{reset_str}"/>
             <input type="button" class="ah-button ah-button--primary" name="sendButton" value="{test_str}"/>
         </div>
         '''

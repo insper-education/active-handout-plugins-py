@@ -14,3 +14,8 @@ export function markDone(exercise) {
 export function markNotDone(exercise) {
   exercise.classList.remove("done");
 }
+
+export function dispatchResetHandoutEvent() {
+  const event = new CustomEvent("reset-handout");
+  window.dispatchEvent(event);
+}

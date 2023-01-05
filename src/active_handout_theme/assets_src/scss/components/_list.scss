@@ -1,3 +1,4 @@
+@use "../abstracts" as *;
 @use "../base/typeset" as *;
 
 .ah-typeset {
@@ -5,7 +6,7 @@
   ul {
     color: var(--clr-text);
     line-height: 1.5;
-    margin-bottom: 0.5em;
+    margin-bottom: $space-between-block;
 
     counter-reset: ah-item-counter;
     list-style: none;
@@ -15,6 +16,10 @@
       padding-left: 0.5em;
       counter-increment: ah-item-counter;
 
+      p {
+        margin-bottom: 0;
+      }
+
       &::marker {
         color: var(--clr-bullet);
         font-weight: bold;
@@ -23,7 +28,19 @@
 
       li {
         &::marker {
-          color: var(--clr-bullet-secondary);
+          color: var(--clr-bullet-level-2);
+        }
+
+        li {
+          &::marker {
+            color: var(--clr-bullet-level-3);
+          }
+
+          li {
+            &::marker {
+              color: var(--clr-bullet-level-4);
+            }
+          }
         }
       }
     }

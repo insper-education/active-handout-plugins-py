@@ -37,13 +37,14 @@ $font-sizes: (
   h6 {
     font-family: $font-highlight;
     color: var(--clr-title);
-    font-size: map-get($font-sizes, "regular");
+    font-size: map-get($font-sizes, "mid");
     margin-top: 1.5em;
     margin-bottom: 0.5em;
     line-height: 1.2;
 
     @include smaller-than("medium") {
       margin-bottom: 1rem;
+      font-size: map-get($font-sizes, "regular");
     }
   }
 
@@ -67,7 +68,7 @@ $font-sizes: (
     font-size: map-get($font-sizes, "large");
 
     @include smaller-than("medium") {
-      font-size: map-get($font-sizes, "regular");
+      font-size: map-get($font-sizes, "mid");
     }
   }
 
@@ -84,12 +85,11 @@ $font-sizes: (
 
   a {
     color: var(--clr-text);
-    text-decoration: none;
+    text-decoration-color: var(--clr-link);
     word-break: break-word;
-    @include animated-underline(var(--clr-link), var(--clr-link), 100%, 0);
 
     &:hover {
-      color: var(--clr-link);
+      color: var(--clr-link-hover);
     }
   }
 
@@ -98,41 +98,48 @@ $font-sizes: (
   }
 
   em {
-    --clr-text: var(--clr-text-em);
-
-    color: var(--clr-text);
+    color: var(--clr-text-em);
     font-weight: 700;
     font-style: italic;
   }
 
   strong {
-    --clr-text: var(--clr-text-strong);
-
-    color: var(--clr-text);
+    color: var(--clr-text-strong);
     font-weight: 900;
   }
 
-  input {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"] {
     border: 1px solid transparent;
     border-radius: $border-radius;
     padding: 0.2em 0.5em;
   }
+
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="tel"],
+  textarea {
+    background-color: var(--clr-input-background);
+  }
 }
 
 del {
-  background: var(--clr-fail-primary-6);
-  text-decoration-color: hsl(var(--clr-fail-primary-8-hsl) / 0.5);
+  background: var(--clr-text-del-background);
+  text-decoration-color: var(--clr-text-del-decoration);
 }
 
 ins {
-  background: var(--clr-success-primary-4);
-  text-decoration-color: var(--clr-success-primary-7);
+  background: var(--clr-text-ins-background);
+  text-decoration-color: var(--clr-text-ins-decoration);
 }
 
 mark {
-  background: var(--clr-warn-primary-5);
+  background: var(--clr-text-mark-background);
 }
 
 span.critic.comment {
-  background: var(--clr-gray-primary-3);
+  background: var(--clr-text-critic-comment-background);
 }

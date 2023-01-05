@@ -66,12 +66,13 @@ class ExerciseAdmonition(AdmonitionVisitor):
         answer = el.find('.//div[@class="admonition answer"]')
         if answer:
             el.remove(answer)
-            submission_form.append(answer)
+            answer.attrib['class'] += ' no-indent'
+            el.append(answer)
         else:
             answer_content = self.create_answer()
             if answer_content:
-                answer = etree.SubElement(submission_form, 'div')
-                answer.set("class", "admonition answer")
+                answer = etree.SubElement(el, 'div')
+                answer.set("class", "admonition answer no-indent")
                 answer.text = self.md.htmlStash.store(answer_content)
 
     def __match_class(self, el):

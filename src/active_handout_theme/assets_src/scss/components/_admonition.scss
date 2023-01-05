@@ -2,14 +2,17 @@
 @use "../abstracts/mixins" as *;
 @use "../base/typeset" as *;
 
-.admonition {
-  --clr-background: var(--clr-admonition-default-background);
-  --clr-text: var(--clr-admonition-default-text);
-  --clr-title: var(--clr-admonition-default-title);
-  --clr-text-em: var(--clr-admonition-text-em);
-  --clr-text-strong: var(--clr-admonition-text-strong);
+.admonition,
+.tabbed-alternate {
+  .admonition:not(.no-indent) {
+    margin-inline: 0;
+  }
+}
 
-  background: var(--clr-background);
+.admonition {
+  --clr-code-background: var(--clr-admonition-code-background);
+
+  background: var(--clr-admonition-background);
   margin: 0 (-$admonition-extra-inline) (2 * $admonition-extra-block);
   padding: 0.5 * $admonition-extra-block $admonition-extra-inline;
   border-radius: $border-radius;
