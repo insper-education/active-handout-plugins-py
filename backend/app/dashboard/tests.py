@@ -34,44 +34,12 @@ class DashboardTests(TestCase):
                 .with_password('you-shall-not-pass')
                 .build()
         )
-        self.other_student = (
-            BuildAStudent()
-                .with_username('saruman')
-                .with_email('thewhite@middleearth.nz')
-                .with_password('the-hour-is-later-than-you-think')
-                .build()
-        )
-        self.instructor = (
-            BuildAnInstructor()
-                .with_username('tolkien')
-                .with_email('jrrt@ox.ac.uk')
-                .with_password('not-all-those-who-wander-are-lost')
-                .build()
-        )
-
-    def test_student_cant_get_other_students_dashboard(self):
-        request = self.factory.get(f'/dashboard/fragments/{self.course.name}/student/{self.student.id}')
-        request.user = self.other_student
-
-        self.assertRaises(PermissionDenied, student_dashboard, request, self.course.name, self.student.id)
 
     def test_student_can_get_own_dashboard(self):
-        request = self.factory.get(f'/dashboard/fragments/{self.course.name}/student/{self.student.id}')
+        request = self.factory.get(f'/dashboard/{self.course.name}/student')
         request.user = self.student
 
-        self.assertIsNotNone(student_dashboard(request, self.course.name, self.student.id))
-
-    def test_instructor_can_get_other_students_dashboard(self):
-        request = self.factory.get(f'/dashboard/{self.course.name}/fragments/student/{self.student.id}')
-        request.user = self.instructor
-
-        self.assertIsNotNone(student_dashboard(request, self.course.name, self.student.id))
-
-    def test_instructor_can_get_own_dashboard(self):
-        request = self.factory.get(f'/dashboard/{self.course.name}/fragments/student/{self.instructor.id}')
-        request.user = self.instructor
-
-        self.assertIsNotNone(student_dashboard(request, self.course.name, self.instructor.id))
+        self.assertIsNotNone(student_dashboard(request, self.course.name))
 
 
 class QueryTests(TestCase):
