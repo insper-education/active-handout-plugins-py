@@ -1,5 +1,3 @@
-{% extends "dashboard/base.html" %} 
-
 {% load i18n %}
 {% load dashboard_extras %}
 
@@ -57,38 +55,5 @@
   </div>
 
 </div>
-
-<script>
-  function postResize(width, height) {
-    const parent = window.parent;
-    if (parent && parent != window) {
-      parent.postMessage(
-        JSON.stringify({
-          event: "resize",
-          height,
-          width,
-        }),
-        "{{ referer }}"
-      );
-    }
-  }
-
-  const resizeObserver = new ResizeObserver(function(entries) {
-    const { width, height } = entries[0].contentRect;
-    if (document.documentElement.scrollHeight > height + 5) {
-      postResize(width, height)
-    }
-  });
-  resizeObserver.observe(document.querySelector("body"));
-
-  function resize() {
-    postResize(
-      document.documentElement.scrollWidth, 
-      document.documentElement.scrollHeight
-    );
-  }
-  window.addEventListener("resize", resize);
-  resize();
-</script>
 
 {% endblock %}

@@ -1,25 +1,23 @@
-from urllib.parse import unquote
+from urllib.parse import unquote_plus
 import json
 
-from django.views.decorators.clickjacking import xframe_options_exempt
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404, render
+from rest_framework.decorators import api_view
 
-from core.models import Course, User
+from core.models import Course
 from dashboard.query import StudentStats
 
 
-@xframe_options_exempt
+@api_view()
 @login_required
-def student_dashboard(request, course_name, student_id):
-    student = get_object_or_404(User, pk=student_id)
-    if request.user != student and not request.user.is_staff:
-        raise PermissionDenied("Can't get dashboard for another user, except if user is admin")
+def student_dashboard(request, course_name):
+    student = request.user
 
-    course_name = unquote(course_name)
+    course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
 
+    print('ASDASDASD', request.GET.get('tag-tree'))
     tag_tree_yaml = json.loads(request.GET.get('tag-tree', '{}'))
 
     student_stats = StudentStats(student, course, tag_tree_yaml)

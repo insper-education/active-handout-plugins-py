@@ -9,7 +9,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from core.models import Course, ExerciseTag, Exercise, TelemetryData
+from core.models import Course, ExerciseTag, Exercise, TelemetryData, User
 from core.serializers import TelemetryDataSerializer, UserSerializer
 from core.shortcuts import redirect
 

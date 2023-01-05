@@ -1,5 +1,4 @@
 import { loadToken, loadUserInfo } from "../auth";
-import { loadDashboard } from "./client";
 
 export function initDashboard() {
   if (!dashboardEnabled) return;
@@ -7,6 +6,11 @@ export function initDashboard() {
   const container = document.querySelector(".dashboard-container");
   if (!container) return;
 
+  if (!htmx?.trigger) {
+    console.error("htmx is not loaded. Can't init dashboard.");
+    showDashboardContainer(container);
+    return;
+  }
   const userInfo = loadUserInfo();
   const token = loadToken();
   if (!userInfo || !token) {
@@ -16,7 +20,6 @@ export function initDashboard() {
     showDashboardContainer(container);
     return;
   }
-
   if (!tagTree) {
     console.error(
       "No tag tree found. Container was found, but dashboard can't loaded."
@@ -25,7 +28,8 @@ export function initDashboard() {
     return;
   }
 
-  loadDashboard(container, userInfo, token, tagTree);
+  container.setAttribute("hx-headers", `{"Authorization": "Token ${token}"}`);
+  htmx.trigger(container, "token-ready");
   showDashboardContainer(container);
 }
 

@@ -53534,11 +53534,15 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initDashboard", ()=>initDashboard);
 var _auth = require("../auth");
-var _client = require("./client");
 function initDashboard() {
     if (!dashboardEnabled) return;
     const container = document.querySelector(".dashboard-container");
     if (!container) return;
+    if (!(htmx === null || htmx === void 0 ? void 0 : htmx.trigger)) {
+        console.error("htmx is not loaded. Can't init dashboard.");
+        showDashboardContainer(container);
+        return;
+    }
     const userInfo = (0, _auth.loadUserInfo)();
     const token = (0, _auth.loadToken)();
     if (!userInfo || !token) {
@@ -53551,44 +53555,14 @@ function initDashboard() {
         showDashboardContainer(container);
         return;
     }
-    (0, _client.loadDashboard)(container, userInfo, token, tagTree);
+    container.setAttribute("hx-headers", `{"Authorization": "Token ${token}"}`);
+    htmx.trigger(container, "token-ready");
     showDashboardContainer(container);
 }
 function showDashboardContainer(container) {
     container.classList.add("ready");
 }
 
-},{"../auth":"joUbb","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./client":"77dGl"}],"77dGl":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "loadDashboard", ()=>loadDashboard);
-var _apiClient = require("../apiClient");
-var _domUtils = require("../dom-utils");
-async function loadDashboard(container, userInfo, token, tagTree) {
-    if (!courseSlug) return;
-    container.innerHTML = "";
-    const safeTagTree = encodeURI(JSON.stringify(tagTree));
-    const safeCourseSlug = encodeURI(courseSlug);
-    const endpoint = `../dashboard/${safeCourseSlug}/student/${userInfo.id}?tag-tree=${safeTagTree}`;
-    const iframe = (0, _domUtils.createElementWithClasses)("iframe", [
-        "ah-dashboard"
-    ], container);
-    let prevHeight = 0;
-    window.addEventListener("message", (event)=>{
-        if (!backendUrl || !backendUrl.includes(event.origin)) return;
-        var { event: receivedEvent , height: iframeHeight  } = JSON.parse(event.data);
-        if (receivedEvent !== "resize") return;
-        // A few extra pixels to make sure there will be no scrollbar
-        const extra = 5;
-        const newHeight = iframeHeight + extra;
-        if (prevHeight !== newHeight - extra) {
-            iframe.style.height = newHeight + "px";
-            prevHeight = newHeight;
-        }
-    }, false);
-    iframe.src = (0, _apiClient.buildUrl)(endpoint);
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../apiClient":"emRW9","../dom-utils":"NCBha"}]},["1csOT"], null, "parcelRequirea86e")
+},{"../auth":"joUbb","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}]},["1csOT"], null, "parcelRequirea86e")
 
 //# sourceMappingURL=active-handout.a4a697aa.js.map
