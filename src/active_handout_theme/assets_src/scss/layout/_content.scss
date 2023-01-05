@@ -5,6 +5,7 @@
   width: $max-content-width;
   max-width: 100%;
   margin: 3em auto 2em;
+  isolation: isolate;
 
   @include smaller-than("medium") {
     padding: $small-extra-block $small-extra-inline;
