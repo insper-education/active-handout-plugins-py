@@ -17,7 +17,6 @@ def student_dashboard(request, course_name):
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
 
-    print('ASDASDASD', request.GET.get('tag-tree'))
     tag_tree_yaml = json.loads(request.GET.get('tag-tree', '{}'))
 
     student_stats = StudentStats(student, course, tag_tree_yaml)

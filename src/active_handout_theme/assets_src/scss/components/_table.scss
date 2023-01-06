@@ -7,15 +7,18 @@
     border-radius: $border-radius;
     border-collapse: collapse;
     overflow: hidden;
+    table-layout: fixed;
+    padding: 2em;
   }
 
   thead {
-    border-bottom: 2px solid var(--clr-table-head-border);
+    border-bottom: 0.3em solid var(--clr-table-background-1);
   }
 
   td,
   th {
-    padding-right: 1em;
+    padding: 1em;
+    border-bottom: 0.1em solid var(--clr-table-background-2);
   }
 }
 
