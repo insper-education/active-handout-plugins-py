@@ -19,7 +19,7 @@
 <script>
   function initChart() {
     const ctx = document.getElementById('{{ chart_id }}');
-    
+
     const labels = [{% create_progress_labels root_tag tag_stats %}];
     const data = [{% create_progress_data root_tag tag_stats %}];
     const backgroundData = [{% create_background_progress_data root_tag %}];

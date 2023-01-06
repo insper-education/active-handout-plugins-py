@@ -60,7 +60,7 @@ $indent-size: 4ch;
 
 .line-slot {
   margin-bottom: 0.2em;
-  border: 1px dashed var(--clr-link-default);
+  border: 1px dashed var(--clr-parsons-drop-border);
   min-height: 2.5em;
   border-radius: $border-radius;
   isolation: isolate;
@@ -79,8 +79,10 @@ $indent-size: 4ch;
         grid-column: $i;
 
         &.drag-over ~ .line-placeholder {
-          background-color: var(--clr-shadow-3);
+          background-color: var(--clr-parsons-drop-background);
           grid-column: $i / span ($subslot-count - $i + 1);
+          margin: 1px;
+          border-radius: $border-radius;
         }
 
         &.cur-indent ~ .parsons-line {
@@ -93,7 +95,7 @@ $indent-size: 4ch;
       content: "";
       position: absolute;
       inset: 0.1em;
-      background-color: var(--clr-shadow-2);
+      background-color: var(--clr-parsons-drop-indent-block);
       border-radius: $border-radius;
       z-index: -1;
     }
@@ -123,14 +125,10 @@ $indent-size: 4ch;
   }
 
   &.with-line {
-    border: 1px solid var(--clr-link-default);
+    border: 1px solid var(--clr-parsons-line-border);
   }
 
   &.dragging {
     display: none;
   }
-}
-
-.parsons-block-description {
-  color: var(--clr-text);
 }

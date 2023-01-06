@@ -81,7 +81,7 @@ export function selectSubslotUnderCursor(ev, exercise) {
   if (subslot) return subslot;
 
   const slot = selectSlotUnderCursor(ev, exercise);
-  return slot.querySelector(".subslot");
+  return slot?.querySelector(".subslot");
 }
 
 export function selectExerciseUnderCursor(ev) {

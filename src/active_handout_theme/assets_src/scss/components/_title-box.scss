@@ -7,49 +7,51 @@
   }
 
   h2 {
-    margin-top: -1em;
+    margin-top: -0.8em;
     color: var(--clr-subtitle);
     font-size: map-get($font-sizes, "large");
 
     @include smaller-than("medium") {
       font-size: map-get($font-sizes, "mid");
-      margin-top: -1rem;
+      margin-top: -0.8rem;
     }
   }
 
   .ah-breadcrumbs {
-    display: flex;
-    gap: 1rem;
     list-style: none;
     padding-left: 0;
+    margin-bottom: 0;
 
-    color: var(--clr-text-disabled);
+    color: var(--clr-text-dim);
 
     @include smaller-than("medium") {
       display: none;
     }
 
     li {
-      --clr-text: var(--clr-text-disabled);
+      display: inline;
       line-height: 1;
       margin-bottom: 0.5rem;
+      padding: 0;
 
-      &::before {
-        content: "";
-        position: static;
-        color: inherit;
+      &:first-child {
+        &::before {
+          content: "";
+          margin-inline: 0;
+        }
       }
 
-      & + li::before {
+      &::before {
         content: "»";
-        padding-right: 1rem;
+        color: inherit;
+        margin-inline: 0.5em;
       }
 
       a {
-        color: var(--clr-text-disabled);
+        color: var(--clr-text-dim);
 
         &:hover {
-          color: var(--clr-text-disabled-hover);
+          color: var(--clr-text-dim-hover);
         }
       }
     }

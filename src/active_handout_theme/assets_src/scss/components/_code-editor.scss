@@ -1,7 +1,7 @@
 @use "../abstracts" as *;
 
 $editor-padding: 1rem;
-$editor-border: 1px solid var(--clr-gray-primary-3);
+$editor-border: 1px solid var(--clr-editor-border);
 
 .file-editor {
   display: grid;
@@ -19,20 +19,23 @@ $editor-border: 1px solid var(--clr-gray-primary-3);
   }
 }
 
-.file-tab {
+ul.file-tab {
   display: flex;
+  flex-wrap: wrap;
   gap: 0.5rem;
   border-bottom: $editor-border;
   padding-left: $editor-padding;
   padding-right: $editor-padding;
+  margin-bottom: 0;
 
   .tab {
     display: flex;
     align-items: center;
     gap: 0.2rem;
     list-style: none;
-    color: var(--clr-text-disabled);
+    color: var(--clr-tabbed-disabled-text);
     margin: 0.5rem 1rem -1.5px 0;
+    padding-left: 0;
     cursor: pointer;
 
     // Not the first tab
@@ -48,8 +51,8 @@ $editor-border: 1px solid var(--clr-gray-primary-3);
     }
 
     &.active {
-      color: var(--clr-text-default);
-      border-bottom: 3px solid var(--clr-title-default);
+      color: var(--clr-text);
+      border-bottom: 3px solid var(--clr-link);
     }
 
     &::before {

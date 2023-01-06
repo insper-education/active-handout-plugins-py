@@ -7,8 +7,10 @@
     padding-left: 0;
 
     li {
-      &::before {
-        display: none;
+      padding-left: 0;
+
+      &::marker {
+        content: "";
       }
     }
 
@@ -19,10 +21,17 @@
       padding: 0.5em 1em;
       border-radius: $border-radius;
       font-weight: bold;
+      text-decoration: none;
 
       &.github {
         background-color: #333;
         color: #fafafa;
+
+        &:hover,
+        &:focus,
+        &:active {
+          background-color: #444;
+        }
 
         &::before {
           content: "";

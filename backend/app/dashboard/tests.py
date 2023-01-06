@@ -111,7 +111,7 @@ class QueryTests(TestCase):
 
     def test_get_exercise_ids_by_tag_slug(self):
         tags = BuildTags().for_course(self.course).with_slugs(*self.tag_slugs).build()
-        print(tags)
+
         exercise_ids_and_tags = [
             (1, tags[0].id), (1, tags[1].id),
             (2, tags[0].id), (2, tags[2].id),

@@ -20,15 +20,26 @@ import {
   setCurrentSubslot,
   resetExercise,
   submitExercise,
+  saveCurrentState,
+  recoverPreviousState,
+  resetPrevState,
+  finishParsonsExercise,
 } from "./utils";
+
+const DROP_AREA_SLOTS = 6;
 
 export function initParsonsPlugin() {
   queryParsonsExercises().forEach((exercise) => {
     registerListeners(exercise);
 
+    recoverPreviousState(exercise, DROP_AREA_SLOTS);
+
     const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
-    if (prevAnswer !== null && !submitted) {
-      sendAndCacheData(exercise, prevAnswer, prevAnswer.correct ? 1 : 0);
+    if (prevAnswer !== null) {
+      finishParsonsExercise(exercise, prevAnswer.correct);
+      if (!submitted) {
+        sendAndCacheData(exercise, prevAnswer, prevAnswer.correct ? 1 : 0);
+      }
     }
   });
 }
@@ -37,6 +48,10 @@ function registerListeners(exercise) {
   const destArea = queryDropArea(exercise);
   const origArea = queryDragArea(exercise);
   let draggedLine = null;
+
+  window.addEventListener("reset-handout", () => {
+    resetPrevState(exercise);
+  });
 
   queryResetButton(exercise).addEventListener("click", (event) => {
     event.preventDefault();
@@ -64,13 +79,15 @@ function registerListeners(exercise) {
     }
     cleanUpSlots(exercise);
     draggedLine = null;
+
+    saveCurrentState(exercise);
   }
 
   function onDragStart(ev) {
     addDragListeners(onDrag, onDrop);
 
     createSlot(origArea, 1, "single-subslot");
-    createSlot(destArea, 6);
+    createSlot(destArea, DROP_AREA_SLOTS);
 
     draggedLine = ev.target;
     hide(draggedLine);

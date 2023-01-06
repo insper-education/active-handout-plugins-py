@@ -13,7 +13,7 @@ import {
   queryAllExercises,
   queryExerciseForm,
 } from "./queries";
-import { disableInputs, markDone } from "./utils";
+import { disableInputs, dispatchResetHandoutEvent, markDone } from "./utils";
 
 export function initExercisePlugin() {
   initExerciseForms();
@@ -30,7 +30,10 @@ export function initExercisePlugin() {
       for (const ex of exercises) {
         removeValue(ex);
       }
-      location.reload();
+      dispatchResetHandoutEvent();
+      setTimeout(() => {
+        location.reload();
+      }, 200);
     });
   }
 }
@@ -86,8 +89,14 @@ function initChoiceExercises() {
         const alternative = queryParentAlternative(choice);
         if (correctIdx === choice.value) {
           alternative.classList.add("correct");
+          if (choice.checked) {
+            exercise.classList.add("correct");
+          }
         } else {
           alternative.classList.add("wrong");
+          if (choice.checked) {
+            exercise.classList.add("wrong");
+          }
         }
 
         if (shouldSubmit && choice.checked) {

@@ -1,8 +1,8 @@
+import { getJSONValue, getKey, removeValue, setJSONValue } from "../client-db";
 import { createElementWithClasses } from "../dom-utils";
 import { markDone, markNotDone } from "../exercise/utils";
 import { sendAndCacheData } from "../telemetry";
 import {
-  queryAnswer,
   queryAreaFromInside,
   queryContainerFromInside,
   queryCorrectAnswer,
@@ -17,6 +17,50 @@ import {
   querySubslots,
   selectExerciseUnderCursor,
 } from "./queries";
+
+export function saveCurrentState(exercise) {
+  const dropArea = queryDropArea(exercise);
+  const lines = [...queryParsonsLines(dropArea)];
+  const idsAndIndentations = lines.map((line) => {
+    const indentElement = line.parentElement.querySelector(".cur-indent");
+    const prefix = "subslot-";
+    const indentClass = [...indentElement.classList].filter((className) =>
+      className.startsWith(prefix)
+    )[0];
+    const indentCount = parseInt(indentClass.substr(prefix.length)) - 1;
+
+    const id = line.querySelector("a").id;
+    return [id, indentCount];
+  });
+
+  const key = getStateCacheKey(exercise);
+  setJSONValue(key, idsAndIndentations);
+  removeValue(exercise);
+}
+
+export function recoverPreviousState(exercise, dropAreaSlotCount) {
+  const key = getStateCacheKey(exercise);
+  const prevState = getJSONValue(key);
+  if (!prevState) {
+    return;
+  }
+
+  const dragArea = queryDragArea(exercise);
+  const dropArea = queryDropArea(exercise);
+  for (const [lineId, indentCount] of prevState) {
+    const line = dragArea.querySelector(`[name="${lineId}"]`).parentElement;
+    const [slot, subslots] = createSlot(dropArea, dropAreaSlotCount);
+    const subslot = subslots[indentCount];
+    insertLineInSubslot(line, subslot);
+  }
+  cleanUpSlots(exercise);
+}
+
+export function resetPrevState(exercise) {
+  const key = getStateCacheKey(exercise);
+  removeValue(key);
+  removeValue(exercise);
+}
 
 export function removeDragListeners(onDrag, onDrop) {
   window.removeEventListener("dragenter", onDrag);
@@ -72,10 +116,15 @@ export function createSlot(area, subslotCount, additionalClass) {
   const slot = createElementWithClasses("div", ["line-slot"], area);
   const classList = ["subslot"];
   if (additionalClass) classList.push(additionalClass);
+  const subslots = [];
   for (let i = 0; i < subslotCount; i++) {
-    createElementWithClasses("div", [...classList, `subslot-${i + 1}`], slot);
+    subslots.push(
+      createElementWithClasses("div", [...classList, `subslot-${i + 1}`], slot)
+    );
   }
   createElementWithClasses("div", ["line-placeholder"], slot);
+
+  return [slot, subslots];
 }
 
 export function hide(line) {
@@ -98,6 +147,7 @@ export function cleanUpSlots(exercise) {
 }
 
 export function resetExercise(exercise) {
+  resetPrevState(exercise);
   markNotDone(exercise);
 
   const origArea = queryDragArea(exercise);
@@ -141,14 +191,18 @@ export function submitExercise(exercise) {
   // We need this timeout so the browser has time to reset the
   // exercise before animating again
   setTimeout(() => {
-    markDone(exercise);
-    if (correct) {
-      exercise.classList.add("correct");
-    } else {
-      exercise.classList.add("wrong");
-    }
+    finishParsonsExercise(exercise, correct);
   }, 0);
   sendAndCacheData(exercise, { correct, code: answerText }, correct ? 1 : 0);
+}
+
+export function finishParsonsExercise(exercise, correct) {
+  markDone(exercise);
+  if (correct) {
+    exercise.classList.add("correct");
+  } else {
+    exercise.classList.add("wrong");
+  }
 }
 
 function resetContainers(containers, exceptThis) {
@@ -190,4 +244,8 @@ function getIndentCount(slot) {
     }
   }
   return 0;
+}
+
+function getStateCacheKey(exercise) {
+  return `${getKey(exercise)}--currentstate`;
 }

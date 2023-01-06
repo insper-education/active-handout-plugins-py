@@ -3,13 +3,16 @@
 $max-tabs: 20;
 $arrow-size: 0.9em;
 
-.admonition {
+.admonition,
+.tabbed-alternate {
   .tabbed-alternate {
     margin-inline: 0;
   }
 }
 
 .tabbed-alternate {
+  --clr-code-background: var(--clr-admonition-code-background);
+
   position: relative;
   display: flex;
   flex-wrap: wrap;
@@ -23,7 +26,7 @@ $arrow-size: 0.9em;
   .tabbed-content {
     width: 100%;
     border-radius: 0 $border-radius $border-radius $border-radius;
-    background: var(--clr-admonition-default-background);
+    background: var(--clr-tabbed-background);
   }
 
   .tabbed-labels.tabbed-scroll .tabbed-content {
@@ -64,7 +67,8 @@ $arrow-size: 0.9em;
     border-radius: $border-radius $border-radius 0 0;
     cursor: pointer;
     transition: background-color 250ms, color 250ms;
-    background: var(--clr-admonition-disabled-background);
+    background: var(--clr-tabbed-disabled-background);
+    color: var(--clr-tabbed-disabled-text);
     padding: $admonition-extra-block $admonition-extra-inline;
   }
 
@@ -78,7 +82,7 @@ $arrow-size: 0.9em;
     color: gray;
     background: linear-gradient(
       to right,
-      var(--clr-admonition-disabled-background) 75%,
+      var(--clr-tabbed-disabled-background) 75%,
       rgba(255, 255, 255, 0)
     );
     content: "\25C0";
@@ -96,7 +100,7 @@ $arrow-size: 0.9em;
     background: linear-gradient(
       to right,
       rgba(255, 255, 255, 0),
-      var(--clr-admonition-disabled-background) 25%
+      var(--clr-tabbed-disabled-background) 25%
     );
     content: "\25B6";
     cursor: pointer;
@@ -115,8 +119,8 @@ $arrow-size: 0.9em;
       input:nth-child(#{$child-idx}):checked
         ~ .tabbed-labels
         > :nth-child(#{$child-idx}) {
-        color: var(--clr-admonition-default-text);
-        background: var(--clr-admonition-default-background);
+        color: var(--clr-text);
+        background: var(--clr-tabbed-background);
       }
     }
   }
