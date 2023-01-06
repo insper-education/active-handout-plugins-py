@@ -28,6 +28,13 @@
       var backendUrl = "";
       var courseSlug = "";
       {% endif %}
+      {% if config.active_handout.tag_tree %}
+      var dashboardEnabled = true;
+      var tagTree = {{ config.active_handout.tag_tree }};
+      {% else %}
+      var dashboardEnabled = false;
+      var tagTree = {};
+      {% endif %}
 
       // SETUP PLUGIN
       window.initialized = false;
@@ -48,6 +55,8 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script src="https://unpkg.com/hyperscript.org"></script>
     <script src="https://unpkg.com/htmx.org@1.8.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
     <script src="{{ 'assets/js/main.js'|url }}"></script>
     {% block extrahead %}{% endblock %}
     {% for path in config.extra_css %}<link rel="stylesheet" href="{{ path | url }}">{% endfor %}

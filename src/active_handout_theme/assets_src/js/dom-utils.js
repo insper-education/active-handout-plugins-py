@@ -9,9 +9,14 @@ export function createElementWithClasses(tagName, classList, parent) {
   return el;
 }
 
-export function sendRemember(element, args) {
-  const ev = new CustomEvent("remember", { detail: { element, args } });
-  window.dispatchEvent(ev);
+export function dispatchSectionOpenedEvent(section) {
+  const event = new CustomEvent("section-opened", { detail: section });
+  window.dispatchEvent(event);
+}
+
+export function dispatchRememberEvent(element) {
+  const event = new CustomEvent("remember");
+  element.dispatchEvent(event);
 }
 
 export function absoluteURL(relative) {

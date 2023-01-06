@@ -1,4 +1,6 @@
-import { createElementWithClasses, sendRemember } from "../dom-utils";
+import { createElementWithClasses } from "../dom-utils";
+import { markDone, markNotDone } from "../exercise/utils";
+import { sendAndCacheData } from "../telemetry";
 import {
   queryAnswer,
   queryAreaFromInside,
@@ -96,7 +98,7 @@ export function cleanUpSlots(exercise) {
 }
 
 export function resetExercise(exercise) {
-  hideAnswer(queryAnswer(exercise));
+  markNotDone(exercise);
 
   const origArea = queryDragArea(exercise);
   const destArea = queryDropArea(exercise);
@@ -127,26 +129,26 @@ export function submitExercise(exercise) {
 
   const lines = queryParsonsLines(answerArea);
   let correct = lines.length > 0 && queryParsonsLines(origArea).length === 0;
-  
+
   let answerCorrect = queryCorrectAnswer(exercise).innerText;
   let answerText = "";
-  lines.forEach((line, idx) => {
+  lines.forEach((line) => {
     const slot = querySlotFromInside(line);
-    answerText += "    ".repeat(getIndentCount(slot)) + slot.innerText + "\n"; 
+    answerText += "    ".repeat(getIndentCount(slot)) + slot.innerText + "\n";
   });
-  correct = correct && (answerText === answerCorrect);
+  correct = correct && answerText === answerCorrect;
 
   // We need this timeout so the browser has time to reset the
   // exercise before animating again
   setTimeout(() => {
+    markDone(exercise);
     if (correct) {
       exercise.classList.add("correct");
     } else {
       exercise.classList.add("wrong");
     }
   }, 0);
-  showAnswer(queryAnswer(exercise));
-  sendRemember(exercise, { "correct": correct, "code": answerText });
+  sendAndCacheData(exercise, { correct, code: answerText }, correct ? 1 : 0);
 }
 
 function resetContainers(containers, exceptThis) {
@@ -188,12 +190,4 @@ function getIndentCount(slot) {
     }
   }
   return 0;
-}
-
-function showAnswer(answer) {
-  answer.style.display = "inherit";
-}
-
-function hideAnswer(answer) {
-  answer.style.display = "none";
 }

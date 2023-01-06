@@ -8,29 +8,20 @@ import { initStyle } from "./style";
 import { initAuth } from "./auth";
 import { initCodeEditorPlugin } from "./code-editor";
 import * as clientDB from "./client-db";
-import { sendData } from "./telemetry";
+import { getSubmissionCache, sendAndCacheData } from "./telemetry";
+import { initDashboard } from "./dashboard";
 
 function onLoad() {
-  let rememberCallbacks = [];
-
-  const user = initAuth();
-  window.addEventListener("remember", function (e) {
-    const element = e.detail.element;
-    for (let remember of rememberCallbacks) {
-      if (remember.match(element)) {
-        const stop = remember.callback(element, user, e.detail.args);
-        if (stop) break;
-      }
-    }
-  });
+  initAuth();
 
   initTabbedPlugin();
 
   initStyle();
-  initProgressPlugin(rememberCallbacks);
-  initParsonsPlugin(rememberCallbacks);
-  initExercisePlugin(rememberCallbacks);
-  initFooterPlugin(rememberCallbacks);
+  initDashboard();
+  initProgressPlugin();
+  initExercisePlugin();
+  initParsonsPlugin();
+  initFooterPlugin();
   initMenuPlugin();
   initCodeEditorPlugin();
 
@@ -42,11 +33,14 @@ function applyRegisteredInitializers() {
   window.initialized = true;
 }
 
-window.clientDB = clientDB;
-window.sendData = sendData;
+export function initActiveHandout() {
+  window.clientDB = clientDB;
+  window.sendAndCacheData = sendAndCacheData;
+  window.getSubmissionCache = getSubmissionCache;
 
-if (document.readyState !== "loading") {
-  onLoad();
-} else {
-  document.addEventListener("DOMContentLoaded", onLoad);
+  if (document.readyState !== "loading") {
+    onLoad();
+  } else {
+    document.addEventListener("DOMContentLoaded", onLoad);
+  }
 }

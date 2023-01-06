@@ -5,7 +5,7 @@ export async function postTelemetryData(
   exerciseTags,
   points
 ) {
-  if (!telemetryEnabled || !backendUrl || !courseSlug) return;
+  if (!telemetryEnabled || !backendUrl || !courseSlug) return false;
 
   const exercise = {
     course: courseSlug,
@@ -15,7 +15,11 @@ export async function postTelemetryData(
   if (!Number.isFinite(points)) {
     points = 0;
   }
-  postJSON("/telemetry", { exercise, points: points, log }, token);
+  return postJSON("/telemetry", { exercise, points: points, log }, token);
+}
+
+export async function getUserInfo(token) {
+  return getJSON("/user-info", token);
 }
 
 export async function getJSON(endpoint, token) {
@@ -49,7 +53,7 @@ function makeJSONRequest(url, init) {
     });
 }
 
-function buildUrl(endpoint) {
+export function buildUrl(endpoint) {
   if (!backendUrl) return "";
 
   let url = backendUrl;
@@ -57,14 +61,17 @@ function buildUrl(endpoint) {
   if (endpoint.startsWith("/")) endpoint = endpoint.substr(1);
   url += endpoint;
 
-  return url;
+  return new URL(url).href;
 }
 
-function createInit(token) {
+function createInit(token, contentType) {
+  if (!contentType) {
+    contentType = "application/json";
+  }
   const init = {
     mode: "cors",
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": contentType,
     },
   };
 

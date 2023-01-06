@@ -1,3 +1,4 @@
+from urllib.parse import unquote_plus
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
 from django.utils.http import urlencode
@@ -8,7 +9,7 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
-from core.models import Course, ExerciseTag, Exercise, TelemetryData
+from core.models import Course, ExerciseTag, Exercise, TelemetryData, User
 from core.serializers import TelemetryDataSerializer, UserSerializer
 from core.shortcuts import redirect
 
@@ -83,15 +84,15 @@ def ensure_tags_equal(exercise, tags):
 
     # Remove tags that no longer belong to the exercise
     for tag in exercise.tags.all():
-        if tag.name in tags:
-            tags.remove(tag.name)
+        if tag.slug in tags:
+            tags.remove(tag.slug)
         else:
             exercise.tags.remove(tag)
 
     # Add new tags
-    for tag_name in tags:
+    for tag_slug in tags:
         tag, _ = ExerciseTag.objects.get_or_create(
-            course=exercise.course, name=tag_name)
+            course=exercise.course, slug=tag_slug)
         exercise.tags.add(tag)
 
 
@@ -103,6 +104,33 @@ def get_all_answers(request, course_name, exercise_slug):
     exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
     data = TelemetryData.objects.filter(exercise=exercise, last=True)
     return Response(TelemetryDataSerializer(data, many=True).data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAdminUser])
+@login_required
+def exercise_list(request, course_name):
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    exercise_list = request.data
+
+    tags_by_slug = {
+        exercise_data['slug']: exercise_data['tags']
+        for page in exercise_list.values()
+        for exercise_data in page.values()
+    }
+    total_created = 0
+    total_updated = 0
+    for slug, tags in tags_by_slug.items():
+        exercise, created = Exercise.objects.get_or_create(course=course, slug=slug)
+        ensure_tags_equal(exercise, tags)
+
+        if created:
+            total_created += 1
+        else:
+            total_updated += 1
+
+    return Response({"created": total_created, "updated": total_updated})
 
 
 @api_view(["GET"])
@@ -125,3 +153,23 @@ def disable_exercise(request, course_name, exercise_slug):
     exercise.enabled = False
     exercise.save()
     return Response("OK")
+
+
+@api_view(["POST"])
+@permission_classes([IsAdminUser])
+@login_required
+def update_tag_names(request, course_name):
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    slug_to_name = request.data
+    tag_slugs = slug_to_name.keys()
+    tags = ExerciseTag.objects.filter(course=course, slug__in=tag_slugs)
+    to_update = []
+    for tag in tags:
+        name = slug_to_name.get(tag.slug)
+        if name:
+            tag.name = name
+            to_update.append(tag)
+    if to_update:
+        ExerciseTag.objects.bulk_update(to_update, ['name'])
+    return Response({"updated": len(to_update)})

@@ -1,3 +1,11 @@
+export function queryAllExercises() {
+  return document.querySelectorAll(".admonition.exercise");
+}
+
+export function queryExerciseForm(exercise) {
+  return exercise.querySelector(".exercise-form");
+}
+
 export function queryTextExercises() {
   return document.querySelectorAll(
     "div.admonition.exercise.short, " +
@@ -34,6 +42,6 @@ export function queryParentAlternative(option) {
   return option.closest(".alternative");
 }
 
-export function querySubmitBtn(el) {
-  return el.querySelector("input[type='submit']");
+export function queryAllInputs(el) {
+  return el.querySelectorAll("input,textarea");
 }

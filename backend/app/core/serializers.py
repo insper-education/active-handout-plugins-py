@@ -6,6 +6,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
+            'id',
             'username',
             'first_name',
             'email',
@@ -17,7 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 class ExerciseSerializer(serializers.ModelSerializer):
     course = serializers.StringRelatedField()
-    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='name')
+    tags = serializers.SlugRelatedField(many=True, read_only=True, slug_field='slug')
 
     class Meta:
         model = Exercise

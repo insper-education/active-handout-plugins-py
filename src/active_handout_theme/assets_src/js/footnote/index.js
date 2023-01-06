@@ -9,18 +9,12 @@ The footnote is structured as follows:
   </div>
 </span>
 */
-export function initFooterPlugin(rememberCallbacks) {
-  rememberCallbacks.push({
-    match: (el) => el.classList.contains("progress"),
-    callback: (el) => {
-      const className = "progress-section";
-      const openedSection = el.closest(`.${className}`).nextElementSibling;
-      if (!openedSection.classList.contains(className)) {
-        return;
-      }
-
+export function initFooterPlugin() {
+  window.addEventListener("section-opened", (event) => {
+    const openedSection = event.detail;
+    if (openedSection) {
       initFootnotes(openedSection);
-    },
+    }
   });
 
   initFootnotes(document);

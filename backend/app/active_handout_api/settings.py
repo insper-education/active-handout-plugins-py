@@ -44,6 +44,7 @@ AUTHENTICATION_BACKENDS = [
 
 INSTALLED_APPS = [
     "core",
+    "dashboard",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",

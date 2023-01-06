@@ -1,12 +1,15 @@
-from django.utils.translation import gettext as _
-from django.test import TestCase, RequestFactory
-from rest_framework.test import APIRequestFactory, force_authenticate
-from rest_framework.authtoken.models import Token
 from django.core.exceptions import DisallowedRedirect
+from django.test import RequestFactory, TestCase
+from django.utils.translation import gettext as _
+from rest_framework.authtoken.models import Token
+from rest_framework.test import APIRequestFactory, force_authenticate
 
-from core.models import Instructor, User, Exercise, Course, ExerciseTag, Student, TelemetryData
-from core.views import ensure_tags_equal, telemetry_data, login_request, get_all_answers, enable_exercise, disable_exercise
+from core.models import (Course, Exercise, ExerciseTag, Instructor, Student,
+                         TelemetryData, User)
 from core.shortcuts import redirect
+from core.views import (disable_exercise, enable_exercise, ensure_tags_equal,
+                        exercise_list, get_all_answers, login_request,
+                        telemetry_data, update_tag_names)
 
 
 class StudentAndInstructorTests(TestCase):
@@ -57,7 +60,7 @@ class TelemetryDataTests(TestCase):
         ensure_tags_equal(exercise, expected_tags)
 
         expected_tags = sorted(expected_tags)
-        tags = sorted([tag.name for tag in exercise.tags.all()])
+        tags = sorted([tag.slug for tag in exercise.tags.all()])
         assert tags == expected_tags, f'Tags are different than expected. Expected {expected_tags}. Got {tags}.'
 
     def test_ensure_tags_for_existing_exercise(self):
@@ -65,14 +68,14 @@ class TelemetryDataTests(TestCase):
         expected_tags = ['code', 'recursion', 'impossible']
 
         exercise = Exercise.objects.create(course=self.course, slug='very-hard-challenge')
-        for tag_name in old_tags:
-            tag = ExerciseTag.objects.create(course=self.course, name=tag_name)
+        for tag_slug in old_tags:
+            tag = ExerciseTag.objects.create(course=self.course, slug=tag_slug)
             exercise.tags.add(tag)
 
         ensure_tags_equal(exercise, expected_tags)
 
         expected_tags = sorted(expected_tags)
-        tags = sorted([tag.name for tag in exercise.tags.all()])
+        tags = sorted([tag.slug for tag in exercise.tags.all()])
         assert tags == expected_tags, f'Tags are different than expected. Expected {expected_tags}. Got {tags}.'
 
     def test_new_telemetry_data_creates_course_and_exercise(self):
@@ -123,13 +126,13 @@ class AnswerEndPointTest(TestCase):
         force_authenticate(request, user=self.students[0])
         response = get_all_answers(request, self.course.name, self.exercises[0].slug)
         assert response.status_code == 403
-    
+
     def test_instructors_can_get_answers(self):
         request = self.factory.get(f'/api/telemetry/answers/{self.course.name}/{self.exercises[0].slug}')
         force_authenticate(request, user=self.instructor)
         response = get_all_answers(request, self.course.name, self.exercises[0].slug)
         assert response.status_code == 200
-    
+
     def test_adding_new_exercise_updates_last(self):
         st = self.students[0]
         ex = self.exercises[0]
@@ -160,6 +163,58 @@ class RedirectTests(TestCase):
 
     def test_redirect_disallows_other_schemes(self):
         self.assertRaises(DisallowedRedirect, redirect, 'wrong://domain.extension')
+
+
+class ExerciseListTests(TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.factory = APIRequestFactory()
+
+    def setUp(self):
+        self.course = Course.objects.create(name='Awesome Course 2022')
+        self.instructor = Instructor.objects.create_user(username='igor', password='igorigor', is_staff=True)
+        self.student = Student.objects.create_user('student', password='oi')
+
+    def test_create_exercises_that_didnt_exist(self):
+        Exercise.objects.create(course=self.course, slug='ex1')
+        tags_by_exercise_slug = {
+            'ex1': ['tag1', 'tag2'],
+            'ex2': ['tag2', 'tag3'],
+        }
+        request = self.factory.post(f'/api/exercises/{self.course.name}', {
+            'page/url/': {
+                slug: {
+                    'slug': slug,
+                    'tags': tags
+                }
+                for slug, tags in tags_by_exercise_slug.items()
+            }
+        }, format='json')
+
+        force_authenticate(request, user=self.instructor)
+        response = exercise_list(request, self.course.name)
+        assert response.status_code == 200
+
+        exercises_by_slug = {e.slug: e for e in Exercise.objects.filter(course=self.course)}
+        for slug, expected_tags in tags_by_exercise_slug.items():
+            exercise = exercises_by_slug[slug]
+            tag_slugs = [t.slug for t in exercise.tags.all()]
+            for expected_tag in expected_tags:
+                assert expected_tag in tag_slugs
+
+    def test_student_cant_create_exercises(self):
+        request = self.factory.post(f'/api/exercises/{self.course.name}', {
+            'page/url/': {
+                'ex1': {
+                    'slug': 'ex1',
+                    'tags': [],
+                }
+            }
+        }, format='json')
+
+        force_authenticate(request, user=self.student)
+        response = exercise_list(request, self.course.name)
+        assert response.status_code == 403
 
 
 class EnableDisableExercise(TestCase):
@@ -219,4 +274,58 @@ class EnableDisableExercise(TestCase):
         request = self.factory.post('/api/telemetry/', data, format='json')
         force_authenticate(request, user=self.student)
         response = telemetry_data(request)
+        assert response.status_code == 403
+
+
+class TagsTests(TestCase):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.factory = APIRequestFactory()
+
+    def setUp(self):
+        self.course = Course.objects.create(name='Awesome Course 2022')
+        self.instructor = Instructor.objects.create_user(username='igor', password='igorigor', is_staff=True)
+        self.student = Student.objects.create_user('student', password='oi')
+
+    def test_update_tag_names(self):
+        slugs_and_names = [
+            ('ex1', 'Exercise 1'),
+            ('ex2', None),
+            ('ex3', 'ex3'),
+        ]
+        ExerciseTag.objects.bulk_create([ExerciseTag(slug=slug, name=name, course=self.course) for slug, name in slugs_and_names])
+
+        request = self.factory.post(f'/api/tags/{self.course.name}/names', {
+            'ex2': 'Exercise 2',
+            'ex3': 'Exercise 3',
+        }, format='json')
+
+        force_authenticate(request, user=self.instructor)
+        response = update_tag_names(request, self.course.name)
+        assert response.status_code == 200
+
+        for i in range(1, 4):
+            tag = ExerciseTag.objects.get(course=self.course, slug=f'ex{i}')
+            assert tag.name == f'Exercise {i}'
+
+    def test_update_tag_shouldnt_create_tags(self):
+        tag_slug = 'oops'
+        request = self.factory.post(f'/api/tags/{self.course.name}/names', {
+            tag_slug: "Exercise that doesn't exist",
+        }, format='json')
+
+        force_authenticate(request, user=self.instructor)
+        response = update_tag_names(request, self.course.name)
+        assert response.status_code == 200
+
+        with self.assertRaises(ExerciseTag.DoesNotExist):
+            ExerciseTag.objects.get(course=self.course, slug=tag_slug)
+
+    def test_student_cant_create_exercises(self):
+        request = self.factory.post(f'/api/tags/{self.course.name}/names', {
+            'oops': "Exercise that doesn't exist",
+        }, format='json')
+
+        force_authenticate(request, user=self.student)
+        response = exercise_list(request, self.course.name)
         assert response.status_code == 403

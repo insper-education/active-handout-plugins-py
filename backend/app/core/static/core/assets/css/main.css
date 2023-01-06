@@ -388,6 +388,14 @@ span.critic.comment {
   display: flex;
 }
 
+.ah-dashboard {
+  width: 70ch;
+  max-width: 100%;
+  border: none;
+  margin: 0 0 1.5rem;
+  padding: 0;
+}
+
 .admonition.exercise {
   --clr-background: var(--clr-admonition-exercise-background);
   --clr-text: var(--clr-admonition-exercise-text);
@@ -788,6 +796,7 @@ span.critic.comment {
 
 .ah-header--right {
   margin-left: auto;
+  display: flex;
 }
 
 .ah-logo {

@@ -4,7 +4,7 @@ export function getKey(elOrKey) {
   }
 
   if (elOrKey.dataset.slug) {
-    return elOrKey.dataset.slug + elOrKey.id;
+    return elOrKey.dataset.slug;
   }
 
   const docAddr = document.location.pathname;
@@ -25,4 +25,16 @@ export function getValue(elOrKey) {
 export function removeValue(elOrKey) {
   const key = getKey(elOrKey);
   localStorage.removeItem(key);
+}
+
+export function setJSONValue(elOrKey, jsonValue) {
+  setValue(elOrKey, JSON.stringify(jsonValue));
+}
+
+export function getJSONValue(elOrKey) {
+  const value = getValue(elOrKey);
+  if (!value) {
+    return value;
+  }
+  return JSON.parse(value);
 }

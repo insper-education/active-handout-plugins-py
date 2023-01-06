@@ -1,11 +1,14 @@
-import os
-from pathlib import Path
-import re
 import json
+import os
+import re
+from pathlib import Path
 
 from dotenv import load_dotenv
-from mkdocs.config import base, config_options as c
+from mkdocs.config import base
+from mkdocs.config import config_options as c
 from mkdocs.plugins import BasePlugin
+
+from .exercise_manager import ExerciseManager
 
 CWD = Path.cwd()
 HERE = Path(__file__).parent
@@ -17,6 +20,7 @@ class ActiveHandoutPluginConfig(base.Config):
     telemetry = c.Type(bool, default=False)
     backend_url = c.Type(str, default='')
     course_slug = c.Type(str, default='')
+    tag_tree = c.Type(list, default=[])
 
 
 class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
@@ -55,12 +59,14 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
             else:
                 config['COURSE_SLUG'] = self.config.course_slug
 
+        self.exercise_manager = ExerciseManager(self.config.course_slug)
+
         active_handout_config = {
             'telemetry': self.config.telemetry,
+            'tag_tree': self.config.tag_tree,
+            'exercise_manager': self.exercise_manager,
         }
         config['active_handout'] = self._setupURLs(active_handout_config)
-
-        self.choice_exercise_answers = {}
 
         return config
 
@@ -74,27 +80,25 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
         return markdown + "\n<!--{{seed}} REMOVE ME-->"
 
     def on_page_content(self, html: str, *, page, config, files):
-        self.choice_exercise_answers[page.url] = {}
-
         seed = 0
         matches = re.findall(r'\<\!\-\-(\d+) REMOVE ME\-\-\>', html)
         if len(matches) > 0:
             seed = int(matches[0])
 
         html = re.sub(r'^(<div class\=\"admonition exercise.*\" id=)\"(.*)\">$',
-                   r'\1"\2_' f'{seed}" data-slug="/{page.url}">', html, flags=re.MULTILINE)
+                   r'\1"\2_' f'{seed}">', html, flags=re.MULTILINE)
 
-        matches = re.findall(r'^(<div class\=\"admonition exercise choice.*\" +id=\"([\d\w\-]+)\".*>)$', html, flags=re.MULTILINE)
-        for m in matches:
-            if found := re.match(r'.*data-answer-idx=\"(\d+)\".*', m[0]):
-                idx = found.group(1)
-                self.choice_exercise_answers[page.url][m[1]] = idx
-
-        if page.meta and page.meta.get('show_answers', True) == False:
-            html = re.sub(f'data-answer-idx=\"\d+\"', '', html)
         html_without_seed = re.sub(r'\<\!\-\-.*REMOVE ME\-\-\>', '', html)
         return html_without_seed
 
     def on_post_build(self, *, config) -> None:
-        with open('choice_exercise_answers.json', 'w') as f:
-            json.dump(self.choice_exercise_answers, f)
+        tag_mappings = {}
+        try:
+            with open('exercise_data.json') as f:
+                prev_data = json.load(f)
+                tag_mappings = prev_data.get('tags', {})
+        except FileNotFoundError:
+            pass
+
+        with open('exercise_data.json', 'w') as f:
+            f.write(self.exercise_manager.exercise_json(tag_mappings))

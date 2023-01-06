@@ -12,6 +12,8 @@ class ExerciseAdmonition(AdmonitionVisitor):
         self.subclasses = subclasses
         self.counter = 0
         self.id = ''
+        self.__tags = []
+        self.exercise_manager = self.mkdocs_config['active_handout']['exercise_manager']
 
     def __set_element_id(self, el, cls):
         self.counter += 1
@@ -26,15 +28,21 @@ class ExerciseAdmonition(AdmonitionVisitor):
 
     def __set_tags(self, el):
         tags = self.get_tags(el)
-        for tag in tags:
-            el.attrib['class'] += f' tag-{tag}'
 
+        tag_tree = self.mkdocs_config.get('active_handout', {}).get('tag_tree')
+        if self.page and tag_tree:
+            auto_tags = self.exercise_manager.extract_tags(self.page.url, tag_tree)
+        else:
+            auto_tags = []
+
+        self.__tags = list(set(auto_tags) | set(tags))
+        for tag in self.__tags:
+            el.attrib['class'] += f' tag-{tag}'
 
     def __add_exercise_description(self, el, submission_form):
         title = el.find('p/[@class="admonition-title"]')
         answer = el.find('.//div[@class="admonition answer"]')
         if answer:
-            answer.attrib['style'] = 'display: none;'
             answer_title = answer.find('p/[@class="admonition-title"]')
             answer_title.text = _(answer_title.text)
 
@@ -64,7 +72,6 @@ class ExerciseAdmonition(AdmonitionVisitor):
             if answer_content:
                 answer = etree.SubElement(submission_form, 'div')
                 answer.set("class", "admonition answer")
-                answer.set("style", "display: none;")
                 answer.text = self.md.htmlStash.store(answer_content)
 
     def __match_class(self, el):
@@ -85,24 +92,12 @@ class ExerciseAdmonition(AdmonitionVisitor):
         self.__set_element_id(el, cls)
         self.__set_tags(el)
         self.add_extra_classes(el)
-        submission_form = etree.SubElement(el, 'form')
+        submission_form = etree.SubElement(el, 'form', {'class': 'exercise-form'})
         self.__add_exercise_description(el, submission_form)
-        hs_code = '''
-on submit
-    halt the event
-    if <.answer/>
-        show the <.answer/> in me
-    end
-    add @disabled to <input/> in me
-    add @disabled to <textarea/> in me
-    add .done to closest .exercise
-    hide the <input[type="submit"]/> in me
-    send remember(element: my parentElement) to window
-end
-        '''
-        submission_form.set('_', hs_code)
         self.__add_exercise_form_elements(el, submission_form)
 
+        slug = self.exercise_manager.add_exercise(self.page.url, self.id, self.__tags, self.get_meta())
+        el.set('data-slug', slug)
 
     def create_exercise_form(self, el, submission_form):
         return ''
@@ -116,10 +111,15 @@ end
     def get_tags(self, el):
         return []
 
+    def get_meta(self):
+        '''Overwrite this method to add meta data to the exercise JSON.'''
+        return None
+
 
 class ChoiceExercise(ExerciseAdmonition):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__('exercise', ['choice'], *args, **kwargs)
+        self.answer_idx = -1
 
     def __is_answer(self, stash_key):
         key = int(stash_key[stash_key.index(':')+1:])
@@ -131,7 +131,7 @@ class ChoiceExercise(ExerciseAdmonition):
         submission_form.remove(choice_list)
 
         html_alternatives = []
-        answer_idx = -1
+        self.answer_idx = -1
 
         submit_str = _('Submit')
 
@@ -139,7 +139,7 @@ class ChoiceExercise(ExerciseAdmonition):
             end = choice.text.find('\x03') + 1
             is_answer = self.__is_answer(choice.text[:end-1])
             if is_answer:
-                answer_idx = i
+                self.answer_idx = i
             text = choice.text[end:]
             if text.startswith('*'):
                 text = text[1:]
@@ -172,7 +172,11 @@ class ChoiceExercise(ExerciseAdmonition):
 ''')
 
         random.shuffle(html_alternatives)
-        el.set('data-answer-idx', str(answer_idx))
+
+        hide_answers = self.page and self.page.meta and self.page.meta.get('show_answers', True) == False
+        if not hide_answers:
+            el.set('data-answer-idx', str(self.answer_idx))
+
         return f'''
 <div class="alternative-set">
   {"".join(html_alternatives)}
@@ -182,6 +186,11 @@ class ChoiceExercise(ExerciseAdmonition):
 
     def get_tags(self, el):
         return ['choice-exercise']
+
+    def get_meta(self):
+        return {
+            'answer_idx': self.answer_idx,
+        }
 
 
 class TextExercise(ExerciseAdmonition):
