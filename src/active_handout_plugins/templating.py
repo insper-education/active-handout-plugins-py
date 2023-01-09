@@ -4,6 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 import random
 import string
 import os
+import math
 
 class RandomIntVariable:
     def __init__(self):
@@ -84,6 +85,7 @@ class Jinja2PreProcessor(Preprocessor):
             'choice': Chooser(),
             'seed': SetSeed(),
             'count': Counter(),
+            'math': math,
         }
         custom_template_values.update(
             {f'randint{i}': RandomIntVariable() for i in range(1, 11)}
