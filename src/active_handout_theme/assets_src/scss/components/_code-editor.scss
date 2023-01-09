@@ -1,7 +1,7 @@
 @use "../abstracts" as *;
 
 $editor-padding: 1rem;
-$editor-border: 1px solid var(--clr-editor-border);
+$editor-border: 1px solid var(--clr-editor-inner-border);
 
 .file-editor {
   display: grid;
@@ -9,6 +9,7 @@ $editor-border: 1px solid var(--clr-editor-border);
 
   background-color: #f7f3f7;
   border-radius: $border-radius;
+  border: $border-thickness solid var(--clr-editor-border);
 
   [data-readonly="true"] {
     filter: grayscale(0.9);
