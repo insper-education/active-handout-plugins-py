@@ -34,6 +34,8 @@ $indent-size: 4ch;
 }
 
 .parsons-container {
+  border: $border-thickness solid var(--clr-parsons-line-border);
+
   pre {
     white-space: inherit;
   }
