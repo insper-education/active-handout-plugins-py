@@ -29,13 +29,13 @@ class ParsonsExercise(ExerciseAdmonition):
     <div class="parsons-container highlight original-code">
         <pre><code class="parsons-area parsons-drag-area">
 '''
-        for l in lines:
+        for i, l in enumerate(lines):
             l_no_indent = l.replace('    ', '')
             left_panel += f'''
     <div class="line-slot with-line">
         <div class="subslot cur-indent single-subslot"></div>
         <div class="line-placeholder"></div>
-        <div class="parsons-line" draggable="true">{l_no_indent}</div>
+        <div class="parsons-line" draggable="true" data-linecount={i}>{l_no_indent}</div>
     </div>
 '''
         left_panel += '</code></pre></div></div>'

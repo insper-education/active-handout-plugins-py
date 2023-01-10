@@ -29,7 +29,7 @@ export function saveCurrentState(exercise) {
     )[0];
     const indentCount = parseInt(indentClass.substr(prefix.length)) - 1;
 
-    const id = line.querySelector("a").id;
+    const id = line.dataset.linecount;
     return [id, indentCount];
   });
 
@@ -48,7 +48,7 @@ export function recoverPreviousState(exercise, dropAreaSlotCount) {
   const dragArea = queryDragArea(exercise);
   const dropArea = queryDropArea(exercise);
   for (const [lineId, indentCount] of prevState) {
-    const line = dragArea.querySelector(`[name="${lineId}"]`).parentElement;
+    const line = dragArea.querySelector(`[data-linecount="${lineId}"]`);
     const [slot, subslots] = createSlot(dropArea, dropAreaSlotCount);
     const subslot = subslots[indentCount];
     insertLineInSubslot(line, subslot);
