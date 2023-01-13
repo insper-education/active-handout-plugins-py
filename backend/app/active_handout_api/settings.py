@@ -80,7 +80,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:8080",
     "http://localhost:8080",
     "https://insper.github.io",
-] + os.getenv("CORS_ALLOWED_ORIGINS", '').split(',')
+]
+extra_allowed_origins = os.getenv("CORS_ALLOWED_ORIGINS", None)
+if extra_allowed_origins:
+    CORS_ALLOWED_ORIGINS += extra_allowed_origins.split(",")
 
 CORS_ALLOWED_ORIGIN_REGEXES = [
     r'^http:\/\/.*\.s3-website-.*\.amazonaws\.com$',
