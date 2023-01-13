@@ -3,21 +3,12 @@
 $max-tabs: 20;
 $arrow-size: 0.9em;
 
-.admonition,
 .tabbed-alternate {
-  .tabbed-alternate {
-    margin-inline: 0;
-  }
-}
-
-.tabbed-alternate {
-  --clr-code-background: var(--clr-admonition-code-background);
-
   position: relative;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  margin: 0 (-$admonition-extra-inline) $space-between-block;
+  margin: 0 0 $space-between-block;
 
   > input {
     display: none;
@@ -36,6 +27,8 @@ $arrow-size: 0.9em;
   .tabbed-block {
     display: none;
     padding: $admonition-extra-block $admonition-extra-inline;
+    border: $border-thickness solid var(--clr-tabbed-border);
+    border-top: none;
   }
 
   @for $child-idx from 1 through $max-tabs {
@@ -70,6 +63,7 @@ $arrow-size: 0.9em;
     background: var(--clr-tabbed-disabled-background);
     color: var(--clr-tabbed-disabled-text);
     padding: $admonition-extra-block $admonition-extra-inline;
+    border: $border-thickness solid var(--clr-tabbed-disabled-border);
   }
 
   &.tabbed-scroll-left::before {
@@ -121,11 +115,28 @@ $arrow-size: 0.9em;
         > :nth-child(#{$child-idx}) {
         color: var(--clr-text);
         background: var(--clr-tabbed-background);
+        border: $border-thickness solid var(--clr-tabbed-border);
+        border-bottom: none;
+        margin-bottom: -0.2em;
+        z-index: 10;
       }
     }
   }
 
   .tabbed-labels {
+    position: relative;
+    isolation: isolate;
+
+    &::after {
+      content: "";
+      width: 100%;
+      height: $border-thickness;
+      background-color: var(--clr-tabbed-border);
+      position: absolute;
+      bottom: 0;
+      z-index: 1;
+    }
+
     > label {
       &:hover {
         color: var(--clr-text-default-hover);

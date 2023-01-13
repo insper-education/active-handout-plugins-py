@@ -57,17 +57,17 @@
   // Admonition
   --clr-admonition-background: #{color.adjust(
       $clr-highlight,
-      $lightness: 30%,
+      $lightness: 40%,
       $saturation: 10%,
       $alpha: -0.5
     )};
-  --clr-admonition-code-background: #{color.adjust($clr-gray, $lightness: 60%)};
-  // Exercise
-  --clr-exercise-background: #{color.adjust(
-      $clr-warn,
-      $lightness: 20%,
-      $alpha: -0.5
+  --clr-admonition-border: #{color.adjust(
+      $clr-highlight,
+      $lightness: 30%,
+      $saturation: 10%
     )};
+  // Exercise
+  --clr-exercise-background: var(--clr-admonition-background);
   --clr-exercise-disabled-background: #{color.adjust(
       $clr-warn,
       $lightness: 20%,
@@ -81,13 +81,17 @@
     )};
   --clr-exercise-answer-wrong-background: #{color.adjust(
       $clr-fail,
-      $lightness: 40%
+      $saturation: -50%,
+      $lightness: 45%
     )};
   // Multiple choice
-  --clr-alternative-background: #{color.adjust($clr-warn, $lightness: 40%)};
-  --clr-alternative-label-background: #{color.adjust($clr-warn, $lightness: 10%)};
+  --clr-alternative-background: #{color.adjust($clr-highlight, $lightness: 40%)};
+  --clr-alternative-label-background: #{color.adjust(
+      $clr-highlight,
+      $lightness: 10%
+    )};
   --clr-alternative-selected-outline: #{color.adjust(
-      $clr-warn,
+      $clr-highlight,
       $lightness: -10%
     )};
   --clr-alternative-wrong-outline: #{color.adjust($clr-fail, $saturation: 100%)};
@@ -111,15 +115,25 @@
   // Tabbed
   --clr-tabbed-background: #{color.adjust(
       $clr-highlight,
-      $lightness: 30%,
       $saturation: 10%,
-      $alpha: -0.5
+      $lightness: 45%,
+      $alpha: 0.5
+    )};
+  --clr-tabbed-border: #{color.adjust(
+      $clr-highlight,
+      $saturation: 10%,
+      $lightness: 20%
     )};
   --clr-tabbed-disabled-background: #{color.adjust(
       $clr-highlight,
       $lightness: 30%,
       $saturation: -40%,
       $alpha: -0.3
+    )};
+  --clr-tabbed-disabled-border: #{color.adjust(
+      $clr-highlight,
+      $lightness: 30%,
+      $saturation: -40%
     )};
   --clr-tabbed-disabled-text: #{color.adjust(
       $clr-gray,
@@ -128,7 +142,7 @@
     )};
   // Form
   --clr-input-background: #{color.adjust($clr-gray, $lightness: 100%)};
-  --clr-input-optional-border: #{color.adjust(
+  --clr-input-border: #{color.adjust(
       $clr-gray,
       $lightness: -30%,
       $saturation: -30%
@@ -150,6 +164,7 @@
       $alpha: -0.3
     )};
   // Code editor
+  --clr-editor-inner-border: #{color.adjust($clr-gray, $lightness: -10%)};
   --clr-editor-border: #{color.adjust($clr-gray, $lightness: -10%)};
   // Code
   --clr-code-background: hsl(229, 100%, 97%);

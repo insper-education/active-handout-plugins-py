@@ -18,7 +18,7 @@
   > textarea,
   &::after {
     /* Identical styling required!! */
-    border: 1px solid transparent;
+    border: 1px solid var(--clr-input-border);
     border-radius: $border-radius;
     padding: 0.5rem;
     font: inherit;

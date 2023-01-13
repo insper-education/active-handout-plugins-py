@@ -12,8 +12,6 @@
   }
 
   &.done {
-    --clr-admonition-background: var(--clr-exercise-disabled-background);
-
     > * {
       filter: grayscale(0.7);
     }
@@ -28,25 +26,21 @@
     }
 
     .admonition.answer {
-      --clr-admonition-background: var(--clr-exercise-answer-background);
+      --answer-hue-rotate: 180deg;
 
       display: inherit;
-      filter: none;
+      filter: hue-rotate(var(--answer-hue-rotate));
     }
 
     &.correct {
       .admonition.answer {
-        --clr-admonition-background: var(
-          --clr-exercise-answer-correct-background
-        );
+        --answer-hue-rotate: 260deg;
       }
     }
 
     &.wrong {
       .admonition.answer {
-        --clr-admonition-background: var(
-          --clr-exercise-answer-wrong-background
-        );
+        --answer-hue-rotate: 100deg;
       }
     }
   }
@@ -83,11 +77,12 @@
 }
 
 .admonition.answer {
-  --clr-background: var(--clr-admonition-answer-background);
-
   display: none;
   margin-top: (2 * $admonition-extra-block);
   margin-bottom: (-$admonition-extra-block);
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -211,4 +206,8 @@
   .two-cols .alternative-set {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.admonition.answer {
+  margin-inline: (-$admonition-extra-inline);
 }
