@@ -7,7 +7,7 @@ from .admonition import AdmonitionVisitor
 class VideoAdmonition(AdmonitionVisitor):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.re = re.compile(r'https?:\/\/(www\.)?youtube\.com\/watch?.*v=(.*)&?.*')
+        self.re = re.compile(r'https?:\/\/(www\.)?youtube\.com\/watch?.*v=([a-zA-Z0-9]+)&?.*')
 
     def visit(self, el):
         if not 'video' in el.attrib['class']:
