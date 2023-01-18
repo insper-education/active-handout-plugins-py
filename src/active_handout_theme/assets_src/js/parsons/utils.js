@@ -180,27 +180,31 @@ export function submitExercise(exercise) {
   const lines = queryParsonsLines(answerArea);
   let correct = lines.length > 0 && queryParsonsLines(origArea).length === 0;
 
-  let answerCorrect = queryCorrectAnswer(exercise).innerText;
+  let answerCorrect = queryCorrectAnswer(exercise)?.innerText;
+  const hasAnswer = answerCorrect !== undefined;
+
   let answerText = "";
-  lines.forEach((line) => {
-    const slot = querySlotFromInside(line);
-    answerText += "    ".repeat(getIndentCount(slot)) + slot.innerText + "\n";
-  });
-  correct = correct && answerText === answerCorrect;
+  if (hasAnswer) {
+    lines.forEach((line) => {
+      const slot = querySlotFromInside(line);
+      answerText += "    ".repeat(getIndentCount(slot)) + slot.innerText + "\n";
+    });
+    correct = correct && answerText === answerCorrect;
+  }
 
   // We need this timeout so the browser has time to reset the
   // exercise before animating again
   setTimeout(() => {
-    finishParsonsExercise(exercise, correct);
+    finishParsonsExercise(exercise, correct, hasAnswer);
   }, 0);
   sendAndCacheData(exercise, { correct, code: answerText }, correct ? 1 : 0);
 }
 
-export function finishParsonsExercise(exercise, correct) {
+export function finishParsonsExercise(exercise, correct, hasAnswer) {
   markDone(exercise);
   if (correct) {
     exercise.classList.add("correct");
-  } else {
+  } else if (hasAnswer){
     exercise.classList.add("wrong");
   }
 }

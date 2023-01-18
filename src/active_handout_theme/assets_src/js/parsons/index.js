@@ -53,7 +53,7 @@ function registerListeners(exercise) {
     resetPrevState(exercise);
   });
 
-  queryResetButton(exercise).addEventListener("click", (event) => {
+  queryResetButton(exercise)?.addEventListener("click", (event) => {
     event.preventDefault();
     resetExercise(exercise);
   });
