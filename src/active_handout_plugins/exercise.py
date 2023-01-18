@@ -2,6 +2,7 @@ import xml.etree.ElementTree as etree
 from .l10n import gettext as _
 from .admonition import AdmonitionVisitor
 import random
+from .exercise_manager import ExerciseManager
 
 
 class ExerciseAdmonition(AdmonitionVisitor):
@@ -13,7 +14,7 @@ class ExerciseAdmonition(AdmonitionVisitor):
         self.counter = 0
         self.id = ''
         self.__tags = []
-        self.exercise_manager = self.mkdocs_config['active_handout']['exercise_manager']
+        self.exercise_manager = self.mkdocs_config.get('active_handout', {}).get('exercise_manager', ExerciseManager(''))
 
     def __set_element_id(self, el, cls):
         self.counter += 1

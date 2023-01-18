@@ -85,17 +85,21 @@ function initChoiceExercises() {
     const correctIdx = queryCorrectOptionIdx(exercise);
 
     function showResults(shouldSubmit) {
+      const hasCorrectAnswer = correctIdx >= 0;
+
       for (let choice of choices) {
         const alternative = queryParentAlternative(choice);
-        if (correctIdx === choice.value) {
-          alternative.classList.add("correct");
-          if (choice.checked) {
-            exercise.classList.add("correct");
-          }
-        } else {
-          alternative.classList.add("wrong");
-          if (choice.checked) {
-            exercise.classList.add("wrong");
+        if (hasCorrectAnswer) {
+          if (correctIdx === choice.value) {
+            alternative.classList.add("correct");
+            if (choice.checked) {
+              exercise.classList.add("correct");
+            }
+          } else {
+            alternative.classList.add("wrong");
+            if (choice.checked) {
+              exercise.classList.add("wrong");
+            }
           }
         }
 
