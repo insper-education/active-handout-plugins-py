@@ -19,7 +19,7 @@ class ActiveHandoutExtension(Extension):
     """ Admonition extension for Python-Markdown. """
     config = {
         'page': ['', 'This setting is filled automatically by our mkdocs extension. Do not modify.'],
-        'mkdocs_config': ['', 'This setting is filled automatically by our mkdocs extension. Do not modify.'],
+        'mkdocs_config': [{}, 'This setting is filled automatically by our mkdocs extension. Do not modify.'],
         'locale': ['en', 'locale should be the same as for the theme'],
         'custom_variables': [{}, 'Dictionary mapping variable names to use in Jinja templating extension'],
     }
@@ -28,8 +28,8 @@ class ActiveHandoutExtension(Extension):
         """ Add Admonition to Markdown instance. """
         md.registerExtension(self)
 
-        self.page = self.getConfig('page', None)
-        self.mkdocs_config = self.getConfig('mkdocs_config', None)
+        self.page = self.getConfig('page', '')
+        self.mkdocs_config = self.getConfig('mkdocs_config', {})
         init_l10n(self.getConfig('locale'))
 
         exercise_admonitions = AdmonitionVisitorSelector(md, page=self.page, mkdocs_config=self.mkdocs_config)

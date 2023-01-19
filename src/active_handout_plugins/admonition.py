@@ -6,7 +6,7 @@ from .l10n import gettext as _
 class AdmonitionVisitor(Treeprocessor):
     def __init__(self, *args, **kwargs):
         self.page = kwargs.pop('page', None)
-        self.mkdocs_config = kwargs.pop('mkdocs_config', None)
+        self.mkdocs_config = kwargs.pop('mkdocs_config', {})
 
         super().__init__(*args, **kwargs)
 

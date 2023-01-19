@@ -112,8 +112,6 @@ $font-sizes: (
   input[type="email"],
   input[type="password"],
   input[type="tel"] {
-    border: 1px solid transparent;
-    border-radius: $border-radius;
     padding: 0.2em 0.5em;
   }
 
@@ -122,6 +120,8 @@ $font-sizes: (
   input[type="password"],
   input[type="tel"],
   textarea {
+    border: 1px solid var(--clr-input-border);
+    border-radius: $border-radius;
     background-color: var(--clr-input-background);
   }
 }

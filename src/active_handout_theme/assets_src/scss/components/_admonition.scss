@@ -2,36 +2,31 @@
 @use "../abstracts/mixins" as *;
 @use "../base/typeset" as *;
 
-$border-bottom: 2px solid currentColor;
-
-details,
-.admonition,
-.tabbed-alternate {
-  .admonition:not(.no-indent) {
-    margin-inline: 0;
-  }
-}
+$border-bottom: $border-thickness solid var(--clr-admonition-border);
 
 details,
 .admonition {
-  --clr-code-background: var(--clr-admonition-code-background);
-
-  background: var(--clr-admonition-background);
-  margin: 0 (-$admonition-extra-inline) (2 * $admonition-extra-block);
+  margin: 0 0 (2 * $admonition-extra-block);
   padding: 0.5 * $admonition-extra-block $admonition-extra-inline;
   border-radius: $border-radius;
+  border: $border-thickness solid var(--clr-admonition-border);
 }
 
 .admonition .admonition-title,
 details summary {
+  background: var(--clr-admonition-background);
   font-family: $font-highlight;
-  font-size: map-get($font-sizes, "large");
+  font-size: map-get($font-sizes, "mid");
+  line-height: 1.5;
   font-weight: 700;
   border-bottom: $border-bottom;
   color: var(--clr-title);
+  margin: (-0.5 * $admonition-extra-block) (-$admonition-extra-inline)
+    $admonition-extra-block;
+  padding: 0.5 * $admonition-extra-block $admonition-extra-inline;
 
   @include smaller-than("medium") {
-    font-size: map-get($font-sizes, "mid");
+    font-size: map-get($font-sizes, "regular");
   }
 }
 
