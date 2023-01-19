@@ -178,17 +178,18 @@ export function submitExercise(exercise) {
   const answerArea = queryDropArea(exercise);
 
   const lines = queryParsonsLines(answerArea);
-  let correct = lines.length > 0 && queryParsonsLines(origArea).length === 0;
+  let correct = false;
 
   let answerCorrect = queryCorrectAnswer(exercise)?.innerText;
   const hasAnswer = answerCorrect !== undefined;
 
   let answerText = "";
-  if (hasAnswer) {
-    lines.forEach((line) => {
+  lines.forEach((line) => {
       const slot = querySlotFromInside(line);
       answerText += "    ".repeat(getIndentCount(slot)) + slot.innerText + "\n";
     });
+  if (hasAnswer) {
+    correct = lines.length > 0 && queryParsonsLines(origArea).length === 0;
     correct = correct && answerText === answerCorrect;
   }
 
