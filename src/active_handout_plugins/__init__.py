@@ -49,7 +49,10 @@ class ActiveHandoutExtension(Extension):
         register_treeprocessor_builder(DashboardAdmonition, 'dashboard', 15)
         self._register_treeprocessors(md)
 
-        md.preprocessors.register(Jinja2PreProcessor(md, self.getConfig('custom_variables')), 'templating', 1000000000)
+        custom_variables = self.getConfig('custom_variables')
+        if 'custom_variables' in self.mkdocs_config.get('extra', {}):
+            custom_variables.update(self.mkdocs_config['extra']['custom_variables'])
+        md.preprocessors.register(Jinja2PreProcessor(md, custom_variables), 'templating', 1000000000)
 
     def _register_exercise_visitors(self, exercise_admonitions, md):
         for weight, visitor_builders in _registered_visitors.items():
