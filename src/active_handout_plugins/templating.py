@@ -1,10 +1,16 @@
 from markdown.postprocessors import Postprocessor
 from markdown.preprocessors import Preprocessor
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, Undefined
 import random
 import string
 import os
 import math
+import sys
+import logging
+from mkdocs.utils import warning_filter
+
+LOG = logging.getLogger('mkdocs.plugins.active_handout')
+LOG.addFilter(warning_filter)
 
 class RandomIntVariable:
     def __init__(self):
@@ -71,6 +77,10 @@ class SetSeed:
     def __str__(self):
         return str(self.seed)
 
+class UndefinedPrint(Undefined):
+    def __str__(self):
+        LOG.warning(self._undefined_message)
+        return f'{{{{ {self._undefined_name} }}}}'
 
 class Jinja2PreProcessor(Preprocessor):
     def __init__(self, md, user_provided_variables):
@@ -80,7 +90,7 @@ class Jinja2PreProcessor(Preprocessor):
     def run(self, lines):
         text = '\n'.join(lines)
         loader = FileSystemLoader(os.getcwd())
-        e = Environment(loader=loader, extensions=['jinja2.ext.do'])
+        e = Environment(loader=loader, extensions=['jinja2.ext.do'], undefined=UndefinedPrint)
         custom_template_values = {
             'choice': Chooser(),
             'seed': SetSeed(),
