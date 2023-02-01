@@ -29,14 +29,13 @@ class ParsonsExercise(ExerciseAdmonition):
     <div class="parsons-container highlight original-code">
         <pre><code class="parsons-area parsons-drag-area">
 '''
-        for l in lines:
-            indent_count = l.count('    ')
+        for i, l in enumerate(lines):
             l_no_indent = l.replace('    ', '')
             left_panel += f'''
     <div class="line-slot with-line">
         <div class="subslot cur-indent single-subslot"></div>
         <div class="line-placeholder"></div>
-        <div class="parsons-line" draggable="true" data-indentCount={indent_count}>{l_no_indent}</div>
+        <div class="parsons-line" draggable="true" data-linecount={i}>{l_no_indent}</div>
     </div>
 '''
         left_panel += '</code></pre></div></div>'
@@ -55,20 +54,30 @@ class ParsonsExercise(ExerciseAdmonition):
 
         parse_html = etree.fromstring(processed_code)
         full_answer = "".join(parse_html.itertext())
+        full_answer_html = f'''<pre class="parsons-answer">{full_answer}</pre>'''
+        if self.page and self.page.meta and self.page.meta.get("show_answers", True) == False:
+            full_answer_html = ''
 
         reset_str = _('Reset')
         test_str = _('Test')
 
+        reset_button_value = f'''<input type="button" class="ah-button ah-button--borderless" name="resetButton" value="{reset_str}"/>'''
+        if self.page and self.page.meta and self.page.meta.get("show_reset_button", True) == False:
+            reset_button_value = ''
+
         return f'''
         <input type="hidden" name="data" value=""/>
-        <pre class="parsons-answer">{full_answer}</pre>
+        {full_answer_html}
         <div class="ah-btn-group">
-            <input type="button" class="ah-button ah-button--borderless" name="resetButton" value="{reset_str}"/>
+            {reset_button_value}
             <input type="button" class="ah-button ah-button--primary" name="sendButton" value="{test_str}"/>
         </div>
         '''
 
     def create_answer(self):
+        if self.page and self.page.meta and self.page.meta.get("show_answers", True) == False:
+            return ''
+
         answer_str = _('Answer')
         wrong_str = _('Wrong answer')
         correct_str = _('Correct answer')
