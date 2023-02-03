@@ -1337,19 +1337,16 @@ function registerListeners(exercise) {
         const addIndentBtn = (0, _queries.queryAddIndentButton)(lineContainer);
         const removeIndentBtn = (0, _queries.queryRemoveIndentButton)(lineContainer);
         const line = (0, _queries.queryParsonsLine)(lineContainer);
-        const lineAnchor = line.querySelector("a");
         addIndentBtn === null || addIndentBtn === void 0 ? void 0 : addIndentBtn.addEventListener("click", (event)=>{
             event.preventDefault();
-            const indent = document.createElement("span");
-            indent.classList.add("parsons-indent");
-            indent.innerText = "    ";
-            line.insertBefore(indent, lineAnchor.nextSibling);
+            (0, _utils.addIndent)(line);
+            (0, _utils.saveLineIndentCount)(slug, lineContainer);
             removeIndentBtn.removeAttribute("disabled");
         });
         removeIndentBtn === null || removeIndentBtn === void 0 ? void 0 : removeIndentBtn.addEventListener("click", (event)=>{
-            var ref;
             event.preventDefault();
-            (ref = line.querySelector(".parsons-indent")) === null || ref === void 0 ? void 0 : ref.remove();
+            (0, _utils.removeIndent)(line);
+            (0, _utils.saveLineIndentCount)(slug, lineContainer);
             if (!line.querySelector(".parsons-indent")) removeIndentBtn.setAttribute("disabled", "disabled");
         });
     });
@@ -1414,6 +1411,9 @@ parcelHelpers.export(exports, "resetExercise", ()=>resetExercise);
 parcelHelpers.export(exports, "submitExercise", ()=>submitExercise);
 parcelHelpers.export(exports, "finishParsonsExercise", ()=>finishParsonsExercise);
 parcelHelpers.export(exports, "createSortables", ()=>createSortables);
+parcelHelpers.export(exports, "saveLineIndentCount", ()=>saveLineIndentCount);
+parcelHelpers.export(exports, "addIndent", ()=>addIndent);
+parcelHelpers.export(exports, "removeIndent", ()=>removeIndent);
 var _sortablejs = require("sortablejs");
 var _sortablejsDefault = parcelHelpers.interopDefault(_sortablejs);
 var _clientDb = require("../client-db");
@@ -1499,7 +1499,20 @@ function retrieveOrder(key) {
 }
 function restoreSortable(sortable) {
     const key = getSortableKey(sortable);
-    return retrieveOrder(key);
+    const order = retrieveOrder(key);
+    const slug = sortable.options.group.name;
+    order.forEach((lineId)=>{
+        const lineContainer = document.getElementById(lineId);
+        if (lineContainer) {
+            const indentCount = localStorage.getItem(getLineIndentCountKey(slug, lineContainer));
+            if (indentCount && indentCount > 0) {
+                (0, _queries.queryRemoveIndentButton)(lineContainer).removeAttribute("disabled");
+                const line = (0, _queries.queryParsonsLine)(lineContainer);
+                for(let i = 0; i < indentCount; i++)addIndent(line);
+            }
+        }
+    });
+    return order;
 }
 function saveSortable(sortable) {
     const key = getSortableKey(sortable);
@@ -1511,6 +1524,25 @@ function getSortableKey(sortable) {
     if (sortable.el.classList.contains("parsons-drag-area")) key += "-drag";
     else key += "-drop";
     return key;
+}
+function saveLineIndentCount(slug, lineContainer) {
+    const line = (0, _queries.queryParsonsLine)(lineContainer);
+    const indents = line.querySelectorAll(".parsons-indent").length;
+    localStorage.setItem(getLineIndentCountKey(slug, lineContainer), indents);
+}
+function getLineIndentCountKey(slug, lineContainer) {
+    return `${slug}-${lineContainer.id}--indent-count`;
+}
+function addIndent(line) {
+    const lineAnchor = line.querySelector("a");
+    const indent = document.createElement("span");
+    indent.classList.add("parsons-indent");
+    indent.innerText = "    ";
+    line.insertBefore(indent, lineAnchor.nextSibling);
+}
+function removeIndent(line) {
+    var ref;
+    (ref = line.querySelector(".parsons-indent")) === null || ref === void 0 ? void 0 : ref.remove();
 }
 
 },{"../client-db":"j0pff","../exercise/utils":"acvpC","./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","sortablejs":"jTy8b","../telemetry":"kpvgZ"}],"jTy8b":[function(require,module,exports) {

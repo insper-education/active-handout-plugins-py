@@ -9,6 +9,7 @@ import {
   queryDropArea,
   queryParsonsLine,
   queryParsonsLineContainers,
+  queryRemoveIndentButton,
 } from "./queries";
 
 export function resetExercise(exercise) {
@@ -104,7 +105,26 @@ function retrieveOrder(key) {
 
 function restoreSortable(sortable) {
   const key = getSortableKey(sortable);
-  return retrieveOrder(key);
+  const order = retrieveOrder(key);
+  const slug = sortable.options.group.name;
+
+  order.forEach((lineId) => {
+    const lineContainer = document.getElementById(lineId);
+    if (lineContainer) {
+      const indentCount = localStorage.getItem(
+        getLineIndentCountKey(slug, lineContainer)
+      );
+      if (indentCount && indentCount > 0) {
+        queryRemoveIndentButton(lineContainer).removeAttribute("disabled");
+        const line = queryParsonsLine(lineContainer);
+        for (let i = 0; i < indentCount; i++) {
+          addIndent(line);
+        }
+      }
+    }
+  });
+
+  return order;
 }
 
 function saveSortable(sortable) {
@@ -124,4 +144,28 @@ function getSortableKey(sortable) {
   }
 
   return key;
+}
+
+export function saveLineIndentCount(slug, lineContainer) {
+  const line = queryParsonsLine(lineContainer);
+  const indents = line.querySelectorAll(".parsons-indent").length;
+  localStorage.setItem(getLineIndentCountKey(slug, lineContainer), indents);
+}
+
+function getLineIndentCountKey(slug, lineContainer) {
+  return `${slug}-${lineContainer.id}--indent-count`;
+}
+
+export function addIndent(line) {
+  const lineAnchor = line.querySelector("a");
+
+  const indent = document.createElement("span");
+  indent.classList.add("parsons-indent");
+  indent.innerText = "    ";
+
+  line.insertBefore(indent, lineAnchor.nextSibling);
+}
+
+export function removeIndent(line) {
+  line.querySelector(".parsons-indent")?.remove();
 }

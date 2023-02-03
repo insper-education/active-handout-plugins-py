@@ -9,7 +9,14 @@ import {
   queryResetButton,
   querySubmitButton,
 } from "./queries";
-import { createSortables, resetExercise, submitExercise } from "./utils";
+import {
+  addIndent,
+  createSortables,
+  removeIndent,
+  resetExercise,
+  saveLineIndentCount,
+  submitExercise,
+} from "./utils";
 
 const DROP_AREA_SLOTS = 6;
 
@@ -39,23 +46,18 @@ function registerListeners(exercise) {
     const addIndentBtn = queryAddIndentButton(lineContainer);
     const removeIndentBtn = queryRemoveIndentButton(lineContainer);
     const line = queryParsonsLine(lineContainer);
-    const lineAnchor = line.querySelector("a");
 
     addIndentBtn?.addEventListener("click", (event) => {
       event.preventDefault();
-      const indent = document.createElement("span");
-      indent.classList.add("parsons-indent");
-      indent.innerText = "    ";
-
-      line.insertBefore(indent, lineAnchor.nextSibling);
-
+      addIndent(line);
+      saveLineIndentCount(slug, lineContainer);
       removeIndentBtn.removeAttribute("disabled");
     });
 
     removeIndentBtn?.addEventListener("click", (event) => {
       event.preventDefault();
-      line.querySelector(".parsons-indent")?.remove();
-
+      removeIndent(line);
+      saveLineIndentCount(slug, lineContainer);
       if (!line.querySelector(".parsons-indent")) {
         removeIndentBtn.setAttribute("disabled", "disabled");
       }
