@@ -40,16 +40,16 @@ export function initParsonsPlugin() {
 }
 
 function registerListeners(exercise) {
-  window.addEventListener("reset-handout", () => {
-    resetExercise(exercise);
-  });
-
   const slug = exercise.getAttribute("data-slug");
   const dragArea = queryDragArea(exercise);
   const dropArea = queryDropArea(exercise);
   const lineContainers = queryParsonsLineContainers(exercise);
 
   const sortables = createSortables(slug, dragArea, dropArea);
+
+  window.addEventListener("reset-handout", () => {
+    resetExercise(exercise, sortables);
+  });
 
   lineContainers.forEach((lineContainer) => {
     const addIndentBtn = queryAddIndentButton(lineContainer);
@@ -75,7 +75,7 @@ function registerListeners(exercise) {
 
   queryResetButton(exercise)?.addEventListener("click", (event) => {
     event.preventDefault();
-    resetExercise(exercise);
+    resetExercise(exercise, sortables);
   });
   querySubmitButton(exercise).addEventListener("click", (event) => {
     event.preventDefault();

@@ -16,7 +16,9 @@ import {
   querySubmitButton,
 } from "./queries";
 
-export function resetExercise(exercise) {
+export function resetExercise(exercise, sortables) {
+  sortables.forEach((sortable) => sortable.option("disabled", false));
+
   enableSubmitButton(exercise);
   removeValue(exercise);
   const slug = exercise.getAttribute("data-slug");

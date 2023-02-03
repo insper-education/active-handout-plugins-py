@@ -1329,14 +1329,14 @@ function initParsonsPlugin() {
 }
 function registerListeners(exercise) {
     var ref;
-    window.addEventListener("reset-handout", ()=>{
-        (0, _utils.resetExercise)(exercise);
-    });
     const slug = exercise.getAttribute("data-slug");
     const dragArea = (0, _queries.queryDragArea)(exercise);
     const dropArea = (0, _queries.queryDropArea)(exercise);
     const lineContainers = (0, _queries.queryParsonsLineContainers)(exercise);
     const sortables = (0, _utils.createSortables)(slug, dragArea, dropArea);
+    window.addEventListener("reset-handout", ()=>{
+        (0, _utils.resetExercise)(exercise, sortables);
+    });
     lineContainers.forEach((lineContainer)=>{
         const addIndentBtn = (0, _queries.queryAddIndentButton)(lineContainer);
         const removeIndentBtn = (0, _queries.queryRemoveIndentButton)(lineContainer);
@@ -1356,7 +1356,7 @@ function registerListeners(exercise) {
     });
     (ref = (0, _queries.queryResetButton)(exercise)) === null || ref === void 0 ? void 0 : ref.addEventListener("click", (event)=>{
         event.preventDefault();
-        (0, _utils.resetExercise)(exercise);
+        (0, _utils.resetExercise)(exercise, sortables);
     });
     (0, _queries.querySubmitButton)(exercise).addEventListener("click", (event)=>{
         event.preventDefault();
@@ -1434,7 +1434,8 @@ var _clientDb = require("../client-db");
 var _utils = require("../exercise/utils");
 var _telemetry = require("../telemetry");
 var _queries = require("./queries");
-function resetExercise(exercise) {
+function resetExercise(exercise, sortables) {
+    sortables.forEach((sortable)=>sortable.option("disabled", false));
     enableSubmitButton(exercise);
     (0, _clientDb.removeValue)(exercise);
     const slug = exercise.getAttribute("data-slug");
