@@ -34,11 +34,17 @@ $indent-size: 4ch;
 }
 
 .parsons-container {
+  font-size: 1rem;
   border: $border-thickness solid var(--clr-parsons-line-border);
 
   pre {
     white-space: inherit;
   }
+}
+
+.admonition div.highlight.parsons-container {
+  padding: 0.4em;
+  background: var(--clr-background);
 }
 
 .parsons-code {
@@ -52,8 +58,9 @@ $indent-size: 4ch;
 }
 
 .parsons-line {
+  background: var(--clr-code-background);
   position: relative;
-  padding: 0.5em;
+  padding: 0.1em 0.4em;
   white-space: pre-wrap;
   cursor: move;
   grid-column: 1 / span $subslot-count;
@@ -61,9 +68,10 @@ $indent-size: 4ch;
 }
 
 .line-slot {
+  overflow: hidden;
   margin-bottom: 0.2em;
   border: 1px dashed var(--clr-parsons-drop-border);
-  min-height: 2.5em;
+  min-height: 1.8em;
   border-radius: $border-radius;
   isolation: isolate;
 
