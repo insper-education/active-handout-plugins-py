@@ -22,18 +22,26 @@ export function queryParsonsLine(container) {
   return container.querySelector(".parsons-line");
 }
 
-export function queryAddIndentButton(container) {
-  return container.querySelector(".indent-btn--add");
-}
-
-export function queryRemoveIndentButton(container) {
-  return container.querySelector(".indent-btn--remove");
-}
-
 export function queryResetButton(exercise) {
   return exercise.querySelector("input[name=resetButton]");
 }
 
 export function querySubmitButton(exercise) {
   return exercise.querySelector("input[name=sendButton]");
+}
+
+export function queryIndents(container) {
+  return container.querySelectorAll(".parsons-indent");
+}
+
+export function queryIndentButtons(container) {
+  return container.querySelectorAll(".indent-btn");
+}
+
+export function queryAddIndentButton(container) {
+  return container.querySelector(".indent-btn--add");
+}
+
+export function queryRemoveIndentButton(container) {
+  return container.querySelector(".indent-btn--remove");
 }

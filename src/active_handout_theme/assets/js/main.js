@@ -1310,29 +1310,33 @@ function setCustomProps(footnoteContainer, footnoteCard, contentRect) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initParsonsPlugin", ()=>initParsonsPlugin);
+var _telemetry = require("../telemetry");
 var _queries = require("./queries");
 var _utils = require("./utils");
-const DROP_AREA_SLOTS = 6;
 function initParsonsPlugin() {
     (0, _queries.queryParsonsExercises)().forEach((exercise)=>{
-        registerListeners(exercise);
-    // recoverPreviousState(exercise, DROP_AREA_SLOTS);
-    // const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
-    // if (prevAnswer !== null) {
-    //   finishParsonsExercise(exercise, prevAnswer.correct);
-    //   if (!submitted) {
-    //     sendAndCacheData(exercise, prevAnswer, prevAnswer.correct ? 1 : 0);
-    //   }
-    // }
+        const sortables = registerListeners(exercise);
+        const { value: prevAnswer , submitted  } = (0, _telemetry.getSubmissionCache)(exercise);
+        if (prevAnswer !== null) {
+            var ref;
+            const hasAnswer = ((ref = (0, _queries.queryCorrectAnswer)(exercise)) === null || ref === void 0 ? void 0 : ref.innerText) !== undefined;
+            sortables.forEach((sortable)=>sortable.option("disabled", true));
+            (0, _utils.disableIndentButtons)(exercise);
+            (0, _utils.finishParsonsExercise)(exercise, prevAnswer.correct, hasAnswer);
+            if (!submitted) (0, _telemetry.sendAndCacheData)(exercise, prevAnswer, prevAnswer.correct ? 1 : 0);
+        }
     });
 }
 function registerListeners(exercise) {
     var ref;
+    window.addEventListener("reset-handout", ()=>{
+        (0, _utils.resetExercise)(exercise);
+    });
     const slug = exercise.getAttribute("data-slug");
     const dragArea = (0, _queries.queryDragArea)(exercise);
     const dropArea = (0, _queries.queryDropArea)(exercise);
     const lineContainers = (0, _queries.queryParsonsLineContainers)(exercise);
-    (0, _utils.createSortables)(slug, dragArea, dropArea);
+    const sortables = (0, _utils.createSortables)(slug, dragArea, dropArea);
     lineContainers.forEach((lineContainer)=>{
         const addIndentBtn = (0, _queries.queryAddIndentButton)(lineContainer);
         const removeIndentBtn = (0, _queries.queryRemoveIndentButton)(lineContainer);
@@ -1358,9 +1362,10 @@ function registerListeners(exercise) {
         event.preventDefault();
         (0, _utils.submitExercise)(exercise);
     });
+    return sortables;
 }
 
-},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./utils":"lDj3O"}],"6FJZc":[function(require,module,exports) {
+},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./utils":"lDj3O","../telemetry":"kpvgZ"}],"6FJZc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
@@ -1369,10 +1374,12 @@ parcelHelpers.export(exports, "queryDropArea", ()=>queryDropArea);
 parcelHelpers.export(exports, "queryCorrectAnswer", ()=>queryCorrectAnswer);
 parcelHelpers.export(exports, "queryParsonsLineContainers", ()=>queryParsonsLineContainers);
 parcelHelpers.export(exports, "queryParsonsLine", ()=>queryParsonsLine);
-parcelHelpers.export(exports, "queryAddIndentButton", ()=>queryAddIndentButton);
-parcelHelpers.export(exports, "queryRemoveIndentButton", ()=>queryRemoveIndentButton);
 parcelHelpers.export(exports, "queryResetButton", ()=>queryResetButton);
 parcelHelpers.export(exports, "querySubmitButton", ()=>querySubmitButton);
+parcelHelpers.export(exports, "queryIndents", ()=>queryIndents);
+parcelHelpers.export(exports, "queryIndentButtons", ()=>queryIndentButtons);
+parcelHelpers.export(exports, "queryAddIndentButton", ()=>queryAddIndentButton);
+parcelHelpers.export(exports, "queryRemoveIndentButton", ()=>queryRemoveIndentButton);
 function queryParsonsExercises() {
     return document.querySelectorAll("div.admonition.exercise.parsons");
 }
@@ -1391,17 +1398,23 @@ function queryParsonsLineContainers(container) {
 function queryParsonsLine(container) {
     return container.querySelector(".parsons-line");
 }
-function queryAddIndentButton(container) {
-    return container.querySelector(".indent-btn--add");
-}
-function queryRemoveIndentButton(container) {
-    return container.querySelector(".indent-btn--remove");
-}
 function queryResetButton(exercise) {
     return exercise.querySelector("input[name=resetButton]");
 }
 function querySubmitButton(exercise) {
     return exercise.querySelector("input[name=sendButton]");
+}
+function queryIndents(container) {
+    return container.querySelectorAll(".parsons-indent");
+}
+function queryIndentButtons(container) {
+    return container.querySelectorAll(".indent-btn");
+}
+function queryAddIndentButton(container) {
+    return container.querySelector(".indent-btn--add");
+}
+function queryRemoveIndentButton(container) {
+    return container.querySelector(".indent-btn--remove");
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"lDj3O":[function(require,module,exports) {
@@ -1414,6 +1427,7 @@ parcelHelpers.export(exports, "createSortables", ()=>createSortables);
 parcelHelpers.export(exports, "saveLineIndentCount", ()=>saveLineIndentCount);
 parcelHelpers.export(exports, "addIndent", ()=>addIndent);
 parcelHelpers.export(exports, "removeIndent", ()=>removeIndent);
+parcelHelpers.export(exports, "disableIndentButtons", ()=>disableIndentButtons);
 var _sortablejs = require("sortablejs");
 var _sortablejsDefault = parcelHelpers.interopDefault(_sortablejs);
 var _clientDb = require("../client-db");
@@ -1421,6 +1435,7 @@ var _utils = require("../exercise/utils");
 var _telemetry = require("../telemetry");
 var _queries = require("./queries");
 function resetExercise(exercise) {
+    enableSubmitButton(exercise);
     (0, _clientDb.removeValue)(exercise);
     const slug = exercise.getAttribute("data-slug");
     localStorage.removeItem(`${slug}-drag`);
@@ -1433,12 +1448,21 @@ function resetExercise(exercise) {
     lineContainers.sort((a, b)=>a.dataset.linecount - b.dataset.linecount);
     const origArea = (0, _queries.queryDragArea)(exercise);
     lineContainers.forEach((lineContainer)=>{
+        var ref;
+        const addIndentBtn = (0, _queries.queryAddIndentButton)(lineContainer);
+        addIndentBtn.removeAttribute("disabled");
+        const removeIndentBtn = (0, _queries.queryRemoveIndentButton)(lineContainer);
+        removeIndentBtn.setAttribute("disabled", "disabled");
         origArea.appendChild(lineContainer);
+        const indentCountKey = getLineIndentCountKey(slug, lineContainer);
+        localStorage.removeItem(indentCountKey);
+        (ref = (0, _queries.queryIndents)(lineContainer)) === null || ref === void 0 ? void 0 : ref.forEach((indent)=>indent.remove());
     });
 }
 function submitExercise(exercise) {
     var ref;
     removeResultClasses(exercise);
+    disableIndentButtons(exercise);
     const origArea = (0, _queries.queryDragArea)(exercise);
     const answerArea = (0, _queries.queryDropArea)(exercise);
     const lineContainers = (0, _queries.queryParsonsLineContainers)(answerArea);
@@ -1468,6 +1492,7 @@ function finishParsonsExercise(exercise, correct, hasAnswer) {
     (0, _utils.markDone)(exercise);
     if (correct) exercise.classList.add("correct");
     else if (hasAnswer) exercise.classList.add("wrong");
+    disableSubmitButton(exercise);
 }
 function removeResultClasses(exercise) {
     exercise.classList.remove("correct");
@@ -1479,8 +1504,10 @@ function createSortables(slug, dragArea, dropArea) {
         const lineContainer = document.getElementById(lineId);
         dropArea.appendChild(lineContainer);
     });
-    createSortable(dragArea, slug);
-    createSortable(dropArea, slug);
+    return [
+        createSortable(dragArea, slug),
+        createSortable(dropArea, slug)
+    ];
 }
 function createSortable(area, slug) {
     return new (0, _sortablejsDefault.default)(area, {
@@ -1543,6 +1570,17 @@ function addIndent(line) {
 function removeIndent(line) {
     var ref;
     (ref = line.querySelector(".parsons-indent")) === null || ref === void 0 ? void 0 : ref.remove();
+}
+function disableIndentButtons(exercise) {
+    (0, _queries.queryIndentButtons)(exercise).forEach((button)=>{
+        button.setAttribute("disabled", "disabled");
+    });
+}
+function enableSubmitButton(exercise) {
+    (0, _queries.querySubmitButton)(exercise).removeAttribute("disabled");
+}
+function disableSubmitButton(exercise) {
+    (0, _queries.querySubmitButton)(exercise).setAttribute("disabled", "disabled");
 }
 
 },{"../client-db":"j0pff","../exercise/utils":"acvpC","./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","sortablejs":"jTy8b","../telemetry":"kpvgZ"}],"jTy8b":[function(require,module,exports) {

@@ -4,15 +4,20 @@ import { removeValue } from "../client-db";
 import { markDone, markNotDone } from "../exercise/utils";
 import { sendAndCacheData } from "../telemetry";
 import {
+  queryAddIndentButton,
   queryCorrectAnswer,
   queryDragArea,
   queryDropArea,
+  queryIndentButtons,
+  queryIndents,
   queryParsonsLine,
   queryParsonsLineContainers,
   queryRemoveIndentButton,
+  querySubmitButton,
 } from "./queries";
 
 export function resetExercise(exercise) {
+  enableSubmitButton(exercise);
   removeValue(exercise);
   const slug = exercise.getAttribute("data-slug");
   localStorage.removeItem(`${slug}-drag`);
@@ -25,12 +30,22 @@ export function resetExercise(exercise) {
 
   const origArea = queryDragArea(exercise);
   lineContainers.forEach((lineContainer) => {
+    const addIndentBtn = queryAddIndentButton(lineContainer);
+    addIndentBtn.removeAttribute("disabled");
+    const removeIndentBtn = queryRemoveIndentButton(lineContainer);
+    removeIndentBtn.setAttribute("disabled", "disabled");
+
     origArea.appendChild(lineContainer);
+
+    const indentCountKey = getLineIndentCountKey(slug, lineContainer);
+    localStorage.removeItem(indentCountKey);
+    queryIndents(lineContainer)?.forEach((indent) => indent.remove());
   });
 }
 
 export function submitExercise(exercise) {
   removeResultClasses(exercise);
+  disableIndentButtons(exercise);
 
   const origArea = queryDragArea(exercise);
   const answerArea = queryDropArea(exercise);
@@ -68,6 +83,7 @@ export function finishParsonsExercise(exercise, correct, hasAnswer) {
   } else if (hasAnswer) {
     exercise.classList.add("wrong");
   }
+  disableSubmitButton(exercise);
 }
 
 function removeResultClasses(exercise) {
@@ -82,8 +98,7 @@ export function createSortables(slug, dragArea, dropArea) {
     dropArea.appendChild(lineContainer);
   });
 
-  createSortable(dragArea, slug);
-  createSortable(dropArea, slug);
+  return [createSortable(dragArea, slug), createSortable(dropArea, slug)];
 }
 
 function createSortable(area, slug) {
@@ -168,4 +183,18 @@ export function addIndent(line) {
 
 export function removeIndent(line) {
   line.querySelector(".parsons-indent")?.remove();
+}
+
+export function disableIndentButtons(exercise) {
+  queryIndentButtons(exercise).forEach((button) => {
+    button.setAttribute("disabled", "disabled");
+  });
+}
+
+function enableSubmitButton(exercise) {
+  querySubmitButton(exercise).removeAttribute("disabled");
+}
+
+function disableSubmitButton(exercise) {
+  querySubmitButton(exercise).setAttribute("disabled", "disabled");
 }
