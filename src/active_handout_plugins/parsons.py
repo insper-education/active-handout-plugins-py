@@ -9,6 +9,7 @@ class ParsonsExercise(ExerciseAdmonition):
         super().__init__('exercise', ['parsons'], *args, **kwargs)
 
     def create_exercise_form(self, el, submission_form):
+        el_id = el.get('id', '')
         without_indent = 'no-indent' in el.get('class', "").split()
 
         code = submission_form.findall('*')[-2]
@@ -40,7 +41,7 @@ class ParsonsExercise(ExerciseAdmonition):
         for i, l in enumerate(lines):
             l_no_indent = l.replace('    ', '')
             left_panel += f'''
-            <div class="parsons-line-container" data-linecount={i}>
+            <div id="{el_id}-line-{i}" class="parsons-line-container" data-linecount={i}>
                 {remove_indent_btn}
                 <div class="parsons-line">{l_no_indent}</div>
                 {add_indent_btn}

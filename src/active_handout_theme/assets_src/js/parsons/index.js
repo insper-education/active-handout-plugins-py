@@ -1,5 +1,3 @@
-import Sortable from "sortablejs";
-
 import {
   queryAddIndentButton,
   queryDragArea,
@@ -8,7 +6,10 @@ import {
   queryParsonsLine,
   queryParsonsLineContainers,
   queryRemoveIndentButton,
+  queryResetButton,
+  querySubmitButton,
 } from "./queries";
+import { createSortables, resetExercise, submitExercise } from "./utils";
 
 const DROP_AREA_SLOTS = 6;
 
@@ -27,19 +28,12 @@ export function initParsonsPlugin() {
 }
 
 function registerListeners(exercise) {
+  const slug = exercise.getAttribute("data-slug");
   const dragArea = queryDragArea(exercise);
   const dropArea = queryDropArea(exercise);
   const lineContainers = queryParsonsLineContainers(exercise);
 
-  new Sortable(dragArea, {
-    group: exercise.id,
-    animation: 150,
-  });
-
-  new Sortable(dropArea, {
-    group: exercise.id,
-    animation: 150,
-  });
+  createSortables(slug, dragArea, dropArea);
 
   lineContainers.forEach((lineContainer) => {
     const addIndentBtn = queryAddIndentButton(lineContainer);
@@ -47,7 +41,7 @@ function registerListeners(exercise) {
     const line = queryParsonsLine(lineContainer);
     const lineAnchor = line.querySelector("a");
 
-    addIndentBtn.addEventListener("click", (event) => {
+    addIndentBtn?.addEventListener("click", (event) => {
       event.preventDefault();
       const indent = document.createElement("span");
       indent.classList.add("parsons-indent");
@@ -58,7 +52,7 @@ function registerListeners(exercise) {
       removeIndentBtn.removeAttribute("disabled");
     });
 
-    removeIndentBtn.addEventListener("click", (event) => {
+    removeIndentBtn?.addEventListener("click", (event) => {
       event.preventDefault();
       line.querySelector(".parsons-indent")?.remove();
 
@@ -66,5 +60,14 @@ function registerListeners(exercise) {
         removeIndentBtn.setAttribute("disabled", "disabled");
       }
     });
+  });
+
+  queryResetButton(exercise)?.addEventListener("click", (event) => {
+    event.preventDefault();
+    resetExercise(exercise);
+  });
+  querySubmitButton(exercise).addEventListener("click", (event) => {
+    event.preventDefault();
+    submitExercise(exercise);
   });
 }

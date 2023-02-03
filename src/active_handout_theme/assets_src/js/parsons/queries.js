@@ -10,6 +10,10 @@ export function queryDropArea(exercise) {
   return exercise.querySelector(".parsons-drop-area");
 }
 
+export function queryCorrectAnswer(exercise) {
+  return exercise.querySelector(".parsons-answer");
+}
+
 export function queryParsonsLineContainers(container) {
   return container.querySelectorAll(".parsons-line-container");
 }
@@ -24,4 +28,12 @@ export function queryAddIndentButton(container) {
 
 export function queryRemoveIndentButton(container) {
   return container.querySelector(".indent-btn--remove");
+}
+
+export function queryResetButton(exercise) {
+  return exercise.querySelector("input[name=resetButton]");
+}
+
+export function querySubmitButton(exercise) {
+  return exercise.querySelector("input[name=sendButton]");
 }

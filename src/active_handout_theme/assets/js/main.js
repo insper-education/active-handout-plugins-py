@@ -1310,9 +1310,8 @@ function setCustomProps(footnoteContainer, footnoteCard, contentRect) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "initParsonsPlugin", ()=>initParsonsPlugin);
-var _sortablejs = require("sortablejs");
-var _sortablejsDefault = parcelHelpers.interopDefault(_sortablejs);
 var _queries = require("./queries");
+var _utils = require("./utils");
 const DROP_AREA_SLOTS = 6;
 function initParsonsPlugin() {
     (0, _queries.queryParsonsExercises)().forEach((exercise)=>{
@@ -1328,23 +1327,18 @@ function initParsonsPlugin() {
     });
 }
 function registerListeners(exercise) {
+    var ref;
+    const slug = exercise.getAttribute("data-slug");
     const dragArea = (0, _queries.queryDragArea)(exercise);
     const dropArea = (0, _queries.queryDropArea)(exercise);
     const lineContainers = (0, _queries.queryParsonsLineContainers)(exercise);
-    new (0, _sortablejsDefault.default)(dragArea, {
-        group: exercise.id,
-        animation: 150
-    });
-    new (0, _sortablejsDefault.default)(dropArea, {
-        group: exercise.id,
-        animation: 150
-    });
+    (0, _utils.createSortables)(slug, dragArea, dropArea);
     lineContainers.forEach((lineContainer)=>{
         const addIndentBtn = (0, _queries.queryAddIndentButton)(lineContainer);
         const removeIndentBtn = (0, _queries.queryRemoveIndentButton)(lineContainer);
         const line = (0, _queries.queryParsonsLine)(lineContainer);
         const lineAnchor = line.querySelector("a");
-        addIndentBtn.addEventListener("click", (event)=>{
+        addIndentBtn === null || addIndentBtn === void 0 ? void 0 : addIndentBtn.addEventListener("click", (event)=>{
             event.preventDefault();
             const indent = document.createElement("span");
             indent.classList.add("parsons-indent");
@@ -1352,25 +1346,36 @@ function registerListeners(exercise) {
             line.insertBefore(indent, lineAnchor.nextSibling);
             removeIndentBtn.removeAttribute("disabled");
         });
-        removeIndentBtn.addEventListener("click", (event)=>{
+        removeIndentBtn === null || removeIndentBtn === void 0 ? void 0 : removeIndentBtn.addEventListener("click", (event)=>{
             var ref;
             event.preventDefault();
             (ref = line.querySelector(".parsons-indent")) === null || ref === void 0 ? void 0 : ref.remove();
             if (!line.querySelector(".parsons-indent")) removeIndentBtn.setAttribute("disabled", "disabled");
         });
     });
+    (ref = (0, _queries.queryResetButton)(exercise)) === null || ref === void 0 ? void 0 : ref.addEventListener("click", (event)=>{
+        event.preventDefault();
+        (0, _utils.resetExercise)(exercise);
+    });
+    (0, _queries.querySubmitButton)(exercise).addEventListener("click", (event)=>{
+        event.preventDefault();
+        (0, _utils.submitExercise)(exercise);
+    });
 }
 
-},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","sortablejs":"jTy8b"}],"6FJZc":[function(require,module,exports) {
+},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./utils":"lDj3O"}],"6FJZc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
 parcelHelpers.export(exports, "queryDragArea", ()=>queryDragArea);
 parcelHelpers.export(exports, "queryDropArea", ()=>queryDropArea);
+parcelHelpers.export(exports, "queryCorrectAnswer", ()=>queryCorrectAnswer);
 parcelHelpers.export(exports, "queryParsonsLineContainers", ()=>queryParsonsLineContainers);
 parcelHelpers.export(exports, "queryParsonsLine", ()=>queryParsonsLine);
 parcelHelpers.export(exports, "queryAddIndentButton", ()=>queryAddIndentButton);
 parcelHelpers.export(exports, "queryRemoveIndentButton", ()=>queryRemoveIndentButton);
+parcelHelpers.export(exports, "queryResetButton", ()=>queryResetButton);
+parcelHelpers.export(exports, "querySubmitButton", ()=>querySubmitButton);
 function queryParsonsExercises() {
     return document.querySelectorAll("div.admonition.exercise.parsons");
 }
@@ -1379,6 +1384,9 @@ function queryDragArea(exercise) {
 }
 function queryDropArea(exercise) {
     return exercise.querySelector(".parsons-drop-area");
+}
+function queryCorrectAnswer(exercise) {
+    return exercise.querySelector(".parsons-answer");
 }
 function queryParsonsLineContainers(container) {
     return container.querySelectorAll(".parsons-line-container");
@@ -1392,8 +1400,120 @@ function queryAddIndentButton(container) {
 function queryRemoveIndentButton(container) {
     return container.querySelector(".indent-btn--remove");
 }
+function queryResetButton(exercise) {
+    return exercise.querySelector("input[name=resetButton]");
+}
+function querySubmitButton(exercise) {
+    return exercise.querySelector("input[name=sendButton]");
+}
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"jTy8b":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"lDj3O":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "resetExercise", ()=>resetExercise);
+parcelHelpers.export(exports, "submitExercise", ()=>submitExercise);
+parcelHelpers.export(exports, "finishParsonsExercise", ()=>finishParsonsExercise);
+parcelHelpers.export(exports, "createSortables", ()=>createSortables);
+var _sortablejs = require("sortablejs");
+var _sortablejsDefault = parcelHelpers.interopDefault(_sortablejs);
+var _clientDb = require("../client-db");
+var _utils = require("../exercise/utils");
+var _telemetry = require("../telemetry");
+var _queries = require("./queries");
+function resetExercise(exercise) {
+    (0, _clientDb.removeValue)(exercise);
+    const slug = exercise.getAttribute("data-slug");
+    localStorage.removeItem(`${slug}-drag`);
+    localStorage.removeItem(`${slug}-drop`);
+    (0, _utils.markNotDone)(exercise);
+    removeResultClasses(exercise);
+    const lineContainers = [
+        ...(0, _queries.queryParsonsLineContainers)(exercise)
+    ];
+    lineContainers.sort((a, b)=>a.dataset.linecount - b.dataset.linecount);
+    const origArea = (0, _queries.queryDragArea)(exercise);
+    lineContainers.forEach((lineContainer)=>{
+        origArea.appendChild(lineContainer);
+    });
+}
+function submitExercise(exercise) {
+    var ref;
+    removeResultClasses(exercise);
+    const origArea = (0, _queries.queryDragArea)(exercise);
+    const answerArea = (0, _queries.queryDropArea)(exercise);
+    const lineContainers = (0, _queries.queryParsonsLineContainers)(answerArea);
+    let correct = false;
+    const correctAnswer = (ref = (0, _queries.queryCorrectAnswer)(exercise)) === null || ref === void 0 ? void 0 : ref.innerText;
+    const hasAnswer = correctAnswer !== undefined;
+    let answerText = "";
+    lineContainers.forEach((lineContainer)=>{
+        const line = (0, _queries.queryParsonsLine)(lineContainer);
+        answerText += line.innerText + "\n";
+    });
+    if (hasAnswer) {
+        correct = lineContainers.length > 0 && (0, _queries.queryParsonsLineContainers)(origArea).length === 0;
+        correct = correct && answerText === correctAnswer;
+    }
+    // We need this timeout so the browser has time to reset the
+    // exercise before animating again
+    setTimeout(()=>{
+        finishParsonsExercise(exercise, correct, hasAnswer);
+    }, 0);
+    (0, _telemetry.sendAndCacheData)(exercise, {
+        correct,
+        code: answerText
+    }, correct ? 1 : 0);
+}
+function finishParsonsExercise(exercise, correct, hasAnswer) {
+    (0, _utils.markDone)(exercise);
+    if (correct) exercise.classList.add("correct");
+    else if (hasAnswer) exercise.classList.add("wrong");
+}
+function removeResultClasses(exercise) {
+    exercise.classList.remove("correct");
+    exercise.classList.remove("wrong");
+}
+function createSortables(slug, dragArea, dropArea) {
+    const dropAreaLines = retrieveOrder(`${slug}-drop`);
+    dropAreaLines.forEach((lineId)=>{
+        const lineContainer = document.getElementById(lineId);
+        dropArea.appendChild(lineContainer);
+    });
+    createSortable(dragArea, slug);
+    createSortable(dropArea, slug);
+}
+function createSortable(area, slug) {
+    return new (0, _sortablejsDefault.default)(area, {
+        group: slug,
+        dataIdAttr: "id",
+        store: {
+            get: restoreSortable,
+            set: saveSortable
+        },
+        animation: 150
+    });
+}
+function retrieveOrder(key) {
+    const order = localStorage.getItem(key);
+    return order ? order.split("|") : [];
+}
+function restoreSortable(sortable) {
+    const key = getSortableKey(sortable);
+    return retrieveOrder(key);
+}
+function saveSortable(sortable) {
+    const key = getSortableKey(sortable);
+    const order = sortable.toArray();
+    localStorage.setItem(key, order.join("|"));
+}
+function getSortableKey(sortable) {
+    let key = sortable.options.group.name;
+    if (sortable.el.classList.contains("parsons-drag-area")) key += "-drag";
+    else key += "-drop";
+    return key;
+}
+
+},{"../client-db":"j0pff","../exercise/utils":"acvpC","./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","sortablejs":"jTy8b","../telemetry":"kpvgZ"}],"jTy8b":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "MultiDrag", ()=>MultiDragPlugin);
