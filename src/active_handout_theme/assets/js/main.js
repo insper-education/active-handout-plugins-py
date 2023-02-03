@@ -1365,7 +1365,7 @@ function registerListeners(exercise) {
     return sortables;
 }
 
-},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","./utils":"lDj3O","../telemetry":"kpvgZ"}],"6FJZc":[function(require,module,exports) {
+},{"./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","../telemetry":"kpvgZ","./utils":"lDj3O"}],"6FJZc":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "queryParsonsExercises", ()=>queryParsonsExercises);
@@ -1451,9 +1451,9 @@ function resetExercise(exercise, sortables) {
     lineContainers.forEach((lineContainer)=>{
         var ref;
         const addIndentBtn = (0, _queries.queryAddIndentButton)(lineContainer);
-        addIndentBtn.removeAttribute("disabled");
+        addIndentBtn === null || addIndentBtn === void 0 ? void 0 : addIndentBtn.removeAttribute("disabled");
         const removeIndentBtn = (0, _queries.queryRemoveIndentButton)(lineContainer);
-        removeIndentBtn.setAttribute("disabled", "disabled");
+        removeIndentBtn === null || removeIndentBtn === void 0 ? void 0 : removeIndentBtn.setAttribute("disabled", "disabled");
         origArea.appendChild(lineContainer);
         const indentCountKey = getLineIndentCountKey(slug, lineContainer);
         localStorage.removeItem(indentCountKey);
@@ -1584,7 +1584,7 @@ function disableSubmitButton(exercise) {
     (0, _queries.querySubmitButton)(exercise).setAttribute("disabled", "disabled");
 }
 
-},{"../client-db":"j0pff","../exercise/utils":"acvpC","./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU","sortablejs":"jTy8b","../telemetry":"kpvgZ"}],"jTy8b":[function(require,module,exports) {
+},{"sortablejs":"jTy8b","../client-db":"j0pff","../exercise/utils":"acvpC","../telemetry":"kpvgZ","./queries":"6FJZc","@parcel/transformer-js/src/esmodule-helpers.js":"5oERU"}],"jTy8b":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "MultiDrag", ()=>MultiDragPlugin);

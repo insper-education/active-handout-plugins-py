@@ -33,9 +33,9 @@ export function resetExercise(exercise, sortables) {
   const origArea = queryDragArea(exercise);
   lineContainers.forEach((lineContainer) => {
     const addIndentBtn = queryAddIndentButton(lineContainer);
-    addIndentBtn.removeAttribute("disabled");
+    addIndentBtn?.removeAttribute("disabled");
     const removeIndentBtn = queryRemoveIndentButton(lineContainer);
-    removeIndentBtn.setAttribute("disabled", "disabled");
+    removeIndentBtn?.setAttribute("disabled", "disabled");
 
     origArea.appendChild(lineContainer);
 
