@@ -9,6 +9,8 @@ class ParsonsExercise(ExerciseAdmonition):
         super().__init__('exercise', ['parsons'], *args, **kwargs)
 
     def create_exercise_form(self, el, submission_form):
+        without_indent = 'no-indent' in el.get('class', "").split()
+
         code = submission_form.findall('*')[-2]
         end_char = code.text.find("\x03")
         start_index = code.text.find(":") + 1
@@ -22,6 +24,12 @@ class ParsonsExercise(ExerciseAdmonition):
         drag_blocks_str = _('Drag blocks from here')
         drop_blocks_str = _('Drop blocks here')
 
+        remove_indent_btn = '<button type="button" class="ah-button ah-button--borderless indent-btn indent-btn--remove" disabled>&lt;</button>'
+        add_indent_btn = '<button type="button" class="ah-button ah-button--borderless indent-btn indent-btn--add">&gt;</button>'
+        if without_indent:
+            remove_indent_btn = ''
+            add_indent_btn = ''
+
         random.shuffle(lines)
         left_panel = f'''
 <div class="parsons-outer-container">
@@ -32,12 +40,12 @@ class ParsonsExercise(ExerciseAdmonition):
         for i, l in enumerate(lines):
             l_no_indent = l.replace('    ', '')
             left_panel += f'''
-    <div class="line-slot with-line">
-        <div class="subslot cur-indent single-subslot"></div>
-        <div class="line-placeholder"></div>
-        <div class="parsons-line" draggable="true" data-linecount={i}>{l_no_indent}</div>
-    </div>
-'''
+            <div class="parsons-line-container" data-linecount={i}>
+                {remove_indent_btn}
+                <div class="parsons-line">{l_no_indent}</div>
+                {add_indent_btn}
+            </div>
+            '''.strip()
         left_panel += '</code></pre></div></div>'
 
         right_panel = f'''

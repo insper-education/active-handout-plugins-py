@@ -1,99 +1,70 @@
-import { markNotDone } from "../exercise/utils";
-import { getSubmissionCache, sendAndCacheData } from "../telemetry";
+import Sortable from "sortablejs";
+
 import {
+  queryAddIndentButton,
   queryDragArea,
   queryDropArea,
   queryParsonsExercises,
-  queryParsonsLines,
-  queryResetButton,
-  querySubmitButton,
-  selectSubslotUnderCursor,
+  queryParsonsLine,
+  queryParsonsLineContainers,
+  queryRemoveIndentButton,
 } from "./queries";
-import {
-  removeDragListeners,
-  cleanUpSlots,
-  createSlot,
-  eventIsInsideExercise,
-  hide,
-  insertLineInSubslot,
-  addDragListeners,
-  setCurrentSubslot,
-  resetExercise,
-  submitExercise,
-  saveCurrentState,
-  recoverPreviousState,
-  resetPrevState,
-  finishParsonsExercise,
-} from "./utils";
 
 const DROP_AREA_SLOTS = 6;
 
 export function initParsonsPlugin() {
   queryParsonsExercises().forEach((exercise) => {
     registerListeners(exercise);
-
-    recoverPreviousState(exercise, DROP_AREA_SLOTS);
-
-    const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
-    if (prevAnswer !== null) {
-      finishParsonsExercise(exercise, prevAnswer.correct);
-      if (!submitted) {
-        sendAndCacheData(exercise, prevAnswer, prevAnswer.correct ? 1 : 0);
-      }
-    }
+    // recoverPreviousState(exercise, DROP_AREA_SLOTS);
+    // const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
+    // if (prevAnswer !== null) {
+    //   finishParsonsExercise(exercise, prevAnswer.correct);
+    //   if (!submitted) {
+    //     sendAndCacheData(exercise, prevAnswer, prevAnswer.correct ? 1 : 0);
+    //   }
+    // }
   });
 }
 
 function registerListeners(exercise) {
-  const destArea = queryDropArea(exercise);
-  const origArea = queryDragArea(exercise);
-  let draggedLine = null;
+  const dragArea = queryDragArea(exercise);
+  const dropArea = queryDropArea(exercise);
+  const lineContainers = queryParsonsLineContainers(exercise);
 
-  window.addEventListener("reset-handout", () => {
-    resetPrevState(exercise);
+  new Sortable(dragArea, {
+    group: exercise.id,
+    animation: 150,
   });
 
-  queryResetButton(exercise)?.addEventListener("click", (event) => {
-    event.preventDefault();
-    resetExercise(exercise);
-  });
-  querySubmitButton(exercise).addEventListener("click", (event) => {
-    event.preventDefault();
-    submitExercise(exercise);
+  new Sortable(dropArea, {
+    group: exercise.id,
+    animation: 150,
   });
 
-  function onDrag(ev) {
-    ev.preventDefault();
-    markNotDone(exercise);
+  lineContainers.forEach((lineContainer) => {
+    const addIndentBtn = queryAddIndentButton(lineContainer);
+    const removeIndentBtn = queryRemoveIndentButton(lineContainer);
+    const line = queryParsonsLine(lineContainer);
+    const lineAnchor = line.querySelector("a");
 
-    if (!eventIsInsideExercise(ev, exercise)) return;
-    setCurrentSubslot(selectSubslotUnderCursor(ev, exercise), exercise);
-  }
+    addIndentBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      const indent = document.createElement("span");
+      indent.classList.add("parsons-indent");
+      indent.innerText = "    ";
 
-  function onDrop(ev) {
-    ev.preventDefault();
-    removeDragListeners(onDrag, onDrop);
+      line.insertBefore(indent, lineAnchor.nextSibling);
 
-    if (eventIsInsideExercise(ev, exercise)) {
-      insertLineInSubslot(draggedLine, selectSubslotUnderCursor(ev, exercise));
-    }
-    cleanUpSlots(exercise);
-    draggedLine = null;
+      removeIndentBtn.removeAttribute("disabled");
+    });
 
-    saveCurrentState(exercise);
-  }
+    removeIndentBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      line.querySelector(".parsons-indent")?.remove();
 
-  function onDragStart(ev) {
-    addDragListeners(onDrag, onDrop);
-
-    createSlot(origArea, 1, "single-subslot");
-    createSlot(destArea, DROP_AREA_SLOTS);
-
-    draggedLine = ev.target;
-    hide(draggedLine);
-  }
-
-  queryParsonsLines(exercise).forEach((line) => {
-    line.addEventListener("dragstart", onDragStart);
+      if (!line.querySelector(".parsons-indent")) {
+        removeIndentBtn.setAttribute("disabled", "disabled");
+      }
+    });
   });
 }
