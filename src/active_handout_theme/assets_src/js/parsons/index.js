@@ -1,42 +1,37 @@
-import { markNotDone } from "../exercise/utils";
 import { getSubmissionCache, sendAndCacheData } from "../telemetry";
 import {
+  queryAddIndentButton,
+  queryCorrectAnswer,
   queryDragArea,
   queryDropArea,
   queryParsonsExercises,
-  queryParsonsLines,
+  queryParsonsLine,
+  queryParsonsLineContainers,
+  queryRemoveIndentButton,
   queryResetButton,
   querySubmitButton,
-  selectSubslotUnderCursor,
 } from "./queries";
 import {
-  removeDragListeners,
-  cleanUpSlots,
-  createSlot,
-  eventIsInsideExercise,
-  hide,
-  insertLineInSubslot,
-  addDragListeners,
-  setCurrentSubslot,
-  resetExercise,
-  submitExercise,
-  saveCurrentState,
-  recoverPreviousState,
-  resetPrevState,
+  addIndent,
+  createSortables,
+  disableIndentButtons,
   finishParsonsExercise,
+  removeIndent,
+  resetExercise,
+  saveLineIndentCount,
+  submitExercise,
 } from "./utils";
-
-const DROP_AREA_SLOTS = 6;
 
 export function initParsonsPlugin() {
   queryParsonsExercises().forEach((exercise) => {
-    registerListeners(exercise);
-
-    recoverPreviousState(exercise, DROP_AREA_SLOTS);
+    const sortables = registerListeners(exercise);
 
     const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
     if (prevAnswer !== null) {
-      finishParsonsExercise(exercise, prevAnswer.correct);
+      const hasAnswer = queryCorrectAnswer(exercise)?.innerText !== undefined;
+      sortables.forEach((sortable) => sortable.option("disabled", true));
+      disableIndentButtons(exercise);
+      finishParsonsExercise(exercise, prevAnswer.correct, hasAnswer);
       if (!submitted) {
         sendAndCacheData(exercise, prevAnswer, prevAnswer.correct ? 1 : 0);
       }
@@ -45,55 +40,47 @@ export function initParsonsPlugin() {
 }
 
 function registerListeners(exercise) {
-  const destArea = queryDropArea(exercise);
-  const origArea = queryDragArea(exercise);
-  let draggedLine = null;
+  const slug = exercise.getAttribute("data-slug");
+  const dragArea = queryDragArea(exercise);
+  const dropArea = queryDropArea(exercise);
+  const lineContainers = queryParsonsLineContainers(exercise);
+
+  const sortables = createSortables(slug, dragArea, dropArea);
 
   window.addEventListener("reset-handout", () => {
-    resetPrevState(exercise);
+    resetExercise(exercise, sortables);
+  });
+
+  lineContainers.forEach((lineContainer) => {
+    const addIndentBtn = queryAddIndentButton(lineContainer);
+    const removeIndentBtn = queryRemoveIndentButton(lineContainer);
+    const line = queryParsonsLine(lineContainer);
+
+    addIndentBtn?.addEventListener("click", (event) => {
+      event.preventDefault();
+      addIndent(line);
+      saveLineIndentCount(slug, lineContainer);
+      removeIndentBtn.removeAttribute("disabled");
+    });
+
+    removeIndentBtn?.addEventListener("click", (event) => {
+      event.preventDefault();
+      removeIndent(line);
+      saveLineIndentCount(slug, lineContainer);
+      if (!line.querySelector(".parsons-indent")) {
+        removeIndentBtn.setAttribute("disabled", "disabled");
+      }
+    });
   });
 
   queryResetButton(exercise)?.addEventListener("click", (event) => {
     event.preventDefault();
-    resetExercise(exercise);
+    resetExercise(exercise, sortables);
   });
   querySubmitButton(exercise).addEventListener("click", (event) => {
     event.preventDefault();
     submitExercise(exercise);
   });
 
-  function onDrag(ev) {
-    ev.preventDefault();
-    markNotDone(exercise);
-
-    if (!eventIsInsideExercise(ev, exercise)) return;
-    setCurrentSubslot(selectSubslotUnderCursor(ev, exercise), exercise);
-  }
-
-  function onDrop(ev) {
-    ev.preventDefault();
-    removeDragListeners(onDrag, onDrop);
-
-    if (eventIsInsideExercise(ev, exercise)) {
-      insertLineInSubslot(draggedLine, selectSubslotUnderCursor(ev, exercise));
-    }
-    cleanUpSlots(exercise);
-    draggedLine = null;
-
-    saveCurrentState(exercise);
-  }
-
-  function onDragStart(ev) {
-    addDragListeners(onDrag, onDrop);
-
-    createSlot(origArea, 1, "single-subslot");
-    createSlot(destArea, DROP_AREA_SLOTS);
-
-    draggedLine = ev.target;
-    hide(draggedLine);
-  }
-
-  queryParsonsLines(exercise).forEach((line) => {
-    line.addEventListener("dragstart", onDragStart);
-  });
+  return sortables;
 }
