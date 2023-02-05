@@ -174,13 +174,16 @@ function getLineIndentCountKey(slug, lineContainer) {
 }
 
 export function addIndent(line) {
-  const lineAnchor = line.querySelector("a");
-
   const indent = document.createElement("span");
   indent.classList.add("parsons-indent");
   indent.innerText = "    ";
 
-  line.insertBefore(indent, lineAnchor.nextSibling);
+  const lineAnchor = line.querySelector("a");
+  if (lineAnchor) {
+    line.insertBefore(indent, lineAnchor.nextSibling);
+  } else {
+    line.insertBefore(indent, line.firstChild);
+  }
 }
 
 export function removeIndent(line) {
