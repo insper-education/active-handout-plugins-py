@@ -45,6 +45,34 @@ code {
   border-radius: $border-radius;
 }
 
+// With line numbers
+.highlight {
+  .highlighttable {
+    margin: 0;
+    padding: 0;
+
+    td {
+      padding: 0;
+    }
+
+    pre {
+      margin: 0;
+      padding: 0;
+    }
+
+    .linenos {
+      padding-right: 1em;
+    }
+
+    .linenodiv {
+      a {
+        text-decoration: none;
+        color: var(--clr-link);
+      }
+    }
+  }
+}
+
 // Syntax highlight colors
 .highlight .hll {
   background-color: var(--clr-code-background);
