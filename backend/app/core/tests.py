@@ -11,6 +11,7 @@ from core.views import (disable_exercise, enable_exercise, ensure_tags_equal,
                         exercise_list, get_all_answers, login_request,
                         telemetry_data, update_tag_names)
 
+from urllib.parse import quote
 
 class StudentAndInstructorTests(TestCase):
     def test_instructor_always_staff(self):
@@ -131,6 +132,17 @@ class AnswerEndPointTest(TestCase):
         request = self.factory.get(f'/api/telemetry/answers/{self.course.name}/{self.exercises[0].slug}')
         force_authenticate(request, user=self.instructor)
         response = get_all_answers(request, self.course.name, self.exercises[0].slug)
+        assert response.status_code == 200
+
+    def test_exercise_course_with_slash(self):
+        course = Course.objects.create(name="course/slash")
+        ex_with_slash = Exercise.objects.create(course=course, slug="a/b/c")
+        course_name_quote = quote(course.name, safe='')
+        ex_slug_quote = quote(ex_with_slash.slug, safe='')
+                                  
+        request = self.factory.get(f'/api/telemetry/answers/{course_name_quote}/{ex_slug_quote}')
+        force_authenticate(request, user=self.instructor)
+        response = get_all_answers(request, course_name_quote, ex_slug_quote)
         assert response.status_code == 200
 
     def test_adding_new_exercise_updates_last(self):
