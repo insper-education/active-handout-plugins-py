@@ -53,8 +53,8 @@ class ParsonsExercise(ExerciseAdmonition):
         code.text = self.md.htmlStash.store(left_panel + right_panel)
 
         parse_html = etree.fromstring(processed_code)
-        full_answer = "".join(parse_html.itertext())
-        full_answer_html = f'''<pre class="parsons-answer">{full_answer}</pre>'''
+        self.full_answer = "".join(parse_html.itertext())
+        full_answer_html = f'''<pre class="parsons-answer">{self.full_answer}</pre>'''
         if self.page and self.page.meta and self.page.meta.get("show_answers", True) == False:
             full_answer_html = ''
 
@@ -90,3 +90,8 @@ class ParsonsExercise(ExerciseAdmonition):
 
     def get_tags(self, el):
         return ['parsons-exercise']
+
+    def get_meta(self):
+        return {
+            'answer': self.full_answer
+        }
