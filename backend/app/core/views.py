@@ -13,6 +13,8 @@ from core.models import Course, ExerciseTag, Exercise, TelemetryData, User
 from core.serializers import TelemetryDataSerializer, UserSerializer
 from core.shortcuts import redirect
 
+from urllib.parse import unquote
+
 
 def login_request(request):
     next_url = request.GET.get("next", None)
@@ -99,7 +101,10 @@ def ensure_tags_equal(exercise, tags):
 @api_view(["GET"])
 @permission_classes([IsAdminUser])
 @login_required
-def get_all_answers(request, course_name, exercise_slug):
+def get_all_answers(request):
+    course_name = unquote(request.GET.get('course_name', ''))
+    exercise_slug = unquote(request.GET.get('exercise_slug', ''))
+    
     course = get_object_or_404(Course, name=course_name)
     exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
     data = TelemetryData.objects.filter(exercise=exercise, last=True)
