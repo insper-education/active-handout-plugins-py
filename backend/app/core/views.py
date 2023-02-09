@@ -104,8 +104,13 @@ def ensure_tags_equal(exercise, tags):
 def get_all_answers(request):
     course_name = unquote(request.GET.get('course_name', ''))
     exercise_slug = unquote(request.GET.get('exercise_slug', ''))
+
+    print(course_name, exercise_slug)
+
     course = get_object_or_404(Course, name=course_name)
+    print('achou course')
     exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
+    print('achou ex')
     data = TelemetryData.objects.filter(exercise=exercise, last=True)
     return Response(TelemetryDataSerializer(data, many=True).data)
 
