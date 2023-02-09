@@ -116,25 +116,75 @@ class AnswerEndPointTest(TestCase):
             for i in range(3)
         ]
 
-        for st in self.students:
+        for st in self.students + [self.instructor]:
             for ex in self.exercises:
                 TelemetryData.objects.create(author=st, exercise=ex, points=0, log="NO")
                 TelemetryData.objects.create(author=st, exercise=ex, points=1, log="OK")
 
 
-    def test_student_cant_get_answers(self):
+    def test_student_cant_get_all_answers(self):
         request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
                                                                 'exercise_slug': self.exercises[0].slug})
         force_authenticate(request, user=self.students[0])
         response = get_all_answers(request)
         assert response.status_code == 403
+    
+    def test_student_can_get_own_answers(self):
+        student = self.students[0]
+        exercise = self.exercises[0]
+        request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
+                                                                'exercise_slug': exercise.slug,
+                                                                'author_id': student.id})
+        force_authenticate(request, user=student)
+        response = get_all_answers(request)
+        assert response.status_code == 200
 
-    def test_instructors_can_get_answers(self):
+        for it in response.data:
+            assert it["author"]["username"] == student.username
+            assert it["exercise"]["course"] == self.course.name
+            assert it["exercise"]["slug"] == exercise.slug
+    
+    def test_student_cant_get_other_users_answers(self):
+        request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
+                                                                'exercise_slug': self.exercises[0].slug,
+                                                                'author_id': self.students[1].id})
+        force_authenticate(request, user=self.students[0])
+        response = get_all_answers(request)
+        assert response.status_code == 403
+
+    def test_instructors_can_get_all_answers(self):
         request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
                                                                 'exercise_slug': self.exercises[0].slug})
         force_authenticate(request, user=self.instructor)
         response = get_all_answers(request)
         assert response.status_code == 200
+    
+    def test_instructors_can_get_own_answers(self):
+        exercise = self.exercises[0]
+        request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
+                                                                'exercise_slug': exercise.slug,
+                                                                'author_id': self.instructor.id})
+        force_authenticate(request, user=self.instructor)
+        response = get_all_answers(request)
+        assert response.status_code == 200
+        for it in response.data:
+            assert it["author"]["username"] == self.instructor.username
+            assert it["exercise"]["course"] == self.course.name
+            assert it["exercise"]["slug"] == exercise.slug
+    
+    def test_instructors_can_get_other_users_answers(self):
+        student = self.students[0]
+        exercise = self.exercises[0]
+        request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
+                                                                'exercise_slug': exercise.slug,
+                                                                'author_id': student.id})
+        force_authenticate(request, user=self.instructor)
+        response = get_all_answers(request)
+        assert response.status_code == 200
+        for it in response.data:
+            assert it["author"]["username"] == student.username
+            assert it["exercise"]["course"] == self.course.name
+            assert it["exercise"]["slug"] == exercise.slug
 
     def test_exercise_course_with_slash(self):
         course = Course.objects.create(name="course/slash")
@@ -170,6 +220,19 @@ class AnswerEndPointTest(TestCase):
             pair = (it["author"]["username"], it["exercise"]["course"], it["exercise"]["slug"])
             assert pair not in author_exercise_pairs
             author_exercise_pairs.add(pair)
+    
+    def test_get_all_answers(self):
+        exercise = self.exercises[0]
+        request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
+                                                                'exercise_slug': exercise.slug,
+                                                                'all': 'true'})
+        force_authenticate(request, user=self.instructor)
+        response = get_all_answers(request)
+        assert response.status_code == 200
+        assert len(response.data) == 2 * (len(self.students) + 1)  # Each student + instructor has 2 answers
+        for it in response.data:
+            assert it["exercise"]["course"] == self.course.name
+            assert it["exercise"]["slug"] == exercise.slug
 
 
 class RedirectTests(TestCase):
