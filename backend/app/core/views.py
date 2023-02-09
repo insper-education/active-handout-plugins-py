@@ -101,9 +101,9 @@ def ensure_tags_equal(exercise, tags):
 @api_view(["GET"])
 @permission_classes([IsAdminUser])
 @login_required
-def get_all_answers(request, course_name, exercise_slug):
-    course_name = unquote(course_name)
-    exercise_slug = unquote(exercise_slug)
+def get_all_answers(request):
+    course_name = unquote(request.GET.get('course_name', ''))
+    exercise_slug = unquote(request.GET.get('exercise_slug', ''))
     course = get_object_or_404(Course, name=course_name)
     exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
     data = TelemetryData.objects.filter(exercise=exercise, last=True)

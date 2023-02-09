@@ -123,15 +123,17 @@ class AnswerEndPointTest(TestCase):
 
 
     def test_student_cant_get_answers(self):
-        request = self.factory.get(f'/api/telemetry/answers/{self.course.name}/{self.exercises[0].slug}')
+        request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
+                                                                'exercise_slug': self.exercises[0].slug})
         force_authenticate(request, user=self.students[0])
-        response = get_all_answers(request, self.course.name, self.exercises[0].slug)
+        response = get_all_answers(request)
         assert response.status_code == 403
 
     def test_instructors_can_get_answers(self):
-        request = self.factory.get(f'/api/telemetry/answers/{self.course.name}/{self.exercises[0].slug}')
+        request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
+                                                                'exercise_slug': self.exercises[0].slug})
         force_authenticate(request, user=self.instructor)
-        response = get_all_answers(request, self.course.name, self.exercises[0].slug)
+        response = get_all_answers(request)
         assert response.status_code == 200
 
     def test_exercise_course_with_slash(self):
@@ -140,9 +142,10 @@ class AnswerEndPointTest(TestCase):
         course_name_quote = quote(course.name, safe='')
         ex_slug_quote = quote(ex_with_slash.slug, safe='')
                                   
-        request = self.factory.get(f'/api/telemetry/answers/{course_name_quote}/{ex_slug_quote}')
+        request = self.factory.get(f'/api/telemetry/answers/', {'course_name': course_name_quote,
+                                                                'exercise_slug': ex_slug_quote})                               
         force_authenticate(request, user=self.instructor)
-        response = get_all_answers(request, course_name_quote, ex_slug_quote)
+        response = get_all_answers(request)
         assert response.status_code == 200
 
     def test_adding_new_exercise_updates_last(self):
@@ -156,9 +159,10 @@ class AnswerEndPointTest(TestCase):
         assert last_student0.last == False
 
     def test_get_all_last_answers(self):
-        request = self.factory.get(f'/api/telemetry/answers/{self.course.name}/{self.exercises[0].slug}')
+        request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
+                                                                'exercise_slug': self.exercises[0].slug})
         force_authenticate(request, user=self.instructor)
-        response = get_all_answers(request, self.course.name, self.exercises[0].slug)
+        response = get_all_answers(request)
         assert response.status_code == 200
         author_exercise_pairs = set()
         for it in response.data:
