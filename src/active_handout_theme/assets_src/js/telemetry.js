@@ -15,6 +15,9 @@ export function getSubmissionCache(element) {
   ) {
     submitted = exerciseCache.submitted;
   }
+  if (submitted) {
+    element.classList.add("uploaded");
+  }
   return { value, submitted };
 }
 

@@ -11,6 +11,21 @@
     transition: background 0.1s ease-in-out;
   }
 
+  &.uploaded {
+    > .admonition-title::after {
+      content: "";
+      display: block;
+      float: right;
+      width: 1em;
+      height: 1em;
+      
+      background-image: url(../svg/cloud-done.svg);
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: bottom;
+    }
+  }
+
   &.done {
     > * {
       filter: grayscale(0.7);
