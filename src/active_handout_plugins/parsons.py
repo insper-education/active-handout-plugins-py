@@ -9,6 +9,9 @@ class ParsonsExercise(ExerciseAdmonition):
         super().__init__('exercise', ['parsons'], *args, **kwargs)
 
     def create_exercise_form(self, el, submission_form):
+        el_id = el.get('id', '')
+        without_indent = 'no-indent' in el.get('class', "").split()
+
         code = submission_form.findall('*')[-2]
         end_char = code.text.find("\x03")
         start_index = code.text.find(":") + 1
@@ -22,6 +25,12 @@ class ParsonsExercise(ExerciseAdmonition):
         drag_blocks_str = _('Drag blocks from here')
         drop_blocks_str = _('Drop blocks here')
 
+        remove_indent_btn = '<button type="button" class="ah-button ah-button--borderless indent-btn indent-btn--remove" disabled>&lt;</button>'
+        add_indent_btn = '<button type="button" class="ah-button ah-button--borderless indent-btn indent-btn--add">&gt;</button>'
+        if without_indent:
+            remove_indent_btn = ''
+            add_indent_btn = ''
+
         random.shuffle(lines)
         left_panel = f'''
 <div class="parsons-outer-container">
@@ -29,16 +38,15 @@ class ParsonsExercise(ExerciseAdmonition):
     <div class="parsons-container highlight original-code">
         <pre><code class="parsons-area parsons-drag-area">
 '''
-        for l in lines:
-            indent_count = l.count('    ')
+        for i, l in enumerate(lines):
             l_no_indent = l.replace('    ', '')
             left_panel += f'''
-    <div class="line-slot with-line">
-        <div class="subslot cur-indent single-subslot"></div>
-        <div class="line-placeholder"></div>
-        <div class="parsons-line" draggable="true" data-indentCount={indent_count}>{l_no_indent}</div>
-    </div>
-'''
+            <div id="{el_id}-line-{i}" class="parsons-line-container" data-linecount={i}>
+                {remove_indent_btn}
+                <div class="parsons-line">{l_no_indent}</div>
+                {add_indent_btn}
+            </div>
+            '''.strip()
         left_panel += '</code></pre></div></div>'
 
         right_panel = f'''
@@ -54,21 +62,31 @@ class ParsonsExercise(ExerciseAdmonition):
         code.text = self.md.htmlStash.store(left_panel + right_panel)
 
         parse_html = etree.fromstring(processed_code)
-        full_answer = "".join(parse_html.itertext())
+        self.full_answer = "".join(parse_html.itertext())
+        full_answer_html = f'''<pre class="parsons-answer">{self.full_answer}</pre>'''
+        if self.page and self.page.meta and self.page.meta.get("show_answers", True) == False:
+            full_answer_html = ''
 
         reset_str = _('Reset')
         test_str = _('Test')
 
+        reset_button_value = f'''<input type="button" class="ah-button ah-button--borderless" name="resetButton" value="{reset_str}"/>'''
+        if self.page and self.page.meta and self.page.meta.get("show_reset_button", True) == False:
+            reset_button_value = ''
+
         return f'''
         <input type="hidden" name="data" value=""/>
-        <pre class="parsons-answer">{full_answer}</pre>
+        {full_answer_html}
         <div class="ah-btn-group">
-            <input type="button" class="ah-button ah-button--borderless" name="resetButton" value="{reset_str}"/>
+            {reset_button_value}
             <input type="button" class="ah-button ah-button--primary" name="sendButton" value="{test_str}"/>
         </div>
         '''
 
     def create_answer(self):
+        if self.page and self.page.meta and self.page.meta.get("show_answers", True) == False:
+            return ''
+
         answer_str = _('Answer')
         wrong_str = _('Wrong answer')
         correct_str = _('Correct answer')
@@ -81,3 +99,8 @@ class ParsonsExercise(ExerciseAdmonition):
 
     def get_tags(self, el):
         return ['parsons-exercise']
+
+    def get_meta(self):
+        return {
+            'answer': self.full_answer
+        }

@@ -34,11 +34,28 @@ $indent-size: 4ch;
 }
 
 .parsons-container {
+  display: grid;
+  font-size: 1rem;
   border: $border-thickness solid var(--clr-parsons-line-border);
 
   pre {
     white-space: inherit;
   }
+}
+
+.admonition div.highlight.parsons-container {
+  padding: 0.4em;
+  background: var(--clr-background);
+  overflow: visible;
+}
+
+.parsons-area {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+
+  width: 100%;
+  min-height: 100%;
 }
 
 .parsons-code {
@@ -51,86 +68,23 @@ $indent-size: 4ch;
   }
 }
 
-.parsons-line {
-  position: relative;
-  padding: 0.5em;
-  white-space: pre-wrap;
-  cursor: move;
-  grid-column: 1 / span $subslot-count;
-  grid-row: 1;
+.parsons-line-container {
+  display: flex;
 }
 
-.line-slot {
-  margin-bottom: 0.2em;
-  border: 1px dashed var(--clr-parsons-drop-border);
-  min-height: 2.5em;
-  border-radius: $border-radius;
-  isolation: isolate;
+.parsons-line {
+  flex-grow: 1;
+  background: var(--clr-code-background);
+  padding: 0.1em 0.4em;
+  white-space: pre-wrap;
+  line-break: anywhere;
+  cursor: move;
+}
 
-  display: grid;
-  grid-template-columns: repeat(($subslot-count - 1), $indent-size) auto;
+.indent-btn {
+  padding-inline: 0.2em;
 
-  .subslot {
-    z-index: -1;
-    position: relative;
-    isolation: isolate;
-    grid-row: 1;
-
-    @for $i from 1 to ($subslot-count + 1) {
-      &.subslot-#{$i} {
-        grid-column: $i;
-
-        &.drag-over ~ .line-placeholder {
-          background-color: var(--clr-parsons-drop-background);
-          grid-column: $i / span ($subslot-count - $i + 1);
-          margin: 1px;
-          border-radius: $border-radius;
-        }
-
-        &.cur-indent ~ .parsons-line {
-          grid-column: $i / span ($subslot-count - $i + 1);
-        }
-      }
-    }
-
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0.1em;
-      background-color: var(--clr-parsons-drop-indent-block);
-      border-radius: $border-radius;
-      z-index: -1;
-    }
-
-    &.single-subslot {
-      grid-column: 1 / span $subslot-count;
-    }
-
-    &.single-subslot,
-    &.drag-over,
-    &.cur-indent {
-      &::before {
-        background-color: transparent;
-      }
-
-      ~ .subslot {
-        &::before {
-          background-color: transparent;
-        }
-      }
-    }
-  }
-
-  .line-placeholder {
-    grid-row: 1;
-    grid-column: 1 / span $subslot-count;
-  }
-
-  &.with-line {
-    border: 1px solid var(--clr-parsons-line-border);
-  }
-
-  &.dragging {
-    display: none;
+  &:disabled {
+    color: var(--clr-btn-disabled);
   }
 }

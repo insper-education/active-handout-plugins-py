@@ -1,11 +1,11 @@
-from django.urls import path
+from django.urls import path, re_path
 from core import views
 
 
 urlpatterns = [
     # Telemetry Data related
     path("telemetry", views.telemetry_data, name='telemetry-data'),
-    path("telemetry/answers/<str:course_name>/<str:exercise_slug>", views.get_all_answers),
+    re_path("telemetry/answers/", views.get_all_answers),
 
     # Auth related
     path("login", views.login_request, name='view-login'),
