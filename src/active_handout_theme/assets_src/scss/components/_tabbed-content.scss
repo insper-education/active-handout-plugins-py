@@ -8,7 +8,7 @@ $arrow-size: 0.9em;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
-  margin: 0 (-$admonition-extra-inline) $space-between-block;
+  margin: 0 0 $space-between-block;
 
   > input {
     display: none;
@@ -17,7 +17,7 @@ $arrow-size: 0.9em;
   .tabbed-content {
     width: 100%;
     border-radius: 0 $border-radius $border-radius $border-radius;
-    background: var(--clr-admonition-default-background);
+    background: var(--clr-tabbed-background);
   }
 
   .tabbed-labels.tabbed-scroll .tabbed-content {
@@ -27,6 +27,8 @@ $arrow-size: 0.9em;
   .tabbed-block {
     display: none;
     padding: $admonition-extra-block $admonition-extra-inline;
+    border: $border-thickness solid var(--clr-tabbed-border);
+    border-top: none;
   }
 
   @for $child-idx from 1 through $max-tabs {
@@ -58,8 +60,10 @@ $arrow-size: 0.9em;
     border-radius: $border-radius $border-radius 0 0;
     cursor: pointer;
     transition: background-color 250ms, color 250ms;
-    background: var(--clr-admonition-disabled-background);
+    background: var(--clr-tabbed-disabled-background);
+    color: var(--clr-tabbed-disabled-text);
     padding: $admonition-extra-block $admonition-extra-inline;
+    border: $border-thickness solid var(--clr-tabbed-disabled-border);
   }
 
   &.tabbed-scroll-left::before {
@@ -72,7 +76,7 @@ $arrow-size: 0.9em;
     color: gray;
     background: linear-gradient(
       to right,
-      var(--clr-admonition-disabled-background) 75%,
+      var(--clr-tabbed-disabled-background) 75%,
       rgba(255, 255, 255, 0)
     );
     content: "\25C0";
@@ -90,7 +94,7 @@ $arrow-size: 0.9em;
     background: linear-gradient(
       to right,
       rgba(255, 255, 255, 0),
-      var(--clr-admonition-disabled-background) 25%
+      var(--clr-tabbed-disabled-background) 25%
     );
     content: "\25B6";
     cursor: pointer;
@@ -109,13 +113,30 @@ $arrow-size: 0.9em;
       input:nth-child(#{$child-idx}):checked
         ~ .tabbed-labels
         > :nth-child(#{$child-idx}) {
-        color: var(--clr-admonition-default-text);
-        background: var(--clr-admonition-default-background);
+        color: var(--clr-text);
+        background: var(--clr-tabbed-background);
+        border: $border-thickness solid var(--clr-tabbed-border);
+        border-bottom: none;
+        margin-bottom: -0.2em;
+        z-index: 10;
       }
     }
   }
 
   .tabbed-labels {
+    position: relative;
+    isolation: isolate;
+
+    &::after {
+      content: "";
+      width: 100%;
+      height: $border-thickness;
+      background-color: var(--clr-tabbed-border);
+      position: absolute;
+      bottom: 0;
+      z-index: 1;
+    }
+
     > label {
       &:hover {
         color: var(--clr-text-default-hover);

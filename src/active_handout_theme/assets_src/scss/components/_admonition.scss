@@ -2,27 +2,43 @@
 @use "../abstracts/mixins" as *;
 @use "../base/typeset" as *;
 
+$border-bottom: $border-thickness solid var(--clr-admonition-border);
+
+details,
 .admonition {
-  --clr-background: var(--clr-admonition-default-background);
-  --clr-text: var(--clr-admonition-default-text);
-  --clr-title: var(--clr-admonition-default-title);
-  --clr-text-em: var(--clr-admonition-text-em);
-  --clr-text-strong: var(--clr-admonition-text-strong);
-
-  background: var(--clr-background);
-  margin: 0 (-$admonition-extra-inline) (2 * $admonition-extra-block);
-  padding: $admonition-extra-block $admonition-extra-inline;
+  margin: 0 0 (2 * $admonition-extra-block);
+  padding: 0.5 * $admonition-extra-block $admonition-extra-inline;
   border-radius: $border-radius;
+  border: $border-thickness solid var(--clr-admonition-border);
+}
 
-  .admonition-title {
-    font-family: $font-highlight;
-    font-size: map-get($font-sizes, "large");
-    font-weight: 700;
-    border-bottom: 2px solid currentColor;
-    color: var(--clr-title);
+.admonition .admonition-title,
+details summary {
+  background: var(--clr-admonition-background);
+  font-family: $font-highlight;
+  font-size: map-get($font-sizes, "mid");
+  line-height: 1.5;
+  font-weight: 700;
+  border-bottom: $border-bottom;
+  color: var(--clr-title);
+  margin: (-0.5 * $admonition-extra-block) (-$admonition-extra-inline)
+    $admonition-extra-block;
+  padding: 0.5 * $admonition-extra-block $admonition-extra-inline;
 
-    @include smaller-than("medium") {
-      font-size: map-get($font-sizes, "mid");
-    }
+  @include smaller-than("medium") {
+    font-size: map-get($font-sizes, "regular");
   }
+}
+
+details summary {
+  border-bottom: none;
+
+  &::marker {
+    color: var(--clr-text-dim);
+  }
+}
+
+details[open] summary {
+  border-bottom: $border-bottom;
+  margin-bottom: $space-between-block;
 }

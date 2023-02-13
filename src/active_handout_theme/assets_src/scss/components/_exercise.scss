@@ -2,12 +2,9 @@
 @use "../abstracts/variables" as *;
 
 .admonition.exercise {
-  --clr-background: var(--clr-admonition-exercise-background);
-  --clr-text: var(--clr-admonition-exercise-text);
-  --clr-title: var(--clr-admonition-exercise-title);
-  --clr-bullet: var(--clr-admonition-exercise-bullet);
-  --clr-text-em: var(--clr-admonition-exercise-text-em);
-  --clr-text-strong: var(--clr-admonition-exercise-text-strong);
+  --clr-admonition-background: var(--clr-exercise-background);
+
+  position: relative;
 
   &,
   & * {
@@ -15,12 +12,9 @@
   }
 
   &.done {
-    --clr-background: var(--clr-admonition-disabled-background);
-    --clr-text: var(--clr-admonition-disabled-text);
-    --clr-title: var(--clr-admonition-disabled-title);
-    --clr-bullet: var(--clr-admonition-disabled-bullet);
-    --clr-text-em: var(--clr-admonition-disabled-em);
-    --clr-text-strong: var(--clr-admonition-disabled-strong);
+    > * {
+      filter: grayscale(0.7);
+    }
 
     .alternative {
       &:hover,
@@ -30,6 +24,31 @@
         transform: none;
       }
     }
+
+    .admonition.answer {
+      --answer-hue-rotate: 180deg;
+
+      display: inherit;
+      filter: hue-rotate(var(--answer-hue-rotate));
+    }
+
+    &.correct {
+      .admonition.answer {
+        --answer-hue-rotate: 260deg;
+      }
+    }
+
+    &.wrong {
+      .admonition.answer {
+        --answer-hue-rotate: 100deg;
+      }
+    }
+  }
+
+  &.wrong {
+    animation-name: shakeIt;
+    animation-duration: 0.25s;
+    animation-iteration-count: 2;
   }
 
   form {
@@ -37,16 +56,33 @@
   }
 }
 
-.admonition.answer {
-  --clr-background: var(--clr-admonition-answer-background);
-  --clr-text: var(--clr-admonition-answer-text);
-  --clr-title: var(--clr-admonition-answer-title);
-  --clr-bullet: var(--clr-admonition-answer-bullet);
-  --clr-text-em: var(--clr-admonition-answer-text-em);
-  --clr-text-strong: var(--clr-admonition-answer-text-strong);
+@keyframes shakeIt {
+  from {
+    top: 0px;
+    left: 0px;
+  }
 
+  25% {
+    left: -40px;
+  }
+
+  75% {
+    left: 40px;
+  }
+
+  to {
+    top: 0px;
+    left: 0px;
+  }
+}
+
+.admonition.answer {
+  display: none;
   margin-top: (2 * $admonition-extra-block);
   margin-bottom: (-$admonition-extra-block);
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
@@ -80,17 +116,18 @@
     grid-template-columns: 1fr;
     gap: 0.5rem;
     max-width: 100%;
+
+    &:has(.alternative.selected) .alternative:not(.selected),
+    .alternative:is(.correct, .wrong) {
+      filter: brightness(0.95);
+    }
   }
 
   .alternative {
-    --clr-text: var(--clr-text-default);
-    --selection-color: var(--clr-blue-highlight-2);
-    --clr-code-background: #fefefebb;
-
     display: grid;
     grid-template-columns: auto 1fr;
     align-items: center;
-    background: var(--clr-admonition-default-background);
+    background: var(--clr-alternative-background);
     padding-right: $admonition-extra-inline;
     counter-increment: alternative-counter;
     border-radius: $border-radius;
@@ -98,7 +135,7 @@
     max-width: 100%;
 
     &.selected {
-      outline: 0.3rem solid var(--selection-color);
+      outline: 0.3em solid var(--clr-alternative-selected-outline);
     }
 
     &:hover,
@@ -109,28 +146,23 @@
     }
 
     &.correct {
-      background: var(--clr-success-primary-2);
-
       &::before {
         content: "\2713";
-        background: var(--clr-success-primary-5);
+        background: var(--clr-alternative-correct-outline);
       }
 
       &.selected {
-        outline-color: var(--clr-success-primary-4);
+        outline-color: var(--clr-alternative-correct-outline);
       }
     }
 
     &.wrong {
-      background: var(--clr-gray-primary-3);
-
       &::before {
         content: "\2715";
-        background: var(--clr-gray-primary-6);
       }
 
       &.selected {
-        outline-color: var(--clr-gray-primary-8);
+        outline-color: var(--clr-alternative-wrong-outline);
       }
     }
 
@@ -153,7 +185,7 @@
       display: inline-grid;
       place-items: center;
 
-      background: var(--clr-blue-highlight-3);
+      background: var(--clr-alternative-label-background);
       padding: $admonition-extra-block;
       margin-right: $admonition-extra-block;
       border-radius: $border-radius 0 0 $border-radius;
@@ -174,4 +206,8 @@
   .two-cols .alternative-set {
     grid-template-columns: 1fr 1fr;
   }
+}
+
+.admonition.answer {
+  margin-inline: (-$admonition-extra-inline);
 }

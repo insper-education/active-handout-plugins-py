@@ -1,0 +1,23 @@
+@use "../abstracts" as *;
+
+.fullpage-form {
+  max-width: min(50rem, calc(100% - 2rem));
+  margin: 1rem;
+  padding: 1rem 2rem;
+  background: white;
+  border-radius: $border-radius;
+
+  h1 {
+    margin-top: 0;
+  }
+
+  form {
+    input[type="text"],
+    input[type="password"],
+    input[type="email"] {
+      border-color: var(--clr-input-border);
+      display: block;
+      width: 100%;
+    }
+  }
+}

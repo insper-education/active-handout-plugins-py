@@ -2,36 +2,52 @@
 
 .ah-button,
 a.ah-button {
-  background: var(--clr-btn);
-  color: var(--clr-btn-text);
+  --btn-background-color: transparent;
+  --btn-background-hover-color: transparent;
+  --btn-border-color: var(--clr-btn);
+  --btn-border-hover-color: var(--clr-btn-hover);
+  --btn-text-color: var(--clr-btn-text);
+  --btn-text-hover-color: var(--clr-btn-text-hover);
+
+  background: var(--btn-background-color);
+  color: var(--btn-text-color);
 
   text-decoration: none;
   font-weight: normal;
 
   padding: 0.2em 0.6em;
 
-  border: 1px solid var(--clr-btn-border);
+  border: 1px solid var(--btn-border-color);
   border-radius: $border-radius;
 
-  &:hover,
-  &:active,
-  &:focus {
-    cursor: pointer;
-    transform: scale(1.01);
-    color: var(--clr-btn-text-hover);
+  &:not(:disabled) {
+    &:hover,
+    &:active,
+    &:focus {
+      --btn-background-color: var(--btn-background-hover-color);
+      --btn-border-color: var(--btn-border-hover-color);
+      --btn-text-color: var(--btn-text-hover-color);
+
+      cursor: pointer;
+    }
+
+    &:active {
+      transform: scale(0.99);
+    }
   }
 
   &:disabled {
     --clr-btn: var(--clr-btn-disabled);
+    --clr-btn-text: var(--clr-btn-text-disabled);
 
     cursor: default;
-    transform: none;
   }
 
   &--primary {
-    --clr-btn: var(--clr-btn-primary);
-    --clr-btn-text: var(--clr-btn-primary-text);
-    --clr-btn-text-hover: var(--clr-btn-primary-text-hover);
+    --btn-background-color: var(--clr-btn);
+    --btn-background-hover-color: var(--clr-btn-hover);
+    --btn-text-color: var(--clr-btn-text-primary);
+    --btn-text-hover-color: var(--clr-btn-text-primary-hover);
 
     border: none;
   }
@@ -44,4 +60,8 @@ a.ah-button {
 .ah-btn-group {
   display: flex;
   gap: 0.5em;
+
+  &--right {
+    justify-content: flex-end;
+  }
 }

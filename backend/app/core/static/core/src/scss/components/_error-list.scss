@@ -1,0 +1,13 @@
+$color: var(--clr-text-error, red);
+
+ul.errorlist {
+  li {
+    color: $color;
+    font-size: medium;
+    line-height: 1.5;
+
+    &::before {
+      color: $color;
+    }
+  }
+}

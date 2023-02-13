@@ -1,0 +1,131 @@
+@use "../abstracts" as *;
+@use "../base" as *;
+
+.dashboard-container {
+  display: none;
+
+  &.ready {
+    display: inherit;
+  }
+}
+
+.ah-dashboard {
+  margin: 0 0 $space-between-block;
+  width: $max-content-width;
+  max-width: 100%;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  p,
+  li {
+    margin: 0 0 0.5rem;
+    line-height: 1.1;
+  }
+
+  &--container {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "tree summary"
+      "tree timeline";
+    gap: $space-between-block;
+    margin-top: $space-between-block;
+
+    @include smaller-than("medium") {
+      grid-template-rows: auto auto 1fr;
+      grid-template-areas:
+        "summary"
+        "timeline"
+        "tree";
+    }
+  }
+
+  &--summary {
+    grid-area: summary;
+    background-color: var(--clr-admonition-background);
+    padding: $space-between-block;
+    border-radius: $border-radius;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+
+    &--total {
+      font-family: $font-highlight;
+      font-size: 3rem;
+      font-weight: bold;
+      line-height: 1;
+      color: var(--clr-subtitle);
+    }
+  }
+
+  &--timeline {
+    grid-area: timeline;
+
+    &--chart-container {
+      min-height: 5rem;
+    }
+  }
+
+  &--tree {
+    grid-area: tree;
+    $max-levels: 10;
+    @for $i from 0 through $max-levels {
+      &--#{$i} {
+        font-size: #{max(2 - $i * 0.2, 1)}rem;
+        filter: Opacity(#{max(1 - $i * 0.2, 0.4)});
+      }
+    }
+
+    &--title-container {
+      display: grid;
+      grid-template-areas:
+        "title percent"
+        "subtitle percent";
+      align-items: center;
+      font-family: $font-highlight;
+      line-height: 1;
+      margin-bottom: $space-between-block;
+      border-bottom: 3px dotted var(--clr-highlight);
+      gap: 0.5rem;
+    }
+
+    &--title {
+      grid-area: title;
+      font-family: $font-highlight;
+      color: var(--clr-title);
+    }
+
+    &--subtitle {
+      grid-area: subtitle;
+      display: block;
+      font-family: $font-regular;
+      color: var(--clr-subtitle);
+      font-weight: 400;
+      font-size: 0.8em;
+    }
+
+    &--progress {
+      grid-area: percent;
+      justify-self: end;
+      font-family: $font-highlight;
+      color: var(--clr-subtitle);
+      font-weight: bold;
+      margin-left: 0.5em;
+      font-size: 1.5em;
+    }
+
+    &--chart-container {
+      margin-bottom: $space-between-block;
+
+      &:not(:first-child) {
+        margin-top: (-$space-between-block);
+      }
+    }
+  }
+}

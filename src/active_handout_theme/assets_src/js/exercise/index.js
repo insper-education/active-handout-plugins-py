@@ -1,120 +1,150 @@
-import { getValue } from "../client-db";
-import { saveAndSendData } from "../telemetry";
+import { removeValue } from "../client-db";
+import { dispatchRememberEvent } from "../dom-utils";
+import { getSubmissionCache, sendAndCacheData } from "../telemetry";
 import {
   queryChoiceExercises,
   querySelfProgressExercises,
   queryOption,
   queryOptions,
-  querySubmitBtn,
-  queryTextInputs,
+  queryTextInputs as queryTextInput,
   queryTextExercises,
   queryCorrectOptionIdx,
   queryParentAlternative,
+  queryAllExercises,
+  queryExerciseForm,
 } from "./queries";
+import { disableInputs, dispatchResetHandoutEvent, markDone } from "./utils";
 
-export function initExercisePlugin(rememberCallbacks) {
-  rememberCallbacks.push(
-    {
-      match: matchTextExercises,
-      callback: rememberTextExercise,
-    },
-    {
-      match: matchChoiceExercises,
-      callback: rememberChoiceExercise,
-    },
-    {
-      match: matchSelfProgressExercises,
-      callback: rememberSelfProgressExercise,
-    }
-  );
+export function initExercisePlugin() {
+  initExerciseForms();
 
   initTextExercises();
   initChoiceExercises();
   initSelfProgressExercises();
+
+  const resetHandoutButton = document.getElementById("resetHandoutButton");
+
+  if (resetHandoutButton) {
+    resetHandoutButton.addEventListener("click", function () {
+      const exercises = queryAllExercises();
+      for (const ex of exercises) {
+        removeValue(ex);
+      }
+      dispatchResetHandoutEvent();
+      setTimeout(() => {
+        location.reload();
+      }, 200);
+    });
+  }
+}
+
+function initExerciseForms() {
+  const exercises = queryAllExercises();
+  for (const exercise of exercises) {
+    const form = queryExerciseForm(exercise);
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      disableInputs(form);
+      markDone(exercise);
+      dispatchRememberEvent(exercise);
+    });
+  }
 }
 
 function initTextExercises() {
-  queryTextExercises().forEach((el) => {
-    const prevAnswer = getValue(el);
+  queryTextExercises().forEach((exercise) => {
+    const input = queryTextInput(exercise);
+
+    exercise.addEventListener("remember", () => {
+      sendAndCacheData(exercise, input.value, 1);
+    });
+
+    const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
     if (prevAnswer !== null) {
-      const input = queryTextInputs(el);
       input.value = prevAnswer;
       const growWrap = input.closest(".grow-wrap");
       if (growWrap) {
         growWrap.dataset.replicatedValue = prevAnswer;
       }
+      disableInputs(exercise);
+      markDone(exercise);
 
-      querySubmitBtn(el).click();
+      if (!submitted) {
+        sendAndCacheData(exercise, prevAnswer, 1);
+      }
     }
   });
-}
-
-function matchTextExercises(el) {
-  return (
-    el.classList.contains("short") ||
-    el.classList.contains("medium") ||
-    el.classList.contains("long")
-  );
-}
-
-function rememberTextExercise(el) {
-  const textElement = queryTextInputs(el);
-  saveAndSendData(el, textElement.value);
-  return true;
 }
 
 function initChoiceExercises() {
-  queryChoiceExercises().forEach((el) => {
-    const prevAnswer = getValue(el);
+  queryChoiceExercises().forEach((exercise) => {
+    const choices = queryOptions(exercise);
+    const correctIdx = queryCorrectOptionIdx(exercise);
+
+    function showResults(shouldSubmit) {
+      const hasCorrectAnswer = correctIdx >= 0;
+
+      for (let choice of choices) {
+        const alternative = queryParentAlternative(choice);
+        if (hasCorrectAnswer) {
+          if (correctIdx === choice.value) {
+            alternative.classList.add("correct");
+            if (choice.checked) {
+              exercise.classList.add("correct");
+            }
+          } else {
+            alternative.classList.add("wrong");
+            if (choice.checked) {
+              exercise.classList.add("wrong");
+            }
+          }
+        }
+
+        if (shouldSubmit && choice.checked) {
+          const points = correctIdx === choice.value ? 1 : 0;
+          sendAndCacheData(exercise, choice.value, points);
+        }
+      }
+    }
+
+    exercise.addEventListener("remember", () => {
+      showResults(true);
+    });
+
+    const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
     if (prevAnswer !== null) {
-      const option = queryOption(el, prevAnswer);
+      const option = queryOption(exercise, prevAnswer);
       const alternative = queryParentAlternative(option);
       option.setAttribute("checked", true);
       alternative.classList.add("selected");
-      const submitBtn = querySubmitBtn(el);
-      submitBtn.disabled = false;
-      submitBtn.click();
+
+      disableInputs(exercise);
+      markDone(exercise);
+
+      showResults(!submitted);
     }
   });
-}
-
-function matchChoiceExercises(el) {
-  return el.classList.contains("choice");
-}
-
-function rememberChoiceExercise(el) {
-  const choices = queryOptions(el);
-  const correctIdx = queryCorrectOptionIdx(el);
-  for (let choice of choices) {
-    const alternative = queryParentAlternative(choice);
-    if (correctIdx === choice.value) {
-      alternative.classList.add("correct");
-    } else {
-      alternative.classList.add("wrong");
-    }
-
-    if (choice.checked) {
-      saveAndSendData(el, choice.value);
-    }
-  }
-
-  return true;
 }
 
 function initSelfProgressExercises() {
-  querySelfProgressExercises().forEach((el) => {
-    const prevAnswer = getValue(el);
+  querySelfProgressExercises().forEach((exercise) => {
+    exercise.addEventListener("remember", () => {
+      disableInputs(exercise);
+      markDone(exercise);
+      sendAndCacheData(exercise, true, 1);
+    });
+
+    const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
     if (prevAnswer !== null) {
-      querySubmitBtn(el).click();
+      disableInputs(exercise);
+      markDone(exercise);
+
+      if (!submitted) {
+        sendAndCacheData(exercise, true, 1);
+      }
     }
   });
-}
-
-function matchSelfProgressExercises(el) {
-  return el.classList.contains("self-progress");
-}
-
-function rememberSelfProgressExercise(el) {
-  saveAndSendData(el, true);
-  return true;
 }

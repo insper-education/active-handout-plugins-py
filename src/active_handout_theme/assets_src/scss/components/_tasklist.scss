@@ -3,10 +3,11 @@
 .ah-typeset {
   .task-list {
     padding-left: 0;
+    margin-bottom: $space-between-block;
 
     &-item {
-      &::before {
-        display: none;
+      &::marker {
+        content: "";
       }
     }
 
@@ -15,38 +16,40 @@
         display: none;
 
         + .task-list-indicator {
-          display: inline-grid;
-          place-items: baseline;
+          position: relative;
           isolation: isolate;
           width: 1em;
           height: 1em;
 
           &::before {
             content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-60%, -50%);
             width: 0.9em;
             height: 0.9em;
             border: 2px solid var(--clr-bullet);
             z-index: -1;
             border-radius: $border-radius;
-            grid-area: 1 / 1;
           }
 
           &::after {
             content: "\2713";
+            color: transparent;
             font-size: 1.5em;
-            grid-area: 1 / 1;
           }
         }
 
         &:checked + .task-list-indicator {
           &::after {
-            color: var(--clr-title-default);
+            color: var(--clr-title);
           }
         }
 
         &:not(:checked) + .task-list-indicator {
           &::after {
-            color: hsl(var(--clr-gray-primary-3-hsl) / 0.7);
+            color: transparent;
           }
         }
       }

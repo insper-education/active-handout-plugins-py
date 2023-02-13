@@ -1,3 +1,4 @@
+@use "sass:math";
 @use "../abstracts/index" as *;
 @use "../base/index" as *;
 
@@ -5,7 +6,10 @@
   $transition-time: 0.2s;
   $content-width: max(
     300px,
-    calc(50vw - #{$max-content-width / 2} - #{$admonition-extra-inline})
+    calc(
+      50vw - #{math.div($max-content-width, 2)} - #{$admonition-extra-inline} -
+        1rem
+    )
   );
 
   position: fixed;
@@ -19,7 +23,7 @@
   overflow-y: auto;
   overflow: hidden;
   transition: width $transition-time ease-in-out;
-  color: var(--clr-text);
+  color: var(--clr-title);
   @include vh(max-height, 100);
 
   .close-menu {
@@ -35,21 +39,16 @@
 
   .ah-nav-container {
     position: relative;
-    padding: 0.5em 1em;
+    padding: 0.5em 0 0.5em 1em;
     width: $content-width;
     height: 100%;
   }
 
-  ::after {
+  &::after {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(
-      to right,
-      var(--clr-background),
-      var(--clr-background) 90%,
-      transparent
-    );
+    background: var(--clr-background);
     z-index: -1;
   }
 
@@ -66,9 +65,6 @@
       width: 0%;
       height: 100%;
       z-index: -2;
-      transition: background $transition-time ease-in-out,
-        backdrop-filter $transition-time ease-in-out,
-        width 0s linear $transition-time;
     }
   }
 
@@ -86,6 +82,10 @@
     }
   }
 
+  &.preload {
+    transition: none;
+  }
+
   ul {
     padding: 0;
     list-style: none;
@@ -98,7 +98,8 @@
 
         ul {
           font-weight: normal;
-          border-left: 2px solid var(--clr-link);
+          border-left: 2px dotted var(--clr-subtitle);
+          margin-left: 0.1em;
         }
       }
     }
@@ -112,33 +113,40 @@
     color: var(--clr-link);
     text-decoration: none;
 
-    @include animated-underline(var(--clr-link), var(--clr-link), 0, 100%);
+    &:hover {
+      color: var(--clr-link-hover);
+    }
   }
 }
 
-.ah-nav-body {
+ul.ah-nav-body {
+  height: 100%;
+  overflow-y: auto;
+  padding: 0 1em 2em 0;
   font-size: map-get($font-sizes, "small");
 }
 
 .ah-togglable-item {
   .ah-togglable-handle {
     cursor: pointer;
-  }
+    position: relative;
 
-  &::before {
-    content: "\25B8";
-    display: inline-block;
-    color: var(--clr-link);
-    transition: transform 0.1s linear;
+    &::before {
+      content: "\25B8";
+      display: inline-block;
+      color: var(--clr-title);
+      transition: transform 0.1s linear;
+      margin-right: 0.5em;
+    }
   }
 
   &.opened {
-    &::before {
+    > .ah-togglable-handle::before {
       transform: rotate(90deg);
     }
 
     > ul {
-      @include vh(max-height, 100);
+      max-height: fit-content;
       overflow: auto;
     }
   }
@@ -146,6 +154,5 @@
   > ul {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.2s linear;
   }
 }

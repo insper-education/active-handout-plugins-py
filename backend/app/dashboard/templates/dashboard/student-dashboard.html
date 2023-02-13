@@ -1,0 +1,58 @@
+{% load i18n %}
+{% load dashboard_extras %}
+
+{% block content %}
+<div class="ah-dashboard">
+
+<h2 class="ah-dashboard--user-name">{{ user.first_name }}</h2>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+<div class="ah-dashboard--container">
+
+  <div class="ah-dashboard--summary">
+    <p>{% trans "You have already submitted" %}</p>
+    <span class="ah-dashboard--summary--total">{{ total_exercises }} {% trans "exercises" %}</span>
+  </div>
+
+  <div class="ah-dashboard--timeline">
+    <p>{% trans "Exercises submitted throughout the term" %}</p>
+
+    <div class="ah-dashboard--timeline--chart-container">
+      <canvas id="timeline-chart"></canvas>
+    </div>
+
+    <script>
+      function initChart() {
+        const ctx = document.getElementById('timeline-chart');
+
+        const labels = [{% create_timeline_labels course %}];
+        const datasets = [{% create_timeline_datasets course tags exercise_count_by_tag_slug_and_date %}];
+
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels,
+            datasets,
+          },
+          options: {
+            scales: {
+              x: {
+                type: 'time',
+              }
+            }
+          },
+        });
+      }
+      initChart();
+    </script>
+  </div>
+
+  <div class="ah-dashboard--tree">
+    {% include 'dashboard/fragments/tag-subtree.html' with root_tag=tag_tree.root level=0 %}
+  </div>
+
+</div>
+</div>
+{% endblock %}

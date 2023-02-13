@@ -1,79 +1,86 @@
+import { getSubmissionCache, sendAndCacheData } from "../telemetry";
 import {
+  queryAddIndentButton,
+  queryCorrectAnswer,
   queryDragArea,
   queryDropArea,
   queryParsonsExercises,
-  queryParsonsLines,
+  queryParsonsLine,
+  queryParsonsLineContainers,
+  queryRemoveIndentButton,
   queryResetButton,
   querySubmitButton,
-  selectSubslotUnderCursor,
 } from "./queries";
 import {
-  removeDragListeners,
-  cleanUpSlots,
-  createSlot,
-  eventIsInsideExercise,
-  hide,
-  insertLineInSubslot,
-  addDragListeners,
-  setCurrentSubslot,
+  addIndent,
+  createSortables,
+  disableIndentButtons,
+  finishParsonsExercise,
+  removeIndent,
   resetExercise,
+  saveLineIndentCount,
   submitExercise,
 } from "./utils";
-import { saveAndSendData } from "../telemetry";
 
-export function initParsonsPlugin(rememberCallbacks) {
-  queryParsonsExercises().forEach(registerListeners);
+export function initParsonsPlugin() {
+  queryParsonsExercises().forEach((exercise) => {
+    const sortables = registerListeners(exercise);
 
-  rememberCallbacks.push({
-    match: (el) => el.classList.contains("parsons"),
-    callback: (el, { correct }) => {
-      saveAndSendData(el, correct);
-      return true;
-    },
+    const { value: prevAnswer, submitted } = getSubmissionCache(exercise);
+    if (prevAnswer !== null) {
+      const hasAnswer = queryCorrectAnswer(exercise)?.innerText !== undefined;
+      sortables.forEach((sortable) => sortable.option("disabled", true));
+      disableIndentButtons(exercise);
+      finishParsonsExercise(exercise, prevAnswer.correct, hasAnswer);
+      if (!submitted) {
+        sendAndCacheData(exercise, prevAnswer, prevAnswer.correct ? 1 : 0);
+      }
+    }
   });
 }
 
 function registerListeners(exercise) {
-  const destArea = queryDropArea(exercise);
-  const origArea = queryDragArea(exercise);
-  let draggedLine = null;
+  const slug = exercise.getAttribute("data-slug");
+  const dragArea = queryDragArea(exercise);
+  const dropArea = queryDropArea(exercise);
+  const lineContainers = queryParsonsLineContainers(exercise);
 
-  queryResetButton(exercise).addEventListener("click", () =>
-    resetExercise(exercise)
-  );
+  const sortables = createSortables(slug, dragArea, dropArea);
 
-  querySubmitButton(exercise).addEventListener("click", () =>
-    submitExercise(exercise)
-  );
-
-  function onDrag(ev) {
-    ev.preventDefault();
-    if (!eventIsInsideExercise(ev, exercise)) return;
-    setCurrentSubslot(selectSubslotUnderCursor(ev, exercise), exercise);
-  }
-
-  function onDrop(ev) {
-    ev.preventDefault();
-    removeDragListeners(onDrag, onDrop);
-
-    if (eventIsInsideExercise(ev, exercise)) {
-      insertLineInSubslot(draggedLine, selectSubslotUnderCursor(ev, exercise));
-    }
-    cleanUpSlots(exercise);
-    draggedLine = null;
-  }
-
-  function onDragStart(ev) {
-    addDragListeners(onDrag, onDrop);
-
-    createSlot(origArea, 1, "single-subslot");
-    createSlot(destArea, 6);
-
-    draggedLine = ev.target;
-    hide(draggedLine);
-  }
-
-  queryParsonsLines(exercise).forEach((line) => {
-    line.addEventListener("dragstart", onDragStart);
+  window.addEventListener("reset-handout", () => {
+    resetExercise(exercise, sortables);
   });
+
+  lineContainers.forEach((lineContainer) => {
+    const addIndentBtn = queryAddIndentButton(lineContainer);
+    const removeIndentBtn = queryRemoveIndentButton(lineContainer);
+    const line = queryParsonsLine(lineContainer);
+
+    addIndentBtn?.addEventListener("click", (event) => {
+      event.preventDefault();
+      addIndent(line);
+      saveLineIndentCount(slug, lineContainer);
+      removeIndentBtn.removeAttribute("disabled");
+    });
+
+    removeIndentBtn?.addEventListener("click", (event) => {
+      event.preventDefault();
+      removeIndent(line);
+      saveLineIndentCount(slug, lineContainer);
+      if (!line.querySelector(".parsons-indent")) {
+        removeIndentBtn.setAttribute("disabled", "disabled");
+      }
+    });
+  });
+
+  queryResetButton(exercise)?.addEventListener("click", (event) => {
+    event.preventDefault();
+    resetExercise(exercise, sortables);
+  });
+  querySubmitButton(exercise).addEventListener("click", (event) => {
+    event.preventDefault();
+    submitExercise(exercise);
+  });
+
+  return sortables;
 }

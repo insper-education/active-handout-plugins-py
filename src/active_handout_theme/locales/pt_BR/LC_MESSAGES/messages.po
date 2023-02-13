@@ -1,31 +1,31 @@
 # Portuguese (Brazil) translations for Active-Handout.
-# Copyright (C) 2022 Active-Handout
+# Copyright (C) 2023 Active-Handout
 # This file is distributed under the same license as the Active-Handout
 # project.
-# FIRST AUTHOR <EMAIL@ADDRESS>, 2022.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2023.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Active-Handout 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2022-10-17 17:18-0300\n"
+"POT-Creation-Date: 2023-01-03 18:57-0300\n"
 "PO-Revision-Date: 2022-10-15 11:00-0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: pt_BR\n"
 "Language-Team: pt_BR <LL@li.org>\n"
-"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel 2.6.0\n"
+"Generated-By: Babel 2.10.3\n"
 
-#: src/active_handout_plugins/exercise.py:106
-#: src/active_handout_plugins/exercise.py:145
-#: src/active_handout_plugins/exercise.py:158
+#: src/active_handout_plugins/exercise.py:136
+#: src/active_handout_plugins/exercise.py:208
+#: src/active_handout_plugins/exercise.py:233
 msgid "Submit"
 msgstr "Enviar"
 
-#: src/active_handout_plugins/exercise.py:159
+#: src/active_handout_plugins/exercise.py:234
 msgid "Mark as done"
 msgstr "Marcar como feito"
 
@@ -38,8 +38,45 @@ msgid "Exercise"
 msgstr "Exercício"
 
 #: src/active_handout_plugins/l10n.py:26
+#: src/active_handout_plugins/parsons.py:72
 msgid "Answer"
 msgstr "Resposta"
+
+#: src/active_handout_plugins/l10n.py:26
+msgid "Progress"
+msgstr "Continuar"
+
+#: src/active_handout_plugins/l10n.py:26
+msgid "Warning"
+msgstr "Atenção"
+
+#: src/active_handout_plugins/l10n.py:26
+msgid "Danger"
+msgstr "Cuidado"
+
+#: src/active_handout_plugins/parsons.py:22
+msgid "Drag blocks from here"
+msgstr "Arraste blocos daqui"
+
+#: src/active_handout_plugins/parsons.py:23
+msgid "Drop blocks here"
+msgstr "Solte os blocos aqui"
+
+#: src/active_handout_plugins/parsons.py:59
+msgid "Reset"
+msgstr "Reiniciar"
+
+#: src/active_handout_plugins/parsons.py:60
+msgid "Test"
+msgstr "Testar"
+
+#: src/active_handout_plugins/parsons.py:73
+msgid "Wrong answer"
+msgstr "Resposta errada"
+
+#: src/active_handout_plugins/parsons.py:74
+msgid "Correct answer"
+msgstr "Resposta correta"
 
 #: src/active_handout_theme/404.html:4
 msgid "Page not found"
@@ -52,7 +89,7 @@ msgstr "A página que você tentou acessar não existe."
 #: src/active_handout_theme/404.html:9
 msgid "If you have typed this address, check if you have mistyped it."
 msgstr ""
-"Se você digitou esse endereço, verifique se não cometeu algum erro de "
+"Se você digitou este endereço, verifique se não ocorreu um erro de "
 "digitação."
 
 #: src/active_handout_theme/404.html:11
@@ -60,14 +97,14 @@ msgid ""
 "If you've copied this address or clicked a link, please email the "
 "instructor to let them know. Don't forget to include the address!"
 msgstr ""
-"Se você copiou esse endereço ou clicou em um link, por favor mande um "
-"email relatando o problema. Não esqueça de dizer qual é o endereço!"
+"Se você copiou este endereço ou clicou em um link, por favor, avise o "
+"professor. Não se esqueça de informar o endereço!"
 
-#: src/active_handout_theme/base.html:75
+#: src/active_handout_theme/base.html:133
 msgid "Previous"
 msgstr "Anterior"
 
-#: src/active_handout_theme/base.html:83
+#: src/active_handout_theme/base.html:141
 msgid "Next"
 msgstr "Próximo"
 

@@ -1,0 +1,11 @@
+body.fullscreen {
+  background: linear-gradient(
+    to bottom right,
+    var(--clr-primary),
+    var(--clr-highlight)
+  );
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

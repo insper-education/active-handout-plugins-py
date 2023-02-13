@@ -1,0 +1,99 @@
+@use "../abstracts" as *;
+
+$editor-padding: 1rem;
+$editor-border: 1px solid var(--clr-editor-inner-border);
+
+.file-editor {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+
+  background-color: #f7f3f7;
+  border-radius: $border-radius;
+  border: $border-thickness solid var(--clr-editor-border);
+
+  [data-readonly="true"] {
+    filter: grayscale(0.9);
+  }
+
+  .hidden-file {
+    display: none;
+  }
+}
+
+ul.file-tab {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-bottom: $editor-border;
+  padding-left: $editor-padding;
+  padding-right: $editor-padding;
+  margin-bottom: 0;
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    list-style: none;
+    color: var(--clr-tabbed-disabled-text);
+    margin: 0.5rem 1rem -1.5px 0;
+    padding-left: 0;
+    cursor: pointer;
+
+    // Not the first tab
+    & ~ & {
+      margin-left: 1rem;
+    }
+    &:last-child {
+      margin-right: 0;
+    }
+
+    &:only-child {
+      display: none;
+    }
+
+    &.active {
+      color: var(--clr-text);
+      border-bottom: 3px solid var(--clr-link);
+    }
+
+    &::before {
+      display: none;
+    }
+  }
+}
+
+.file-content-container {
+  display: flex;
+  overflow-x: hidden;
+  max-height: 80vh;
+}
+
+.file-content {
+  background-color: var(--clr-code-background);
+  padding: $editor-padding;
+  border-radius: $border-radius;
+  font-family: var(--font-mono);
+  transform: translateX(calc(var(--current-file, 0) * (-100%)));
+
+  width: 100%;
+  min-width: 100%;
+
+  pre.readonly-code {
+    margin: (-$editor-padding);
+    padding: $editor-padding;
+  }
+}
+
+.editor-controls {
+  display: flex;
+  justify-content: flex-end;
+
+  border-top: $editor-border;
+}
+
+.editor-reset-btn {
+  svg {
+    width: 1em;
+    height: 1em;
+  }
+}

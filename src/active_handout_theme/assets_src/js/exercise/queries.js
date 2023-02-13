@@ -1,3 +1,11 @@
+export function queryAllExercises() {
+  return document.querySelectorAll(".admonition.exercise");
+}
+
+export function queryExerciseForm(exercise) {
+  return exercise.querySelector(".exercise-form");
+}
+
 export function queryTextExercises() {
   return document.querySelectorAll(
     "div.admonition.exercise.short, " +
@@ -23,9 +31,7 @@ export function queryOptions(el) {
 }
 
 export function queryCorrectOptionIdx(el) {
-  const alternativeSet = el.querySelector(".alternative-set");
-  if (!alternativeSet) return "";
-  return alternativeSet.getAttribute("data-answer-idx");
+  return el.getAttribute("data-answer-idx");
 }
 
 export function queryOption(el, value) {
@@ -36,6 +42,6 @@ export function queryParentAlternative(option) {
   return option.closest(".alternative");
 }
 
-export function querySubmitBtn(el) {
-  return el.querySelector("input[type='submit']");
+export function queryAllInputs(el) {
+  return el.querySelectorAll("input,textarea");
 }

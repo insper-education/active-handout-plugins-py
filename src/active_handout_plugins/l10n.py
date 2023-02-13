@@ -23,4 +23,4 @@ def __translations():
     # This function is never called. This is just a trick to make gettext
     # detect the strings so they can be translated.
     _ = lambda x: x
-    TRANSLATIONS = [_('Tip'), _('Exercise'), _('Answer')]
+    TRANSLATIONS = [_('Tip'), _('Exercise'), _('Answer'), _('Progress'), _('Warning'), _('Danger')]

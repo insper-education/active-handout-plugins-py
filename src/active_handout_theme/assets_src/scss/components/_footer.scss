@@ -7,6 +7,8 @@
 
   max-width: $max-content-width;
   margin: 2rem auto 2rem;
+  padding-top: $space-between-block;
+  border-top: 1px solid var(--clr-dim);
 
   @include smaller-than("medium") {
     padding-inline: $small-extra-inline;
@@ -30,12 +32,12 @@
 
   .nav-label {
     grid-area: label;
-    color: var(--clr-text-disabled);
+    color: var(--clr-link);
   }
 
   .nav-title {
     grid-area: title;
-    color: var(--clr-title-default);
+    color: var(--clr-title);
   }
 
   .ah-prev {

@@ -1,0 +1,100 @@
+# PT-BR TRANSLATIONS
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-01-01 00:01-0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: core/templates/account/login.html:6 core/templates/account/login.html:10
+#: core/templates/account/login.html:40
+msgid "Sign In"
+msgstr "Entrar"
+
+#: core/templates/account/login.html:15
+msgid "Please sign in with one of your existing third party accounts."
+msgstr "Por favor, entre com alguma de suas contas externas."
+
+#: core/templates/account/login.html:23
+msgid "or"
+msgstr "ou"
+
+#: core/templates/account/login.html:28
+#, python-format
+msgid ""
+"If you have not created an account yet, then please\n"
+"<a href=\"%(signup_url)s\">sign up</a> first."
+msgstr ""
+
+#: core/templates/account/login.html:39
+msgid "Forgot Password?"
+msgstr "Esqueceu sua senha?"
+
+#: dashboard/templates/dashboard/fragments/tag-subtree.html:10
+msgid "Exercises"
+msgstr "Exercícios"
+
+#: dashboard/templates/dashboard/student-dashboard.html:16
+msgid "You have already submitted"
+msgstr "Você já enviou"
+
+#: dashboard/templates/dashboard/student-dashboard.html:17
+msgid "exercises"
+msgstr "exercícios"
+
+#: dashboard/templates/dashboard/student-dashboard.html:21
+msgid "Exercises submitted throughout the term"
+msgstr "Exercícios enviados durante o semestre"
+
+#~ msgid "Hello,"
+#~ msgstr "Olá,"
+
+#~ msgid ""
+#~ "An account on the Developer Life server has been created for this email "
+#~ "address. Click the link below to complete the registration."
+#~ msgstr ""
+#~ "Criamos uma conta no servidor de Developer Life para este e-mail. Clique "
+#~ "no link abaixo para completar o cadastro."
+
+#~ msgid ""
+#~ "We have received a request to reset the password for your account for "
+#~ "this email address. Click the link below to initiate the password reset "
+#~ "process."
+#~ msgstr ""
+#~ "Recebemos um pedido de redefinição de senha para a conta cadastrada neste "
+#~ "e-mail. Clique no link abaixo para redefinir sua senha."
+
+#~ msgid ""
+#~ "This link can only be used once. If you need to reset your password "
+#~ "again, please request another reset."
+#~ msgstr ""
+#~ "Este link pode ser utilizado apenas uma vez. Se você precisar redefinir "
+#~ "sua senha novamente, por favor, faça uma nova solicitação."
+
+#~ msgid "Your username:"
+#~ msgstr "Seu usuário:"
+
+#~ msgid "If you did not make this request, you can simply ignore this email."
+#~ msgstr ""
+#~ "Caso você não tenha feito este pedido, por favor, ignore este e-mail."
+
+#~ msgid "Sincerely,"
+#~ msgstr "Atenciosamente,"
+
+#~ msgid "Developer Life Team"
+#~ msgstr "Equipe Developer Life"
+
+#~ msgid "[DevLife] Set password"
+#~ msgstr "[DevLife] Definição de senha"
+
+#~ msgid "[DevLife] Password reset"
+#~ msgstr "[DevLife] Redefinição de senha"

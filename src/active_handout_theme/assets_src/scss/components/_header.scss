@@ -6,16 +6,16 @@
   top: 0;
   display: flex;
   padding: 0.5em 1em;
-  background: linear-gradient(
-    to bottom,
-    var(--clr-background),
-    var(--clr-background) 90%,
-    transparent
-  );
+  background: var(--clr-background);
   z-index: 999;
 
   font-family: $font-regular;
   font-size: map-get($font-sizes, "regular");
+
+  &--right {
+    display: flex;
+    margin-left: auto;
+  }
 }
 
 .ah-logo {

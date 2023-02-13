@@ -1,1 +1,3 @@
-import("./active-handout");
+import { initActiveHandout } from "./active-handout";
+
+initActiveHandout();

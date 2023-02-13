@@ -5,32 +5,42 @@ import { initExercisePlugin } from "./exercise";
 import { initFooterPlugin } from "./footnote";
 import { initParsonsPlugin } from "./parsons";
 import { initStyle } from "./style";
+import { initAuth } from "./auth";
+import { initCodeEditorPlugin } from "./code-editor";
+import * as clientDB from "./client-db";
+import { getSubmissionCache, sendAndCacheData } from "./telemetry";
+import { initDashboard } from "./dashboard";
 
 function onLoad() {
+  initAuth();
+
   initTabbedPlugin();
 
-  let rememberCallbacks = [];
-
-  window.addEventListener("remember", function (e) {
-    const element = e.detail.element;
-    for (let remember of rememberCallbacks) {
-      if (remember.match(element)) {
-        const stop = remember.callback(element, e.detail.args);
-        if (stop) break;
-      }
-    }
-  });
-
   initStyle();
+  initDashboard();
+  initProgressPlugin();
+  initExercisePlugin();
+  initParsonsPlugin();
+  initFooterPlugin();
   initMenuPlugin();
-  initProgressPlugin(rememberCallbacks);
-  initParsonsPlugin(rememberCallbacks);
-  initExercisePlugin(rememberCallbacks);
-  initFooterPlugin(rememberCallbacks);
+  initCodeEditorPlugin();
+
+  applyRegisteredInitializers();
 }
 
-if (document.readyState !== "loading") {
-  onLoad();
-} else {
-  document.addEventListener("DOMContentLoaded", onLoad);
+function applyRegisteredInitializers() {
+  window.initializers.forEach((initialize) => initialize());
+  window.initialized = true;
+}
+
+export function initActiveHandout() {
+  window.clientDB = clientDB;
+  window.sendAndCacheData = sendAndCacheData;
+  window.getSubmissionCache = getSubmissionCache;
+
+  if (document.readyState !== "loading") {
+    onLoad();
+  } else {
+    document.addEventListener("DOMContentLoaded", onLoad);
+  }
 }

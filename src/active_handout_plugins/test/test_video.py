@@ -11,7 +11,6 @@ class TestVideoAdmonition(TestCase):
             self.dedent('''
             !!! video 
                 ![sad](aaa.mp4)
-
             '''),
 
           self.dedent('''
@@ -26,9 +25,8 @@ class TestVideoAdmonition(TestCase):
     def test_youtube_link(self):
         self.assertMarkdownRenders(
             self.dedent('''
-            !!! video 
+            !!! video
                 ![Title](https://www.youtube.com/watch?v=Ni709gut3RE)
-
             '''),
 
           self.dedent('''
@@ -40,4 +38,18 @@ class TestVideoAdmonition(TestCase):
           ''')
             )
 
+    def test_youtube_with_channel(self):
+        self.assertMarkdownRenders(
+            self.dedent('''
+            !!! video
+                ![](https://www.youtube.com/watch?v=fmUkZNA9ECc&ab_channel=JamessonLeandro)
+            '''),
 
+          self.dedent('''
+            <section class="progress-section show">
+            <div>
+            <iframe height="500" src="https://www.youtube.com/embed/fmUkZNA9ECc?autoplay=0" type="text/html" width="100%"></iframe>
+            </div>
+            </section>
+          ''')
+            )

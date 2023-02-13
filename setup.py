@@ -1,6 +1,7 @@
+import os
 from setuptools import setup, find_packages
 
-VERSION = '0.3b3'
+VERSION = '0.4.3'
 
 with open("requirements.txt") as data:
     install_requires = [
@@ -24,7 +25,11 @@ setup(
         'mkdocs.themes': [
             'active-handout-theme = active_handout_theme',
         ],
-        'markdown.extensions': ['active-handout-plugins = active_handout_plugins:ActiveHandoutExtension']
+        'markdown.extensions': ['active-handout-plugins = active_handout_plugins:ActiveHandoutExtension'],
+        'mkdocs.plugins': ['active-handout = active_handout_plugins.mkdocs_plugin:ActiveHandoutPlugin']
     },
+    scripts=[
+        os.path.join('scripts', 'post_exercise_list.py'),
+    ],
     zip_safe=False
 )
