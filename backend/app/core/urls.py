@@ -12,6 +12,7 @@ urlpatterns = [
     path("logout", views.logout_request, name='view-logout'),
     path("user-info", views.user_info, name='user-info'),
     path("user-menu", views.user_menu, name='user-menu'),
+    path("user-token", views.user_token, name='user-token'),
 
     # Update/Retrieve exercise data
     path("exercises/<str:course_name>", views.exercise_list),
