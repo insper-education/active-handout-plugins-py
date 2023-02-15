@@ -1,0 +1,10 @@
+@use "../abstracts" as *;
+@use "../base" as *;
+
+.admonition.exercise .editable-button {
+    position: relative;
+    float: right;
+    width: 1em;
+    height: 1em;
+    background: url(../svg/edit-paper.svg);
+}

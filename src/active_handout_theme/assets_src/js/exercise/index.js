@@ -36,6 +36,16 @@ export function initExercisePlugin() {
       }, 200);
     });
   }
+
+  document.querySelectorAll("a.editable-button").forEach((val) => {
+    const exerciseRoot = val.parentElement.parentElement;
+
+    val.addEventListener("click", (evt) => {
+      evt.preventDefault();
+      exerciseRoot.querySelector("textarea,input[type='text']").disabled = false;
+      exerciseRoot.querySelector("input[type=submit]").disabled = false;
+    });
+  });
 }
 
 function initExerciseForms() {
