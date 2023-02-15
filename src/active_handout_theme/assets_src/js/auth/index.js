@@ -27,6 +27,10 @@ export function initAuth() {
     if (evt.target == authMenuContainer) {
       if (token) {
         document.getElementById("logout_btn").classList.remove("hidden");
+
+        // show page content if user is logged in
+        document.getElementById("content-behind-login")?.classList.remove("hidden");
+        document.getElementById("login-needed-message")?.classList.add("hidden");
       } else {
         document.getElementById("login_btn").classList.remove("hidden");
       }
