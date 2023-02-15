@@ -5,6 +5,14 @@ import random
 from .exercise_manager import ExerciseManager
 
 
+def get_page_meta(page, meta_key, default_value):
+    if page:
+        if page.meta:
+            return page.meta.get(meta_key, default_value)
+
+    return default_value
+    
+
 class ExerciseAdmonition(AdmonitionVisitor):
     def __init__(self, base_class, subclasses, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
@@ -175,7 +183,7 @@ class ChoiceExercise(ExerciseAdmonition):
 
         random.shuffle(html_alternatives)
 
-        hide_answers = self.page and self.page.meta and self.page.meta.get('show_answers', True) == False
+        hide_answers = get_page_meta(self.page, 'show_answers', True) == False
         if not hide_answers:
             el.set('data-answer-idx', str(self.answer_idx))
 
@@ -200,6 +208,13 @@ class TextExercise(ExerciseAdmonition):
         super().__init__('exercise', ['short', 'medium', 'long'], *args, **kwargs)
 
     def create_exercise_form(self, el, submission_form):
+        show_reset = get_page_meta(self.page, 'show_reset_button', True)
+        if show_reset:
+            title = el.find('p[@class="admonition-title"]')
+            editable_button = etree.SubElement(title, 'a')
+            editable_button.attrib['class'] = 'editable-button'
+            editable_button.attrib['href'] = '#'
+
         if self.has_class(el, 'short'):
             text_widget = '<input type="text" value="" name="data"/>'
         elif self.has_class(el, 'medium'):
@@ -213,6 +228,11 @@ class TextExercise(ExerciseAdmonition):
 
 <input class="ah-button ah-button--primary" type="submit" value="{submit_str}"/>
 '''
+
+    def add_extra_classes(self, el):
+        show_reset = get_page_meta(self.page, 'show_reset_button', True)
+        if show_reset:
+            el.attrib['class'] += ' editable'
 
     def get_tags(self, el):
         tags = ['text-exercise']
