@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Active-Handout 0.1\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2023-01-03 18:57-0300\n"
+"POT-Creation-Date: 2023-02-15 14:19-0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,86 +17,113 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.10.3\n"
 
-#: src/active_handout_plugins/exercise.py:136
-#: src/active_handout_plugins/exercise.py:208
-#: src/active_handout_plugins/exercise.py:233
+#: build/lib/active_handout_plugins/exercise.py:137
+#: build/lib/active_handout_plugins/exercise.py:209
+#: build/lib/active_handout_plugins/exercise.py:234
+#: src/active_handout_plugins/exercise.py:138
+#: src/active_handout_plugins/exercise.py:210
+#: src/active_handout_plugins/exercise.py:235
 msgid "Submit"
 msgstr ""
 
-#: src/active_handout_plugins/exercise.py:234
+#: build/lib/active_handout_plugins/exercise.py:235
+#: src/active_handout_plugins/exercise.py:236
 msgid "Mark as done"
 msgstr ""
 
+#: build/lib/active_handout_plugins/l10n.py:26
 #: src/active_handout_plugins/l10n.py:26
 msgid "Tip"
 msgstr ""
 
+#: build/lib/active_handout_plugins/l10n.py:26
 #: src/active_handout_plugins/l10n.py:26
 msgid "Exercise"
 msgstr ""
 
+#: build/lib/active_handout_plugins/l10n.py:26
+#: build/lib/active_handout_plugins/parsons.py:72
 #: src/active_handout_plugins/l10n.py:26
-#: src/active_handout_plugins/parsons.py:72
+#: src/active_handout_plugins/parsons.py:90
 msgid "Answer"
 msgstr ""
 
+#: build/lib/active_handout_plugins/l10n.py:26
 #: src/active_handout_plugins/l10n.py:26
 msgid "Progress"
 msgstr ""
 
+#: build/lib/active_handout_plugins/l10n.py:26
 #: src/active_handout_plugins/l10n.py:26
 msgid "Warning"
 msgstr ""
 
+#: build/lib/active_handout_plugins/l10n.py:26
 #: src/active_handout_plugins/l10n.py:26
 msgid "Danger"
 msgstr ""
 
-#: src/active_handout_plugins/parsons.py:22
+#: build/lib/active_handout_plugins/parsons.py:22
+#: src/active_handout_plugins/parsons.py:25
 msgid "Drag blocks from here"
 msgstr ""
 
-#: src/active_handout_plugins/parsons.py:23
+#: build/lib/active_handout_plugins/parsons.py:23
+#: src/active_handout_plugins/parsons.py:26
 msgid "Drop blocks here"
 msgstr ""
 
-#: src/active_handout_plugins/parsons.py:59
+#: build/lib/active_handout_plugins/parsons.py:59
+#: src/active_handout_plugins/parsons.py:70
 msgid "Reset"
 msgstr ""
 
-#: src/active_handout_plugins/parsons.py:60
+#: build/lib/active_handout_plugins/parsons.py:60
+#: src/active_handout_plugins/parsons.py:71
 msgid "Test"
 msgstr ""
 
-#: src/active_handout_plugins/parsons.py:73
+#: build/lib/active_handout_plugins/parsons.py:73
+#: src/active_handout_plugins/parsons.py:91
 msgid "Wrong answer"
 msgstr ""
 
-#: src/active_handout_plugins/parsons.py:74
+#: build/lib/active_handout_plugins/parsons.py:74
+#: src/active_handout_plugins/parsons.py:92
 msgid "Correct answer"
 msgstr ""
 
+#: build/lib/active_handout_theme/404.html:4
 #: src/active_handout_theme/404.html:4
 msgid "Page not found"
 msgstr ""
 
+#: build/lib/active_handout_theme/404.html:5
 #: src/active_handout_theme/404.html:5
 msgid "The page you've tried to access does not exist."
 msgstr ""
 
+#: build/lib/active_handout_theme/404.html:9
 #: src/active_handout_theme/404.html:9
 msgid "If you have typed this address, check if you have mistyped it."
 msgstr ""
 
+#: build/lib/active_handout_theme/404.html:11
 #: src/active_handout_theme/404.html:11
 msgid "If you've copied this address or clicked a link, please email the instructor to let them know. Don't forget to include the address!"
 msgstr ""
 
-#: src/active_handout_theme/base.html:133
+#: build/lib/active_handout_theme/base.html:135
+#: src/active_handout_theme/base.html:144
 msgid "Previous"
 msgstr ""
 
-#: src/active_handout_theme/base.html:141
+#: build/lib/active_handout_theme/base.html:143
+#: src/active_handout_theme/base.html:152
 msgid "Next"
+msgstr ""
+
+#: src/active_handout_theme/base.html:131
+msgid "Sign in to access this page."
 msgstr ""
 
