@@ -37,13 +37,14 @@ export function initExercisePlugin() {
     });
   }
 
-  document.querySelectorAll("a.editable-button").forEach((val) => {
-    const exerciseRoot = val.parentElement.parentElement;
+  document.querySelectorAll(".editable-button").forEach((val) => {
+    const exerciseRoot = val.closest(".exercise.admonition");
 
     val.addEventListener("click", (evt) => {
       evt.preventDefault();
-      exerciseRoot.querySelector("textarea,input[type='text']").disabled = false;
-      exerciseRoot.querySelector("input[type=submit]").disabled = false;
+      exerciseRoot.querySelectorAll(":disabled").forEach((el) => {
+        el.disabled = false;
+      });
     });
   });
 }

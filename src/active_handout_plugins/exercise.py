@@ -6,8 +6,7 @@ from .exercise_manager import ExerciseManager
 
 
 def get_page_meta(page, meta_key, default_value):
-    if page:
-        if page.meta:
+    if page and page.meta:
             return page.meta.get(meta_key, default_value)
 
     return default_value
@@ -211,9 +210,8 @@ class TextExercise(ExerciseAdmonition):
         show_reset = get_page_meta(self.page, 'show_reset_button', True)
         if show_reset:
             title = el.find('p[@class="admonition-title"]')
-            editable_button = etree.SubElement(title, 'a')
+            editable_button = etree.SubElement(title, 'button')
             editable_button.attrib['class'] = 'editable-button'
-            editable_button.attrib['href'] = '#'
 
         if self.has_class(el, 'short'):
             text_widget = '<input type="text" value="" name="data"/>'
