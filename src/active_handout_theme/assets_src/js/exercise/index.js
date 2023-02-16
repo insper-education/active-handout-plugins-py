@@ -36,6 +36,17 @@ export function initExercisePlugin() {
       }, 200);
     });
   }
+
+  document.querySelectorAll(".editable-button").forEach((val) => {
+    const exerciseRoot = val.closest(".exercise.admonition");
+
+    val.addEventListener("click", (evt) => {
+      evt.preventDefault();
+      exerciseRoot.querySelectorAll(":disabled").forEach((el) => {
+        el.disabled = false;
+      });
+    });
+  });
 }
 
 function initExerciseForms() {
