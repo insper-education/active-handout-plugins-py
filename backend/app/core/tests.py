@@ -149,6 +149,19 @@ class AnswerEndPointTest(TestCase):
             assert it["author"]["username"] == student.username
             assert it["exercise"]["course"] == self.course.name
             assert it["exercise"]["slug"] == exercise.slug
+
+    def test_get_student_answers_for_multiple_exercises(self):
+        student = self.students[0]
+        request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
+                                                                'exercise_slug': ','.join(e.slug for e in self.exercises)})
+        force_authenticate(request, user=student)
+        response = get_answers(request)
+        assert response.status_code == 200
+
+        assert len(response.data) == len(self.exercises)
+        for it in response.data:
+            assert it["author"]["username"] == student.username
+            assert it["exercise"]["course"] == self.course.name
     
     def test_exercise_course_with_slash(self):
         course = Course.objects.create(name="course/slash")
@@ -200,6 +213,18 @@ class AnswerEndPointTest(TestCase):
         for it in response.data:
             assert it["exercise"]["course"] == self.course.name
             assert it["exercise"]["slug"] == exercise.slug
+    
+    def test_get_all_answers_for_multiple_exercises(self):
+        request = self.factory.get(f'/api/telemetry/answers/all-students', 
+                                   {'course_name': self.course.name,
+                                    'exercise_slug': ','.join([e.slug for e in self.exercises]),
+                                    'all': 'true'})
+        force_authenticate(request, user=self.instructor)
+        response = get_all_students_answers(request)
+        assert response.status_code == 200
+        assert len(response.data) == 2 * (len(self.students) + 1) * len(self.exercises)  # Each student + instructor has 2 answers for each exercise
+        for it in response.data:
+            assert it["exercise"]["course"] == self.course.name
 
 
 class RedirectTests(TestCase):

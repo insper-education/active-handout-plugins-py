@@ -1,6 +1,7 @@
 from urllib.parse import unquote_plus
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
+from django.http import Http404
 from django.utils.http import urlencode
 from django.contrib.auth import logout
 from rest_framework.decorators import api_view, permission_classes
@@ -109,12 +110,14 @@ def ensure_tags_equal(exercise, tags):
 @login_required
 def get_answers(request):
     course_name = unquote(request.GET.get('course_name', ''))
-    exercise_slug = unquote(request.GET.get('exercise_slug', ''))
+    exercise_slugs = unquote(request.GET.get('exercise_slug', '')).split(',')
     list_all = request.GET.get('all', 'false') == 'true'
     
     course = get_object_or_404(Course, name=course_name)
-    exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
-    data = TelemetryData.objects.filter(exercise=exercise, author_id=request.user.id)
+    all_exercises = Exercise.objects.filter(course=course, slug__in=exercise_slugs)
+    if all_exercises.count() != len(exercise_slugs):
+        raise Http404("At least one exercise was not found")
+    data = TelemetryData.objects.filter(exercise__in=all_exercises, author_id=request.user.id)
     if not list_all:
         data = data.filter(last=True)
     return Response(TelemetryDataSerializer(data, many=True).data)
@@ -125,12 +128,14 @@ def get_answers(request):
 @login_required
 def get_all_students_answers(request):
     course_name = unquote(request.GET.get('course_name', ''))
-    exercise_slug = unquote(request.GET.get('exercise_slug', ''))
+    exercise_slugs = unquote(request.GET.get('exercise_slug', '')).split(',')
     list_all = request.GET.get('all', 'false') == 'true'
 
     course = get_object_or_404(Course, name=course_name)
-    exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
-    data = TelemetryData.objects.filter(exercise=exercise)
+    all_exercises = Exercise.objects.filter(course=course, slug__in=exercise_slugs)
+    if all_exercises.count() != len(exercise_slugs):
+        raise Http404("At least one exercise was not found")
+    data = TelemetryData.objects.filter(exercise__in=all_exercises)
     if not list_all:
         data = data.filter(last=True)
     return Response(TelemetryDataSerializer(data, many=True).data)
