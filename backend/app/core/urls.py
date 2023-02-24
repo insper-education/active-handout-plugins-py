@@ -5,7 +5,8 @@ from core import views
 urlpatterns = [
     # Telemetry Data related
     path("telemetry", views.telemetry_data, name='telemetry-data'),
-    re_path("telemetry/answers/", views.get_all_answers),
+    re_path("telemetry/answers/", views.get_answers),
+    path("telemetry/answers/all-students", views.get_all_students_answers, name='all-student-answers'),
 
     # Auth related
     path("login", views.login_request, name='view-login'),

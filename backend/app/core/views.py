@@ -106,15 +106,33 @@ def ensure_tags_equal(exercise, tags):
 
 
 @api_view(["GET"])
-@permission_classes([IsAdminUser])
 @login_required
-def get_all_answers(request):
+def get_answers(request):
     course_name = unquote(request.GET.get('course_name', ''))
     exercise_slug = unquote(request.GET.get('exercise_slug', ''))
+    list_all = request.GET.get('all', 'false') == 'true'
     
     course = get_object_or_404(Course, name=course_name)
     exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
-    data = TelemetryData.objects.filter(exercise=exercise, last=True)
+    data = TelemetryData.objects.filter(exercise=exercise, author_id=request.user.id)
+    if not list_all:
+        data = data.filter(last=True)
+    return Response(TelemetryDataSerializer(data, many=True).data)
+
+
+@api_view(["GET"])
+@permission_classes([IsAdminUser])
+@login_required
+def get_all_students_answers(request):
+    course_name = unquote(request.GET.get('course_name', ''))
+    exercise_slug = unquote(request.GET.get('exercise_slug', ''))
+    list_all = request.GET.get('all', 'false') == 'true'
+
+    course = get_object_or_404(Course, name=course_name)
+    exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
+    data = TelemetryData.objects.filter(exercise=exercise)
+    if not list_all:
+        data = data.filter(last=True)
     return Response(TelemetryDataSerializer(data, many=True).data)
 
 
