@@ -22,7 +22,6 @@ def login_request(request):
         next_url = request.session.get("next", None)
 
     request.session['next'] = next_url
-
     if request.user.is_authenticated:
         token, _ = Token.objects.get_or_create(user=request.user)
         return redirect(next_url + '?' + urlencode({"token": token.key}))
@@ -57,6 +56,14 @@ def user_menu(request):
 def user_info(request):
     user = request.user
     return Response(UserSerializer(user).data)
+
+
+@api_view(['GET'])
+@login_required
+def user_token(request):
+    user = request.user
+    token, _ = Token.objects.get_or_create(user=request.user)
+    return render(request, "user/token.html", {'user': user, 'token': token})
 
 
 @api_view(['POST'])
