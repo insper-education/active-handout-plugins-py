@@ -1,6 +1,7 @@
 import { postTelemetryData } from "./apiClient";
 import { loadToken } from "./auth";
 import { getKey, setJSONValue, getJSONValue } from "./client-db";
+import { addUploadIndicator } from "./upload-indicator";
 
 export function getSubmissionCache(element) {
   const exerciseCache = getJSONValue(element);
@@ -14,6 +15,9 @@ export function getSubmissionCache(element) {
     exerciseCache?.submitted !== undefined
   ) {
     submitted = exerciseCache.submitted;
+  }
+  if (submitted) {
+    addUploadIndicator(element);
   }
   return { value, submitted };
 }
@@ -32,6 +36,7 @@ export function sendAndCacheData(element, value, points, token) {
       (res) => {
         if (res !== null) {
           setJSONValue(slug, { value, submitted: true });
+          addUploadIndicator(element);
         }
       }
     );
