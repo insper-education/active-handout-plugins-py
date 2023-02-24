@@ -6,7 +6,7 @@ import { initFooterPlugin } from "./footnote";
 import { initParsonsPlugin } from "./parsons";
 import { initStyle } from "./style";
 import { initAuth } from "./auth";
-import { initCodeEditorPlugin } from "./code-editor";
+import { initCodeEditorPlugin, initEditor } from "./code-editor";
 import * as clientDB from "./client-db";
 import { getSubmissionCache, sendAndCacheData } from "./telemetry";
 import { initDashboard } from "./dashboard";
@@ -37,6 +37,7 @@ export function initActiveHandout() {
   window.clientDB = clientDB;
   window.sendAndCacheData = sendAndCacheData;
   window.getSubmissionCache = getSubmissionCache;
+  window.initEditor = initEditor;
 
   if (document.readyState !== "loading") {
     onLoad();
