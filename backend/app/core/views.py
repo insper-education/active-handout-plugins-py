@@ -4,6 +4,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import Http404
 from django.utils.http import urlencode
 from django.contrib.auth import logout
+from django.db.models import Max, Q
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import PermissionDenied
@@ -130,13 +131,22 @@ def get_all_students_answers(request):
     course_name = unquote(request.GET.get('course_name', ''))
     exercise_slugs = unquote(request.GET.get('exercise_slug', '')).split(',')
     list_all = request.GET.get('all', 'false') == 'true'
+    before = request.GET.get('before')
 
     course = get_object_or_404(Course, name=course_name)
     all_exercises = Exercise.objects.filter(course=course, slug__in=exercise_slugs)
     if all_exercises.count() != len(exercise_slugs):
         raise Http404("At least one exercise was not found")
     data = TelemetryData.objects.filter(exercise__in=all_exercises)
-    if not list_all:
+    if before:
+        data = data.filter(submission_date__lt=before)
+        if not list_all:
+            exercise_author_date = data.values('exercise_id', 'author_id').annotate(latest_date=Max('submission_date'))
+            q = Q()
+            for entries in exercise_author_date:
+                q |= Q(exercise_id=entries['exercise_id'], author_id=entries['author_id'], submission_date=entries['latest_date'])
+            data = data.filter(q)
+    elif not list_all:
         data = data.filter(last=True)
     return Response(TelemetryDataSerializer(data, many=True).data)
 
