@@ -1,4 +1,5 @@
 from urllib.parse import quote
+from datetime import timedelta
 
 from core.models import (Course, Exercise, ExerciseTag, Instructor, Student,
                          TelemetryData, User)
@@ -9,6 +10,7 @@ from core.views import (disable_exercise, enable_exercise, ensure_tags_equal,
 from django.core.exceptions import DisallowedRedirect
 from django.test import RequestFactory, TestCase
 from django.utils.translation import gettext as _
+from django.utils import timezone
 from rest_framework.authtoken.models import Token
 from rest_framework.test import APIRequestFactory, force_authenticate
 
@@ -118,9 +120,13 @@ class AnswerEndPointTest(TestCase):
 
         for st in self.students + [self.instructor]:
             for ex in self.exercises:
-                TelemetryData.objects.create(author=st, exercise=ex, points=0, log="NO")
-                TelemetryData.objects.create(author=st, exercise=ex, points=1, log="OK")
-
+                for answer, points, dt in [
+                    ('NO', 0, -2),
+                    ('NO', 0, -1),
+                    ('OK', 1, 1),
+                ]:
+                    submission_date = timezone.now() + timedelta(hours=dt)
+                    TelemetryData.objects.create(author=st, exercise=ex, points=points, log=answer, submission_date=submission_date)
 
     def test_student_cant_get_all_students_answers(self):
         request = self.factory.get(f'/api/telemetry/answers/', {'course_name': self.course.name,
@@ -186,7 +192,7 @@ class AnswerEndPointTest(TestCase):
         assert last_student0.last == False
 
     def test_get_all_last_answers(self):
-        request = self.factory.get(f'/api/telemetry/answers/all-students', 
+        request = self.factory.get(f'/api/telemetry/answers/all-students',
                                    {'course_name': self.course.name,
                                     'exercise_slug': self.exercises[0].slug})
         force_authenticate(request, user=self.instructor)
@@ -200,6 +206,22 @@ class AnswerEndPointTest(TestCase):
             assert pair not in author_exercise_pairs
             author_exercise_pairs.add(pair)
     
+    def test_get_all_last_answers_before_now(self):
+        request = self.factory.get(f'/api/telemetry/answers/all-students',
+                                   {'course_name': self.course.name,
+                                    'exercise_slug': self.exercises[0].slug,
+                                    "before": timezone.now().isoformat()})
+        force_authenticate(request, user=self.instructor)
+        response = get_all_students_answers(request)
+        assert response.status_code == 200
+        assert len(response.data) == len(self.students) + 1  # Each student + instructor has at least 1 submission and the last submission before now didn't pass
+        author_exercise_pairs = set()
+        for it in response.data:
+            assert it["points"] == 0 and it["log"] == "NO"
+            pair = (it["author"]["username"], it["exercise"]["course"], it["exercise"]["slug"])
+            assert pair not in author_exercise_pairs
+            author_exercise_pairs.add(pair)
+
     def test_get_all_answers(self):
         exercise = self.exercises[0]
         request = self.factory.get(f'/api/telemetry/answers/all-students', 
@@ -209,10 +231,26 @@ class AnswerEndPointTest(TestCase):
         force_authenticate(request, user=self.instructor)
         response = get_all_students_answers(request)
         assert response.status_code == 200
-        assert len(response.data) == 2 * (len(self.students) + 1)  # Each student + instructor has 2 answers
+        assert len(response.data) == 3 * (len(self.students) + 1)  # Each student + instructor has 3 answers
         for it in response.data:
             assert it["exercise"]["course"] == self.course.name
             assert it["exercise"]["slug"] == exercise.slug
+    
+    def test_get_all_answers_before_date(self):
+        exercise = self.exercises[0]
+        request = self.factory.get(f'/api/telemetry/answers/all-students', 
+                                   {'course_name': self.course.name,
+                                    'exercise_slug': exercise.slug,
+                                    'all': 'true',
+                                    'before': timezone.now().isoformat()})
+        force_authenticate(request, user=self.instructor)
+        response = get_all_students_answers(request)
+        assert response.status_code == 200
+        assert len(response.data) == 2 * (len(self.students) + 1)  # Each student + instructor has 3 answers, but only the first two were before now (the other is in the future)
+        for it in response.data:
+            assert it["exercise"]["course"] == self.course.name
+            assert it["exercise"]["slug"] == exercise.slug
+            assert it["log"] == "NO"
     
     def test_get_all_answers_for_multiple_exercises(self):
         request = self.factory.get(f'/api/telemetry/answers/all-students', 
@@ -222,7 +260,20 @@ class AnswerEndPointTest(TestCase):
         force_authenticate(request, user=self.instructor)
         response = get_all_students_answers(request)
         assert response.status_code == 200
-        assert len(response.data) == 2 * (len(self.students) + 1) * len(self.exercises)  # Each student + instructor has 2 answers for each exercise
+        assert len(response.data) == 3 * (len(self.students) + 1) * len(self.exercises)  # Each student + instructor has 3 answers for each exercise
+        for it in response.data:
+            assert it["exercise"]["course"] == self.course.name
+    
+    def test_get_all_answers_for_multiple_exercises_before_date(self):
+        request = self.factory.get(f'/api/telemetry/answers/all-students', 
+                                   {'course_name': self.course.name,
+                                    'exercise_slug': ','.join([e.slug for e in self.exercises]),
+                                    'all': 'true',
+                                    'before': timezone.now().isoformat()})
+        force_authenticate(request, user=self.instructor)
+        response = get_all_students_answers(request)
+        assert response.status_code == 200
+        assert len(response.data) == 2 * (len(self.students) + 1) * len(self.exercises)  # Each student + instructor has 3 answers for each exercise, but 1 is in the future
         for it in response.data:
             assert it["exercise"]["course"] == self.course.name
 
