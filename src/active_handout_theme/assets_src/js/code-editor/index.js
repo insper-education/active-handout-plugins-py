@@ -15,7 +15,7 @@ export function initCodeEditorPlugin() {
   editors.forEach(initEditor);
 }
 
-function initEditor(editor) {
+export function initEditor(editor) {
   const fileContents = Array.from(queryFileContents(editor));
   const tabs = queryFileTabs(editor);
 

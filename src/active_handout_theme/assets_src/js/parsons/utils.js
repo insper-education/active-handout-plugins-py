@@ -1,251 +1,205 @@
-import { getJSONValue, getKey, removeValue, setJSONValue } from "../client-db";
-import { createElementWithClasses } from "../dom-utils";
+import Sortable from "sortablejs";
+
+import { removeValue } from "../client-db";
 import { markDone, markNotDone } from "../exercise/utils";
 import { sendAndCacheData } from "../telemetry";
 import {
-  queryAreaFromInside,
-  queryContainerFromInside,
+  queryAddIndentButton,
   queryCorrectAnswer,
   queryDragArea,
   queryDropArea,
-  queryEmptySlot,
-  queryLastSlot,
-  queryParsonsContainers,
-  queryParsonsLines,
-  querySlotFromInside,
-  querySlots,
-  querySubslots,
-  selectExerciseUnderCursor,
+  queryIndentButtons,
+  queryIndents,
+  queryParsonsLine,
+  queryParsonsLineContainers,
+  queryRemoveIndentButton,
+  querySubmitButton,
 } from "./queries";
 
-export function saveCurrentState(exercise) {
-  const dropArea = queryDropArea(exercise);
-  const lines = [...queryParsonsLines(dropArea)];
-  const idsAndIndentations = lines.map((line) => {
-    const indentElement = line.parentElement.querySelector(".cur-indent");
-    const prefix = "subslot-";
-    const indentClass = [...indentElement.classList].filter((className) =>
-      className.startsWith(prefix)
-    )[0];
-    const indentCount = parseInt(indentClass.substr(prefix.length)) - 1;
+export function resetExercise(exercise, sortables) {
+  sortables.forEach((sortable) => sortable.option("disabled", false));
 
-    const id = line.querySelector("a").id;
-    return [id, indentCount];
-  });
-
-  const key = getStateCacheKey(exercise);
-  setJSONValue(key, idsAndIndentations);
+  enableSubmitButton(exercise);
   removeValue(exercise);
-}
-
-export function recoverPreviousState(exercise, dropAreaSlotCount) {
-  const key = getStateCacheKey(exercise);
-  const prevState = getJSONValue(key);
-  if (!prevState) {
-    return;
-  }
-
-  const dragArea = queryDragArea(exercise);
-  const dropArea = queryDropArea(exercise);
-  for (const [lineId, indentCount] of prevState) {
-    const line = dragArea.querySelector(`[name="${lineId}"]`).parentElement;
-    const [slot, subslots] = createSlot(dropArea, dropAreaSlotCount);
-    const subslot = subslots[indentCount];
-    insertLineInSubslot(line, subslot);
-  }
-  cleanUpSlots(exercise);
-}
-
-export function resetPrevState(exercise) {
-  const key = getStateCacheKey(exercise);
-  removeValue(key);
-  removeValue(exercise);
-}
-
-export function removeDragListeners(onDrag, onDrop) {
-  window.removeEventListener("dragenter", onDrag);
-  window.removeEventListener("dragover", onDrag);
-  window.removeEventListener("drop", onDrop);
-}
-
-export function addDragListeners(onDrag, onDrop) {
-  window.addEventListener("dragenter", onDrag);
-  window.addEventListener("dragover", onDrag);
-  window.addEventListener("drop", onDrop);
-}
-
-export function insertLineInSubslot(line, subslot) {
-  if (!subslot) return;
-
-  const slot = querySlotFromInside(subslot);
-  slot.classList.remove("drag-over");
-  slot.classList.add("with-line");
-  subslot.classList.remove("drag-over");
-  subslot.classList.add("cur-indent");
-
-  slot.appendChild(line);
-}
-
-export function eventIsInsideExercise(ev, exercise) {
-  return selectExerciseUnderCursor(ev) === exercise;
-}
-
-export function setCurrentSubslot(subslot, exercise) {
-  if (!subslot) return;
-
-  const slot = querySlotFromInside(subslot);
-  slot.classList.add("drag-over");
-  subslot.classList.add("drag-over");
-
-  querySlots(exercise).forEach((other) => {
-    if (other !== slot) other.classList.remove("drag-over");
-  });
-  querySubslots(exercise).forEach((other) => {
-    if (other !== subslot) other.classList.remove("drag-over");
-  });
-
-  shiftLines(slot);
-
-  const container = queryContainerFromInside(slot);
-  const containers = queryParsonsContainers(exercise);
-  resetContainers(containers, container);
-  container.classList.add("drag-over");
-}
-
-export function createSlot(area, subslotCount, additionalClass) {
-  const slot = createElementWithClasses("div", ["line-slot"], area);
-  const classList = ["subslot"];
-  if (additionalClass) classList.push(additionalClass);
-  const subslots = [];
-  for (let i = 0; i < subslotCount; i++) {
-    subslots.push(
-      createElementWithClasses("div", [...classList, `subslot-${i + 1}`], slot)
-    );
-  }
-  createElementWithClasses("div", ["line-placeholder"], slot);
-
-  return [slot, subslots];
-}
-
-export function hide(line) {
-  setTimeout(() => {
-    // We need this timeout because the element is copied to
-    // be displayed as an image while dragging.
-    // The timeout postpones hiding the slot (add .dragging).
-    querySlotFromInside(line).classList.add("dragging");
-  }, 0);
-}
-
-export function cleanUpSlots(exercise) {
-  const slots = querySlots(exercise);
-  for (let slot of slots) {
-    slot.classList.remove("dragging");
-    if (queryParsonsLines(slot).length === 0) {
-      slot.remove();
-    }
-  }
-}
-
-export function resetExercise(exercise) {
-  resetPrevState(exercise);
+  const slug = exercise.getAttribute("data-slug");
+  localStorage.removeItem(`${slug}-drag`);
+  localStorage.removeItem(`${slug}-drop`);
   markNotDone(exercise);
+  removeResultClasses(exercise);
+
+  const lineContainers = [...queryParsonsLineContainers(exercise)];
+  lineContainers.sort((a, b) => a.dataset.linecount - b.dataset.linecount);
 
   const origArea = queryDragArea(exercise);
-  const destArea = queryDropArea(exercise);
-  queryParsonsLines(destArea).forEach((line) => {
-    const slot = querySlotFromInside(line);
-    const newSlot = createElementWithClasses(
-      "div",
-      ["line-slot", "with-line"],
-      origArea
-    );
-    createElementWithClasses(
-      "div",
-      ["subslot", "cur-indent", "single-subslot"],
-      newSlot
-    );
-    createElementWithClasses("div", ["line-placeholder"], newSlot);
-    newSlot.appendChild(line);
-    slot.remove();
+  lineContainers.forEach((lineContainer) => {
+    const addIndentBtn = queryAddIndentButton(lineContainer);
+    addIndentBtn?.removeAttribute("disabled");
+    const removeIndentBtn = queryRemoveIndentButton(lineContainer);
+    removeIndentBtn?.setAttribute("disabled", "disabled");
+
+    origArea.appendChild(lineContainer);
+
+    const indentCountKey = getLineIndentCountKey(slug, lineContainer);
+    localStorage.removeItem(indentCountKey);
+    queryIndents(lineContainer)?.forEach((indent) => indent.remove());
   });
 }
 
 export function submitExercise(exercise) {
-  exercise.classList.remove("correct");
-  exercise.classList.remove("wrong");
+  removeResultClasses(exercise);
+  disableIndentButtons(exercise);
 
   const origArea = queryDragArea(exercise);
   const answerArea = queryDropArea(exercise);
 
-  const lines = queryParsonsLines(answerArea);
-  let correct = lines.length > 0 && queryParsonsLines(origArea).length === 0;
+  const lineContainers = queryParsonsLineContainers(answerArea);
+  let correct = false;
 
-  let answerCorrect = queryCorrectAnswer(exercise).innerText;
+  const correctAnswer = queryCorrectAnswer(exercise)?.innerText;
+  const hasAnswer = correctAnswer !== undefined;
+
   let answerText = "";
-  lines.forEach((line) => {
-    const slot = querySlotFromInside(line);
-    answerText += "    ".repeat(getIndentCount(slot)) + slot.innerText + "\n";
+  lineContainers.forEach((lineContainer) => {
+    const line = queryParsonsLine(lineContainer);
+    answerText += line.innerText + "\n";
   });
-  correct = correct && answerText === answerCorrect;
+  if (hasAnswer) {
+    correct =
+      lineContainers.length > 0 &&
+      queryParsonsLineContainers(origArea).length === 0;
+    correct = correct && answerText === correctAnswer;
+  }
 
   // We need this timeout so the browser has time to reset the
   // exercise before animating again
   setTimeout(() => {
-    finishParsonsExercise(exercise, correct);
+    finishParsonsExercise(exercise, correct, hasAnswer);
   }, 0);
   sendAndCacheData(exercise, { correct, code: answerText }, correct ? 1 : 0);
 }
 
-export function finishParsonsExercise(exercise, correct) {
+export function finishParsonsExercise(exercise, correct, hasAnswer) {
   markDone(exercise);
   if (correct) {
     exercise.classList.add("correct");
-  } else {
+  } else if (hasAnswer) {
     exercise.classList.add("wrong");
   }
+  disableSubmitButton(exercise);
 }
 
-function resetContainers(containers, exceptThis) {
-  containers.forEach((otherContainer) => {
-    if (otherContainer !== exceptThis) {
-      shiftLines(queryLastSlot(otherContainer));
-    }
+function removeResultClasses(exercise) {
+  exercise.classList.remove("correct");
+  exercise.classList.remove("wrong");
+}
+
+export function createSortables(slug, dragArea, dropArea) {
+  const dropAreaLines = retrieveOrder(`${slug}-drop`);
+  dropAreaLines.forEach((lineId) => {
+    const lineContainer = document.getElementById(lineId);
+    dropArea.appendChild(lineContainer);
+  });
+
+  return [createSortable(dragArea, slug), createSortable(dropArea, slug)];
+}
+
+function createSortable(area, slug) {
+  return new Sortable(area, {
+    group: slug,
+    dataIdAttr: "id",
+    store: {
+      get: restoreSortable,
+      set: saveSortable,
+    },
+    animation: 150,
   });
 }
 
-function shiftLines(slot) {
-  if (!slot.classList.contains("with-line")) return;
-
-  const area = queryAreaFromInside(slot);
-  const emptySlot = queryEmptySlot(area);
-
-  if (emptyIsBeforeRef(area, emptySlot, slot)) {
-    area.insertBefore(emptySlot, slot.nextSibling);
-  } else {
-    area.insertBefore(emptySlot, slot);
-  }
+function retrieveOrder(key) {
+  const order = localStorage.getItem(key);
+  return order ? order.split("|") : [];
 }
 
-function emptyIsBeforeRef(area, emptySlot, refSlot) {
-  for (let slot of querySlots(area)) {
-    if (slot === emptySlot) return true;
-    if (slot === refSlot) return false;
-  }
-  return false;
-}
+function restoreSortable(sortable) {
+  const key = getSortableKey(sortable);
+  const order = retrieveOrder(key);
+  const slug = sortable.options.group.name;
 
-function getIndentCount(slot) {
-  const subslot = slot.querySelector(".subslot.cur-indent");
-  const prefix = "subslot-";
-  for (let className of subslot.classList) {
-    if (className.startsWith(prefix)) {
-      const count = parseInt(className.substr(prefix.length));
-      if (count) return count - 1;
+  order.forEach((lineId) => {
+    const lineContainer = document.getElementById(lineId);
+    if (lineContainer) {
+      const indentCount = localStorage.getItem(
+        getLineIndentCountKey(slug, lineContainer)
+      );
+      if (indentCount && indentCount > 0) {
+        queryRemoveIndentButton(lineContainer).removeAttribute("disabled");
+        const line = queryParsonsLine(lineContainer);
+        for (let i = 0; i < indentCount; i++) {
+          addIndent(line);
+        }
+      }
     }
-  }
-  return 0;
+  });
+
+  return order;
 }
 
-function getStateCacheKey(exercise) {
-  return `${getKey(exercise)}--currentstate`;
+function saveSortable(sortable) {
+  const key = getSortableKey(sortable);
+
+  const order = sortable.toArray();
+  localStorage.setItem(key, order.join("|"));
+}
+
+function getSortableKey(sortable) {
+  let key = sortable.options.group.name;
+
+  if (sortable.el.classList.contains("parsons-drag-area")) {
+    key += "-drag";
+  } else {
+    key += "-drop";
+  }
+
+  return key;
+}
+
+export function saveLineIndentCount(slug, lineContainer) {
+  const line = queryParsonsLine(lineContainer);
+  const indents = line.querySelectorAll(".parsons-indent").length;
+  localStorage.setItem(getLineIndentCountKey(slug, lineContainer), indents);
+}
+
+function getLineIndentCountKey(slug, lineContainer) {
+  return `${slug}-${lineContainer.id}--indent-count`;
+}
+
+export function addIndent(line) {
+  const indent = document.createElement("span");
+  indent.classList.add("parsons-indent");
+  indent.innerText = "    ";
+
+  const lineAnchor = line.querySelector("a");
+  if (lineAnchor) {
+    line.insertBefore(indent, lineAnchor.nextSibling);
+  } else {
+    line.insertBefore(indent, line.firstChild);
+  }
+}
+
+export function removeIndent(line) {
+  line.querySelector(".parsons-indent")?.remove();
+}
+
+export function disableIndentButtons(exercise) {
+  queryIndentButtons(exercise).forEach((button) => {
+    button.setAttribute("disabled", "disabled");
+  });
+}
+
+function enableSubmitButton(exercise) {
+  querySubmitButton(exercise).removeAttribute("disabled");
+}
+
+function disableSubmitButton(exercise) {
+  querySubmitButton(exercise).setAttribute("disabled", "disabled");
 }

@@ -1,8 +1,10 @@
 from urllib.parse import unquote_plus
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
+from django.http import Http404
 from django.utils.http import urlencode
 from django.contrib.auth import logout
+from django.db.models import Max, Q
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import PermissionDenied
@@ -13,6 +15,8 @@ from core.models import Course, ExerciseTag, Exercise, TelemetryData, User
 from core.serializers import TelemetryDataSerializer, UserSerializer
 from core.shortcuts import redirect
 
+from urllib.parse import unquote
+
 
 def login_request(request):
     next_url = request.GET.get("next", None)
@@ -20,7 +24,6 @@ def login_request(request):
         next_url = request.session.get("next", None)
 
     request.session['next'] = next_url
-
     if request.user.is_authenticated:
         token, _ = Token.objects.get_or_create(user=request.user)
         return redirect(next_url + '?' + urlencode({"token": token.key}))
@@ -55,6 +58,14 @@ def user_menu(request):
 def user_info(request):
     user = request.user
     return Response(UserSerializer(user).data)
+
+
+@api_view(['GET'])
+@login_required
+def user_token(request):
+    user = request.user
+    token, _ = Token.objects.get_or_create(user=request.user)
+    return render(request, "user/token.html", {'user': user, 'token': token})
 
 
 @api_view(['POST'])
@@ -97,12 +108,46 @@ def ensure_tags_equal(exercise, tags):
 
 
 @api_view(["GET"])
+@login_required
+def get_answers(request):
+    course_name = unquote(request.GET.get('course_name', ''))
+    exercise_slugs = unquote(request.GET.get('exercise_slug', '')).split(',')
+    list_all = request.GET.get('all', 'false') == 'true'
+    
+    course = get_object_or_404(Course, name=course_name)
+    all_exercises = Exercise.objects.filter(course=course, slug__in=exercise_slugs)
+    if all_exercises.count() != len(exercise_slugs):
+        raise Http404("At least one exercise was not found")
+    data = TelemetryData.objects.filter(exercise__in=all_exercises, author_id=request.user.id)
+    if not list_all:
+        data = data.filter(last=True)
+    return Response(TelemetryDataSerializer(data, many=True).data)
+
+
+@api_view(["GET"])
 @permission_classes([IsAdminUser])
 @login_required
-def get_all_answers(request, course_name, exercise_slug):
+def get_all_students_answers(request):
+    course_name = unquote(request.GET.get('course_name', ''))
+    exercise_slugs = unquote(request.GET.get('exercise_slug', '')).split(',')
+    list_all = request.GET.get('all', 'false') == 'true'
+    before = request.GET.get('before')
+
     course = get_object_or_404(Course, name=course_name)
-    exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
-    data = TelemetryData.objects.filter(exercise=exercise, last=True)
+    all_exercises = Exercise.objects.filter(course=course, slug__in=exercise_slugs)
+    if all_exercises.count() != len(exercise_slugs):
+        raise Http404("At least one exercise was not found")
+    data = TelemetryData.objects.filter(exercise__in=all_exercises)
+    if before:
+        data = data.filter(submission_date__lt=before)
+        if not list_all:
+            exercise_author_date = data.values('exercise_id', 'author_id').annotate(latest_date=Max('submission_date'))
+            q = Q()
+            for entries in exercise_author_date:
+                q |= Q(exercise_id=entries['exercise_id'], author_id=entries['author_id'], submission_date=entries['latest_date'])
+            data = data.filter(q)
+    elif not list_all:
+        data = data.filter(last=True)
     return Response(TelemetryDataSerializer(data, many=True).data)
 
 

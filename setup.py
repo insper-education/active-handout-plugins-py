@@ -1,7 +1,7 @@
 import os
 from setuptools import setup, find_packages
 
-VERSION = '0.4'
+VERSION = '0.4.3'
 
 with open("requirements.txt") as data:
     install_requires = [

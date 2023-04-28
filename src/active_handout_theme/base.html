@@ -123,7 +123,16 @@
             {% if page.meta and page.meta.title %}<h1>{{ page.meta.title }}</h1>{% endif %}
             {% if page.meta and page.meta.subtitle %}<h2>{{ page.meta.subtitle }}</h2>{% endif %}
           </div>
-          {{ page.content }}
+          {% if page.meta and page.meta.force_login %}
+            <div id="content-behind-login" class="hidden">
+              {{ page.content }}
+            </div>
+            <div id="login-needed-message">
+              {% trans %}Sign in to access this page.{% endtrans %}
+            </div>
+          {% else %}
+            {{ page.content }}
+          {% endif %}
         {% endblock %}
       </main>
       <footer class="ah-footer ah-typeset">
