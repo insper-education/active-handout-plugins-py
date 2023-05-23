@@ -1,0 +1,13 @@
+<html>
+    <body>
+        Choose a course to view its details.
+        <ul name="course">
+        {% for course in courses %}
+            <li>
+                <a href="/dashboard/instructor/{{ course.name }}">{{ course.name }}</a>
+            </li>
+        {% endfor %}
+        </ul>
+    </body>
+    
+</html>

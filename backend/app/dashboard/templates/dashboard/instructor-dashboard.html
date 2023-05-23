@@ -1,0 +1,26 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <script src="{% static '/dashboard-chart.js' %}"></script>
+    <body>
+        {% for ex in data %}
+        <ul>
+            <div id="{{ ex.name }}">
+                <li>
+                    {% if 'choice-exercise' in ex.tags %}
+
+                    <button  onclick="generateChart(value)" value="{{ ex }}">{{ ex.name }}</button>
+                    {% else %}
+                        {{ ex.name }}
+                    {% endif %}
+                </li>
+            </div>
+        </ul>
+        {% endfor %}
+
+    </body>
+    
+</html>
