@@ -47,20 +47,28 @@ def instructor_dashboard(request, course_name):
 
     for ex in exercises:
         answers = {}
+        correct = ""
         tags = [tag.name for tag in ex.tags.all()]
         telemetry = list(TelemetryData.objects.filter(exercise=ex, last=True).values_list('log', flat=True))
         if 'choice-exercise' in tags:
             answers = {x:telemetry.count(x) for x in telemetry}
         elif 'parsons-exercise' in tags:
             # count number of times that each code key value inside telemetry ocurred
-            answers = {x['code']:telemetry.count(x) for x in telemetry}
-            print(answers)
+            answers = {x['code']: telemetry.count(x) for x in telemetry}
+            #get the code for the correct answer in telemetry data
+            correct = next((x['code'] for x in telemetry if x['correct']), "") 
+            if correct != "":
+                print(ex.slug, correct)
+
+
+
         data = {
             "name" : ex.slug,
             "tags" : tags,
             "telemetry" : {
                 "x" : list(answers.values()),
-                "y" : list(answers.keys())
+                "y" : [x.replace("'", '"').replace('"', r'\"') for x in answers.keys()],
+                "correct": correct.replace("'", '"').replace('"', r'\"')
             }
         }
         data_list.append(data)

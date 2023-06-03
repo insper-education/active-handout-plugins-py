@@ -3,14 +3,10 @@
 <!DOCTYPE html>
 <html>
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.css" rel="stylesheet" />
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
-    </script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-python.min.js"></script>
-
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="{% static '/prism.js' %}"></script>
+    <link href="{% static '/prism.css' %}" rel="stylesheet" />
+    <link href="{% static '/dashboard-chart.css' %}" rel="stylesheet" />
 
 
     <script src="{% static '/dashboard-chart.js' %}"></script>
@@ -21,7 +17,7 @@
                 <li>
                     {% if 'choice-exercise' in ex.tags %}
 
-                        <button  onclick="generateChart(value)" value="{{ ex }}">{{ ex.name }}</button>
+                        <button  onclick="generateChoice(value)" value="{{ ex }}">{{ ex.name }}</button>
                     {% elif 'parsons-exercise' in ex.tags %}
                         <button  onclick="generateParson(value)" value="{{ ex }}">{{ ex.name }}</button>
 

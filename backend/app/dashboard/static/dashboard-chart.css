@@ -1,0 +1,32 @@
+.parson-code {
+    scale: 0.9;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.parson-answers {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+div {
+    max-width: 100%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.1rem;
+    padding-bottom: 0.1rem;
+}
+
+canvas {
+
+    width: 20 rem;
+    height: 15rem;
+}
+
+code {
+    font-size: 0.8rem !important;
+}
