@@ -38,15 +38,23 @@ function generateChoice(ex) {
 
 
 function getWrongLines(answer, correct) {
-    if (correct == "")
-        return [];
     var answer_lines = answer.split("\n");
-    var correct_lines = correct.split("\n");
+    var correct_split = [];
     var wrong_lines = [];
+
+    if (correct.length == 0)
+        return [];
+    for (var i = 0; i < correct.length; i++) {
+        correct_split.push(correct[i].split("\n"));
+    }
     for (var i = 0; i < answer_lines.length; i++) {
-        if (answer_lines[i] != correct_lines[i]) {
-            wrong_lines.push(i + 1);
+        isCorrect = false;
+        for (var j=0; j<correct_split.length; j++){
+            if (correct_split[j][i] == answer_lines[i])
+                isCorrect = true;
         }
+        if (!isCorrect)
+            wrong_lines.push(i + 1);
     }
     return wrong_lines;
 }
@@ -67,7 +75,6 @@ function generateParson(ex) {
         return;
     }
     last_ex = exercise;
-
     var item_div = document.createElement("div");
     item_div.id = "item-" + exercise.name;
     item_div.className = "item";
@@ -86,13 +93,10 @@ function generateParson(ex) {
     var x_values = [];
 
     for (answer in exercise.telemetry.y) {
-        if (exercise.telemetry.y[answer] == "")
-            continue;
 
         var color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         colors.push(color);
         x_values.push(exercise.telemetry.x[answer]);
-
 
         var lines = getWrongLines(exercise.telemetry.y[answer], exercise.telemetry.correct);
         var code_div = document.createElement("div");

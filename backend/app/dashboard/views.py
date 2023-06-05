@@ -40,14 +40,17 @@ def instructor_courses(request):
 @api_view()
 @login_required
 def instructor_dashboard(request, course_name):
+
+    def convert_to_valid_json(data):
+        data = data.replace("'", '"').replace('"', r'\"')
+        return data
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
     exercises = Exercise.objects.filter(course=course)
     data_list = []
-
     for ex in exercises:
         answers = {}
-        correct = ""
+        correct = []
         tags = [tag.name for tag in ex.tags.all()]
         telemetry = list(TelemetryData.objects.filter(exercise=ex, last=True).values_list('log', flat=True))
         if 'choice-exercise' in tags:
@@ -55,22 +58,19 @@ def instructor_dashboard(request, course_name):
         elif 'parsons-exercise' in tags:
             # count number of times that each code key value inside telemetry ocurred
             answers = {x['code']: telemetry.count(x) for x in telemetry}
-            #get the code for the correct answer in telemetry data
-            correct = next((x['code'] for x in telemetry if x['correct']), "") 
-            if correct != "":
-                print(ex.slug, correct)
-
-
+            #create correct_list that gets all items that mach condition
+            correct = [x['code'] for x in telemetry if (x['correct'] and x['code'])]
+            #remove duplicates
+            correct = list(dict.fromkeys(correct))
 
         data = {
             "name" : ex.slug,
             "tags" : tags,
             "telemetry" : {
                 "x" : list(answers.values()),
-                "y" : [x.replace("'", '"').replace('"', r'\"') for x in answers.keys()],
-                "correct": correct.replace("'", '"').replace('"', r'\"')
+                "y" : [convert_to_valid_json(x) for x in answers.keys() if x != ''],
+                "correct": [convert_to_valid_json(answer) for answer in correct]
             }
         }
         data_list.append(data)
-
     return render(request, 'dashboard/instructor-dashboard.html',{"data" : data_list})
