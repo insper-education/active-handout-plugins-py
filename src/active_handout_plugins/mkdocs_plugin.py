@@ -21,7 +21,7 @@ class ActiveHandoutPluginConfig(base.Config):
     backend_url = c.Type(str, default='')
     course_slug = c.Type(str, default='')
     tag_tree = c.Type(list, default=[])
-
+    plugin_exercise_counter = c.Type(bool, default=True)
 
 class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
     def _setupURLs(self, config):
@@ -66,7 +66,11 @@ class ActiveHandoutPlugin(BasePlugin[ActiveHandoutPluginConfig]):
             'tag_tree': self.config.tag_tree,
             'exercise_manager': self.exercise_manager,
         }
+
+        config['PLUGIN_EXERCISE_COUNTER'] = self.config.plugin_exercise_counter
+
         config['active_handout'] = self._setupURLs(active_handout_config)
+
 
         return config
 
