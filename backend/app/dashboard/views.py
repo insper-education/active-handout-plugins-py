@@ -62,13 +62,17 @@ def instructor_dashboard(request, course_name):
             correct = [x['code'] for x in telemetry if (x['correct'] and x['code'])]
             #remove duplicates
             correct = list(dict.fromkeys(correct))
+        elif 'text-exercise' in tags:
+            print(ex.slug)
+            answers = [{y:str(x.split().count(y))for y in x.replace('"', '').replace("'","").split()} for x in telemetry]
+            print(answers)
 
         data = {
             "name" : ex.slug,
             "tags" : tags,
             "telemetry" : {
-                "x" : list(answers.values()),
-                "y" : [convert_to_valid_json(x) for x in answers.keys() if x != ''],
+                "x" : list(answers.values()) if type(answers) == dict else answers,
+                "y" : [convert_to_valid_json(x) for x in answers.keys() if x != ''] if type(answers) == dict else answers,
                 "correct": [convert_to_valid_json(answer) for answer in correct]
             }
         }

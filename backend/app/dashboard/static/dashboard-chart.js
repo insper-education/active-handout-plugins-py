@@ -163,3 +163,44 @@ function generateChart(name, data, labels, type, colors) {
     });
 
 }
+
+function generateWordCloud(ex){
+    if (last_ex != null) {
+        const element = document.getElementById(`item-${last_ex.name}`);
+        element.remove();
+    }
+
+    ex = ex.replace(/'/g, '"');
+    ex = ex.replace(/\\\\/g, '\\');
+    var exercise = JSON.parse(ex);
+    if (exercise.telemetry.x.length == 0) {
+        last_ex = null;
+        return;
+    }
+    last_ex = exercise;
+    var item_div = document.createElement("div");
+    item_div.id = "item-" + exercise.name;
+    document.getElementById(exercise.name).appendChild(item_div);
+
+    var lista1 = [];
+    for (answer in exercise.telemetry.x){
+        var lista2 = [];
+        var canvas = document.createElement("canvas");
+        item_div.appendChild(canvas);
+        canvas.id = `canvas-${answer}`
+        for (word in exercise.telemetry.x[answer]){
+            var lista3 = [];
+            lista3.push(word);
+            lista3.push(10 * parseInt(exercise.telemetry.x[answer][word]));
+            //lista3.push(answer );
+            lista2.push(lista3);
+        }
+        WordCloud(document.getElementById(`canvas-${answer}`), { list: lista2} );
+
+    }
+    console.log(lista1[0]);
+    WordCloud(document.getElementById(`canvas-${answer}`), { list: lista1[0]} );
+
+
+
+}

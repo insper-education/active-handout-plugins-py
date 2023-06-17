@@ -5,10 +5,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="{% static '/prism.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
     <link href="{% static '/prism.css' %}" rel="stylesheet" />
     <link href="{% static '/dashboard-chart.css' %}" rel="stylesheet" />
-
-
     <script src="{% static '/dashboard-chart.js' %}"></script>
     <body>
         {% for ex in data %}
@@ -21,14 +20,26 @@
                     {% elif 'parsons-exercise' in ex.tags %}
                         <button  onclick="generateParson(value)" value="{{ ex }}">{{ ex.name }}</button>
 
+                    {% elif 'text-exercise' in ex.tags %}
+                        <button  onclick="generateWordCloud(value)" value="{{ ex }}">{{ ex.name }}</button>
+
                     {% else %}
+                    
                         {{ ex.name }}
                     {% endif %}
                 </li>
             </div>
         </ul>
         {% endfor %}
+        <div>
+        <canvas id="teste-canvas"></canvas>
+        </div>
+        <script>
+        WordCloud(document.getElementById(`teste-canvas`), {list: [['foo', 1], ['bar', 12]]} );
+        //WordCloud(document.getElementById(`teste-canvas`), {list: [['pega', 1],  ['todos', 1]]} );
 
+
+        </script>
     </body>
     
 </html>
