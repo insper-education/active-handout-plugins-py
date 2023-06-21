@@ -43,11 +43,13 @@ class ActiveHandoutExtension(Extension):
         md.treeprocessors.register(exercise_admonitions, 'exercises', 15)
         register_treeprocessor_builder(VideoAdmonition, 'video-admonition', 15)
         register_treeprocessor_builder(PdfAdmonition, 'pdf-admonition', 15)
-        register_treeprocessor_builder(CounterProcessor, 'counter', 15)
+        if self.mkdocs_config['PLUGIN_EXERCISE_COUNTER']:
+            register_treeprocessor_builder(CounterProcessor, 'counter', 15)
         register_treeprocessor_builder(ProgressButtons, 'progress', 15)
         register_treeprocessor_builder(CodeEditorAdmonition, 'code-editor', 20)
         register_treeprocessor_builder(DashboardAdmonition, 'dashboard', 15)
         self._register_treeprocessors(md)
+
 
         custom_variables = self.getConfig('custom_variables')
         if 'custom_variables' in self.mkdocs_config.get('extra', {}):
