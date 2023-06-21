@@ -1,17 +1,21 @@
 {% if not nav_item.children %}
   {% if nav_item.active %}
+
     <li class="active ah-togglable-item opened">
       <span class="ah-togglable-handle">{{ nav_item.title }}</span>
       <ul>
         {% for toc_item in page.toc %}
-          <li class="ah-toc-item">
-            <a href="{{ toc_item.url }}">{{ toc_item.title }}</a>
-          </li>
-          {% for toc_subitem in toc_item.children %}
-          <li class="ah-toc-item">
-            <a href="{{ toc_subitem.url }}">{{ toc_subitem.title }}</a>
-          </li>
-          {% endfor %}
+          {% set first = toc | first %}
+            {% if toc != first %}
+              <li class="ah-toc-item">
+                <a href="{{ toc_item.url }}">{{ toc_item.title }}</a>
+              </li>
+            {% endif %}
+            {% for toc_subitem in toc_item.children %}
+              <li class="ah-toc-item">
+                <a href="{{ toc_subitem.url }}">{{ toc_subitem.title }}</a>
+              </li>
+            {% endfor %}
         {% endfor %}
       </ul>
     </li>
