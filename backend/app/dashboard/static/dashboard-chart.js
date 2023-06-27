@@ -1,29 +1,21 @@
-var last_ex = null;
+function generateChoice(slug, answers) {
 
-function generateChoice(ex) {
-    if (last_ex != null) {
-        const element = document.getElementById(`item-${last_ex.name}`);
-        element.remove();
-    }
+    answers = answers.replace(/'/g, '"');
+    answers = answers.replace(/\\\\/g, '\\');
+    var answers_obj = JSON.parse(answers);
 
-    ex = ex.replace(/'/g, '"');
-    var exercise = JSON.parse(ex);
-
-    if (exercise.telemetry.x.length == 0) {
-        last_ex = null;
+    if (Object.keys(answers_obj).length == 0) {
         return;
     }
-    last_ex = exercise;
-
-    var item_div = document.createElement("div");
-    item_div.id = "item-" + exercise.name;
+    var item_div = document.getElementById(slug.replace(/\//g, '-'));
+    item_div.id = "item-" + slug;
     item_div.className = "item";
 
 
     var canvas = document.createElement("canvas");
-    canvas.id = `canvas-${exercise.name}-chart`;
+    canvas.id = `canvas-${slug}-chart`;
 
-    document.getElementById(exercise.name).appendChild(item_div);
+    document.getElementById(slug).appendChild(item_div);
     item_div.appendChild(canvas);
 
     var barColors = [
@@ -33,78 +25,68 @@ function generateChoice(ex) {
         "#e8c3b9",
         "#1e7145"
     ];
-    generateChart(exercise.name, exercise.telemetry.x, exercise.telemetry.y, "pie", barColors);
+    var x = Object.keys(answers_obj)
+    var y = [];
+    for (var key in answers_obj){
+        y.push(answers_obj[key])
+    }
+    generateChart(slug, x, y, "pie", barColors);
 }
 
 
 function getWrongLines(answer, correct) {
     var answer_lines = answer.split("\n");
-    var correct_split = [];
+    var correct_lines = correct.split("\n");
     var wrong_lines = [];
-
     if (correct.length == 0)
         return [];
-    for (var i = 0; i < correct.length; i++) {
-        correct_split.push(correct[i].split("\n"));
-    }
     for (var i = 0; i < answer_lines.length; i++) {
-        isCorrect = false;
-        for (var j=0; j<correct_split.length; j++){
-            if (correct_split[j][i] == answer_lines[i])
-                isCorrect = true;
-        }
-        if (!isCorrect)
+        if (correct_lines[i] != answer_lines[i])
             wrong_lines.push(i + 1);
     }
     return wrong_lines;
 }
 
-function generateParson(ex) {
+function generateParson(slug, answers, correct) {
 
-    if (last_ex != null) {
-        const element = document.getElementById(`item-${last_ex.name}`);
-        element.remove();
-    }
+    answers = answers.replace(/'/g, '"');
+    answers = answers.replace(/\\\\/g, '\\');
 
-    ex = ex.replace(/'/g, '"');
-    ex = ex.replace(/\\\\/g, '\\');
 
-    var exercise = JSON.parse(ex);
-    if (exercise.telemetry.x.length == 0) {
-        last_ex = null;
+    var answers_obj = JSON.parse(answers);
+    
+    if (Object.keys(answers_obj).length == 0) {
         return;
     }
-    last_ex = exercise;
-    var item_div = document.createElement("div");
-    item_div.id = "item-" + exercise.name;
+    var item_div = document.getElementById(slug.replace(/\//g, '-'));
+    item_div.id = "item-" + slug;
     item_div.className = "item";
 
     var canvas = document.createElement("canvas");
-    canvas.id = `canvas-${exercise.name}-chart`;
+    canvas.id = `canvas-${slug}-chart`;
 
     answer_div = document.createElement("div");
     answer_div.className = "parson-answers";
 
-    document.getElementById(exercise.name).appendChild(item_div);
+    document.getElementById(slug).appendChild(item_div);
     item_div.appendChild(canvas);
     item_div.appendChild(answer_div);
 
     var colors = [];
     var x_values = [];
 
-    for (answer in exercise.telemetry.y) {
-
+    for (var answer in answers_obj) {
         var color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         colors.push(color);
-        x_values.push(exercise.telemetry.x[answer]);
+        x_values.push(answers_obj[answer]);
 
-        var lines = getWrongLines(exercise.telemetry.y[answer], exercise.telemetry.correct);
+        var lines = getWrongLines(answer, correct);
         var code_div = document.createElement("div");
         var pre = document.createElement("pre");
         var code = document.createElement("code");
 
         code.className = "language-python";
-        code.innerHTML = exercise.telemetry.y[answer];
+        code.innerHTML = answer;
         pre.setAttribute("data-line", lines.join(","));
         code_div.style.backgroundColor = color;
         code_div.className = "parson-code";
@@ -123,7 +105,7 @@ function generateParson(ex) {
         labels.push(String.fromCharCode(65 + i));
     }
 
-    generateChart(exercise.name, x_values, labels, "bar", colors);
+    generateChart(slug, x_values, labels, "bar", colors);
 
 }
 
@@ -164,42 +146,21 @@ function generateChart(name, data, labels, type, colors) {
 
 }
 
-function generateWordCloud(ex){
-    if (last_ex != null) {
-        const element = document.getElementById(`item-${last_ex.name}`);
-        element.remove();
-    }
+function generateWordCloud(slug, answers){
 
-    ex = ex.replace(/'/g, '"');
-    ex = ex.replace(/\\\\/g, '\\');
-    var exercise = JSON.parse(ex);
-    if (exercise.telemetry.x.length == 0) {
-        last_ex = null;
+    answers = answers.replace(/'/g, '"');
+    answers = answers.replace(/\\\\/g, '\\');
+    var answers_obj = JSON.parse(answers);
+    if (Object.keys(answers_obj).length == 0) {
         return;
     }
-    last_ex = exercise;
-    var item_div = document.createElement("div");
-    item_div.id = "item-" + exercise.name;
-    document.getElementById(exercise.name).appendChild(item_div);
-
-    var lista1 = [];
-    for (answer in exercise.telemetry.x){
-        var lista2 = [];
-        var canvas = document.createElement("canvas");
-        item_div.appendChild(canvas);
-        canvas.id = `canvas-${answer}`
-        for (word in exercise.telemetry.x[answer]){
-            var lista3 = [];
-            lista3.push(word);
-            lista3.push(10 * parseInt(exercise.telemetry.x[answer][word]));
-            //lista3.push(answer );
-            lista2.push(lista3);
-        }
-        WordCloud(document.getElementById(`canvas-${answer}`), { list: lista2} );
-
-    }
-    console.log(lista1[0]);
-    WordCloud(document.getElementById(`canvas-${answer}`), { list: lista1[0]} );
+    var item_div = document.getElementById(slug.replace(/\//g, '-'));
+    item_div.id = "item-" + slug;
+    document.getElementById(slug).appendChild(item_div);
+    var canvas = document.createElement("canvas");
+    canvas.id = `canvas-${slug}`
+    item_div.appendChild(canvas);    
+    WordCloud(document.getElementById(`canvas-${slug}`), { list: answers_obj} );
 
 
 

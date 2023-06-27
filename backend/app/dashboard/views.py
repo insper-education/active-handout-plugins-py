@@ -40,41 +40,48 @@ def instructor_courses(request):
 @api_view()
 @login_required
 def instructor_dashboard(request, course_name):
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    exercises = Exercise.objects.filter(course=course)
+    exercise_data = []
+    for ex in exercises:
+        tags = [tag.name for tag in ex.tags.all() if tag.name != None]
+        data = {"exercise": ex, "tags": tags}
+        exercise_data.append(data)
+    
+    return render(request, 'dashboard/instructor-dashboard.html',{"exercise_data" : exercise_data, "exercises":  exercises})
+
+@api_view()
+@login_required
+def get_exercise_data(request, course_name, exercise_slug):
 
     def convert_to_valid_json(data):
         data = data.replace("'", '"').replace('"', r'\"')
         return data
-    course_name = unquote_plus(course_name)
-    course = get_object_or_404(Course, name=course_name)
-    exercises = Exercise.objects.filter(course=course)
-    data_list = []
-    for ex in exercises:
-        answers = {}
-        correct = []
-        tags = [tag.name for tag in ex.tags.all()]
-        telemetry = list(TelemetryData.objects.filter(exercise=ex, last=True).values_list('log', flat=True))
-        if 'choice-exercise' in tags:
-            answers = {x:telemetry.count(x) for x in telemetry}
-        elif 'parsons-exercise' in tags:
-            # count number of times that each code key value inside telemetry ocurred
-            answers = {x['code']: telemetry.count(x) for x in telemetry}
-            #create correct_list that gets all items that mach condition
-            correct = [x['code'] for x in telemetry if (x['correct'] and x['code'])]
-            #remove duplicates
-            correct = list(dict.fromkeys(correct))
-        elif 'text-exercise' in tags:
-            print(ex.slug)
-            answers = [{y:str(x.split().count(y))for y in x.replace('"', '').replace("'","").split()} for x in telemetry]
-            print(answers)
 
-        data = {
-            "name" : ex.slug,
-            "tags" : tags,
-            "telemetry" : {
-                "x" : list(answers.values()) if type(answers) == dict else answers,
-                "y" : [convert_to_valid_json(x) for x in answers.keys() if x != ''] if type(answers) == dict else answers,
-                "correct": [convert_to_valid_json(answer) for answer in correct]
-            }
-        }
-        data_list.append(data)
-    return render(request, 'dashboard/instructor-dashboard.html',{"data" : data_list})
+    course = get_object_or_404(Course, name=course_name)
+    exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
+    
+    answers = {}
+    telemetry = list(TelemetryData.objects.filter(exercise=exercise, last=True).values_list('log', flat=True))
+    correct = ""
+    tags = [tag.name for tag in exercise.tags.all() if tag.name != None]
+
+    if 'choice-exercise'in tags:
+        answers = {x:telemetry.count(x) for x in telemetry}
+        tag = 'choice'
+    elif 'parsons-exercise'in tags:
+        # count number of times that each code key value inside telemetry ocurred
+        answers = {convert_to_valid_json(x['code'].replace('\n', '\\n')): telemetry.count(x) for x in telemetry if x['code']}
+        correct = convert_to_valid_json(next((x['code'].replace('\n', '\\n') for x in telemetry if (x['correct'] and x['code'])), ''))
+        tag = 'parsons'
+    elif 'text-exercise'in tags:
+        words = {}
+        for x in telemetry:
+            y = x.replace('"', '').replace("'","").split()
+            for word in y:
+                words[word] = 1 + words.setdefault(word, 0)
+        answers = [[k,str(10*v)] for k,v in words.items()]
+        tag = 'text'
+        
+    return render(request, 'dashboard/exercise-component.html', {"answers":answers, "correct": correct, "tag": tag, 'slug': exercise_slug})
