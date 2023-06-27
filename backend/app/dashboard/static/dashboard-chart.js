@@ -7,8 +7,7 @@ function generateChoice(slug, answers) {
     if (Object.keys(answers_obj).length == 0) {
         return;
     }
-    var item_div = document.getElementById(slug.replace(/\//g, '-'));
-    item_div.id = "item-" + slug;
+    var item_div = document.getElementById("item-" + slug.replace(/\//g, '-'));
     item_div.className = "item";
 
 
@@ -58,8 +57,7 @@ function generateParson(slug, answers, correct) {
     if (Object.keys(answers_obj).length == 0) {
         return;
     }
-    var item_div = document.getElementById(slug.replace(/\//g, '-'));
-    item_div.id = "item-" + slug;
+    var item_div = document.getElementById("item-" + slug.replace(/\//g, '-'));
     item_div.className = "item";
 
     var canvas = document.createElement("canvas");
@@ -154,8 +152,7 @@ function generateWordCloud(slug, answers){
     if (Object.keys(answers_obj).length == 0) {
         return;
     }
-    var item_div = document.getElementById(slug.replace(/\//g, '-'));
-    item_div.id = "item-" + slug;
+    var item_div = document.getElementById("item-" + slug.replace(/\//g, '-'));
     document.getElementById(slug).appendChild(item_div);
     var canvas = document.createElement("canvas");
     canvas.id = `canvas-${slug}`

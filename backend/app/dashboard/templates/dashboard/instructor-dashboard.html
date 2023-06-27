@@ -8,12 +8,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
     <link href="{% static '/prism.css' %}" rel="stylesheet" />
     <script>
-        var item_div = null;
         function request_access(course_name, exercise_slug){
-            var id = exercise_slug.replace(/\//g, '-');
-            if (item_div)
-                document.getElementById(item_div.id).remove();
-            item_div = document.createElement("div");
+            var id = "item-" + exercise_slug.replace(/\//g, '-');
+            if (document.getElementById(id)){
+                document.getElementById(id).remove();
+                return;
+            }
+            var item_div = document.createElement("div");
 
            document.getElementById(exercise_slug).append(item_div);
            item_div.id = id;
