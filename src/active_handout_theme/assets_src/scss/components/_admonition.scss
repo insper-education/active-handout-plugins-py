@@ -1,6 +1,9 @@
 @use "../abstracts/variables" as *;
 @use "../abstracts/mixins" as *;
 @use "../base/typeset" as *;
+@use "../base/colors" as *;
+@use "sass:list";
+@use "sass:color";
 
 $border-bottom: $border-thickness solid var(--clr-admonition-border);
 
@@ -20,7 +23,7 @@ details summary {
   line-height: 1.5;
   font-weight: 700;
   border-bottom: $border-bottom;
-  color: var(--clr-title);
+  color: var(--clr-black);
   margin: (-0.5 * $admonition-extra-block) (-$admonition-extra-inline)
     $admonition-extra-block;
   padding: 0.5 * $admonition-extra-block $admonition-extra-inline;
@@ -41,4 +44,46 @@ details summary {
 details[open] summary {
   border-bottom: $border-bottom;
   margin-bottom: $space-between-block;
+}
+
+// ----------------------------------------------------------------------------
+// Rules: flavours
+// ----------------------------------------------------------------------------
+// from mkdocs material
+// Admonition flavours
+
+$admonitions: (
+  "note":      $clr-admonitions-note,
+  "abstract":  $clr-admonitions-abstract,
+  "info":      $clr-admonitions-info,
+  "tip":       $clr-admonitions-tip,
+  "success":   $clr-admonitions-success,
+  "question":  $clr-admonitions-question,
+  "warning":   $clr-admonitions-warning,
+  "failure":   $clr-admonitions-failure,
+  "danger":    $clr-admonitions-danger,
+  "bug":       $clr-admonitions-bug,
+  "example":   $clr-admonitions-example,
+  "quote":     $clr-admonitions-quote,
+) !default;
+
+@each $name, $props in $admonitions {
+  $tint: list.nth($props, 1);
+
+  // Admonition flavour
+  .admonition.#{$name} {
+    border-color: $tint;
+  }
+
+  // Admonition flavour title
+  .#{$name} > .admonition-title {
+    border-color: $tint;
+
+    background-color: color.adjust($tint, $alpha: -0.7);
+
+    // Details marker
+    &::after {
+      color: $tint;
+    }
+  }
 }
