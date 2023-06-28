@@ -29,7 +29,7 @@ function generateChoice(slug, answers) {
     for (var key in answers_obj){
         y.push(answers_obj[key])
     }
-    generateChart(slug, x, y, "pie", barColors);
+    generateChart(slug, y, x, "pie", barColors);
 }
 
 
