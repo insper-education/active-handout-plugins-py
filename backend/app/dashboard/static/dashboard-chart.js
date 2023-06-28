@@ -1,13 +1,87 @@
+function convertToQuote(text) {
+    const controlCharacters = {
+        "&#x27;": "'",
+        "&quot;": '"',
+        "&amp;": "&",
+        "&lt;": "<",
+        "&gt;": ">",
+        "&#x60;": "`",
+        "&#x2F;": "/",
+        "&#x5C;": "\\",
+        "&#x7B;": "{",
+        "&#x7D;": "}",
+        "&#x5B;": "[",
+        "&#x5D;": "]",
+        "&#x23;": "#",
+        "&#x3A;": ":",
+        "&#x3D;": "=",
+        "&#x2D;": "-",
+        "&#x28;": "(",
+        "&#x29;": ")",
+        "&#x5F;": "_",
+        "&#x3B;": ";",
+        "&#x2C;": ",",
+        "&#x2B;": "+",
+        "&#x21;": "!",
+        "&#x24;": "$",
+        "&#x25;": "%",
+        "&#x40;": "@",
+        "&#x7E;": "~",
+        "&#x5E;": "^",
+        "&#x3F;": "?",
+        "&#x7C;": "|",
+        "&#x2A;": "*",
+        "&#x2E;": ".",
+        "&#x0A;": "\n",
+        "&#x0D;": "\r",
+        "&#x09;": "\t",
+        "&#x0B;": "\v",
+        "&#x22;": "\"",
+        "&#x27;": "'",
+        "&#x5C;": "\\",
+        "&#x00;": "\0",
+        "&#x0C;": "\f",
+    };
+
+    for (var controlChar in controlCharacters) {
+        var replacement = controlCharacters[controlChar];
+        var regex = new RegExp(controlChar, 'g');
+        text = text.replace(regex, replacement);
+    }
+
+    return text;
+}
+
+function prepareToJson(text) {
+
+    text = text.replace(/'/g, '"');
+    text = text.replace(/\\\\/g, '\\');
+    return text;
+}
+function generateView(tag, slug, answers, correct) {
+    switch (tag) {
+        case 'choice':
+            generateChoice(slug, answers);
+            break;
+        case 'parsons':
+            generateParson(slug, answers, correct);
+            break;
+        case 'text':
+            generateWordCloud(slug, answers);
+            break;
+        default:
+            break;
+    }
+}
+
 function generateChoice(slug, answers) {
 
-    answers = answers.replace(/'/g, '"');
-    answers = answers.replace(/\\\\/g, '\\');
-    var answers_obj = JSON.parse(answers);
+    var answers_obj = JSON.parse(prepareToJson(answers));
 
     if (Object.keys(answers_obj).length == 0) {
         return;
     }
-    var item_div = document.getElementById("item-" + slug.replace(/\//g, '-'));
+    var item_div = document.getElementById(`item-${slug.replace(/\//g, '-')}`);
     item_div.className = "item";
 
 
@@ -26,7 +100,7 @@ function generateChoice(slug, answers) {
     ];
     var x = Object.keys(answers_obj)
     var y = [];
-    for (var key in answers_obj){
+    for (var key in answers_obj) {
         y.push(answers_obj[key])
     }
     generateChart(slug, y, x, "pie", barColors);
@@ -48,16 +122,13 @@ function getWrongLines(answer, correct) {
 
 function generateParson(slug, answers, correct) {
 
-    answers = answers.replace(/'/g, '"');
-    answers = answers.replace(/\\\\/g, '\\');
 
+    var answers_obj = JSON.parse(prepareToJson(answers));
 
-    var answers_obj = JSON.parse(answers);
-    
     if (Object.keys(answers_obj).length == 0) {
         return;
     }
-    var item_div = document.getElementById("item-" + slug.replace(/\//g, '-'));
+    var item_div = document.getElementById(`item-${slug.replace(/\//g, '-')}`);
     item_div.className = "item";
 
     var canvas = document.createElement("canvas");
@@ -144,20 +215,20 @@ function generateChart(name, data, labels, type, colors) {
 
 }
 
-function generateWordCloud(slug, answers){
+function generateWordCloud(slug, answers) {
 
-    answers = answers.replace(/'/g, '"');
-    answers = answers.replace(/\\\\/g, '\\');
-    var answers_obj = JSON.parse(answers);
+    var answers_obj = JSON.parse(prepareToJson(answers));
     if (Object.keys(answers_obj).length == 0) {
         return;
     }
-    var item_div = document.getElementById("item-" + slug.replace(/\//g, '-'));
+    var item_div = document.getElementById(`item-${slug.replace(/\//g, '-')}`);
+    item_div.className = "item";
     document.getElementById(slug).appendChild(item_div);
+
     var canvas = document.createElement("canvas");
     canvas.id = `canvas-${slug}`
-    item_div.appendChild(canvas);    
-    WordCloud(document.getElementById(`canvas-${slug}`), { list: answers_obj} );
+    item_div.appendChild(canvas);
+    WordCloud(document.getElementById(`canvas-${slug}`), { list: answers_obj });
 
 
 

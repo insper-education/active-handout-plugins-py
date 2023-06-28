@@ -49,7 +49,7 @@ def instructor_dashboard(request, course_name):
         data = {"exercise": ex, "tags": tags}
         exercise_data.append(data)
     
-    return render(request, 'dashboard/instructor-dashboard.html',{"exercise_data" : exercise_data, "exercises":  exercises})
+    return render(request, 'dashboard/instructor-dashboard.html',{"exercise_data" : exercise_data})
 
 @api_view()
 @login_required
@@ -76,11 +76,20 @@ def get_exercise_data(request, course_name, exercise_slug):
         correct = convert_to_valid_json(next((x['code'].replace('\n', '\\n') for x in telemetry if (x['correct'] and x['code'])), ''))
         tag = 'parsons'
     elif 'text-exercise'in tags:
+        import re
+        import nltk
+        from nltk.corpus import stopwords
+
+        nltk.download('stopwords')
         words = {}
-        for x in telemetry:
-            y = x.replace('"', '').replace("'","").split()
-            for word in y:
+        text = " ".join(telemetry)
+        text_data = re.sub('[^a-zA-Z]', ' ', text)
+        text_data = text_data.lower()
+        #TODO  WordNetLemmatizer Em português
+        for word in text_data.split():
+            if word not in stopwords.words():
                 words[word] = 1 + words.setdefault(word, 0)
+
         answers = [[k,str(10*v)] for k,v in words.items()]
         tag = 'text'
         
