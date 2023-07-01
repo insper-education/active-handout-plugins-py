@@ -1,0 +1,13 @@
+@use "../abstracts/index" as *;
+@use "../base/colors" as *;
+
+.ah-typeset{
+    blockquote {
+    border-inline-start: 0.2em solid $clr-admonitions-quote;
+        p {
+        padding-inline-start: 0.2em;
+        margin-inline: 10;
+        color: $clr-admonitions-quote;
+        }
+    }
+}
