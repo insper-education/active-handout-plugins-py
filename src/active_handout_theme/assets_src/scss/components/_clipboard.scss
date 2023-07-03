@@ -1,0 +1,28 @@
+@use "../base/colors" as *;
+
+.clipboard {
+    position: relative;
+    display: block;
+    float: right;
+    top: 0
+}
+
+.btn-clipboard {
+    position: relative;
+    top: -1.5rem;
+    right: 0rem;
+    display: block;
+    cursor: pointer;
+    width: 1em;
+    height: 1em;
+    stroke: $clr-gray;
+    fill: $clr-gray;
+
+}
+
+.btn-clipboard:hover {
+    transition: fill 0.1s ease;
+    transition: stroke 0.1s ease;
+    stroke: $clr-black;
+    fill: $clr-black;
+}
