@@ -1,0 +1,11 @@
+{% load static %}
+
+<link href="{% static '/dashboard-chart.css' %}" rel="stylesheet" />
+<script src="{% static '/dashboard-chart.js' %}"></script>
+<script>
+var answers = convertToQuote("{{ answers }}")
+var tag = "{{ tag |safe }}"
+var correct =  "{{ correct |safe }}";
+var slug = "{{ slug |safe }}";
+generateView(tag, slug, answers, correct)
+</script>
