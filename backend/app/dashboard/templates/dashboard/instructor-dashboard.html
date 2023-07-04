@@ -2,30 +2,13 @@
 <!DOCTYPE html>
 <html>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
     <script src="{% static '/prism.js' %}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
     <link href="{% static '/prism.css' %}" rel="stylesheet" />
-    <script>
-        function request_access(course_name, exercise_slug){
-            var id = "item-" + exercise_slug.replace(/\//g, '-');
-            if (document.getElementById(id)){
-                document.getElementById(id).remove();
-                return;
-            }
-            var item_div = document.createElement("div");
+    <link href="{% static '/dashboard-chart.css' %}" rel="stylesheet" />
+    <script src="{% static '/dashboard-chart.js' %}"></script>
 
-           document.getElementById(exercise_slug).append(item_div);
-           item_div.id = id;
-            $.ajax({
-                url: `${course_name}/${exercise_slug}`,
-                success: function(data){
-                    $(`#${id}`).html(data);
-                }
-            })
-        }
-    </script>
     <body>
         {% for data in exercise_data %}
         <ul>
@@ -33,18 +16,13 @@
                 <li>                        
                     <div id="{{ data.exercise.slug }}"></div>
 
-                    {% if 'choice-exercise' in data.tags %}
-                        <button  onclick="request_access(value, '{{data.exercise.slug}}')" value="{{ data.exercise.course.name }}">{{ data.exercise.slug }}</button>
-
-                    {% elif 'parsons-exercise' in data.tags %}
-                        <button  onclick="request_access(value, '{{data.exercise.slug}}')" value="{{ data.exercise.course.name }}">{{ data.exercise.slug }}</button>
-
-                    {% elif 'text-exercise' in data.tags %}
-                        <button  onclick="request_access(value, '{{data.exercise.slug}}')" value="{{ data.exercise.course.name }}">{{ data.exercise.slug }}</button>
+                    {% if 'choice-exercise' in data.tags or 'parsons-exercise' in data.tags or 'text-exercise' in data.tags %}
+                        <button  onclick="getExerciseData(value, '{{data.exercise.slug}}')" value="{{ data.exercise.course.name }}">{{ data.exercise.slug }}</button>
 
                     {% else %}
                     
                         {{ data.exercise.slug }}
+
                     {% endif %}
                 </li>
             </div>

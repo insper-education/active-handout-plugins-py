@@ -1,63 +1,21 @@
-function convertToQuote(text) {
-    const controlCharacters = {
-        "&#x27;": "'",
-        "&quot;": '"',
-        "&amp;": "&",
-        "&lt;": "<",
-        "&gt;": ">",
-        "&#x60;": "`",
-        "&#x2F;": "/",
-        "&#x5C;": "\\",
-        "&#x7B;": "{",
-        "&#x7D;": "}",
-        "&#x5B;": "[",
-        "&#x5D;": "]",
-        "&#x23;": "#",
-        "&#x3A;": ":",
-        "&#x3D;": "=",
-        "&#x2D;": "-",
-        "&#x28;": "(",
-        "&#x29;": ")",
-        "&#x5F;": "_",
-        "&#x3B;": ";",
-        "&#x2C;": ",",
-        "&#x2B;": "+",
-        "&#x21;": "!",
-        "&#x24;": "$",
-        "&#x25;": "%",
-        "&#x40;": "@",
-        "&#x7E;": "~",
-        "&#x5E;": "^",
-        "&#x3F;": "?",
-        "&#x7C;": "|",
-        "&#x2A;": "*",
-        "&#x2E;": ".",
-        "&#x0A;": "\n",
-        "&#x0D;": "\r",
-        "&#x09;": "\t",
-        "&#x0B;": "\v",
-        "&#x22;": "\"",
-        "&#x27;": "'",
-        "&#x5C;": "\\",
-        "&#x00;": "\0",
-        "&#x0C;": "\f",
-    };
 
-    for (var controlChar in controlCharacters) {
-        var replacement = controlCharacters[controlChar];
-        var regex = new RegExp(controlChar, 'g');
-        text = text.replace(regex, replacement);
+async function getExerciseData(course_name, exercise_slug){
+    var id = "item-" + exercise_slug.replace(/\//g, '-');
+    if (document.getElementById(id)){
+        document.getElementById(id).remove();
+        return;
     }
+    var item_div = document.createElement("div");
 
-    return text;
+   document.getElementById(exercise_slug).append(item_div);
+   item_div.id = id;
+    await fetch(`${course_name}/${exercise_slug}`).then(async (response) => {
+        const data = await response.json();
+        generateView(data["tag"], data["slug"], data["answers"], data["correct"]);
+
+    })
 }
 
-function prepareToJson(text) {
-
-    text = text.replace(/'/g, '"');
-    text = text.replace(/\\\\/g, '\\');
-    return text;
-}
 function generateView(tag, slug, answers, correct) {
     switch (tag) {
         case 'choice':
@@ -76,9 +34,7 @@ function generateView(tag, slug, answers, correct) {
 
 function generateChoice(slug, answers) {
 
-    var answers_obj = JSON.parse(prepareToJson(answers));
-
-    if (Object.keys(answers_obj).length == 0) {
+    if (Object.keys(answers).length == 0) {
         return;
     }
     var item_div = document.getElementById(`item-${slug.replace(/\//g, '-')}`);
@@ -98,10 +54,10 @@ function generateChoice(slug, answers) {
         "#e8c3b9",
         "#1e7145"
     ];
-    var x = Object.keys(answers_obj)
+    var x = Object.keys(answers)
     var y = [];
-    for (var key in answers_obj) {
-        y.push(answers_obj[key])
+    for (var key in answers) {
+        y.push(answers[key])
     }
     generateChart(slug, y, x, "pie", barColors);
 }
@@ -122,10 +78,7 @@ function getWrongLines(answer, correct) {
 
 function generateParson(slug, answers, correct) {
 
-
-    var answers_obj = JSON.parse(prepareToJson(answers));
-
-    if (Object.keys(answers_obj).length == 0) {
+    if (Object.keys(answers).length == 0) {
         return;
     }
     var item_div = document.getElementById(`item-${slug.replace(/\//g, '-')}`);
@@ -144,10 +97,10 @@ function generateParson(slug, answers, correct) {
     var colors = [];
     var x_values = [];
 
-    for (var answer in answers_obj) {
+    for (var answer in answers) {
         var color = `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         colors.push(color);
-        x_values.push(answers_obj[answer]);
+        x_values.push(answers[answer]);
 
         var lines = getWrongLines(answer, correct);
         var code_div = document.createElement("div");
@@ -216,9 +169,7 @@ function generateChart(name, data, labels, type, colors) {
 }
 
 function generateWordCloud(slug, answers) {
-
-    var answers_obj = JSON.parse(prepareToJson(answers));
-    if (Object.keys(answers_obj).length == 0) {
+    if (Object.keys(answers).length == 0) {
         return;
     }
     var item_div = document.getElementById(`item-${slug.replace(/\//g, '-')}`);
@@ -228,8 +179,5 @@ function generateWordCloud(slug, answers) {
     var canvas = document.createElement("canvas");
     canvas.id = `canvas-${slug}`
     item_div.appendChild(canvas);
-    WordCloud(document.getElementById(`canvas-${slug}`), { list: answers_obj });
-
-
-
+    WordCloud(document.getElementById(`canvas-${slug}`), { list: answers });
 }
