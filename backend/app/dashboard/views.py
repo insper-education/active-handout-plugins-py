@@ -2,10 +2,15 @@ from urllib.parse import unquote_plus
 import json
 
 from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import api_view
+from django.contrib.admin.views.decorators import staff_member_required
+from rest_framework import status
+from rest_framework.response import Response
 
-from core.models import Course
+
+from core.models import Course, Exercise, TelemetryData
 from dashboard.query import StudentStats
 
 
@@ -30,3 +35,65 @@ def student_dashboard(request, course_name):
         'total_exercises': student_stats.total_exercises,
         'exercise_count_by_tag_slug_and_date': student_stats.exercise_count_by_tag_slug_and_date,
     })
+
+@staff_member_required
+@api_view()
+@login_required
+def instructor_courses(request):
+    courses = Course.objects.all()
+    return render(request, 'dashboard/instructor-courses.html',{"courses" : courses})
+
+@staff_member_required
+@api_view()
+@login_required
+def instructor_dashboard(request, course_name):
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    exercises = Exercise.objects.filter(course=course)
+    exercise_data = []
+    for ex in exercises:
+        tags = [tag.name for tag in ex.tags.all() if tag.name != None]
+        data = {"exercise": ex, "tags": tags}
+        exercise_data.append(data)
+    
+    return render(request, 'dashboard/instructor-dashboard.html',{"exercise_data" : exercise_data})
+
+@staff_member_required
+@api_view()
+@login_required
+def get_exercise_data(request, course_name, exercise_slug):
+
+    course = get_object_or_404(Course, name=course_name)
+    exercise = get_object_or_404(Exercise, course=course, slug=exercise_slug)
+    
+    answers = {}
+    telemetry = list(TelemetryData.objects.filter(exercise=exercise, last=True).values_list('log', flat=True))
+    correct = ""
+    tags = [tag.name for tag in exercise.tags.all() if tag.name != None]
+
+    if 'choice-exercise'in tags:
+        answers = {x:telemetry.count(x) for x in telemetry}
+        tag = 'choice'
+    elif 'parsons-exercise'in tags:
+        # count number of times that each code key value inside telemetry ocurred
+        answers = {x['code']: telemetry.count(x) for x in telemetry if x['code']}
+        correct = next((x['code'] for x in telemetry if (x['correct'] and x['code'])), '')
+        tag = 'parsons'
+    elif 'text-exercise'in tags:
+        import re
+        import nltk
+        from nltk.corpus import stopwords
+
+        nltk.download('stopwords')
+        words = {}
+        text = " ".join(telemetry)
+        text_data = re.sub('[^a-zA-Z]', ' ', text)
+        text_data = text_data.lower()
+        #TODO  WordNetLemmatizer Em português
+        for word in text_data.split():
+            if word not in stopwords.words():
+                words[word] = 1 + words.setdefault(word, 0)
+
+        answers = [[k,str(10*v)] for k,v in words.items()]
+        tag = 'text'
+    return Response({"answers":answers, "correct": correct, "tag": tag, 'slug': exercise_slug}, status=status.HTTP_200_OK)

@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+    <script src="{% static '/prism.js' %}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/wordcloud2.js/1.2.2/wordcloud2.min.js"></script>
+    <link href="{% static '/prism.css' %}" rel="stylesheet" />
+    <link href="{% static '/dashboard-chart.css' %}" rel="stylesheet" />
+    <script src="{% static '/dashboard-chart.js' %}"></script>
+
+    <body>
+        {% for data in exercise_data %}
+        <ul>
+            <div id="{{ data.exercise.slug }}">
+                <li>                        
+                    <div id="{{ data.exercise.slug }}"></div>
+
+                    {% if 'choice-exercise' in data.tags or 'parsons-exercise' in data.tags or 'text-exercise' in data.tags %}
+                        <button  onclick="getExerciseData(value, '{{data.exercise.slug}}')" value="{{ data.exercise.course.name }}">{{ data.exercise.slug }}</button>
+
+                    {% else %}
+                    
+                        {{ data.exercise.slug }}
+
+                    {% endif %}
+                </li>
+            </div>
+        </ul>
+        {% endfor %}
+    </body>
+    
+</html>
