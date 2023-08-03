@@ -54,30 +54,29 @@ def students_progress(request, course_name):
     exercises = Exercise.objects.filter(course=course)
     tags = list(ExerciseTag.objects.filter(
         course=course).values_list('id', 'name'))
+    telemetry = list(TelemetryData.objects.filter(exercise__in=exercises).values('author__username', 'exercise__slug')
+                     .annotate(max_points=Max('points')))
+
     tag_obj = {}
     for tag in tags:
+        #tag: (id, name)
         ex = list(Exercise.objects.filter(course=course,
                   tags=tag[0]).values_list('slug', flat=True))
         tag_obj.setdefault(tag[1], [])
         tag_obj[tag[1]].append(ex)
-    telemetry = list(TelemetryData.objects.filter(exercise__in=exercises).values('author__username', 'exercise__slug')
-                     .annotate(max_points=Max('points')))
+    
+
     data = {}
-    columns = {'Name'}
+    columns = set()
     for answer in telemetry:
         columns.add(answer['exercise__slug'])
-        data.setdefault(answer['author__username'], {})
+        data.setdefault(answer['author__username'], {"Name": answer['author__username']})
         data[answer['author__username']][answer['exercise__slug']
                                          ] = round(answer['max_points'], 1)
-    prepared_data = []
-    exercises = list(Exercise.objects.all().values_list('slug', flat=True))
-    for student in data:
-        data[student].update({'Name': student})
-        prepared_data.append(data[student])
 
     return render(request, 'dashboard/instructor-progress.html',
                   {
-                      'data': prepared_data,
+                      'data': list(data.values()),
                       'columns': list(columns),
                       'tags': tag_obj,
                   })
