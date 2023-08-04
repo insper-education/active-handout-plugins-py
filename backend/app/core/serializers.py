@@ -22,7 +22,7 @@ class ExerciseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Exercise
-        fields = ['course', 'slug', 'tags']
+        fields = ['course', 'slug', 'tags', "enabled"]
 
 
 class TelemetryDataSerializer(serializers.ModelSerializer):
@@ -31,4 +31,4 @@ class TelemetryDataSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TelemetryData
-        fields = ['author', 'exercise', 'points', 'submission_date', 'log']
+        fields = ['author', 'exercise', 'points', 'submission_date', 'log', 'last']
