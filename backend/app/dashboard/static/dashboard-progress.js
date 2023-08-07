@@ -1,5 +1,5 @@
 
-function createHandsontable(data, columns) {
+function createHandsontable(data, columns_list) {
 
   var container = document.getElementById('table');
   Handsontable.renderers.registerRenderer('colorFormattingRenderer', function (
@@ -14,23 +14,27 @@ function createHandsontable(data, columns) {
     cellProperties.editor = false;
     Handsontable.renderers.TextRenderer.apply(this, arguments);
     td.style.color = 'black';
-    if (parseFloat(value) == 1) {
+    var cell_value = parseFloat(value);
+    if (cell_value == 1) {
       td.style.background = 'green';
     }
-    else if (parseFloat(value) == 0) {
+    else if (cell_value == 0) {
       td.style.background = 'red';
+    }
+    else if ((cell_value > 0) && (cell_value < 1)) {
+      td.style.background = 'yellow'
     }
   });
 
   hot = new Handsontable(container, {
     data: data,
-    colHeaders: columns,
+    colHeaders: columns_list,
     columns: function (column) {
       columnMeta = {};
-      columnMeta.data = columns[column]
+      columnMeta.data = columns_list[column]
       return columnMeta;
     },
-    colWidths: [100].concat(Array(columns.length - 1).fill(30)),
+    colWidths: [100].concat(Array(columns_list.length - 1).fill(30)),
     fixedColumnsStart: 1,
     cells: function (row, col, prop) {
       var cellProperties = {};
@@ -42,16 +46,16 @@ function createHandsontable(data, columns) {
   });
 }
 
-function updateHandsontable(data, columns) {
+function updateHandsontable(data, columns_list) {
 
   hot.updateSettings({
     data: data,
-    colHeaders: columns,
+    colHeaders: columns_list,
     columns: function (column) {
       columnMeta = {};
-      columnMeta.data = columns[column]
+      columnMeta.data = columns_list[column]
       return columnMeta;
-    }, colWidths: [100].concat(Array(columns.length - 1).fill(30)),
+    }, colWidths: [100].concat(Array(columns_list.length - 1).fill(30)),
   });
 }
 
@@ -115,9 +119,6 @@ var columns;
 var data;
 var tags;
 var hot;
-
-
-
 
 document.addEventListener('DOMContentLoaded', function () {
 

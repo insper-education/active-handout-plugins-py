@@ -12,7 +12,6 @@ from dashboard.query import StudentStats
 from django.db.models import Max
 
 
-
 @api_view()
 @login_required
 def student_dashboard(request, course_name):
