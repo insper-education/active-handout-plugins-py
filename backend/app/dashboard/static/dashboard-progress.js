@@ -2,8 +2,6 @@
 function createHandsontable(data, columns) {
 
   var container = document.getElementById('table');
-
-
   Handsontable.renderers.registerRenderer('colorFormattingRenderer', function (
     instance,
     td,
@@ -27,7 +25,7 @@ function createHandsontable(data, columns) {
   hot = new Handsontable(container, {
     data: data,
     colHeaders: columns,
-    columns: function(column) {
+    columns: function (column) {
       columnMeta = {};
       columnMeta.data = columns[column]
       return columnMeta;
@@ -42,34 +40,29 @@ function createHandsontable(data, columns) {
     licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
 
   });
-
 }
 
 function updateHandsontable(data, columns) {
 
-
   hot.updateSettings({
     data: data,
     colHeaders: columns,
-    columns: function(column) {
+    columns: function (column) {
       columnMeta = {};
       columnMeta.data = columns[column]
       return columnMeta;
-    },    colWidths: [100].concat(Array(columns.length - 1).fill(30)),
+    }, colWidths: [100].concat(Array(columns.length - 1).fill(30)),
   });
-
-
 }
 
 function updateFilter() {
+
   var newValue = document.getElementById("select-tag").value;
   if (!Object.keys(tagsObj).includes(newValue))
     return;
   tags.add(newValue);
   generateTagView();
   updateTableContent();
-
-
 }
 
 function updateTableContent() {
@@ -91,8 +84,6 @@ function updateTableContent() {
   }
 
   updateHandsontable(clonedData, filteredColumns);
-
-
 }
 function removeTag(ev) {
   tags.delete(ev.target.id);
@@ -129,7 +120,7 @@ var hot;
 
 
 document.addEventListener('DOMContentLoaded', function () {
-  
+
   table = document.getElementById('table');
   columns = table.getAttribute('data-columns');
   data = table.getAttribute('data-data');

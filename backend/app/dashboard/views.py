@@ -59,21 +59,21 @@ def students_progress(request, course_name):
 
     tag_obj = {}
     for tag in tags:
-        #tag: (id, name)
+        # tag: (id, name)
         ex = list(Exercise.objects.filter(course=course,
                   tags=tag[0]).values_list('slug', flat=True))
         tag_obj.setdefault(tag[1], [])
         tag_obj[tag[1]].append(ex)
-    
 
     data = {}
     columns = set()
     for answer in telemetry:
         columns.add(answer['exercise__slug'])
-        data.setdefault(answer['author__username'], {"Name": answer['author__username']})
+        data.setdefault(answer['author__username'], {
+                        "Name": answer['author__username']})
         data[answer['author__username']][answer['exercise__slug']
                                          ] = round(answer['max_points'], 1)
-    columns_with_list = [*["Name"],*list(columns)]
+    columns_with_list = [*["Name"], *list(columns)]
     return render(request, 'dashboard/instructor-progress.html',
                   {
                       'data': list(data.values()),
