@@ -22,7 +22,7 @@ function createHandsontable(data, columns_list) {
       td.style.background = 'red';
     }
     else if ((cell_value > 0) && (cell_value < 1)) {
-      td.style.background = 'yellow'
+      td.style.background = '#ffae00'
     }
   });
 
