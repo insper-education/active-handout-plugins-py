@@ -73,10 +73,10 @@ def students_progress(request, course_name):
         data.setdefault(answer['author__username'], {"Name": answer['author__username']})
         data[answer['author__username']][answer['exercise__slug']
                                          ] = round(answer['max_points'], 1)
-
+    columns_with_list = [*["Name"],*list(columns)]
     return render(request, 'dashboard/instructor-progress.html',
                   {
                       'data': list(data.values()),
-                      'columns': list(columns),
+                      'columns': columns_with_list,
                       'tags': tag_obj,
                   })

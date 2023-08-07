@@ -1,13 +1,9 @@
 
-function createHandsontable(data, columns, colHeaders) {
+function createHandsontable(data, columns) {
 
   var container = document.getElementById('table');
 
 
-  var dataSchema = [];
-  columns.forEach(col => {
-    dataSchema.push({ data: col });
-  });
   Handsontable.renderers.registerRenderer('colorFormattingRenderer', function (
     instance,
     td,
@@ -29,8 +25,12 @@ function createHandsontable(data, columns, colHeaders) {
 
   hot = new Handsontable(container, {
     data: data,
-    colHeaders: colHeaders,
-    columns: columns,
+    colHeaders: columns,
+    columns: function(column) {
+      columnMeta = {};
+      columnMeta.data = columns[column]
+      return columnMeta;
+    },
     colWidths: [100].concat(Array(columns.length - 1).fill(30)),
     fixedColumnsStart: 1,
     cells: function (row, col, prop) {
@@ -44,27 +44,17 @@ function createHandsontable(data, columns, colHeaders) {
 
 }
 
-function prepareColumns(columns) {
-  var colHeaders = ["Name"]
-  var colObjList = [{ data: "Name" }]
-  for (var i = 0; i < columns.length; i++) {
-    var colObj = {
-      data: columns[i],
-    }
-    colHeaders.push(columns[i])
-    colObjList.push(colObj);
-  }
-  return [colObjList, colHeaders];
-}
 function updateHandsontable(data, columns) {
 
-  var [colObjList, colHeaders] = prepareColumns(columns);
 
   hot.updateSettings({
     data: data,
-    colHeaders: colHeaders,
-    columns: colObjList,
-    colWidths: [100].concat(Array(columns.length - 1).fill(30)),
+    colHeaders: columns,
+    columns: function(column) {
+      columnMeta = {};
+      columnMeta.data = columns[column]
+      return columnMeta;
+    },    colWidths: [100].concat(Array(columns.length - 1).fill(30)),
   });
 
 
@@ -86,7 +76,7 @@ function updateTableContent() {
   var clonedData = structuredClone(data);
   var clonedColumns = structuredClone(columns);
 
-  var filteredColumns = []
+  var filteredColumns = ["Name"]
   exerciseList = []
   if (tags.size == 0) {
     updateHandsontable(clonedData, clonedColumns);
@@ -99,22 +89,8 @@ function updateTableContent() {
     filteredColumns = filteredColumns.concat(clonedColumns.splice(clonedColumns.indexOf(exerciseList[i]), 1));
   }
 
-  var [colObjList, colHeaders] = prepareColumns(filteredColumns);
+  updateHandsontable(clonedData, filteredColumns);
 
-  hot.updateSettings({
-    data: clonedData,
-    colHeaders: colHeaders,
-    columns: colObjList,
-    colWidths: [100].concat(Array(filteredColumns.length - 1).fill(30)),
-    fixedColumnsStart: 1,
-    cells: function (row, col, prop) {
-      var cellProperties = {};
-      cellProperties.renderer = 'colorFormattingRenderer';
-      return cellProperties;
-    },
-    licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
-
-  });
 
 }
 function removeTag(ev) {
@@ -146,7 +122,6 @@ var table;
 var columns;
 var data;
 var tags;
-
 var hot;
 
 
@@ -170,12 +145,11 @@ document.addEventListener('DOMContentLoaded', function () {
   columns = JSON.parse(columns)
   tagsObj = JSON.parse(tagsObj);
 
-  var [colObjList, colHeaders] = prepareColumns(columns);
 
   var select = document.getElementById("select-tag")
   select.onchange = updateFilter;
 
   tableData = structuredClone(data);
 
-  createHandsontable(tableData, colObjList, colHeaders); // Call your function here
+  createHandsontable(tableData, columns);
 });
