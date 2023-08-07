@@ -13,6 +13,7 @@ function createHandsontable(data, columns) {
     value,
     cellProperties
   ) {
+    cellProperties.editor = false;
     Handsontable.renderers.TextRenderer.apply(this, arguments);
     td.style.color = 'black';
     if (parseFloat(value) == 1) {
