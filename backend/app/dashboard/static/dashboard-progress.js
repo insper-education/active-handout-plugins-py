@@ -81,10 +81,12 @@ function updateTableContent() {
     return;
   }
   tags.forEach(tag => {
-    exerciseList = exerciseList.concat(tagsObj[tag][0]);
+    exerciseList = exerciseList.concat(tagsObj[tag]);
   });
   for (var i = 0; i < exerciseList.length; i++) {
-    filteredColumns = filteredColumns.concat(clonedColumns.splice(clonedColumns.indexOf(exerciseList[i]), 1));
+    var column_index = clonedColumns.indexOf(exerciseList[i]);
+    if (column_index != -1)
+      filteredColumns = filteredColumns.concat(clonedColumns.splice(column_index,1));
   }
 
   updateHandsontable(clonedData, filteredColumns);

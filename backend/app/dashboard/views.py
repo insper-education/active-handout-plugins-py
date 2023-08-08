@@ -51,19 +51,14 @@ def students_progress(request, course_name):
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
     exercises = Exercise.objects.filter(course=course)
-    tags = list(ExerciseTag.objects.filter(
-        course=course).values_list('id', 'name'))
     telemetry = list(TelemetryData.objects.filter(exercise__in=exercises).values('author__username', 'exercise__slug')
                      .annotate(max_points=Max('points')))
 
     tag_obj = {}
-    for tag in tags:
-        # tag: (id, name)
-        ex = list(Exercise.objects.filter(course=course,
-                  tags=tag[0]).values_list('slug', flat=True))
-        tag_obj.setdefault(tag[1], [])
-        tag_obj[tag[1]].append(ex)
-
+    for ex in exercises:
+        for tag in list(ex.tags.all().values_list('name', flat=True)):
+            tag_obj.setdefault(tag, [])
+            tag_obj[tag].append(ex.slug)
     data = {}
     columns = set()
     for answer in telemetry:
