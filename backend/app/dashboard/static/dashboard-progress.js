@@ -61,7 +61,11 @@ function updateHandsontable(data, columns_list) {
 
 function updateFilter() {
 
-  var newValue = document.getElementById("select-tag").value;
+  var select = document.getElementById("select-tag");
+  var newValue = select.value;
+
+  select.value = "";
+
   if (!Object.keys(tagsObj).includes(newValue))
     return;
   tags.add(newValue);
