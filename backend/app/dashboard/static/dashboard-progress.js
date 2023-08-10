@@ -2,6 +2,7 @@ function createHandsontable(data, columns_list) {
   data = filterStudentsInClass(data);
 
   const container = document.getElementById("table");
+  let dataSchema = getDataSchema(columns_list);
   Handsontable.renderers.registerRenderer(
     "colorFormattingRenderer",
     function (instance, td, row, col, prop, value, cellProperties) {
@@ -21,6 +22,7 @@ function createHandsontable(data, columns_list) {
 
   hot = new Handsontable(container, {
     data: data,
+    dataSchema: dataSchema,
     colHeaders: columns_list,
     columns: function (column) {
       columnMeta = {};
@@ -41,8 +43,10 @@ function createHandsontable(data, columns_list) {
 function updateHandsontable(data, columns_list) {
   data = filterStudentsInClass(data);
 
+  let dataSchema = getDataSchema(columns_list);
   hot.updateSettings({
     data: data,
+    dataSchema: dataSchema,
     colHeaders: columns_list,
     columns: function (column) {
       columnMeta = {};
@@ -51,6 +55,15 @@ function updateHandsontable(data, columns_list) {
     },
     colWidths: [100].concat(Array(columns_list.length - 1).fill(30)),
   });
+}
+
+function getDataSchema(columns_list) {
+  var dataSchema =  { name: null };
+  for (var i=0;i<columns_list.length;i++){
+    dataSchema[columns_list[i]] = null
+  }
+  return dataSchema;
+
 }
 
 function getTagSelect() {
