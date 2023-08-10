@@ -2,11 +2,14 @@ from urllib.parse import unquote_plus
 import json
 
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import api_view
 
-from core.models import Course
+
+from core.models import Course, Exercise, TelemetryData, ExerciseTag
 from dashboard.query import StudentStats
+from django.db.models import Max
 
 
 @api_view()
@@ -30,3 +33,44 @@ def student_dashboard(request, course_name):
         'total_exercises': student_stats.total_exercises,
         'exercise_count_by_tag_slug_and_date': student_stats.exercise_count_by_tag_slug_and_date,
     })
+
+
+@staff_member_required
+@api_view()
+@login_required
+def instructor_courses(request):
+    courses = Course.objects.all()
+    return render(request, 'dashboard/instructor-courses.html', {"courses": courses})
+
+
+@staff_member_required
+@api_view()
+@login_required
+def students_progress(request, course_name):
+
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    exercises = Exercise.objects.filter(course=course)
+    telemetry = list(TelemetryData.objects.filter(exercise__in=exercises).values('author__username', 'exercise__slug')
+                     .annotate(max_points=Max('points')))
+
+    tag_obj = {}
+    for ex in exercises:
+        for tag in list(ex.tags.all().values_list('name', flat=True)):
+            tag_obj.setdefault(tag, [])
+            tag_obj[tag].append(ex.slug)
+    data = {}
+    columns = set()
+    for answer in telemetry:
+        columns.add(answer['exercise__slug'])
+        data.setdefault(answer['author__username'], {
+                        "Name": answer['author__username']})
+        data[answer['author__username']][answer['exercise__slug']
+                                         ] = round(answer['max_points'], 1)
+    columns_with_list = [*["Name"], *list(columns)]
+    return render(request, 'dashboard/instructor-progress.html',
+                  {
+                      'data': list(data.values()),
+                      'columns': columns_with_list,
+                      'tags': tag_obj,
+                  })
