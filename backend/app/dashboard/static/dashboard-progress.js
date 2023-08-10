@@ -57,8 +57,12 @@ function getTagSelect() {
   return document.getElementById("select-tag");
 }
 
+function getClassSelect() {
+  return document.getElementById("select-class");
+}
+
 function getCurrentStudents() {
-  const classSelect = document.getElementById("select-class");
+  const classSelect = getClassSelect();
   const selectedClass = courseClasses[classSelect.selectedIndex];
   return selectedClass.students;
 }
@@ -155,9 +159,11 @@ document.addEventListener("DOMContentLoaded", function () {
     courseClass.students = new Set(courseClass.students);
   });
 
-  const select = getTagSelect();
-  select.onchange = updateFilter;
+  const tagSelect = getTagSelect();
+  tagSelect.onchange = updateFilter;
 
+  const classSelect = getClassSelect();
+  classSelect.onchange = updateTableContent;
   tableData = structuredClone(data);
 
   createHandsontable(tableData, columns);
