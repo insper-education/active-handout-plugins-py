@@ -1,12 +1,28 @@
+main {
+  margin: 1.5em 1em 4em;
+}
+
+.error-msg {
+  color: red;
+}
+
+.filterset {
+  display: flex;
+  gap: 2em;
+  align-items: center;
+  margin-bottom: 0.5em;
+}
+
 #tags-list {
   display: flex;
+  margin-bottom: 1em;
 }
 
 .tag {
-  padding: .2rem;
+  padding: 0.2rem;
 }
 
-.btn btn-primary{
+.btn btn-primary {
   width: 1rem;
   height: 1rem;
 }
