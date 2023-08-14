@@ -7,7 +7,7 @@ from django.shortcuts import get_object_or_404, render
 from rest_framework.decorators import api_view
 
 
-from core.models import Course, Exercise, TelemetryData, ExerciseTag
+from core.models import Course, Exercise, TelemetryData, ExerciseTag, Student
 from dashboard.query import StudentStats
 from django.db.models import Max
 
@@ -74,3 +74,31 @@ def students_progress(request, course_name):
                       'columns': columns_with_list,
                       'tags': tag_obj,
                   })
+
+@staff_member_required
+@api_view()
+@login_required
+def weekly_progress(request, course_name):
+    from django.db.models import Count
+    import datetime
+
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    exercises = Exercise.objects.filter(course=course)
+    students = Student.objects.all()
+    """telemetry = list(TelemetryData.objects.filter(exercise__in=exercises)
+                     .values('author__username')
+                     .annotate(total=Count('author'))
+                     .order_by("total"))
+    print(telemetry[:100])"""
+
+    #a = TelemetryData.objects.raw("SELECT author, points FROM core_telemetrydata ")
+    a = (TelemetryData.objects.filter(exercise__in=exercises)
+         .values('author__username')
+         .annotate(total=Count('author'))
+         .filter(
+        submission_date__gte=datetime.date(2023, 4,1),
+        submission_date__lte=datetime.date(2023,5,1)
+        )
+    )
+    return render(request, 'dashboard/instructor-progress-weekly.html',{"students":list(students)})
