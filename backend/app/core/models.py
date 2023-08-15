@@ -47,6 +47,15 @@ class Course(models.Model):
         return self.name
 
 
+class CourseClass(models.Model):
+    name = models.CharField(max_length=30, blank=True, null=True)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    students = models.ManyToManyField(User)
+
+    def __str__(self) -> str:
+        return f"{self.name} ({self.course})"
+
+
 class ExerciseTag(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=True, null=True)

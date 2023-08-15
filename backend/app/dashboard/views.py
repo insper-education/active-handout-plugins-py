@@ -50,6 +50,12 @@ def students_progress(request, course_name):
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
+    course_classes = course.courseclass_set.all().prefetch_related('students')
+    course_classes_list = [
+        {"name": course_class.name, "students": list(course_class.students.values_list('username', flat=True))}
+        for course_class in course_classes
+    ]
+
     exercises = Exercise.objects.filter(course=course)
     telemetry = list(TelemetryData.objects.filter(exercise__in=exercises).values('author__username', 'exercise__slug')
                      .annotate(max_points=Max('points')))
@@ -73,4 +79,5 @@ def students_progress(request, course_name):
                       'data': list(data.values()),
                       'columns': columns_with_list,
                       'tags': tag_obj,
+                      'course_classes': course_classes_list,
                   })
