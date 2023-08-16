@@ -3,32 +3,29 @@
 <html lang="en">
   <head>
     <title>Weekly Progress</title>
+  <script src="{% static '/dashboard-progress-weekly.js' %}"></script>
   </head>
-
   <body>
   
     Filter by student:
-    <input list="data" id="select-tag">
+    <input list="data" id="select-student">
     <datalist id="data">      {% for student in students %}
-        <option onchange="updateFilter()" value="{{ student }}">{{ student }} </option>
+        <option value="{{ student }}">{{ student }} </option>
       {% endfor %}
     </datalist>
-    <input list="weeks" id="select-tag">
+    <input list="weeks" id="select-week" value="1">
     <datalist id="weeks">
-        <option onchange="updateFilter()" value="0">0</option>
-        <option onchange="updateFilter()" value="1">1</option>
-        <option onchange="updateFilter()" value="2">2</option>
-        <option onchange="updateFilter()" value="3">3</option>
-        <option onchange="updateFilter()" value="4">4</option>
-        <option onchange="updateFilter()" value="5">5</option>
-
-        
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
     </datalist>
     
-    <div id="tags-list">
+    <div id="exercise-data">
     </div>
     
-    <div id="table" data-columns="{{ columns | safe }}" data-data="{{ data | safe }}" data-tags="{{ tags | safe }}"></div>
 
   </body>
 </html>
