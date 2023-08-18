@@ -81,47 +81,60 @@ def students_progress(request, course_name):
 @api_view()
 @login_required
 def weekly_progress(request, course_name):
+    from datetime import timedelta
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
-    exercises = Exercise.objects.filter(course=course)
     students = Student.objects.all()
-    """telemetry = list(TelemetryData.objects.filter(exercise__in=exercises)
-                     .values('author__username')
-                     .annotate(total=Count('author'))
-                     .order_by("total"))
-    print(telemetry[:100])"""
 
-    # a = TelemetryData.objects.raw("SELECT author, points FROM core_telemetrydata ")
+    def generate_weeks(start_date, end_date):
+        week_obj = {}
 
-    return render(request, 'dashboard/instructor-progress-weekly.html', {"students": list(students)})
+        current_date = start_date
+        week_number = 1
+        current_month = None
+        if current_date.weekday() != 6:  # set to sunday if it is not
+            current_date = current_date - \
+                timedelta(days=current_date.weekday() + 1)
+        while current_date <= end_date:
+            end_week = current_date + timedelta(days=6)
+            if current_month != current_date.month:  # reset WeekX to 1
+                current_month = current_date.month
+                week_number = 1
+            # if last week from a month ends in the next one, reset WeekX to 1
+            if current_date.month != end_week.month:
+                week_number = 1
+                current_month = end_week.month
+                week_label = f"Week{week_number}-{end_week.strftime('%b')}"
+            else:
+                week_label = f"Week{week_number}-{current_date.strftime('%b')}"
+
+            week_obj[week_label] = current_date.isoformat()
+            week_number += 1
+            current_date += timedelta(days=7)
+
+        return week_obj
+
+    start_date = course.start_date
+    end_date = course.end_date
+
+    week_obj = generate_weeks(start_date, end_date)
+    return render(request, 'dashboard/instructor-progress-weekly.html', {"students": list(students), "weeks": week_obj})
 
 
 @staff_member_required
 @api_view()
 @login_required
 def student_weekly_progress(request, course_name, user_nickname, week):
-    from django.db.models import Count
-    from datetime import datetime, timedelta, date
+    from datetime import datetime, timedelta
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
     exercises = Exercise.objects.filter(course=course)
     student = get_object_or_404(Student, username=user_nickname)
 
-    def get_past_sunday_date(weeks_ago):
-        current_date = datetime.now()
-        # Monday is 0, Tuesday is 1, ..., Sunday is 6
-        current_day = current_date.weekday()
-
-        days_until_last_sunday = current_day + 1 if current_day != 6 else 0
-
-        days_ago = weeks_ago * 7 + days_until_last_sunday
-
-        return current_date - timedelta(days=days_ago)
-
-    week_start = get_past_sunday_date(week)
-    week_end = get_past_sunday_date(week-1)
+    week_start = datetime.fromisoformat(week)
+    week_end = week_start + timedelta(days=6)
 
     exercises = TelemetryData.objects.filter(
         exercise__in=exercises, author=student,

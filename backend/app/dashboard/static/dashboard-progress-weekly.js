@@ -1,19 +1,13 @@
-function getPastSundayDate(weeksAgo) {
-  const currentDate = new Date();
-  const currentDay = currentDate.getDay(); // Sunday is 0, Monday is 1, ..., Saturday is 6
-  const daysUntilLastSunday = (currentDay === 0) ? 7 : currentDay;
-
-  const daysAgo = weeksAgo * 7 + daysUntilLastSunday;
-
-  return new Date(currentDate.getTime() - (daysAgo * 24 * 60 * 60 * 1000));
-}
-
 
 async function updateFilter() {
-  const course_name = "devlife-23-1"
-  var student = select_student.value;
-  var week = select_week.value;
 
+  exercise_div.innerHTML = "";
+  const course_name = "devlife-23-1"
+  let student = select_student.value;
+  let week_label = select_week.value;
+  select_week.value = "";
+
+  let week = week_data[week_label];
   await fetch(`${course_name}/${student}/${week}`).then(async (response) => {
     const data = await response.json();
     showStuff(data);
@@ -21,43 +15,62 @@ async function updateFilter() {
 }
 
 function showStuff(data) {
+  let tag_div = document.createElement("div");
+  tag_div.className = "chart"
+  exercise_div.appendChild(tag_div)
+  let tags_chart_canvas = document.createElement("canvas");
+  tags_chart_canvas.id = "tagChart";
+  tag_div.appendChild(tags_chart_canvas);
+  new Chart("tagChart", {
+    type: "pie",
+    data: {
+      labels: Object.keys(data.tags),
+      datasets: [{
+        data: Object.values(data.tags)
+      }]
+    },
+    options: {
+      plugins: {
 
-  console.log(data);
-  var div = document.getElementById("exercise-data");
-  div.innerHTML = "";
-
+        title: {
+          display: true,
+          text: "Tag distribution"
+        },
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+    }
+  });
   var total = document.createTextNode(`Total: ${data["total"]}`);
   var average = document.createTextNode(`Average points: ${data["average_points"]}\n`);
 
-  div.appendChild(total);
-  div.appendChild(document.createElement("br"));
-  div.appendChild(average);
-  div.appendChild(document.createElement("br"));
+  exercise_div.appendChild(total);
+  exercise_div.appendChild(document.createElement("br"));
+  exercise_div.appendChild(average);
+  exercise_div.appendChild(document.createElement("br"));
 
-
-
-  Object.keys(data["tags"]).forEach(key => {
-    let tag = document.createTextNode(`${key} - ${data["tags"][key]}\n`)
-    div.appendChild(tag);
-    div.appendChild(document.createElement("br"));
-  })
-  for (let i =0; i<data["exercises"].length;i++){
+  for (let i = 0; i < data["exercises"].length; i++) {
     let ex = document.createTextNode(`${data["exercises"][i][0]} - ${data["exercises"][i][1]}`)
-    div.appendChild(ex);
-    div.appendChild(document.createElement("br"));
+    exercise_div.appendChild(ex);
+    exercise_div.appendChild(document.createElement("br"));
 
   }
 }
 
-
-
-
 var select_student;
 var select_week;
+var week_data;
+var exercise_div;
 
 document.addEventListener('DOMContentLoaded', function () {
+
   select_student = document.getElementById("select-student");
   select_week = document.getElementById("select-week")
+  exercise_div = document.getElementById("exercise-data");
+  week_data = select_week.getAttribute("data-week")
+  week_data = week_data.replace(/'/g, '"');
+
+  week_data = JSON.parse(week_data);
   select_student.onchange = updateFilter;
   select_week.onchange = updateFilter;
 
