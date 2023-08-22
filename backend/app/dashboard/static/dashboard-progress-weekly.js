@@ -8,9 +8,44 @@ async function updateFilter() {
   select_week.value = "";
 
   let week = week_data[week_label];
+  await fetch(`${course_name}/${week}`).then(async (response) => {
+    const data = await response.json();
+    showHistogram(data);
+  });
+
   await fetch(`${course_name}/${student}/${week}`).then(async (response) => {
     const data = await response.json();
     showStuff(data);
+  });
+}
+function showHistogram(data) {
+  console.log("show Hoist")
+  let tag_div = document.createElement("div");
+  tag_div.className = "hist"
+  exercise_div.appendChild(tag_div)
+  let tags_chart_canvas = document.createElement("canvas");
+  tags_chart_canvas.id = "histChart";
+  tag_div.appendChild(tags_chart_canvas);
+
+  let colorsList = []; 
+  for (let i=0; i<Object.keys(data).length; i++){
+    colorsList.push(`#${Math.floor(Math.random() * 16777215).toString(16)}`);
+  }
+  console.log(colorsList);
+  new Chart("histChart", {
+    type: "bar",
+    data: {
+      labels: Object.keys(data),
+      datasets: [{
+        label: "Exercise Histogram",
+        data: Object.values(data),
+        backgroundColor: colorsList,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+    }
   });
 }
 

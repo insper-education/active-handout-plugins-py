@@ -172,3 +172,35 @@ def student_weekly_progress(request, course_name, user_nickname, week):
     metrics["average_points"] = aggr_points / \
         metrics["total"] if metrics["total"] != 0 else 0
     return Response(metrics)
+
+
+@staff_member_required
+@api_view()
+@login_required
+def student_weekly_exercises(request, course_name, week):
+    from datetime import datetime, timedelta
+    from django.db.models import Count
+    from django.db.models import Q
+
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    exercises = Exercise.objects.filter(course=course)
+
+    week_start = datetime.fromisoformat(week)
+    week_end = week_start + timedelta(days=6)
+
+    user_exercise_counts = Student.objects.annotate(
+        exercise_count=Count('telemetrydata', 
+            filter=Q(telemetrydata__submission_date__gte=week_start,
+                telemetrydata__submission_date__lte=week_end, telemetrydata__exercise__in=exercises), distinct=True)
+    ).values('username', 'exercise_count')
+
+    hist = {}
+    #converting to histogram
+    for user in user_exercise_counts:
+        #if user['exercise_count'] == 0:
+        #    continue
+        hist.setdefault(user['exercise_count'], 0)
+        hist[user['exercise_count']] +=1
+
+    return Response(hist)
