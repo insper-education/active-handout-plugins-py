@@ -5,34 +5,55 @@
 <head>
   <title>Weekly Progress</title>
   <script src="{% static '/dashboard-progress-weekly.js' %}"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
-    crossorigin="anonymous"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-<link rel="stylesheet" href="{% static '/progress-table-weekly.css' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <link rel="stylesheet" href="{% static '/progress-table-weekly.css' %}">
+  </script>
 
 </head>
 
 <body>
 
-  Filter by student:
-  <input list="data" id="select-student">
   <datalist id="data"> {% for student in students %}
     <option value="{{ student }}">{{ student }} </option>
     {% endfor %}
   </datalist>
-  {{ weeks.items.0 }}
-  <input list="weeks" id="select-week" data-week="{{ weeks }}">
-  <datalist id="weeks">{% for week_obj in weeks.items %}
-    <option>{{ week_obj.0 }} </option>
-    {% endfor %}
-  </datalist>
+  <h1 class="h1">Student Weekly Progress</h1>
 
-  <div id="exercise-data">
+  <div class="input-group mb-3">
+    <span class="input-group-text" id="basic-addon1">Student</span>
+    <input class="form-control" list="data" id="select-student">
+  </div>
+
+  <select class="form-select flex-nowrap" list="weeks" id="select-week" data-week="{{ weeks }}">
+    <datalist id="weeks">{% for week_obj in weeks.items %}
+      <option>{{ week_obj.0 }} </option>
+      {% endfor %}
+    </datalist>
+  </select>
+  <div id="dashboard-head">
+    <span class="badge rounded-pill text-bg-primary" id="name"></span>
+    <span class="badge rounded-pill text-bg-secondary" id="week">Secondary</span>
+    <div class="cards">
+      <div class="card">
+        <div class="card-body">
+          <h5>Exercícios feitos</h5>
+          <div id="total">
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5>Média</h5>
+          <div id="avg"></div>
+        </div>
+      </div>
+    </div>
+    <div id="exercise-data"></div>
   </div>
 
 

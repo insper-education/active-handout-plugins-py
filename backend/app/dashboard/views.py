@@ -196,11 +196,15 @@ def student_weekly_exercises(request, course_name, week):
     ).values('username', 'exercise_count')
 
     hist = {}
+    granularity = 5
+    import math
     #converting to histogram
     for user in user_exercise_counts:
-        #if user['exercise_count'] == 0:
-        #    continue
-        hist.setdefault(user['exercise_count'], 0)
-        hist[user['exercise_count']] +=1
+        if user['exercise_count'] >= 50:
+            exercise_count = "50"
+        else:
+            exercise_count = int(math.ceil(user['exercise_count'] / granularity)) * granularity
+        hist.setdefault(exercise_count, 0)
+        hist[exercise_count] +=1
 
     return Response(hist)

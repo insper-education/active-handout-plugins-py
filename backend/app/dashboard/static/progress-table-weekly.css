@@ -2,11 +2,39 @@ canvas {
     width: 2rem;
 }
 
+
 .chart {
-    width: 100%;
+    width: 20rem;
     height: 20rem;
 }
 
 .hist {
-    height: 10rem;
+    height: 20rem;
+    width: 20rem;
+}
+
+#dashboard-head {
+    visibility: hidden;
+    height: 12rem;
+    display: flexbox;
+}
+
+.card {
+    width: 10rem;
+    height: 7rem;
+    background-color: lightskyblue;
+}
+
+.cards {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#dashboard-head > * {
+    margin: 0.2rem;
+}
+
+#exercise-data {
+    display: flex;
+    justify-content: center;
 }

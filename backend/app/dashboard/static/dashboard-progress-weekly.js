@@ -1,13 +1,11 @@
 
 async function updateFilter() {
-
   exercise_div.innerHTML = "";
   const course_name = "devlife-23-1"
   let student = select_student.value;
   let week_label = select_week.value;
-  select_week.value = "";
-
   let week = week_data[week_label];
+
   await fetch(`${course_name}/${week}`).then(async (response) => {
     const data = await response.json();
     showHistogram(data);
@@ -16,28 +14,51 @@ async function updateFilter() {
   await fetch(`${course_name}/${student}/${week}`).then(async (response) => {
     const data = await response.json();
     showStuff(data);
+    showExercisePerTag(data);
+    showDashboard(data);
+
   });
 }
+function showDashboard(data) {
+  let head_div = document.createElement("div")
+  let dash = document.getElementById("dashboard-head");
+  dash.style.visibility = "visible";
+
+  let name = document.getElementById("name");
+  name.innerHTML = select_student.value;
+
+  let week = document.getElementById("week");
+  week.innerHTML = select_week.value;
+
+  let total = document.getElementById("total");
+  total.innerHTML = data["total"]
+
+  let avg = document.getElementById("avg");
+  avg.innerHTML = Math.round(data["average_points"] * 100) + "%";
+}
+
 function showHistogram(data) {
-  console.log("show Hoist")
   let tag_div = document.createElement("div");
-  tag_div.className = "hist"
-  exercise_div.appendChild(tag_div)
+  tag_div.className = "hist";
+  exercise_div.appendChild(tag_div);
+  let h3 = document.createElement("h3");
+  h3.className = "h3";
+  tag_div.appendChild(h3);
+  h3.innerText = "Exercises per week"
   let tags_chart_canvas = document.createElement("canvas");
   tags_chart_canvas.id = "histChart";
   tag_div.appendChild(tags_chart_canvas);
 
-  let colorsList = []; 
-  for (let i=0; i<Object.keys(data).length; i++){
+  let colorsList = [];
+  for (let i = 0; i < Object.keys(data).length; i++) {
     colorsList.push(`#${Math.floor(Math.random() * 16777215).toString(16)}`);
   }
-  console.log(colorsList);
   new Chart("histChart", {
     type: "bar",
     data: {
       labels: Object.keys(data),
       datasets: [{
-        label: "Exercise Histogram",
+        label: "Histogram",
         data: Object.values(data),
         backgroundColor: colorsList,
       }]
@@ -51,6 +72,10 @@ function showHistogram(data) {
 
 function showStuff(data) {
   let tag_div = document.createElement("div");
+  let h3 = document.createElement("h3");
+  h3.className = "h3";
+  tag_div.appendChild(h3);
+  h3.innerText = "Tag Distribution"
   tag_div.className = "chart"
   exercise_div.appendChild(tag_div)
   let tags_chart_canvas = document.createElement("canvas");
@@ -65,33 +90,15 @@ function showStuff(data) {
       }]
     },
     options: {
-      plugins: {
-
-        title: {
-          display: true,
-          text: "Tag distribution"
-        },
-      },
       responsive: true,
       maintainAspectRatio: false,
     }
   });
-  var total = document.createTextNode(`Total: ${data["total"]}`);
-  var average = document.createTextNode(`Average points: ${data["average_points"]}\n`);
-
-  exercise_div.appendChild(total);
-  exercise_div.appendChild(document.createElement("br"));
-  exercise_div.appendChild(average);
-  exercise_div.appendChild(document.createElement("br"));
-
-  for (let i = 0; i < data["exercises"].length; i++) {
-    let ex = document.createTextNode(`${data["exercises"][i][0]} - ${data["exercises"][i][1]}`)
-    exercise_div.appendChild(ex);
-    exercise_div.appendChild(document.createElement("br"));
-
-  }
 }
 
+function showExercisePerTag(data) { 
+  console.log(data);
+}
 var select_student;
 var select_week;
 var week_data;
