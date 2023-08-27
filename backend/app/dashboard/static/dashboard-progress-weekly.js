@@ -5,22 +5,22 @@ async function updateFilter() {
   let student = select_student.value;
   let week_label = select_week.value;
   let week = week_data[week_label];
-
-  await fetch(`${course_name}/${week}`).then(async (response) => {
-    const data = await response.json();
-    showHistogram(data);
-  });
-
+  let total_ex;
   await fetch(`${course_name}/${student}/${week}`).then(async (response) => {
     const data = await response.json();
+    total_ex = data["total"];
     showStuff(data);
-    showExercisePerTag(data);
     showDashboard(data);
 
   });
+
+  await fetch(`${course_name}/${week}`).then(async (response) => {
+    const data = await response.json();
+    showHistogram(data, total_ex);
+  });
+
 }
 function showDashboard(data) {
-  let head_div = document.createElement("div")
   let dash = document.getElementById("dashboard-head");
   dash.style.visibility = "visible";
 
@@ -37,7 +37,8 @@ function showDashboard(data) {
   avg.innerHTML = Math.round(data["average_points"] * 100) + "%";
 }
 
-function showHistogram(data) {
+function showHistogram(data, student_value) {
+
   let tag_div = document.createElement("div");
   tag_div.className = "hist";
   exercise_div.appendChild(tag_div);
@@ -49,10 +50,15 @@ function showHistogram(data) {
   tags_chart_canvas.id = "histChart";
   tag_div.appendChild(tags_chart_canvas);
 
-  let colorsList = [];
-  for (let i = 0; i < Object.keys(data).length; i++) {
-    colorsList.push(`#${Math.floor(Math.random() * 16777215).toString(16)}`);
-  }
+  let keys = Object.keys(data);
+  const colors = Array(keys.length).fill("#808080");
+  student_value = parseInt(Math.ceil(student_value / 5)) * 5
+  let index = keys.indexOf(String(student_value));
+  if (index == -1)
+    colors[colors.length-1] = "#0000FF";
+  else
+    colors[index] = "#0000FF";
+
   new Chart("histChart", {
     type: "bar",
     data: {
@@ -60,7 +66,7 @@ function showHistogram(data) {
       datasets: [{
         label: "Histogram",
         data: Object.values(data),
-        backgroundColor: colorsList,
+        backgroundColor: colors,
       }]
     },
     options: {
@@ -96,9 +102,6 @@ function showStuff(data) {
   });
 }
 
-function showExercisePerTag(data) { 
-  console.log(data);
-}
 var select_student;
 var select_week;
 var week_data;
