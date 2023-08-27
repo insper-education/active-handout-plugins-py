@@ -5,19 +5,21 @@ async function updateFilter() {
   let student = select_student.value;
   let week_label = select_week.value;
   let week = week_data[week_label];
-  let total_ex;
+  let student_value;
   await fetch(`${course_name}/${student}/${week}`).then(async (response) => {
     const data = await response.json();
-    total_ex = data["total"];
+    showTable(data);
     showStuff(data);
     showDashboard(data);
+    student_value = data["total"];
 
   });
 
   await fetch(`${course_name}/${week}`).then(async (response) => {
     const data = await response.json();
-    showHistogram(data, total_ex);
+    showHistogram(data, student_value);
   });
+
 
 }
 function showDashboard(data) {
@@ -81,9 +83,9 @@ function showStuff(data) {
   let h3 = document.createElement("h3");
   h3.className = "h3";
   tag_div.appendChild(h3);
-  h3.innerText = "Tag Distribution"
-  tag_div.className = "chart"
-  exercise_div.appendChild(tag_div)
+  h3.innerText = "Tag Distribution";
+  tag_div.className = "chart";
+  exercise_div.appendChild(tag_div);
   let tags_chart_canvas = document.createElement("canvas");
   tags_chart_canvas.id = "tagChart";
   tag_div.appendChild(tags_chart_canvas);
@@ -99,6 +101,23 @@ function showStuff(data) {
       responsive: true,
       maintainAspectRatio: false,
     }
+  });
+}
+
+function showTable(data){
+  let tag_div = document.createElement("div");
+  let h3 = document.createElement("h3");
+  h3.className = "h3";
+  tag_div.appendChild(h3);
+  h3.innerText = "Exercise list";
+  tag_div.className = "table";
+  exercise_div.appendChild(tag_div);
+  
+  let table_div = document.createElement("div");
+  tag_div.appendChild(table_div)
+  hot = new Handsontable(table_div, {
+    data: data.exercises,
+    licenseKey: 'non-commercial-and-evaluation', // for non-commercial use only
   });
 }
 

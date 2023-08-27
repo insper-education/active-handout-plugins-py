@@ -22,7 +22,6 @@ canvas {
 .card {
     width: 10rem;
     height: 7rem;
-    background-color: lightskyblue;
 }
 
 .cards {
@@ -35,6 +34,7 @@ canvas {
 }
 
 #exercise-data {
+    flex-direction: row-reverse;
     display: flex;
     justify-content: center;
 }
