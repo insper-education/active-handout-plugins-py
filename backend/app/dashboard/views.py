@@ -1,5 +1,7 @@
 from urllib.parse import unquote_plus
 import json
+from datetime import datetime, timedelta
+
 
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
@@ -81,7 +83,6 @@ def students_progress(request, course_name):
 @api_view()
 @login_required
 def weekly_progress(request, course_name):
-    from datetime import timedelta
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
@@ -126,7 +127,6 @@ def weekly_progress(request, course_name):
 @api_view()
 @login_required
 def student_weekly_progress(request, course_name, user_nickname, week):
-    from datetime import datetime, timedelta
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
@@ -144,6 +144,7 @@ def student_weekly_progress(request, course_name, user_nickname, week):
     )
 
     exercise_data = {}
+    
     for exercise in exercises:
         exercise_slug = exercise["exercise__slug"]
         if exercise_slug not in exercise_data:
@@ -157,11 +158,12 @@ def student_weekly_progress(request, course_name, user_nickname, week):
                 exercise_data[exercise_slug]["tags"].append(
                     exercise["exercise__tags__name"])
 
-    metrics = {}
-    metrics["total"] = len(exercise_data)
-    metrics["exercises"] = []
-    metrics["tags"] = {}
     aggr_points = 0
+    metrics = {
+        "total": len(exercise_data),
+        "exercises" : [],
+        "tags": {},
+    }
     for ex in exercise_data.keys():
         aggr_points += exercise_data[ex]["points"]
         metrics["exercises"].append(
@@ -178,7 +180,6 @@ def student_weekly_progress(request, course_name, user_nickname, week):
 @api_view()
 @login_required
 def student_weekly_exercises(request, course_name, week):
-    from datetime import datetime, timedelta
     from django.db.models import Count
     from django.db.models import Q
 
@@ -190,21 +191,22 @@ def student_weekly_exercises(request, course_name, week):
     week_end = week_start + timedelta(days=6)
 
     user_exercise_counts = Student.objects.annotate(
-        exercise_count=Count('telemetrydata', 
-            filter=Q(telemetrydata__submission_date__gte=week_start,
-                telemetrydata__submission_date__lte=week_end, telemetrydata__exercise__in=exercises), distinct=True)
+        exercise_count=Count('telemetrydata',
+                             filter=Q(telemetrydata__submission_date__gte=week_start,
+                                      telemetrydata__submission_date__lte=week_end, telemetrydata__exercise__in=exercises), distinct=True)
     ).values('username', 'exercise_count')
 
     hist = {}
     granularity = 5
     import math
-    #converting to histogram
+    # converting to histogram
     for user in user_exercise_counts:
         if user['exercise_count'] >= 50:
             exercise_count = ">50"
         else:
-            exercise_count = int(math.ceil(user['exercise_count'] / granularity)) * granularity
+            exercise_count = int(
+                math.ceil(user['exercise_count'] / granularity)) * granularity
         hist.setdefault(exercise_count, 0)
-        hist[exercise_count] +=1
+        hist[exercise_count] += 1
 
     return Response(hist)
