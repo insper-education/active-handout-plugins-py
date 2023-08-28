@@ -1,16 +1,6 @@
-canvas {
-    width: 2rem;
-}
-
-
 .chart {
     width: 20rem;
     height: 20rem;
-}
-
-.hist {
-    height: 20rem;
-    width: 20rem;
 }
 
 #dashboard-head {
@@ -34,7 +24,6 @@ canvas {
 }
 
 #exercise-data {
-    flex-direction: row-reverse;
     display: flex;
-    justify-content: center;
+    justify-content: space-evenly;
 }
