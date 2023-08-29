@@ -77,10 +77,16 @@ def students_progress(request, course_name):
                         "Name": answer['author__username']})
         data[answer['author__username']][answer['exercise__slug']
                                          ] = round(answer['max_points'], 1)
-    columns_with_list = [*["Name"], *list(columns)]
+    sorted_columns = sorted(list(columns))
+    columns_with_list = [*["Name"], *sorted_columns]
+
+    data_list = sorted(list(data.values()), key=lambda d: d['Name'].lower())
+    for d in data_list:
+        print(d["Name"])
+
     return render(request, 'dashboard/instructor-progress.html',
                   {
-                      'data': list(data.values()),
+                      'data': data_list,
                       'columns': columns_with_list,
                       'tags': tag_obj,
                       'course_classes': course_classes_list,
