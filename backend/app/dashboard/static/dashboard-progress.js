@@ -42,10 +42,12 @@ function createHandsontable(data, columns_list) {
 
 function updateHandsontable(data, columns_list) {
   data = filterStudentsInClass(data);
-
+  
   ret = generateMatrix(data, columns_list)
+  usernames = ret[0]
   zvals = ret[1]
   data_h[0]['x'] = columns_list.slice(1);
+  data_h[0]['y'] = usernames;
   data_h[0]['z'] = zvals;
   Plotly.redraw('chart');
 
@@ -167,7 +169,6 @@ function generateMatrix(tableData, columns){
     });
     zvals.push(studentvals)
   });
-  console.log(usernames)
   return [usernames.reverse(), zvals.reverse()]
 }
 
@@ -210,7 +211,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   createHandsontable(tableData, columns);
 
-  ret = generateMatrix(tableData, columns)
+  data = filterStudentsInClass(tableData);
+  ret = generateMatrix(data, columns)
   usernames = ret[0]
   zvals = ret[1]
   data_h = [
@@ -238,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
     xaxis: {showticklabels: false, ticks: "", side:"top"},
     showlegend: false,
-    height: usernames.length * 20,
+    height: Math.max(400, usernames.length * 25),
     autosize: true
   };
 
