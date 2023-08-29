@@ -1,5 +1,6 @@
 from urllib.parse import unquote_plus
 import json
+import math
 from datetime import datetime, timedelta
 
 
@@ -12,7 +13,7 @@ from rest_framework.response import Response
 
 from core.models import Course, Exercise, TelemetryData, ExerciseTag, Student, User
 from dashboard.query import StudentStats
-from django.db.models import Max
+from django.db.models import Max, Count, Q
 
 
 @api_view()
@@ -126,7 +127,7 @@ def weekly_progress(request, course_name):
 @staff_member_required
 @api_view()
 @login_required
-def student_weekly_progress(request, course_name, user_nickname, week):
+def student_weekly_data(request, course_name, user_nickname, week):
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
@@ -143,45 +144,34 @@ def student_weekly_progress(request, course_name, user_nickname, week):
         "exercise__slug", "points", "exercise__tags__name"
     )
 
-    exercise_data = {}
-    
-    for exercise in exercises:
-        exercise_slug = exercise["exercise__slug"]
-        if exercise_slug not in exercise_data:
-            exercise_data[exercise_slug] = {
-                "slug": exercise_slug,
-                "points": exercise["points"],
-                "tags": [exercise["exercise__tags__name"]] if exercise["exercise__tags__name"] else [],
-            }
-        else:
-            if exercise["exercise__tags__name"]:
-                exercise_data[exercise_slug]["tags"].append(
-                    exercise["exercise__tags__name"])
-
-    aggr_points = 0
-    metrics = {
-        "total": len(exercise_data),
-        "exercises" : [],
+    alternative_metrics = {
+        "total": 0,
+        "exercises": [],
         "tags": {},
     }
-    for ex in exercise_data.keys():
-        aggr_points += exercise_data[ex]["points"]
-        metrics["exercises"].append(
-            (exercise_data[ex]["slug"], exercise_data[ex]["points"]))
-        for tag in exercise_data[ex]["tags"]:
-            metrics["tags"].setdefault(tag, 0)
-            metrics["tags"][tag] += 1
-    metrics["average_points"] = aggr_points / \
-        metrics["total"] if metrics["total"] != 0 else 0
-    return Response(metrics)
+    aggr_points = 0
+
+    for exercise in exercises:
+        exercise_slug = exercise["exercise__slug"]
+        exercise_tag = exercise["exercise__tags__name"]
+        if not any(exercise_slug in slug for slug in alternative_metrics['exercises']):
+            aggr_points += exercise['points']
+            alternative_metrics['exercises'].append(
+                (exercise_slug, exercise['points']))
+            alternative_metrics['total'] += 1
+
+        alternative_metrics['tags'].setdefault(exercise_tag, 0)
+        alternative_metrics['tags'][exercise_tag] += 1
+    alternative_metrics["average_points"] = aggr_points / \
+        alternative_metrics['total'] if alternative_metrics["total"] != 0 else 0
+
+    return Response(alternative_metrics)
 
 
 @staff_member_required
 @api_view()
 @login_required
-def student_weekly_exercises(request, course_name, week):
-    from django.db.models import Count
-    from django.db.models import Q
+def weekly_exercises(request, course_name, week):
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
@@ -198,7 +188,6 @@ def student_weekly_exercises(request, course_name, week):
 
     hist = {}
     granularity = 5
-    import math
     # converting to histogram
     for user in user_exercise_counts:
         if user['exercise_count'] >= 50:
