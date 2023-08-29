@@ -43,6 +43,12 @@ function createHandsontable(data, columns_list) {
 function updateHandsontable(data, columns_list) {
   data = filterStudentsInClass(data);
 
+  ret = generateMatrix(data, columns_list)
+  zvals = ret[1]
+  data_h[0]['x'] = columns_list.slice(1);
+  data_h[0]['z'] = zvals;
+  Plotly.redraw('chart');
+
   let dataSchema = getDataSchema(columns_list);
   hot.updateSettings({
     data: data,
@@ -142,6 +148,29 @@ function generateTagView() {
   });
 }
 
+function generateMatrix(tableData, columns){
+  nulls = new Array(columns.length-1).fill(null)
+  zvals = []
+  usernames = []
+  tableData.forEach(row => {
+    studentvals = [...nulls]
+    Object.entries(row).forEach((val) => {
+      if (val[0] == "Name") {
+        usernames.push(val[1])
+      }
+      else{
+        idx = columns.indexOf(val[0])-1
+        if (idx >= 0){
+          studentvals[idx] = val[1]
+        }
+      }  
+    });
+    zvals.push(studentvals)
+  });
+  console.log(usernames)
+  return [usernames.reverse(), zvals.reverse()]
+}
+
 var tags = new Set();
 var table;
 var columns;
@@ -180,4 +209,51 @@ document.addEventListener("DOMContentLoaded", function () {
   tableData = structuredClone(data);
 
   createHandsontable(tableData, columns);
+
+  ret = generateMatrix(tableData, columns)
+  usernames = ret[0]
+  zvals = ret[1]
+  data_h = [
+    {
+      x: columns.slice(1),
+      y: usernames,
+      z: zvals,
+      type: 'heatmap',
+      hovertemplate : 'Exercício: %{x}<br> Aluno: %{y}<br> Nota: %{z}<extra></extra>',
+      colorscale:[[0.0, "red"], [0.1, "red"],
+                  [0.1, "orange"], [1, "orange"],
+                  [1, "green"],  [1.00, "green"]],
+      showscale:false,
+      xgap:0.5,
+      ygap:0.5,
+    }
+  ];
+
+  var layout = {
+    margin: {
+      t: 50,
+      r: 50,
+      b: 0,
+      l: 150
+    },
+    xaxis: {showticklabels: false, ticks: "", side:"top"},
+    showlegend: false,
+    height: usernames.length * 20,
+    autosize: true
+  };
+
+  Plotly.newPlot('chart', data_h, layout);
 });
+
+function toggleVisibility() {
+  var table = document.getElementById("table");
+  var chart = document.getElementById("chart");
+  if (table.style.display === "none") {
+    table.style.display = "";
+    chart.style.display = "none";
+  } else {
+    table.style.display = "none";
+    chart.style.display = "";
+    document.querySelector('[data-title="Autoscale"]').click()
+  }
+} 
