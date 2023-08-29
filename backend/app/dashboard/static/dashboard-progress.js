@@ -51,6 +51,12 @@ function updateHandsontable(data, columns_list) {
   data_h[0]['z'] = zvals;
   Plotly.redraw('chart');
 
+  ret = generateMatrix(data, columns_list)
+  zvals = ret[1]
+  data_h[0]['x'] = columns_list.slice(1);
+  data_h[0]['z'] = zvals;
+  Plotly.redraw('chart');
+
   let dataSchema = getDataSchema(columns_list);
   hot.updateSettings({
     data: data,
@@ -211,8 +217,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   createHandsontable(tableData, columns);
 
+<<<<<<< HEAD
   data = filterStudentsInClass(tableData);
   ret = generateMatrix(data, columns)
+=======
+  ret = generateMatrix(tableData, columns)
+>>>>>>> main
   usernames = ret[0]
   zvals = ret[1]
   data_h = [
@@ -240,7 +250,11 @@ document.addEventListener("DOMContentLoaded", function () {
     },
     xaxis: {showticklabels: false, ticks: "", side:"top"},
     showlegend: false,
+<<<<<<< HEAD
     height: Math.max(400, usernames.length * 25),
+=======
+    height: usernames.length * 20,
+>>>>>>> main
     autosize: true
   };
 
