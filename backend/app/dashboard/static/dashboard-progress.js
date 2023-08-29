@@ -217,12 +217,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
   createHandsontable(tableData, columns);
 
-<<<<<<< HEAD
   data = filterStudentsInClass(tableData);
   ret = generateMatrix(data, columns)
-=======
-  ret = generateMatrix(tableData, columns)
->>>>>>> main
   usernames = ret[0]
   zvals = ret[1]
   data_h = [
@@ -250,11 +246,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
     xaxis: {showticklabels: false, ticks: "", side:"top"},
     showlegend: false,
-<<<<<<< HEAD
     height: Math.max(400, usernames.length * 25),
-=======
-    height: usernames.length * 20,
->>>>>>> main
     autosize: true
   };
 
