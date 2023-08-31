@@ -27,7 +27,20 @@
     <option value="{{ student }}">{{ student }} </option>
     {% endfor %}
   </datalist>
-  <h1 class="h1">Student Weekly Progress</h1>
+  <h1 class="h1">Dashboard</h1>
+
+  <select class="form-select" list="courses">
+    <datalist id="courses">{% for course in courses %}
+      <option>{{ course.name }} </option>
+      {% endfor %}
+    </datalist>
+  </select>
+
+  <div class="btn-group">
+    <a href="/dashboard/instructor/devlife-23-1/semester" class="btn btn-primary active"
+      aria-current="page">Semester</a>
+    <a href="/dashboard/instructor/devlife-23-1/weekly" class="btn btn-primary">Weekly</a>
+  </div>
 
   <div class="input-group mb-3">
     <span class="input-group-text" id="basic-addon1">Student</span>

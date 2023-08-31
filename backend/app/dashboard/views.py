@@ -42,21 +42,24 @@ def student_dashboard(request, course_name):
 @staff_member_required
 @api_view()
 @login_required
-def instructor_courses(request):
+def instructor_courses(request, course_name=None, content_type=None):
+    print("Hereee", course_name, content_type)
     courses = Course.objects.all()
+    if content_type == "weekly":
+        return weekly_progress(request, course_name)
+    elif content_type == "semester":
+        return students_progress(request, course_name)
     return render(request, 'dashboard/instructor-courses.html', {"courses": courses})
 
 
-@staff_member_required
-@api_view()
-@login_required
 def students_progress(request, course_name):
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
     course_classes = course.courseclass_set.all().prefetch_related('students')
     course_classes_list = [
-        {"name": course_class.name, "students": list(course_class.students.values_list('username', flat=True))}
+        {"name": course_class.name, "students": list(
+            course_class.students.values_list('username', flat=True))}
         for course_class in course_classes
     ]
 
@@ -81,8 +84,8 @@ def students_progress(request, course_name):
     columns_with_list = [*["Name"], *sorted_columns]
 
     data_list = sorted(list(data.values()), key=lambda d: d['Name'].lower())
-    for d in data_list:
-        print(d["Name"])
+    courses = Course.objects.all()
+    print(data)
 
     return render(request, 'dashboard/instructor-progress.html',
                   {
@@ -90,12 +93,11 @@ def students_progress(request, course_name):
                       'columns': columns_with_list,
                       'tags': tag_obj,
                       'course_classes': course_classes_list,
+                      'courses': courses
+
                   })
 
 
-@staff_member_required
-@api_view()
-@login_required
 def weekly_progress(request, course_name):
 
     course_name = unquote_plus(course_name)
@@ -134,7 +136,14 @@ def weekly_progress(request, course_name):
     end_date = course.end_date
 
     week_obj = generate_weeks(start_date, end_date)
-    return render(request, 'dashboard/instructor-progress-weekly.html', {"students": list(students), "weeks": week_obj})
+    courses = Course.objects.all()
+
+    return render(request, 'dashboard/instructor-progress-weekly.html',
+                  {
+                      "students": list(students),
+                      "weeks": week_obj,
+                      "courses": courses
+                  })
 
 
 @staff_member_required

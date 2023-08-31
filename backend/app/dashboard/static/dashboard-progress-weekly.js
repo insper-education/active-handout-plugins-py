@@ -5,7 +5,7 @@ async function updateFilter() {
   let week_label = select_week.value;
   let week = week_data[week_label];
   let student_value;
-  await fetch(`${course_name}/${student}/${week}`).then(async (response) => {
+  await fetch(`weekly/${student}/${week}`).then(async (response) => {
     const data = await response.json();
     createExercisesTable(data.exercises);
     createTagChart(data);
@@ -14,7 +14,7 @@ async function updateFilter() {
 
   });
 
-  await fetch(`${course_name}/${week}`).then(async (response) => {
+  await fetch(`weekly/${week}`).then(async (response) => {
     const data = await response.json();
     createHistogram(data, student_value);
   });
@@ -115,9 +115,9 @@ var table;
 document.addEventListener('DOMContentLoaded', function () {
 
   select_student = document.getElementById("select-student");
-  select_week = document.getElementById("select-week")
+  select_week = document.getElementById("select-week");
   exercise_div = document.getElementById("exercise-data");
-  week_data = select_week.getAttribute("data-week")
+  week_data = select_week.getAttribute("data-week");
   week_data = week_data.replace(/'/g, '"');
 
   week_data = JSON.parse(week_data);
