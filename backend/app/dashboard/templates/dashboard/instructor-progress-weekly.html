@@ -1,94 +1,69 @@
+{% extends "dashboard/base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-<head>
-  <title>Weekly Progress</title>
 
-  <script src="{% static '/dashboard-progress-weekly.js' %}"></script>
-  <link rel="stylesheet" href="{% static '/progress-table-weekly.css' %}">
+{% block head-content %}
 
-  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
+<script src="{% static '/dashboard-progress-weekly.js' %}"></script>
+<link rel="stylesheet" href="{% static '/progress-table-weekly.css' %}">
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script
+  src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+{% endblock %}
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-  </script>
+{% block specific-header %}
 
-</head>
-
-<body>
-
-  <datalist id="data"> {% for student in students %}
-    <option value="{{ student }}">{{ student }} </option>
+<div class="input-group mb-3">
+  <span class="input-group-text" id="basic-addon1">Student</span>
+  <input class="form-control" list="students" id="select-student">
+  <datalist id="students">{% for student in students %}
+    <option>{{ student }}</option>
     {% endfor %}
   </datalist>
-  <h1 class="h1">Dashboard</h1>
+</div>
 
-  <select class="form-select" list="courses">
-    <datalist id="courses">{% for course in courses %}
-      <option>{{ course.name }} </option>
-      {% endfor %}
-    </datalist>
-  </select>
-
-  <div class="btn-group">
-    <a href="/dashboard/instructor/devlife-23-1/semester" class="btn btn-primary active"
-      aria-current="page">Semester</a>
-    <a href="/dashboard/instructor/devlife-23-1/weekly" class="btn btn-primary">Weekly</a>
-  </div>
-
-  <div class="input-group mb-3">
-    <span class="input-group-text" id="basic-addon1">Student</span>
-    <input class="form-control" list="data" id="select-student">
-  </div>
-
-  <select class="form-select flex-nowrap" list="weeks" id="select-week" data-week="{{ weeks }}">
-    <datalist id="weeks">{% for week_obj in weeks.items %}
-      <option>{{ week_obj.0 }} </option>
-      {% endfor %}
-    </datalist>
-  </select>
-  <div id="dashboard-head">
-    <span class="badge rounded-pill text-bg-primary" id="name"></span>
-    <span class="badge rounded-pill text-bg-secondary" id="week">Secondary</span>
-    <div class="cards">
-      <div class="card">
-        <div class="card-body">
-          <h5>Exercises done</h5>
-          <div id="total">
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-body">
-          <h5>Average</h5>
-          <div id="avg"></div>
-        </div>
-      </div>
-    </div>
-    <div id="exercise-data">
-      <div id="exercise-list">
-        <h3 class="h3">Exercise list</h3>
-        <div id="table"></div>
-      </div>
-      <div class="chart" id="exercise-per-week">
-        <h3 class="h3">Exercises per week</h3>
-        <canvas id="hist"></canvas>
-      </div>
-      <div class="chart" id="tag-distribution">
-        <h3 class="h3">Tag Distribution</h3>
-        <canvas id="chart"></canvas>
-
+<select class="form-select flex-nowrap" list="weeks" id="select-week" data-week="{{ weeks }}">
+  <datalist id="weeks">{% for week_obj in weeks.items %}
+    <option>{{ week_obj.0 }} </option>
+    {% endfor %}
+  </datalist>
+</select>
+{% if not weeks %}
+<p class="error-msg">There is no data available for this course.</p>
+{% endif %}
+{% endblock %}
+{% block data %}
+<span class="badge rounded-pill text-bg-primary" id="name"></span>
+<span class="badge rounded-pill text-bg-secondary" id="week">Secondary</span>
+<div class="cards">
+  <div class="card">
+    <div class="card-body">
+      <h5>Exercises</h5>
+      <div id="total">
       </div>
     </div>
   </div>
+  <div class="card">
+    <div class="card-body">
+      <h5>Average</h5>
+      <div id="avg"></div>
+    </div>
+  </div>
+</div>
+<div id="exercise-data">
+  <div id="exercise-list">
+    <h3 class="h3">Exercise list</h3>
+    <div id="table"></div>
+  </div>
+  <div class="chart" id="exercise-per-week">
+    <h3 class="h3">Exercises per week</h3>
+    <canvas id="hist"></canvas>
+  </div>
+  <div class="chart" id="tag-distribution">
+    <h3 class="h3">Tag Distribution</h3>
+    <canvas id="chart"></canvas>
 
-
-</body>
-
-</html>
+  </div>
+</div>
+{% endblock %}

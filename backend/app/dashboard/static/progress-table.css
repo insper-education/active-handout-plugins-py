@@ -2,10 +2,6 @@ main {
   margin: 1.5em 1em 4em;
 }
 
-.error-msg {
-  color: red;
-}
-
 .filterset {
   display: flex;
   gap: 2em;

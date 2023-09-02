@@ -43,13 +43,11 @@ def student_dashboard(request, course_name):
 @api_view()
 @login_required
 def instructor_courses(request, course_name=None, content_type=None):
-    print("Hereee", course_name, content_type)
-    courses = Course.objects.all()
-    if content_type == "weekly":
+    if course_name == None:
+        course_name = Course.objects.first().name
+    if content_type == 'weekly':
         return weekly_progress(request, course_name)
-    elif content_type == "semester":
-        return students_progress(request, course_name)
-    return render(request, 'dashboard/instructor-courses.html', {"courses": courses})
+    return students_progress(request, course_name)
 
 
 def students_progress(request, course_name):
@@ -58,7 +56,7 @@ def students_progress(request, course_name):
     course = get_object_or_404(Course, name=course_name)
     course_classes = course.courseclass_set.all().prefetch_related('students')
     course_classes_list = [
-        {"name": course_class.name, "students": list(
+        {'name': course_class.name, 'students': list(
             course_class.students.values_list('username', flat=True))}
         for course_class in course_classes
     ]
@@ -77,15 +75,14 @@ def students_progress(request, course_name):
     for answer in telemetry:
         columns.add(answer['exercise__slug'])
         data.setdefault(answer['author__username'], {
-                        "Name": answer['author__username']})
+                        'Name': answer['author__username']})
         data[answer['author__username']][answer['exercise__slug']
                                          ] = round(answer['max_points'], 1)
     sorted_columns = sorted(list(columns))
-    columns_with_list = [*["Name"], *sorted_columns]
+    columns_with_list = [*['Name'], *sorted_columns]
 
     data_list = sorted(list(data.values()), key=lambda d: d['Name'].lower())
     courses = Course.objects.all()
-    print(data)
 
     return render(request, 'dashboard/instructor-progress.html',
                   {
@@ -93,13 +90,13 @@ def students_progress(request, course_name):
                       'columns': columns_with_list,
                       'tags': tag_obj,
                       'course_classes': course_classes_list,
-                      'courses': courses
+                      'courses': courses,
+                      'activeCourse': course_name
 
                   })
 
 
 def weekly_progress(request, course_name):
-
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
     students = Student.objects.all()
@@ -122,9 +119,9 @@ def weekly_progress(request, course_name):
             if current_date.month != end_week.month:
                 week_number = 1
                 current_month = end_week.month
-                week_label = f"Week{week_number}-{end_week.strftime('%b')}"
+                week_label = f'Week{week_number}-{end_week.strftime("%b")}'
             else:
-                week_label = f"Week{week_number}-{current_date.strftime('%b')}"
+                week_label = f'Week{week_number}-{current_date.strftime("%b")}'
 
             week_obj[week_label] = current_date.isoformat()
             week_number += 1
@@ -135,14 +132,18 @@ def weekly_progress(request, course_name):
     start_date = course.start_date
     end_date = course.end_date
 
-    week_obj = generate_weeks(start_date, end_date)
+    if (start_date or end_date):
+        week_obj = generate_weeks(start_date, end_date)
+    else:
+        week_obj = None
     courses = Course.objects.all()
 
     return render(request, 'dashboard/instructor-progress-weekly.html',
                   {
-                      "students": list(students),
-                      "weeks": week_obj,
-                      "courses": courses
+                      'students': list(students),
+                      'weeks': week_obj,
+                      'courses': courses,
+                      'activeCourse': course_name
                   })
 
 
@@ -150,7 +151,6 @@ def weekly_progress(request, course_name):
 @api_view()
 @login_required
 def student_weekly_data(request, course_name, user_nickname, week):
-
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
     exercises = Exercise.objects.filter(course=course)
@@ -163,31 +163,31 @@ def student_weekly_data(request, course_name, user_nickname, week):
         exercise__in=exercises, author=student,
         submission_date__gte=week_start, submission_date__lte=week_end
     ).values(
-        "exercise__slug", "points", "exercise__tags__name"
+        'exercise__slug', 'points', 'exercise__tags__name'
     )
 
-    alternative_metrics = {
-        "total": 0,
-        "exercises": [],
-        "tags": {},
+    metrics = {
+        'total': 0,
+        'exercises': [],
+        'tags': {},
     }
     aggr_points = 0
 
     for exercise in exercises:
-        exercise_slug = exercise["exercise__slug"]
-        exercise_tag = exercise["exercise__tags__name"]
-        if not any(exercise_slug in slug for slug in alternative_metrics['exercises']):
+        exercise_slug = exercise['exercise__slug']
+        exercise_tag = exercise['exercise__tags__name']
+        if not any(exercise_slug in slug for slug in metrics['exercises']):
             aggr_points += exercise['points']
-            alternative_metrics['exercises'].append(
+            metrics['exercises'].append(
                 (exercise_slug, exercise['points']))
-            alternative_metrics['total'] += 1
+            metrics['total'] += 1
 
-        alternative_metrics['tags'].setdefault(exercise_tag, 0)
-        alternative_metrics['tags'][exercise_tag] += 1
-    alternative_metrics["average_points"] = aggr_points / \
-        alternative_metrics['total'] if alternative_metrics["total"] != 0 else 0
+        metrics['tags'].setdefault(exercise_tag, 0)
+        metrics['tags'][exercise_tag] += 1
+    metrics['average_points'] = aggr_points / \
+        metrics['total'] if metrics['total'] != 0 else 0
 
-    return Response(alternative_metrics)
+    return Response(metrics)
 
 
 @staff_member_required
@@ -214,7 +214,7 @@ def weekly_exercises(request, course_name, week):
         exercise_count = int(
             math.ceil(user['exercise_count'] / granularity)) * granularity
         if exercise_count >= 50:
-            exercise_count = ">50"
+            exercise_count = '>50'
         hist.setdefault(exercise_count, 0)
         hist[exercise_count] += 1
 

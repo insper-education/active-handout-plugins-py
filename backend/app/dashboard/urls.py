@@ -4,10 +4,10 @@ from dashboard import views
 
 urlpatterns = [
     path("<str:course_name>/student", views.student_dashboard, name='student-dashboard'),
-    path("instructor", views.instructor_courses, name='instructor-courses'),
-    path("instructor/progress/<str:course_name>", views.students_progress),
-    path("instructor/<str:course_name>/<str:content_type>", views.instructor_courses),
-    path("instructor/<str:course_name>/weekly/<str:user_nickname>/<str:week>", views.student_weekly_data),
-    path("instructor/<str:course_name>/weekly/<str:week>", views.weekly_exercises)
+    path("instructor", views.instructor_courses, name='instructor-dashboard'),
+    path("instructor/<str:course_name>", views.instructor_courses, name='instructor-dashboard'),
+    path("instructor/<str:content_type>/<str:course_name>", views.instructor_courses, name='instructor-dashboard'),
+    path("instructor/weekly/<str:course_name>/<str:user_nickname>/<str:week>", views.student_weekly_data),
+    path("instructor/weekly/<str:course_name>/<str:week>", views.weekly_exercises)
 
 ]

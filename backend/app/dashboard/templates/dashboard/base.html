@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<html>
+
+<head>
+
+    <script src="{% static '/base.js' %}"></script>
+    <link rel="stylesheet" href="{% static '/base.css' %}">
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable/dist/handsontable.full.min.css" />
+
+    {% block head-content %} {% endblock %}
+
+
+</head>
+
+<body>
+    <div id="headers">
+        {% block base-header %}
+        <h1 class="h1">Dashboard</h1>
+
+
+        <select id="select-course" class="form-select" list="courses" onchange="courseChanged(this)">
+            <datalist id="courses">{% for course in courses %}
+                {% if course.name == activeCourse %}
+                <option selected="selected">{{ course.name }} </option>
+                {% else %}
+                <option>{{ course.name }} </option>
+                {% endif %}
+                {% endfor %}
+            </datalist>
+        </select>
+
+        <div class="btn-group">
+            <a href="/dashboard/instructor/{{ activeCourse }}" id="semester" class="btn btn-primary"
+                aria-current="page">Semester</a>
+            <a href="/dashboard/instructor/weekly/{{ activeCourse }}" id="weekly" class="btn btn-primary">Weekly</a>
+        </div>
+        {% endblock %}
+
+        {% block specific-header %} {% endblock %}
+    </div>
+    <div id="data">
+        {% block data %} {% endblock %}
+    </div>
+
+</body>
+
+</html>

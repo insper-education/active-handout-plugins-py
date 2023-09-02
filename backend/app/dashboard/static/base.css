@@ -1,0 +1,6 @@
+#headers>* {
+    margin: 0.2rem;
+}
+.error-msg {
+    color: red;
+  }

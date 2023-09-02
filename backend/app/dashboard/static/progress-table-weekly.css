@@ -3,7 +3,7 @@
     height: 20rem;
 }
 
-#dashboard-head {
+#data {
     visibility: hidden;
     height: 12rem;
     display: flexbox;
@@ -19,7 +19,7 @@
     justify-content: space-evenly;
 }
 
-#dashboard-head > * {
+#data > * {
     margin: 0.2rem;
 }
 
