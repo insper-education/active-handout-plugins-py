@@ -169,28 +169,28 @@ def student_weekly_data(request, course_name, user_nickname, week):
     exercises = TelemetryData.objects.filter(
         exercise__in=exercises, author=student,
         submission_date__gte=week_start, submission_date__lte=week_end
-    ).values(
-        'exercise__slug', 'points', 'exercise__tags__name'
-    )
+    ).prefetch_related('exercise__tags')
 
     metrics = {
-        'total': 0,
+        'total': len(exercises),
         'exercises': [],
         'tags': {},
     }
     aggr_points = 0
-
+    exercise_set = set()
     for exercise in exercises:
-        exercise_slug = exercise['exercise__slug']
-        exercise_tag = exercise['exercise__tags__name']
-        if not any(exercise_slug in slug for slug in metrics['exercises']):
-            aggr_points += exercise['points']
-            metrics['exercises'].append(
-                (exercise_slug, exercise['points']))
-            metrics['total'] += 1
+        exercise_slug = exercise.exercise.slug
+        exercise_points = exercise.points
+        exercise_tags = list(
+            exercise.exercise.tags.all().values_list('name', flat=True))
+        metrics['exercises'].append((exercise_slug, exercise_points))
+        if exercise_slug not in exercise_set:
+            for tag in exercise_tags:
+                metrics['tags'].setdefault(tag, 0)
+                metrics['tags'][tag] += 1
+        exercise_set.add(exercise_slug)
+        aggr_points += exercise_points
 
-        metrics['tags'].setdefault(exercise_tag, 0)
-        metrics['tags'][exercise_tag] += 1
     metrics['average_points'] = aggr_points / \
         metrics['total'] if metrics['total'] != 0 else 0
 
