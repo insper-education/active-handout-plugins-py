@@ -99,6 +99,12 @@ def students_progress(request, course_name):
 def weekly_progress(request, course_name):
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
+    course_classes = course.courseclass_set.all().prefetch_related('students')
+    course_classes_list = [
+        {'name': course_class.name, 'students': list(
+            course_class.students.values_list('username', flat=True))}
+        for course_class in course_classes
+    ]
     students = Student.objects.all()
 
     def generate_weeks(start_date, end_date):
@@ -143,6 +149,7 @@ def weekly_progress(request, course_name):
                       'students': list(students),
                       'weeks': week_obj,
                       'courses': courses,
+                      'course_classes': course_classes_list,
                       'activeCourse': course_name
                   })
 

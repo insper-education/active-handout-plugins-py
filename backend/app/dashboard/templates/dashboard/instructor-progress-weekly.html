@@ -14,6 +14,20 @@
 
 {% block specific-header %}
 
+{% if course_classes|length == 0 %}
+<p class="error-msg">This course has no related classes. Create at least one class using Django Admin.</p>
+{% else %}
+<div class="filterset">
+  <div class="filter">
+    <label for="select-class">Class</label>
+    <select id="select-class" data-classes="{{ course_classes | safe }}" {% if course_classes|length == 1 %}disabled{% endif %}>
+      {% for course_class in course_classes %}
+      <option value="{{ forloop.i0 }}">{{ course_class.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+</div>
+
 <div class="input-group mb-3">
   <span class="input-group-text" id="basic-addon1">Student</span>
   <input class="form-control" list="students" id="select-student">
@@ -32,6 +46,8 @@
 {% if not weeks %}
 <p class="error-msg">There is no data available for this course.</p>
 {% endif %}
+{% endif %}
+
 {% endblock %}
 {% block data %}
 <span class="badge rounded-pill text-bg-primary" id="name"></span>
