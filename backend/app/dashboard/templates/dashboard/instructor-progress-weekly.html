@@ -3,83 +3,66 @@
 
 
 {% block head-content %}
+  <script src="{% static '/dashboard-progress-weekly.js' %}"></script>
+  <link rel="stylesheet" href="{% static '/progress-table-weekly.css' %}">
 
-<script src="{% static '/dashboard-progress-weekly.js' %}"></script>
-<link rel="stylesheet" href="{% static '/progress-table-weekly.css' %}">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script
-  src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 {% endblock %}
 
-{% block specific-header %}
-
-{% if course_classes|length == 0 %}
-<p class="error-msg">This course has no related classes. Create at least one class using Django Admin.</p>
-{% else %}
-<div class="filterset">
-  <div class="filter">
-    <label for="select-class">Class</label>
-    <select id="select-class" data-classes="{{ course_classes | safe }}" {% if course_classes|length == 1 %}disabled{% endif %}>
-      {% for course_class in course_classes %}
-      <option value="{{ forloop.i0 }}">{{ course_class.name }}</option>
+  {% block specific-header %}
+  <div class="input-group mb-3">
+    <span class="input-group-text" id="basic-addon1">Student</span>
+    <input class="form-control" list="students" id="select-student">
+    <datalist id="students">{% for student in students %}
+      <option>{{ student }}</option>
       {% endfor %}
-    </select>
+    </datalist>
   </div>
-</div>
 
-<div class="input-group mb-3">
-  <span class="input-group-text" id="basic-addon1">Student</span>
-  <input class="form-control" list="students" id="select-student">
-  <datalist id="students">{% for student in students %}
-    <option>{{ student }}</option>
-    {% endfor %}
-  </datalist>
-</div>
-
-<select class="form-select flex-nowrap" list="weeks" id="select-week" data-week="{{ weeks }}">
-  <datalist id="weeks">{% for week_obj in weeks.items %}
-    <option>{{ week_obj.0 }} </option>
-    {% endfor %}
-  </datalist>
-</select>
-{% if not weeks %}
-<p class="error-msg">There is no data available for this course.</p>
-{% endif %}
-{% endif %}
-
+  <select class="form-select flex-nowrap" list="weeks" id="select-week" data-week="{{ weeks }}">
+    <datalist id="weeks">{% for week_obj in weeks.items %}
+      <option>{{ week_obj.0 }} </option>
+      {% endfor %}
+    </datalist>
+  </select>
+  {% if not weeks %}
+    <p class="error-msg">There is no data available for this course.</p>
+  {% endif %}
 {% endblock %}
-{% block data %}
-<span class="badge rounded-pill text-bg-primary" id="name"></span>
-<span class="badge rounded-pill text-bg-secondary" id="week">Secondary</span>
-<div class="cards">
-  <div class="card">
-    <div class="card-body">
-      <h5>Exercises</h5>
-      <div id="total">
+
+  {% block data %}
+  <span class="badge rounded-pill text-bg-primary" id="name"></span>
+  <span class="badge rounded-pill text-bg-secondary" id="week">Secondary</span>
+  <div class="cards">
+    <div class="card">
+      <div class="card-body">
+        <h5>Exercises</h5>
+        <div id="total">
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h5>Average</h5>
+        <div id="avg"></div>
       </div>
     </div>
   </div>
-  <div class="card">
-    <div class="card-body">
-      <h5>Average</h5>
-      <div id="avg"></div>
+  <div id="exercise-data">
+    <div id="exercise-list">
+      <h3 class="h3">Exercise list</h3>
+      <div id="table"></div>
+    </div>
+    <div class="chart" id="exercise-per-week">
+      <h3 class="h3">Exercises per week</h3>
+      <canvas id="hist"></canvas>
+    </div>
+    <div class="chart" id="tag-distribution">
+      <h3 class="h3">Tag Distribution</h3>
+      <canvas id="chart"></canvas>
+
     </div>
   </div>
-</div>
-<div id="exercise-data">
-  <div id="exercise-list">
-    <h3 class="h3">Exercise list</h3>
-    <div id="table"></div>
-  </div>
-  <div class="chart" id="exercise-per-week">
-    <h3 class="h3">Exercises per week</h3>
-    <canvas id="hist"></canvas>
-  </div>
-  <div class="chart" id="tag-distribution">
-    <h3 class="h3">Tag Distribution</h3>
-    <canvas id="chart"></canvas>
-
-  </div>
-</div>
 {% endblock %}

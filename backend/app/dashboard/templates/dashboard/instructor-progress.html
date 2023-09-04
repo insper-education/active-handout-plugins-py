@@ -1,50 +1,28 @@
 {% extends "dashboard/base.html" %}
 {% load static %}
 {% block head-content %}
-
-<script type="text/javascript" src='https://cdn.plot.ly/plotly-2.24.1.min.js'></script>
-
-<script src="{% static '/dashboard-progress.js' %}"></script>
-<link rel="stylesheet" href="{% static '/progress-table.css' %}">
-</script>
+  <script type="text/javascript" src='https://cdn.plot.ly/plotly-2.24.1.min.js'></script>
+  <script src="{% static '/dashboard-progress.js' %}"></script>
+  <link rel="stylesheet" href="{% static '/progress-table.css' %}">
+  </script>
 {% endblock %}
 
 {% block specific-header %}
-
-{% if course_classes|length == 0 %}
-<p class="error-msg">This course has no related classes. Create at least one class using Django Admin.</p>
-{% else %}
-<div class="filterset">
   <div class="filter">
-    <label for="select-class">Class</label>
-    <select id="select-class" {% if course_classes|length == 1 %}disabled{% endif %}>
-      {% for course_class in course_classes %}
-      <option value="{{ forloop.i0 }}">{{ course_class.name }}</option>
+    <label for="select-tag">Filter by tags:</label>
+    <input list="data" id="select-tag">
+    <datalist id="data"> {% for key, value in tags.items %}
+      <option onchange="updateFilter()" value="{{ key }}">{{ key }} </option>
       {% endfor %}
-    </select>
+    </datalist>
   </div>
-</div>
-
-<div class="filter">
-  <label for="select-tag">Filter by tags:</label>
-  <input list="data" id="select-tag">
-  <datalist id="data"> {% for key, value in tags.items %}
-    <option onchange="updateFilter()" value="{{ key }}">{{ key }} </option>
-    {% endfor %}
-  </datalist>
-</div>
-<button onclick="toggleVisibility()" class="btn btn-secondary">Toggle visualization</button>
-{% endif %}
-
-<div id="tags-list">
-</div>
+  <button onclick="toggleVisibility()" class="btn btn-secondary">Toggle visualization</button>
+  <div id="tags-list"></div>
 {% endblock %}
+
 {% block data %}
-
-
-<div id="table" data-columns="{{ columns | safe }}" data-data="{{ data | safe }}" data-tags="{{ tags | safe }}"
-  data-classes="{{ course_classes | safe }}"></div>
-
-<div id='chart' style="display: none;" data-columns="{{ columns | safe }}" data-data="{{ data | safe }}"
-  data-tags="{{ tags | safe }}"><!-- Plotly chart will be drawn inside this DIV --></div>
+  <div id="table" data-columns="{{ columns | safe }}" data-data="{{ data | safe }}" data-tags="{{ tags | safe }}"
+    data-classes="{{ course_classes | safe }}"></div>
+  <div id='chart' style="display: none;" data-columns="{{ columns | safe }}" data-data="{{ data | safe }}"
+    data-tags="{{ tags | safe }}"><!-- Plotly chart will be drawn inside this DIV --></div>
 {% endblock %}

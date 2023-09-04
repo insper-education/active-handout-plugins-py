@@ -22,28 +22,45 @@
 <body>
     <div id="headers">
         {% block base-header %}
-        <h1 class="h1">Dashboard</h1>
+            <h1 class="h1">Dashboard</h1>
 
 
-        <select id="select-course" class="form-select" list="courses" onchange="courseChanged(this)">
-            <datalist id="courses">{% for course in courses %}
-                {% if course.name == activeCourse %}
-                <option selected="selected">{{ course.name }} </option>
-                {% else %}
-                <option>{{ course.name }} </option>
-                {% endif %}
+            <select id="select-course" class="form-select" list="courses" onchange="courseChanged(this)">
+                <datalist id="courses">{% for course in courses %}
+                    {% if course.name == activeCourse %}
+                        <option selected="selected">{{ course.name }} </option>
+                    {% else %}
+                        <option>{{ course.name }} </option>
+                    {% endif %}
                 {% endfor %}
-            </datalist>
-        </select>
+                </datalist>
+            </select>
 
-        <div class="btn-group">
-            <a href="/dashboard/instructor/{{ activeCourse }}" id="semester" class="btn btn-primary"
-                aria-current="page">Semester</a>
-            <a href="/dashboard/instructor/weekly/{{ activeCourse }}" id="weekly" class="btn btn-primary">Weekly</a>
-        </div>
+            <div class="btn-group">
+                <a href="/dashboard/instructor/{{ activeCourse }}" id="semester" class="btn btn-primary"
+                    aria-current="page">Semester</a>
+                <a href="/dashboard/instructor/weekly/{{ activeCourse }}" id="weekly" class="btn btn-primary">Weekly</a>
+            </div>
+
+            {% if course_classes|length == 0 %}
+                <p class="error-msg">This course has no related classes. Create at least one class using Django Admin.</p>
+            {% else %}
+                <div class="filterset">
+                    <div class="filter">
+                        <label for="select-class">Class</label>
+                        <select id="select-class" data-classes="{{ course_classes | safe }}"
+                        {% if course_classes|length == 1 %}
+                            disabled
+                        {% endif %}>
+                            {% for course_class in course_classes %}
+                            <option value="{{ forloop.i0 }}">{{ course_class.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+            </div>
+            {% block specific-header %} {% endblock %}
+            {% endif %}
         {% endblock %}
-
-        {% block specific-header %} {% endblock %}
     </div>
     <div id="data">
         {% block data %} {% endblock %}
