@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils import timezone
+from django.utils.html import format_html
 
 
 class User(AbstractUser):
@@ -101,6 +102,19 @@ class TelemetryData(models.Model):
     submission_date = models.DateTimeField(default=timezone.now)
     log = models.JSONField()
     last = models.BooleanField(default=True)
+
+    def solution(self):
+        formatted = ''
+        for chave, valor in self.log.get('student_input', {}).items():
+            codigo = valor.replace("\n", "<br>")
+            codigo = codigo.replace(' ', '&nbsp;')
+            formatted += f'<h2>{chave}</h2>'
+            formatted += f'''
+                <p style="font-size:1rem;">{codigo}</p>
+            ''' 
+
+        return format_html(formatted)
+
 
     def __str__(self) -> str:
         return f"{self.exercise} -> {self.author.username} ({self.submission_date})"
