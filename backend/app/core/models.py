@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils import timezone
+from django.utils.html import format_html
 
 
 class User(AbstractUser):
@@ -101,6 +102,23 @@ class TelemetryData(models.Model):
     submission_date = models.DateTimeField(default=timezone.now)
     log = models.JSONField()
     last = models.BooleanField(default=True)
+
+    def solution(self):
+        formatted = ''
+        log = self.log.get('student_input', {})
+        print(log)
+
+        template = '<pre style="padding: 0.5rem; margin-top: 0; border: 1px solid var(--primary); display: grid; overflow: auto;"><code>{content}</code></pre>'
+        if type(log) == dict:
+            for key, value in log.items():
+                formatted += f'<h2>{key}</h2>'
+                formatted += template.format(content=value)
+        else:
+            formatted += template.format(content=log)
+
+        formatted = formatted.replace('{', '&#123;').replace('}', '&#125;')
+        return format_html(formatted)
+
 
     def __str__(self) -> str:
         return f"{self.exercise} -> {self.author.username} ({self.submission_date})"
