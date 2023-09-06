@@ -88,17 +88,18 @@ function createTagChart(data) {
 }
 
 function createExercisesTable(data) {
+  let dataAsArray = Object.values(data);
 
   if (table != null) {
     table.updateSettings({
-      data: data
+      data: dataAsArray
     })
     return;
   }
-
   let table_div = document.getElementById("table");
   table = new Handsontable(table_div, {
-    data: data,
+    data: dataAsArray,
+    colHeaders: ["Slug", "Max points", "Submissions"],
     licenseKey: "non-commercial-and-evaluation", // for non-commercial use only
   });
 }

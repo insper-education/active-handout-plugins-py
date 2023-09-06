@@ -173,23 +173,29 @@ def student_weekly_data(request, course_name, user_nickname, week):
 
     metrics = {
         'total': len(exercises),
-        'exercises': [],
+        'exercises': {},
         'tags': {},
     }
     aggr_points = 0
-    exercise_set = set()
     for exercise in exercises:
         exercise_slug = exercise.exercise.slug
-        exercise_points = exercise.points
+        exercise_points = round(exercise.points, 2)
         exercise_tags = list(
             exercise.exercise.tags.all().values_list('name', flat=True))
-        metrics['exercises'].append((exercise_slug, exercise_points))
-        if exercise_slug not in exercise_set:
+        aggr_points += exercise_points
+        if exercise_slug not in metrics['exercises']:
+            metrics['exercises'][exercise_slug] = {
+                'slug': exercise_slug,
+                'best_score': exercise_points,
+                'submissions': 1,
+            }
             for tag in exercise_tags:
                 metrics['tags'].setdefault(tag, 0)
                 metrics['tags'][tag] += 1
-        exercise_set.add(exercise_slug)
-        aggr_points += exercise_points
+        else:
+            metrics['exercises'][exercise_slug]['submissions'] += 1
+            if exercise_points > metrics['exercises'][exercise_slug]['best_score']:
+                metrics['exercises'][exercise_slug]['best_score'] = exercise_points
 
     metrics['average_points'] = aggr_points / \
         metrics['total'] if metrics['total'] != 0 else 0
