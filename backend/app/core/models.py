@@ -105,14 +105,18 @@ class TelemetryData(models.Model):
 
     def solution(self):
         formatted = ''
-        for chave, valor in self.log.get('student_input', {}).items():
-            codigo = valor.replace("\n", "<br>")
-            codigo = codigo.replace(' ', '&nbsp;')
-            formatted += f'<h2>{chave}</h2>'
-            formatted += f'''
-                <p style="font-size:1rem;">{codigo}</p>
-            ''' 
+        log = self.log.get('student_input', {})
+        print(log)
 
+        template = '<pre style="padding: 0.5rem; margin-top: 0; border: 1px solid var(--primary); display: grid; overflow: auto;"><code>{content}</code></pre>'
+        if type(log) == dict:
+            for key, value in log.items():
+                formatted += f'<h2>{key}</h2>'
+                formatted += template.format(content=value)
+        else:
+            formatted += template.format(content=log)
+
+        formatted = formatted.replace('{', '&#123;').replace('}', '&#125;')
         return format_html(formatted)
 
 
