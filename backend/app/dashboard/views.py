@@ -11,7 +11,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 
-from core.models import Course, Exercise, TelemetryData, ExerciseTag, Student, User
+from core.models import Course, CourseClass, Exercise, TelemetryData, Student
 from dashboard.query import StudentStats
 from django.db.models import Max, Count, Q
 
@@ -157,7 +157,7 @@ def weekly_progress(request, course_name):
 @staff_member_required
 @api_view()
 @login_required
-def student_weekly_data(request, course_name, user_nickname, week):
+def student_weekly_data(request, course_name, class_name, user_nickname, week):
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
     exercises = Exercise.objects.filter(course=course)
@@ -206,16 +206,18 @@ def student_weekly_data(request, course_name, user_nickname, week):
 @staff_member_required
 @api_view()
 @login_required
-def weekly_exercises(request, course_name, week):
+def weekly_exercises(request, course_name, class_name, week):
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
+    class_name = unquote_plus(class_name)
+    course_class = get_object_or_404(CourseClass, name=class_name)
     exercises = Exercise.objects.filter(course=course)
 
     week_start = datetime.fromisoformat(week)
     week_end = week_start + timedelta(days=6)
 
-    user_exercise_counts = Student.objects.annotate(
+    user_exercise_counts = Student.objects.filter(courseclass=course_class).annotate(
         exercise_count=Count('telemetrydata',
                              filter=Q(telemetrydata__submission_date__gte=week_start,
                                       telemetrydata__submission_date__lte=week_end, telemetrydata__exercise__in=exercises))

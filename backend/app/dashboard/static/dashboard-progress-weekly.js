@@ -2,9 +2,10 @@
 async function updateFilter() {
   let student = selectStudent.value;
   let week_label = selectWeek.value;
+  let courseClass = selectClass.value;
   let week = weekData[week_label];
   let student_value;
-  await fetch(`${activeCourse}/${student}/${week}`).then(async (response) => {
+  await fetch(`${activeCourse}/${courseClass}/${student}/${week}`).then(async (response) => {
     const data = await response.json();
     createExercisesTable(data.exercises);
     createTagChart(data);
@@ -13,7 +14,7 @@ async function updateFilter() {
 
   });
 
-  await fetch(`${activeCourse}/${week}`).then(async (response) => {
+  await fetch(`${activeCourse}/${courseClass}/${week}`).then(async (response) => {
     const data = await response.json();
     createHistogram(data, student_value);
   });
@@ -135,11 +136,12 @@ var tagChart;
 var histChart;
 var table;
 var courseClasses;
+var selectClass;
 
 document.addEventListener("DOMContentLoaded", function () {
 
   let activeButton = document.getElementById("weekly");
-  let selectClass = document.getElementById("select-class");
+  selectClass = document.getElementById("select-class");
   courseClasses = selectClass.getAttribute("data-classes");
   activeButton.className += " active";
   activeCourse = document.getElementById("select-course").value;

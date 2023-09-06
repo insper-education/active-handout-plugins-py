@@ -53,7 +53,7 @@
                             disabled
                         {% endif %}>
                             {% for course_class in course_classes %}
-                            <option value="{{ forloop.i0 }}">{{ course_class.name }}</option>
+                            <option value="{{ course_class.name }}">{{ course_class.name }}</option>
                             {% endfor %}
                         </select>
                     </div>
