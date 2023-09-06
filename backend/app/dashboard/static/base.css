@@ -1,0 +1,11 @@
+#headers>* {
+    margin: 0.2rem;
+}
+
+#headers {
+    width: 99%;
+}
+
+.error-msg {
+    color: red;
+}

@@ -42,7 +42,6 @@ function createHandsontable(data, columns_list) {
 
 function updateHandsontable(data, columns_list) {
   data = filterStudentsInClass(data);
-  
   ret = generateMatrix(data, columns_list)
   usernames = ret[0]
   zvals = ret[1]
@@ -113,7 +112,6 @@ function updateFilter() {
 function updateTableContent() {
   const clonedData = structuredClone(data);
   const clonedColumns = structuredClone(columns);
-
   let filteredColumns = ["Name"];
   exerciseList = [];
   if (tags.size == 0) {
@@ -171,7 +169,7 @@ function generateMatrix(tableData, columns){
         if (idx >= 0){
           studentvals[idx] = val[1]
         }
-      }  
+      }
     });
     zvals.push(studentvals)
   });
@@ -264,4 +262,10 @@ function toggleVisibility() {
     chart.style.display = "";
     document.querySelector('[data-title="Autoscale"]').click()
   }
-} 
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  let active_button = document.getElementById("semester");
+  active_button.className += " active";
+});

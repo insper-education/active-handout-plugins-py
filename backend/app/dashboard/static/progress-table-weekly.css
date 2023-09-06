@@ -1,0 +1,29 @@
+.chart {
+    width: 20rem;
+    height: 20rem;
+}
+
+#data {
+    visibility: hidden;
+    height: 12rem;
+    display: flexbox;
+}
+
+.card {
+    width: 10rem;
+    height: 7rem;
+}
+
+.cards {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#data>* {
+    margin: 0.2rem;
+}
+
+#exercise-data {
+    display: flex;
+    justify-content: space-evenly;
+}
