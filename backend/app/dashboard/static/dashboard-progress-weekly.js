@@ -116,6 +116,7 @@ function getCurrentStudents() {
 }
 
 function updateStudents() {
+  clearData();
   let student_datalist = document.getElementById("students");
   student_datalist.innerHTML = "";
   let currentStudents = getCurrentStudents();
@@ -125,6 +126,10 @@ function updateStudents() {
     student_datalist.appendChild(option)
   })
 
+}
+function clearData() {
+  document.getElementById("data").style.visibility = "hidden";
+  selectStudent.value = "";
 }
 
 var activeCourse;
