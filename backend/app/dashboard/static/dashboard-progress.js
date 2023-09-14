@@ -264,6 +264,20 @@ function toggleVisibility() {
   }
 }
 
+function downloadCSV() {
+  let exportPlugin2 = hot.getPlugin('exportFile');
+  let blob = exportPlugin2.exportAsBlob('csv', {
+    columnHeaders: true,
+  });
+
+  //is there a better way to do this?
+  let downloadLink = document.createElement('a');
+  downloadLink.href = URL.createObjectURL(blob);
+  downloadLink.download = 'exercise_data.csv';
+  downloadLink.click();
+
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 
   let active_button = document.getElementById("semester");
