@@ -146,9 +146,9 @@ function createChoiceChart(data) {
 function filterCodeExercise(data) {
   for (let key in data) {
     if (data[key]["type"] == "choice") {
-      delete data[key]
+      delete data[key];
     } else
-      delete data[key].type
+      delete data[key].type;
   }
   return Object.values(data);
 }
