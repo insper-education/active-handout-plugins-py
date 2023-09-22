@@ -174,6 +174,7 @@ def student_weekly_data(request, course_name, class_name, user_nickname, week):
     metrics = {
         'total': len(exercises),
         'exercises': {},
+        'choice': {},
         'tags': {},
     }
     aggr_points = 0
@@ -182,6 +183,7 @@ def student_weekly_data(request, course_name, class_name, user_nickname, week):
         exercise_points = round(exercise.points, 2)
         exercise_tags = list(
             exercise.exercise.tags.all().values_list('name', flat=True))
+        isChoice = 'choice-exercise' in exercise_tags
         aggr_points += exercise_points
         if exercise_slug not in metrics['exercises']:
             metrics['exercises'][exercise_slug] = {
@@ -189,7 +191,12 @@ def student_weekly_data(request, course_name, class_name, user_nickname, week):
                 'best_score': exercise_points,
                 'submissions': 1,
             }
+            metrics['exercises'][exercise_slug]['type'] = 'choice' if 'choice-exercise' in exercise_tags else 'code'
             for tag in exercise_tags:
+                if isChoice and tag != 'choice-exercise':
+                    metrics['choice'].setdefault(tag, { 'wrong': 0, 'correct': 0})
+                    metrics['choice'][tag]['wrong'] += (not exercise_points)
+                    metrics['choice'][tag]['correct'] += exercise_points
                 metrics['tags'].setdefault(tag, 0)
                 metrics['tags'][tag] += 1
         else:

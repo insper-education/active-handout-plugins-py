@@ -8,6 +8,7 @@ async function updateFilter() {
   await fetch(`${activeCourse}/${courseClass}/${student}/${week}`).then(async (response) => {
     const data = await response.json();
     createExercisesTable(data.exercises);
+    createChoiceChart(data.choice)
     createTagChart(data);
     createInfo(data);
     student_value = data["total"];
@@ -89,20 +90,67 @@ function createTagChart(data) {
 }
 
 function createExercisesTable(data) {
-  let dataAsArray = Object.values(data);
+  let filteredData = filterCodeExercise(data);
 
   if (table != null) {
     table.updateSettings({
-      data: dataAsArray
+      data: filteredData
     })
     return;
   }
   let table_div = document.getElementById("table");
   table = new Handsontable(table_div, {
-    data: dataAsArray,
+    data: filteredData,
     colHeaders: ["Slug", "Max points", "Submissions"],
     licenseKey: "non-commercial-and-evaluation", // for non-commercial use only
   });
+}
+
+function createChoiceChart(data) {
+  if (choiceChart != null)
+    choiceChart.destroy();
+  let labels = Object.keys(data);
+  let values = Object.values(data);
+  let correct = values.map(item => item.correct)
+  let wrong = values.map(item => item.wrong)
+  choiceChart = new Chart("another-chart", {
+    type: "bar",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Right",
+          data: correct,
+        },
+        {
+          label: "Wrong",
+          data: wrong,
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        x: {
+          stacked: true,
+        },
+        y: {
+          stacked: true,
+        }
+      }
+    }
+  });
+}
+
+function filterCodeExercise(data) {
+  for (let key in data) {
+    if (data[key]["type"] == "choice") {
+      delete data[key];
+    } else
+      delete data[key].type;
+  }
+  return Object.values(data);
 }
 
 function getClassSelect() {
@@ -139,6 +187,7 @@ var weekData;
 var exercise_div;
 var tagChart;
 var histChart;
+var choiceChart;
 var table;
 var courseClasses;
 var selectClass;
