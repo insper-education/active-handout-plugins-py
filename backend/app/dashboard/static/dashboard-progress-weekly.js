@@ -1,3 +1,12 @@
+function getLastSundayISO() {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  const lastSunday = new Date(today);
+  lastSunday.setDate(today.getDate() - dayOfWeek);
+  const isoDate = lastSunday.toISOString().split('T')[0];
+
+  return isoDate;
+}
 
 async function updateFilter() {
   let student = selectStudent.value;
@@ -210,10 +219,12 @@ document.addEventListener("DOMContentLoaded", function () {
     courseClass.students = new Set(courseClass.students);
   });
 
-
   weekData = JSON.parse(weekData);
   selectStudent.onchange = updateFilter;
   selectWeek.onchange = updateFilter;
   selectClass.onchange = updateStudents;
-
+  let lastSundayISO = getLastSundayISO();
+  let key = Object.keys(weekData).find(key => weekData[key] === lastSundayISO);
+  if (key)
+    selectWeek.value = key;
 });
