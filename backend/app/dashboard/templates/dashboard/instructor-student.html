@@ -1,0 +1,31 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+
+{% block head-content %}
+  <script src="{% static '/dashboard-instructor-student.js' %}"></script>
+  <link rel="stylesheet" href="{% static '/dashboard-instructor-student.css' %}">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+{% endblock %}
+
+{% block specific-header %}
+<div class="input-group mb-3">
+    <span class="input-group-text" id="basic-addon1">Student</span>
+    <input class="form-control" list="students" id="select-student">
+    <datalist id="students">{% for student in students %}
+      <option>{{ student }}</option>
+      {% endfor %}
+    </datalist>
+  </div>
+{% endblock %}
+
+{% block data %}
+<canvas id="tag-chart">
+</canvas>
+<div class="accordion" id="answers">
+</div>
+{% endblock %}
