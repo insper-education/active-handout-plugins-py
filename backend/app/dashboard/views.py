@@ -153,19 +153,22 @@ def student_telemetry_data(request, course_name, user_nickname):
     ).prefetch_related('exercise__tags')
 
     response_obj = {}
-    for telemetry in telemetry_data[:10]:
+    for telemetry in telemetry_data[:]:
+        slug = telemetry.exercise.slug
         exercise_tags = list(
             telemetry.exercise.tags.all().values_list('name', flat=True))
-        for tag in exercise_tags:
-            response_obj.setdefault(tag, {'count':0, 'data':[]})
-            response_obj[tag]['count'] +=1
-            ex_data = {
-                'slug': telemetry.exercise.slug,
-                'log': telemetry.log,
-                'last': telemetry.last,
-                'points': telemetry.points
-            }
-            response_obj[tag]['data'].append(ex_data)
+        if 'Código' in exercise_tags:
+            exercise_tags.remove('Código')
+            for tag in exercise_tags:
+                response_obj.setdefault(tag, {'count':0, 'data':{}})
+                response_obj[tag]['data'].setdefault(slug, [])
+                response_obj[tag]['count'] +=1
+                ex_data = {
+                    'log': telemetry.log,
+                    'last': telemetry.last,
+                    'points': round(telemetry.points, 2)
+                }
+                response_obj[tag]['data'][slug].append(ex_data)
 
     return Response(response_obj)
 
