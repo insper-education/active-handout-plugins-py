@@ -3,12 +3,14 @@
 
 
 {% block head-content %}
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-python.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css">
   <script src="{% static '/dashboard-instructor-student.js' %}"></script>
   <link rel="stylesheet" href="{% static '/dashboard-instructor-student.css' %}">
-
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script
-    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
 {% endblock %}
 
@@ -26,9 +28,8 @@
 {% block data %}
 <canvas id="tag-chart">
 </canvas>
+<div id="table">
+</div>
 <div class="accordion" id="answers">
-  <div id="table">
-
-  </div>
 </div>
 {% endblock %}
