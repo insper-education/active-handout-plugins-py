@@ -164,6 +164,7 @@ def student_telemetry_data(request, course_name, user_nickname):
                 response_obj[tag]['data'].setdefault(slug, [])
                 response_obj[tag]['count'] +=1
                 ex_data = {
+                    'date': telemetry.submission_date,
                     'log': telemetry.log,
                     'last': telemetry.last,
                     'points': round(telemetry.points, 2)

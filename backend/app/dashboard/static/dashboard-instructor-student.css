@@ -1,0 +1,23 @@
+#tag-chart{
+    width: 40rem;
+    height: 30rem;
+}
+
+/* Style for the code snippet container */
+.code-snippet {
+    border: 1px solid #ddd;
+    margin: 20px;
+    padding: 10px;
+    position: relative;
+}
+
+/* Style for the file name */
+.file-name {
+    background-color: #fff;
+    padding: 0 5px;
+    font-weight: bold;
+}
+#main {
+    display: flex;
+    align-items: center;
+}
