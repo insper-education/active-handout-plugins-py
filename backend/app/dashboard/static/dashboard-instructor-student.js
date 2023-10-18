@@ -37,7 +37,11 @@ function createTagChart(data) {
             indexAxis: "y",
             responsive: true,
             maintainAspectRatio: true,
-
+            plugins: {
+                legend: {
+                    display: false
+                }
+            }
         }
     });
 }
@@ -81,7 +85,7 @@ function createAnswerView(slug, data) {
 
 function createSubmissionSelect(slug, submissions, data) {
     let div = document.getElementById("select-submission");
-    let name = document.createElement("center");
+    let name = document.createElement("p");
     name.innerHTML = slug;
 
     let title = document.createElement("h5");
