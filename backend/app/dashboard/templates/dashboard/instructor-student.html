@@ -27,15 +27,23 @@
 
 {% block data %}
 <div id="main">
-  <canvas id="tag-chart">
-  </canvas>
-  <div id="table">
+  <div class="chart-container">
+    <h3>Code exercises by tag</h3>
+    <canvas id="tag-chart">
+    </canvas>
+  </div>
+  <div id="table-div">
+    <h3>Exercise table</h3>
+    <div id="table">
+    </div>
   </div>
 </div>
-<div id="select-submission">
+<div id="info">
+  <div id="select-submission">
+  </div>
+  <div id="select-file">
+  </div>
+  <div id="answers">
 </div>
-<div id="select-file">
-</div>
-<div class="accordion" id="answers">
 </div>
 {% endblock %}

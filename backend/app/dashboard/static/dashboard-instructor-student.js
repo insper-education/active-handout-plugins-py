@@ -1,4 +1,5 @@
 async function getStudentData() {
+    clearAll();
     let student = selectStudent.value
     await fetch(`${activeCourse}/${student}`).then(async (response) => {
         const data = await response.json();
@@ -29,21 +30,14 @@ function createTagChart(data) {
             onClick: function handleBarClick(event, activeElements) {
                 if (activeElements.length > 0) {
                     let index = activeElements[0].index;
-                    clearCodeBlock();
+                    clearAll();
                     createTable(data[labels[index]].data);
                 }
             },
             indexAxis: "y",
-            responsive: false,
+            responsive: true,
             maintainAspectRatio: true,
-            scales: {
-                x: {
-                    stacked: true,
-                },
-                y: {
-                    stacked: true,
-                }
-            }
+
         }
     });
 }
@@ -55,11 +49,11 @@ function createTable(data) {
     for (let i = 0; i < keys.length; i++) {
         formatedData.push([keys[i], data[keys[i]].length]);
     }
-    if (table) {
-        table.updateSettings({ data: formatedData });
-        return;
-    }
+
     let tableDiv = document.getElementById("table");
+    document.getElementById("table-div").style.visibility = "visible";
+
+
     table = new Handsontable(tableDiv, {
         data: formatedData,
         colHeaders: ["Slug", "Submissions"],
@@ -74,7 +68,7 @@ function createTable(data) {
 
 function onRowClicked(row, prop) {
     let slug = table.getSourceDataAtRow(row)[0];
-    clearCodeBlock();
+    clearInfo();
     createAnswerView(slug, tableData[slug]);
 }
 
@@ -83,14 +77,17 @@ function createAnswerView(slug, data) {
     div.innerHTML = "";
     createSubmissionSelect(slug, Object.keys(data), data);
     createFileSelect(data)
-    //for (let i = 0; i < Object.keys(data).length; i++) {
-    //    div.appendChild(createAccordionItem(slug, data[i], i));
-    //}
 }
 
 function createSubmissionSelect(slug, submissions, data) {
-    console.log(data);
     let div = document.getElementById("select-submission");
+    let name = document.createElement("center");
+    name.innerHTML = slug;
+
+    let title = document.createElement("h5");
+    title.innerHTML = "Submission";
+    div.appendChild(name);
+    div.appendChild(title);
 
     // Create the select element
     submissionSelect = document.createElement('select');
@@ -100,10 +97,11 @@ function createSubmissionSelect(slug, submissions, data) {
     };
 
     // Iterate through the courseList and create option elements
-    for (const [key, value] of Object.entries(data)) {
+    for (const [key, value] of Object.entries(data.reverse())) {
         const option = document.createElement('option');
         option.value = key;
-        option.textContent = `${value.date.slice(5,10)}  ${value.date.slice(11,16)}`;
+        option.textContent = `#${(data.length - parseInt(key)).toLocaleString('en-US',{    minimumIntegerDigits: 2,
+            useGrouping: false})} ${value.date.slice(5, 7)}/${value.date.slice(8, 10)} - ${value.date.slice(11, 16)}`;
         submissionSelect.appendChild(option);
     };
 
@@ -114,22 +112,20 @@ function createSubmissionSelect(slug, submissions, data) {
 function createFileSelect(data) {
     let div = document.getElementById("select-file");
     div.innerHTML = "";
-
+    let title = document.createElement("h5");
+    title.innerHTML = "File";
+    div.appendChild(title);
     // Create the select element
     fileSelect = document.createElement('select');
     fileSelect.id = 'select-file';
     fileSelect.className = 'form-select';
     console.log(data);
-    console.log("udhsbusdsd");
     fileSelect.onchange = function () {
         createAccordionItem(fileSelect.value, data[submissionSelect.value], 0, fileSelect.value);
-        //div.appendChild(createAccordionItem(slug, data[select.value], 0));
     };
 
-    // Iterate through the courseList and create option elements
-    console.log(data, "dataaaaaaaaaaaaa");
     if (data[0].log.student_input) {
-        for (key in data[0].log.student_input){
+        for (key in data[0].log.student_input) {
             console.log(key);
             const option = document.createElement('option');
             option.value = key;
@@ -139,74 +135,27 @@ function createFileSelect(data) {
         div.appendChild(fileSelect);
 
     }
-    else {
-        //document.getElementById("answers").appendChild(createCode(data.log, "uwu"));
-    }
     createAccordionItem(fileSelect.value, data[0], 0, fileSelect.value);
 
-    // Append the select element to the document or another parent element
 }
 
 function createAccordionItem(slug, data, index, file) {
-    document.getElementById("answers").innerHTML= "";
-
-    const item = document.createElement("div");
-    item.classList.add("accordion-item");
-
-    const header = document.createElement("h2");
-    header.classList.add("accordion-header");
-
-    const button = document.createElement("button");
-    button.classList.add("accordion-button");
-    button.setAttribute("type", "button");
-    button.setAttribute("data-bs-toggle", "collapse");
-    button.setAttribute("data-bs-target", `#collapse-${index}`);
-    button.setAttribute("aria-expanded", "false"); // Change this to "true" for the first item
-    button.setAttribute("aria-controls", `collapse-${index}`);
-    button.textContent = slug + " - Submissão #" + (index + 1);
-
-    const collapse = document.createElement("div");
-    collapse.classList.add("accordion-collapse", "collapse", "show");
-    collapse.setAttribute("id", `collapse-${index}`);
-    const body = document.createElement("div");
-    body.classList.add("accordion-body");
-    console.log("FIle  " + file)
+    console.log(data);
+    document.getElementById("answers").innerHTML = "";
+    let body = document.getElementById("answers");
     body.appendChild(createCode(data, file));
 
-    collapse.appendChild(body);
-    header.appendChild(button);
-    item.appendChild(header);
-    item.appendChild(collapse);
-
-    document.getElementById("answers").appendChild(item);
-
-}
-
-function createCodeBlock(data) {
-
-    if (data.code) {
-        return createCode(data.code, "");
-    }
-    else if (data.student_input) {
-        let codeContainer = document.createElement("div");
-
-        Object.keys(data.student_input).forEach(key => {
-            codeContainer.appendChild(createCode(data.student_input[key], key),);
-        });
-        return codeContainer;
-
-    }
 }
 
 function createCode(data, fileName) {
-    console.log("onCreateCOde", data, fileName);
     let codeDiv = document.createElement("div");
     let codeSnippet = document.createElement("div");
     codeSnippet.className = "code-snippet";
-    let fileNameDiv = document.createElement("div");
-    fileNameDiv.className = "file-name";
-    fileNameDiv.innerHTML = fileName;
 
+    let points = document.createElement("h4");
+    points.innerHTML = `Points: ${data.points.toFixed(2)}`;
+
+    codeSnippet.appendChild(points);
     let pre = document.createElement("pre");
     let code = document.createElement("code");
     code.className = "language-python";
@@ -214,15 +163,23 @@ function createCode(data, fileName) {
     pre.appendChild(code);
     codeSnippet.appendChild(pre);
     Prism.highlightElement(code);
-    codeDiv.appendChild(fileNameDiv);
     codeDiv.appendChild(codeSnippet);
-    console.log("aaa" + codeDiv);
     return codeDiv;
 
 }
-function clearCodeBlock() {
+function clearInfo() {
+    document.getElementById("select-submission").innerHTML = "";
+    document.getElementById("select-file").innerHTML = "";
     document.getElementById("answers").innerHTML = "";
 }
+
+function clearAll() {
+    clearInfo();
+    document.getElementById("table").innerHTML = "";
+    document.getElementById("table-div").style.visibility = "hidden";
+
+}
+
 var activeCourse;
 var selectStudent;
 var tagChart;
@@ -233,6 +190,8 @@ var fileSelect;
 document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById("data").style.visibility = "hidden";
+    document.getElementById("table-div").style.visibility = "hidden";
+
 
     activeCourse = document.getElementById("select-course").value;
 
