@@ -1,6 +1,6 @@
 async function getStudentData() {
   clearAll();
-  let student = selectStudent.value
+  let student = selectStudent.value;
   await fetch(`${activeCourse}/${student}`).then(async (response) => {
     const data = await response.json();
     document.getElementById("data").style.visibility = "visible";
@@ -137,12 +137,10 @@ function createFileSelect(data) {
 
   //create codeBlock with the default submission and file
   createCode(data[0], fileSelect.value);
-
 }
 
 
 function createCode(data, fileName) {
-
   let body = document.getElementById("answers");
   body.innerHTML = "";
 
@@ -164,7 +162,6 @@ function createCode(data, fileName) {
   codeDiv.appendChild(codeSnippet);
   body.appendChild(codeDiv);
   Prism.highlightElement(code);
-
 }
 function clearInfo() {
   document.getElementById("select-submission").innerHTML = "";
@@ -176,7 +173,6 @@ function clearAll() {
   clearInfo();
   document.getElementById("table").innerHTML = "";
   document.getElementById("table-div").style.visibility = "hidden";
-
 }
 
 var activeCourse;
@@ -193,7 +189,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
   document.getElementById("data").style.visibility = "hidden";
   document.getElementById("table-div").style.visibility = "hidden";
-
 
   activeCourse = document.getElementById("select-course").value;
 
@@ -212,8 +207,4 @@ document.addEventListener("DOMContentLoaded", function () {
   courseClasses.forEach((courseClass) => {
     courseClass.students = new Set(courseClass.students);
   });
-
-
-
-
 });
