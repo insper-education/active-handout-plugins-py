@@ -6,3 +6,26 @@ function courseChanged(select) {
     baseURL = baseURL.join("/");
     window.location = `${baseURL}/${newValue}`;
 }
+
+function getClassSelect() {
+    return document.getElementById("select-class");
+  }
+
+  function getCurrentStudents() {
+    const classSelect = getClassSelect();
+    const selectedClass = courseClasses[classSelect.selectedIndex];
+
+    return selectedClass.students;
+  }
+
+  function updateStudents() {
+    let student_datalist = document.getElementById("students");
+    student_datalist.innerHTML = "";
+    let currentStudents = getCurrentStudents();
+    currentStudents.forEach(item => {
+      let option = document.createElement("option");
+      option.value = item;
+      student_datalist.appendChild(option)
+      });
+
+  }

@@ -48,7 +48,7 @@ def instructor_courses(request, course_name=None, content_type=None):
     if content_type == 'weekly':
         return weekly_progress(request, course_name)
     elif content_type == 'student':
-        return  student_info(request, course_name)
+        return  code_info(request, course_name)
     return students_progress(request, course_name)
 
 @staff_member_required
@@ -141,7 +141,7 @@ def weekly_exercises(request, course_name, class_name, week):
 @staff_member_required
 @api_view()
 @login_required
-def student_telemetry_data(request, course_name, user_nickname):
+def student_code_data(request, course_name, user_nickname):
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
     user_nickname = unquote_plus(user_nickname)
@@ -275,7 +275,7 @@ def weekly_progress(request, course_name):
                       'activeCourse': course_name
                   })
 
-def student_info(request, course_name):
+def code_info(request, course_name):
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
