@@ -1,5 +1,5 @@
 # Setup based on https://londonappdeveloper.com/django-docker-deployment-with-https-using-letsencrypt/
-FROM python:3
+FROM python:3.11
 
 ENV PYTHONUNBUFFERED 1
 
