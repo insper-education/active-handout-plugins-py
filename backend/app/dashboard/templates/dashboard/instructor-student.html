@@ -1,0 +1,49 @@
+{% extends "dashboard/base.html" %}
+{% load static %}
+
+
+{% block head-content %}
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/prism.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/components/prism-python.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/9000.0.1/themes/prism.min.css">
+  <script src="{% static '/dashboard-instructor-student.js' %}"></script>
+  <link rel="stylesheet" href="{% static '/dashboard-instructor-student.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+{% endblock %}
+
+{% block specific-header %}
+<div class="input-group mb-3">
+    <span class="input-group-text" id="basic-addon1">Student</span>
+    <input class="form-control" list="students" id="select-student">
+    <datalist id="students">{% for student in students %}
+      <option>{{ student }}</option>
+      {% endfor %}
+    </datalist>
+  </div>
+{% endblock %}
+
+{% block data %}
+<div id="main">
+  <div class="chart-container">
+    <h3>Code exercises by tag</h3>
+    <canvas id="tag-chart">
+    </canvas>
+  </div>
+  <div id="table-div">
+    <h3>Exercise table</h3>
+    <div id="table">
+    </div>
+  </div>
+</div>
+<div id="info">
+  <div id="select-submission">
+  </div>
+  <div id="select-file">
+  </div>
+  <div id="answers">
+</div>
+</div>
+{% endblock %}

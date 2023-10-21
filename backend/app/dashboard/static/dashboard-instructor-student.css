@@ -1,0 +1,20 @@
+.chart-container {
+    width: 50rem;
+    height: fit-content;
+}
+
+.code-snippet {
+    border: 1px solid #ddd;
+    margin: 20px;
+    padding: 10px;
+    position: relative;
+}
+
+#main {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+#info {
+    margin-top: 2rem;
+}

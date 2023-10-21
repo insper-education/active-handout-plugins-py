@@ -47,8 +47,131 @@ def instructor_courses(request, course_name=None, content_type=None):
         course_name = Course.objects.first().name
     if content_type == 'weekly':
         return weekly_progress(request, course_name)
+    elif content_type == 'student':
+        return  code_info(request, course_name)
     return students_progress(request, course_name)
 
+@staff_member_required
+@api_view()
+@login_required
+def student_weekly_data(request, course_name, class_name, user_nickname, week):
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    exercises = Exercise.objects.filter(course=course)
+    student = get_object_or_404(Student, username=user_nickname)
+
+    week_start = datetime.fromisoformat(week)
+    week_end = week_start + timedelta(days=6)
+
+    exercises = TelemetryData.objects.filter(
+        exercise__in=exercises, author=student,
+        submission_date__gte=week_start, submission_date__lte=week_end
+    ).prefetch_related('exercise__tags')
+
+    metrics = {
+        'total': len(exercises),
+        'exercises': {},
+        'choice': {},
+        'tags': {},
+    }
+    aggr_points = 0
+    for exercise in exercises:
+        exercise_slug = exercise.exercise.slug
+        exercise_points = round(exercise.points, 2)
+        exercise_tags = list(
+            exercise.exercise.tags.all().values_list('name', flat=True))
+        isChoice = 'choice-exercise' in exercise_tags
+        aggr_points += exercise_points
+        if exercise_slug not in metrics['exercises']:
+            metrics['exercises'][exercise_slug] = {
+                'slug': exercise_slug,
+                'best_score': exercise_points,
+                'submissions': 1,
+            }
+            metrics['exercises'][exercise_slug]['type'] = 'choice' if 'choice-exercise' in exercise_tags else 'code'
+            for tag in exercise_tags:
+                if isChoice and tag != 'choice-exercise':
+                    metrics['choice'].setdefault(tag, { 'wrong': 0, 'correct': 0})
+                    metrics['choice'][tag]['wrong'] += (not exercise_points)
+                    metrics['choice'][tag]['correct'] += exercise_points
+                metrics['tags'].setdefault(tag, 0)
+                metrics['tags'][tag] += 1
+        else:
+            metrics['exercises'][exercise_slug]['submissions'] += 1
+            if exercise_points > metrics['exercises'][exercise_slug]['best_score']:
+                metrics['exercises'][exercise_slug]['best_score'] = exercise_points
+
+    metrics['average_points'] = aggr_points / \
+        metrics['total'] if metrics['total'] != 0 else 0
+
+    return Response(metrics)
+
+@staff_member_required
+@api_view()
+@login_required
+def weekly_exercises(request, course_name, class_name, week):
+
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    class_name = unquote_plus(class_name)
+    course_class = get_object_or_404(CourseClass, name=class_name)
+    exercises = Exercise.objects.filter(course=course)
+
+    week_start = datetime.fromisoformat(week)
+    week_end = week_start + timedelta(days=6)
+
+    user_exercise_counts = Student.objects.filter(courseclass=course_class).annotate(
+        exercise_count=Count('telemetrydata',
+                             filter=Q(telemetrydata__submission_date__gte=week_start,
+                                      telemetrydata__submission_date__lte=week_end, telemetrydata__exercise__in=exercises))
+    ).values('username', 'exercise_count')
+    hist = {}
+    granularity = 5
+    # converting to histogram
+    for user in user_exercise_counts:
+        exercise_count = int(
+            math.ceil(user['exercise_count'] / granularity)) * granularity
+        if exercise_count >= 50:
+            exercise_count = '>50'
+        hist.setdefault(exercise_count, 0)
+        hist[exercise_count] += 1
+
+    return Response(hist)
+
+@staff_member_required
+@api_view()
+@login_required
+def student_code_data(request, course_name, user_nickname):
+    course_name = unquote_plus(course_name)
+    course = get_object_or_404(Course, name=course_name)
+    user_nickname = unquote_plus(user_nickname)
+    student = get_object_or_404(Student, username=user_nickname)
+
+    exercises = Exercise.objects.filter(course=course)
+    telemetry_data = TelemetryData.objects.filter(
+        exercise__in=exercises, author=student,
+    ).prefetch_related('exercise__tags')
+
+    response_obj = {}
+    for telemetry in telemetry_data[:]:
+        slug = telemetry.exercise.slug
+        exercise_tags = list(
+            telemetry.exercise.tags.all().values_list('name', flat=True))
+        if 'Código' in exercise_tags:
+            exercise_tags.remove('Código')
+            for tag in exercise_tags:
+                response_obj.setdefault(tag, {'count':0, 'data':{}})
+                response_obj[tag]['data'].setdefault(slug, [])
+                response_obj[tag]['count'] +=1
+                ex_data = {
+                    'date': telemetry.submission_date,
+                    'log': telemetry.log,
+                    'last': telemetry.last,
+                    'points': round(telemetry.points, 2)
+                }
+                response_obj[tag]['data'][slug].append(ex_data)
+
+    return Response(response_obj)
 
 def students_progress(request, course_name):
 
@@ -94,7 +217,6 @@ def students_progress(request, course_name):
                       'activeCourse': course_name
 
                   })
-
 
 def weekly_progress(request, course_name):
     course_name = unquote_plus(course_name)
@@ -153,91 +275,23 @@ def weekly_progress(request, course_name):
                       'activeCourse': course_name
                   })
 
-
-@staff_member_required
-@api_view()
-@login_required
-def student_weekly_data(request, course_name, class_name, user_nickname, week):
-    course_name = unquote_plus(course_name)
-    course = get_object_or_404(Course, name=course_name)
-    exercises = Exercise.objects.filter(course=course)
-    student = get_object_or_404(Student, username=user_nickname)
-
-    week_start = datetime.fromisoformat(week)
-    week_end = week_start + timedelta(days=6)
-
-    exercises = TelemetryData.objects.filter(
-        exercise__in=exercises, author=student,
-        submission_date__gte=week_start, submission_date__lte=week_end
-    ).prefetch_related('exercise__tags')
-
-    metrics = {
-        'total': len(exercises),
-        'exercises': {},
-        'choice': {},
-        'tags': {},
-    }
-    aggr_points = 0
-    for exercise in exercises:
-        exercise_slug = exercise.exercise.slug
-        exercise_points = round(exercise.points, 2)
-        exercise_tags = list(
-            exercise.exercise.tags.all().values_list('name', flat=True))
-        isChoice = 'choice-exercise' in exercise_tags
-        aggr_points += exercise_points
-        if exercise_slug not in metrics['exercises']:
-            metrics['exercises'][exercise_slug] = {
-                'slug': exercise_slug,
-                'best_score': exercise_points,
-                'submissions': 1,
-            }
-            metrics['exercises'][exercise_slug]['type'] = 'choice' if 'choice-exercise' in exercise_tags else 'code'
-            for tag in exercise_tags:
-                if isChoice and tag != 'choice-exercise':
-                    metrics['choice'].setdefault(tag, { 'wrong': 0, 'correct': 0})
-                    metrics['choice'][tag]['wrong'] += (not exercise_points)
-                    metrics['choice'][tag]['correct'] += exercise_points
-                metrics['tags'].setdefault(tag, 0)
-                metrics['tags'][tag] += 1
-        else:
-            metrics['exercises'][exercise_slug]['submissions'] += 1
-            if exercise_points > metrics['exercises'][exercise_slug]['best_score']:
-                metrics['exercises'][exercise_slug]['best_score'] = exercise_points
-
-    metrics['average_points'] = aggr_points / \
-        metrics['total'] if metrics['total'] != 0 else 0
-
-    return Response(metrics)
-
-
-@staff_member_required
-@api_view()
-@login_required
-def weekly_exercises(request, course_name, class_name, week):
+def code_info(request, course_name):
 
     course_name = unquote_plus(course_name)
     course = get_object_or_404(Course, name=course_name)
-    class_name = unquote_plus(class_name)
-    course_class = get_object_or_404(CourseClass, name=class_name)
-    exercises = Exercise.objects.filter(course=course)
+    course_classes = course.courseclass_set.all().prefetch_related('students')
+    course_classes_list = [
+        {'name': course_class.name, 'students': list(
+            course_class.students.values_list('username', flat=True))}
+        for course_class in course_classes
+    ]
+    students = Student.objects.all()
+    courses = Course.objects.all()
 
-    week_start = datetime.fromisoformat(week)
-    week_end = week_start + timedelta(days=6)
-
-    user_exercise_counts = Student.objects.filter(courseclass=course_class).annotate(
-        exercise_count=Count('telemetrydata',
-                             filter=Q(telemetrydata__submission_date__gte=week_start,
-                                      telemetrydata__submission_date__lte=week_end, telemetrydata__exercise__in=exercises))
-    ).values('username', 'exercise_count')
-    hist = {}
-    granularity = 5
-    # converting to histogram
-    for user in user_exercise_counts:
-        exercise_count = int(
-            math.ceil(user['exercise_count'] / granularity)) * granularity
-        if exercise_count >= 50:
-            exercise_count = '>50'
-        hist.setdefault(exercise_count, 0)
-        hist[exercise_count] += 1
-
-    return Response(hist)
+    return render(request, 'dashboard/instructor-student.html',
+                  {
+                      'courses': courses,
+                      'course_classes': course_classes_list,
+                      'activeCourse': course_name,
+                      'students': students,
+                  })
