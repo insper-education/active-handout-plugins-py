@@ -10,6 +10,7 @@ from .counter import CounterProcessor
 from .video import VideoAdmonition
 from .pdf import PdfAdmonition
 from .parsons import ParsonsExercise
+from .parsons_distractor import ParsonsDistractorExercise
 from .templating import Jinja2PreProcessor
 from .code_editor.editor import CodeEditorAdmonition
 from .dashboard import DashboardAdmonition
@@ -36,6 +37,7 @@ class ActiveHandoutExtension(Extension):
         register_exercise_visitor_builder(ChoiceExercise, 3)
         register_exercise_visitor_builder(TextExercise, 2)
         register_exercise_visitor_builder(ParsonsExercise, 2)
+        register_exercise_visitor_builder(ParsonsDistractorExercise, 2)
         register_exercise_visitor_builder(SelfProgressExercise, 1)
         self._register_exercise_visitors(exercise_admonitions, md)
 
