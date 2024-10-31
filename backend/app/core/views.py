@@ -218,3 +218,15 @@ def update_tag_names(request, course_name):
     if to_update:
         ExerciseTag.objects.bulk_update(to_update, ['name'])
     return Response({"updated": len(to_update)})
+
+@api_view(["GET"])
+def get_stats(request):
+    #get all
+    stats = {
+        'total_students': User.objects.count(),
+        'total_courses': Course.objects.count(),
+        'total_exercises': Exercise.objects.count(),
+        'total_tags': ExerciseTag.objects.count(),
+        'total_telemetry': TelemetryData.objects.count(),
+    }
+    return Response(stats)
