@@ -22,4 +22,7 @@ urlpatterns = [
 
     # Tag data
     path("tags/<str:course_name>/names", views.update_tag_names),
+
+    # Stats
+    path("stats", views.get_stats),
 ]
