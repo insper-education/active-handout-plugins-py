@@ -221,8 +221,7 @@ def update_tag_names(request, course_name):
 
 @api_view(["GET"])
 def get_stats(request):
-    #get all
-
+    #get exercice count per course
     stats = {}
     for course in Course.objects.all():
         stats[course.name] = {}
