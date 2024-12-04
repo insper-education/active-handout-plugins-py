@@ -25,4 +25,7 @@ urlpatterns = [
 
     # Stats
     path("stats", views.get_stats),
+    path("courses", views.get_courses),
+    path("<str:course_name>/exercises", views.get_exercises),
+    path("<str:course_name>/telemetry", views.get_telemetry),
 ]

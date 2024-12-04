@@ -1,7 +1,7 @@
 from urllib.parse import unquote_plus
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.utils.http import urlencode
 from django.contrib.auth import logout
 from django.db.models import Max, Q
@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
 from core.models import Course, ExerciseTag, Exercise, TelemetryData, User
-from core.serializers import TelemetryDataSerializer, UserSerializer
+from core.serializers import TelemetryDataSerializer, UserSerializer, ExerciseSerializer
 from core.shortcuts import redirect
 
 from urllib.parse import unquote
@@ -221,13 +221,37 @@ def update_tag_names(request, course_name):
 
 @api_view(["GET"])
 def get_stats(request):
-    #get exercice count per course
+    # get exercice count per course
     stats = {}
     for course in Course.objects.all():
         stats[course.name] = {}
         exercises = Exercise.objects.filter(course=course)
         telemetry = TelemetryData.objects.filter(exercise__in=exercises)
         stats[course.name]['total_exercises'] = telemetry.count()
-        stats[course.name]['students'] = telemetry.values('author').distinct().count()
+        stats[course.name]['students'] = telemetry.values(
+            'author').distinct().count()
 
     return Response(stats)
+
+
+@api_view(["GET"])
+def get_courses(request):
+    courses = Course.objects.all()
+    return JsonResponse(list(courses.values()), safe=False)
+
+
+@api_view(["GET"])
+def get_exercises(request, course_name):
+    '''Return all exercises from course'''
+    course = get_object_or_404(Course, name=course_name)
+    exercises = Exercise.objects.filter(course=course)
+    serializable_exercises = ExerciseSerializer(exercises, many=True).data
+    return JsonResponse(serializable_exercises, safe=False)
+
+@api_view(["GET"])
+def get_telemetry(request, course_name):
+    '''Return all telemetry data from course'''
+    course = get_object_or_404(Course, name=course_name)
+    exercises = Exercise.objects.filter(course=course)
+    telemetry = TelemetryData.objects.filter(exercise__in=exercises)
+    return Response(TelemetryDataSerializer(telemetry, many=True).data)
