@@ -250,8 +250,14 @@ def get_exercises(request, course_name):
 
 @api_view(["GET"])
 def get_telemetry(request, course_name):
-    '''Return all telemetry data from course'''
+    '''Return all telemetry data from course from the the timestamp'''
     course = get_object_or_404(Course, name=course_name)
     exercises = Exercise.objects.filter(course=course)
-    telemetry = TelemetryData.objects.filter(exercise__in=exercises)
+    timestamp = request.GET.get('timestamp')
+    if timestamp:
+        telemetry = TelemetryData.objects.filter(
+            exercise__in=exercises, submission_date__gt=timestamp)
+    else:
+        telemetry = TelemetryData.objects.filter(exercise__in=exercises)
+
     return Response(TelemetryDataSerializer(telemetry, many=True).data)
