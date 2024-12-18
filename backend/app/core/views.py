@@ -12,7 +12,7 @@ from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 
 from core.models import Course, ExerciseTag, Exercise, TelemetryData, User
-from core.serializers import TelemetryDataSerializer, UserSerializer
+from core.serializers import TelemetryDataSerializer, UserSerializer, ExerciseSerializer
 from core.shortcuts import redirect
 
 from urllib.parse import unquote
@@ -231,3 +231,32 @@ def get_stats(request):
         stats[course.name]['students'] = telemetry.values('author').distinct().count()
 
     return Response(stats)
+
+
+@api_view(["GET"])
+def get_courses(request):
+    courses = Course.objects.all()
+    return Response(list(courses.values()))
+
+
+@api_view(["GET"])
+def get_exercises(request, course_name):
+    '''Return all exercises from course'''
+    course = get_object_or_404(Course, name=course_name)
+    exercises = Exercise.objects.filter(course=course)
+    serializable_exercises = ExerciseSerializer(exercises, many=True).data
+    return Response(serializable_exercises)
+
+@api_view(["GET"])
+def get_telemetry(request, course_name):
+    '''Return all telemetry data from course from the the timestamp'''
+    course = get_object_or_404(Course, name=course_name)
+    exercises = Exercise.objects.filter(course=course)
+    timestamp = request.GET.get('timestamp')
+    if timestamp:
+        telemetry = TelemetryData.objects.filter(
+            exercise__in=exercises, submission_date__gt=timestamp)
+    else:
+        telemetry = TelemetryData.objects.filter(exercise__in=exercises)
+
+    return Response(TelemetryDataSerializer(telemetry, many=True).data)
