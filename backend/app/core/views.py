@@ -221,15 +221,14 @@ def update_tag_names(request, course_name):
 
 @api_view(["GET"])
 def get_stats(request):
-    # get exercice count per course
+    #get exercice count per course
     stats = {}
     for course in Course.objects.all():
         stats[course.name] = {}
         exercises = Exercise.objects.filter(course=course)
         telemetry = TelemetryData.objects.filter(exercise__in=exercises)
         stats[course.name]['total_exercises'] = telemetry.count()
-        stats[course.name]['students'] = telemetry.values(
-            'author').distinct().count()
+        stats[course.name]['students'] = telemetry.values('author').distinct().count()
 
     return Response(stats)
 
