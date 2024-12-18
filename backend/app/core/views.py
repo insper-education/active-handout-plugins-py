@@ -1,7 +1,7 @@
 from urllib.parse import unquote_plus
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
-from django.http import Http404, JsonResponse
+from django.http import Http404
 from django.utils.http import urlencode
 from django.contrib.auth import logout
 from django.db.models import Max, Q
@@ -236,7 +236,7 @@ def get_stats(request):
 @api_view(["GET"])
 def get_courses(request):
     courses = Course.objects.all()
-    return JsonResponse(list(courses.values()), safe=False)
+    return Response(list(courses.values()))
 
 
 @api_view(["GET"])
@@ -245,7 +245,7 @@ def get_exercises(request, course_name):
     course = get_object_or_404(Course, name=course_name)
     exercises = Exercise.objects.filter(course=course)
     serializable_exercises = ExerciseSerializer(exercises, many=True).data
-    return JsonResponse(serializable_exercises, safe=False)
+    return Response(serializable_exercises)
 
 @api_view(["GET"])
 def get_telemetry(request, course_name):
