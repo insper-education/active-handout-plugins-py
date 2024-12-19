@@ -10,6 +10,7 @@ from rest_framework.permissions import IsAdminUser
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.pagination import PageNumberPagination
 
 from core.models import Course, ExerciseTag, Exercise, TelemetryData, User
 from core.serializers import TelemetryDataSerializer, UserSerializer, ExerciseSerializer
@@ -259,4 +260,7 @@ def get_telemetry(request, course_name):
     else:
         telemetry = TelemetryData.objects.filter(exercise__in=exercises)
 
-    return Response(TelemetryDataSerializer(telemetry, many=True).data)
+    pagination = PageNumberPagination()
+    telemetry = pagination.paginate_queryset(telemetry, request)
+    serializer = TelemetryDataSerializer(telemetry, many=True)
+    return pagination.get_paginated_response(serializer.data)
