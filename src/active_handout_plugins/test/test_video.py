@@ -9,7 +9,7 @@ class TestVideoAdmonition(TestCase):
     def test_local_video_link(self):
         self.assertMarkdownRenders(
             self.dedent('''
-            !!! video
+            !!! video 
                 ![sad](aaa.mp4)
             '''),
 
@@ -38,8 +38,6 @@ class TestVideoAdmonition(TestCase):
           ''')
             )
 
-
-
     def test_youtube_with_channel(self):
         self.assertMarkdownRenders(
             self.dedent('''
@@ -55,7 +53,3 @@ class TestVideoAdmonition(TestCase):
             </section>
           ''')
             )
-
-
-
-
